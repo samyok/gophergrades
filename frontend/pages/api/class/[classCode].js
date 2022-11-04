@@ -1,13 +1,4 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { Database, OPEN_READONLY } from "sqlite3";
-
-import path from "path";
 import { getClassInfo, getDistribution } from "../../../lib/db";
-
-// get the database from the root of the repo
-const dbPath = path.resolve(process.cwd(), "../ProcessedData.db");
-
-const db = new Database(dbPath, OPEN_READONLY);
 
 export default async function handler(req, res) {
   if (!req.query.classCode) {
