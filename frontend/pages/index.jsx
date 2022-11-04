@@ -5,7 +5,7 @@ const Home = () => {
   return (
     <PageLayout>
       <Box px={[5, 10]}>
-        <Heading as={"h1"}>geese</Heading>
+        <Heading as={"h1"}>GopherGrades</Heading>
       </Box>
     </PageLayout>
   );
