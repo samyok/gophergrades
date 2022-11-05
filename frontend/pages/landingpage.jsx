@@ -1,6 +1,8 @@
 import React from "react";
 import {
   Box,
+  Heading,
+  Box,
   Input,
   InputGroup,
   InputLeftElement,
