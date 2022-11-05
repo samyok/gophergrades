@@ -1,5 +1,7 @@
 import pandas as pd
+import json
 import requests
+import re
 
 RUNS = 0
 
@@ -9,9 +11,24 @@ def fetch_unknown_prof(x):
     if RUNS < 20:
         dept = x["SUBJECT"].iloc[0]
         catalog_nbr = x["CATALOG_NBR"].iloc[0]
-        term = x["TERM"].iloc[0]
+        term = str(x["TERM"].iloc[0])
         section = x["CLASS_SECTION"].iloc[0]
-        print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class.")
+        level=catalog_nbr[0]
+        professor="null"
+
+        with requests.get("http://classinfo.umn.edu/?subject="+dept+"&term="+term+"&level="+level+"&json=1") as url:
+            print("url: http://classinfo.umn.edu/?subject="+dept+"&term="+term+"&level="+level+"&json=1")
+            try:
+                data=url.json()
+                for key in data:
+                    if re.search((term+"-"+dept+"-"+catalog_nbr),key)!=None:
+                        classComp=data[key]["Class Component"]
+                        if classComp=="Lecture" or classComp=="LEC": #Are there any other ways they specifiy lectures?
+                            professor=re.findall("\\t(.*)",data[key]["Instructor Data"])[0]
+            except ValueError:
+                print("Json malformed, icky!")
+
+        print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {professor}.")
         RUNS += 1
 
 df = pd.read_csv("raw_data.csv",dtype={6:str,14:str})
