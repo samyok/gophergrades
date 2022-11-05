@@ -10,7 +10,7 @@ import { Search2Icon } from "@chakra-ui/icons";
 
 const Home = () => {
   return (
-    <div>
+    <Box>
       <InputGroup
         style={{
           position: "fixed",
@@ -34,7 +34,7 @@ const Home = () => {
         />
       </InputGroup>
 
-      <div
+      <Box
         style={{
           width: "1200px",
           height: "600px",
@@ -45,7 +45,7 @@ const Home = () => {
             "radial-gradient(41.96% 59.58% at 44.33% 30.65%, rgba(111, 19, 29, 0.45) 0%, rgba(111, 19, 29, 0) 100%)",
         }}
       />
-      <div
+      <Box
         style={{
           width: "1200px",
           height: "600px",
@@ -85,7 +85,7 @@ const Home = () => {
           </h2>
         </Box>
       </VStack>
-      <div>
+      <Box>
         <img
           src={"images/Goldy.png"}
           width={"650px"}
@@ -96,8 +96,8 @@ const Home = () => {
             bottom: "20%",
           }}
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
