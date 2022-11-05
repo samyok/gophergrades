@@ -40,6 +40,7 @@ class ClassDistribution(Base):
     __tablename__ = "classdistribution"
     id = Column(Integer,primary_key=True)
     class_name = Column(VARCHAR(10),nullable=False)
+    class_desc = Column(VARCHAR(255),nullable=False)
     total_students = Column(Integer,nullable=False)
     total_grades = Column(JSON,nullable=False)
     department_id = Column(Integer, ForeignKey('departmentdistribution.id',ondelete="CASCADE"))
@@ -49,7 +50,7 @@ class ClassDistribution(Base):
         return f"{self.class_name}: {self.total_grades}"
 
     def __repr__(self) -> str:
-        retVal = f"{self.class_name} has been taught to {self.total_students} with an overall distribution of {self.total_grades} comprised of the following:\n"
+        retVal = f"{self.class_name} ({self.class_desc}) has been taught to {self.total_students} with an overall distribution of {self.total_grades} comprised of the following:\n"
         for dist in self.dists:
             retVal += f"{repr(dist)}\n"
         return retVal
@@ -57,10 +58,11 @@ class ClassDistribution(Base):
 class DepartmentDistribution(Base):
     __tablename__ = "departmentdistribution"
     id = Column(Integer,primary_key=True)
-    dept_name = Column(VARCHAR(4),nullable=False)
+    dept_abbr = Column(VARCHAR(4),nullable=False)
+    dept_name = Column(VARCHAR(255),nullable=False)
     class_dists = relationship('ClassDistribution',backref="dept")
     def __repr__(self) -> str:
-        retVal = f"The department of {self.dept_name} has the following distributions:\n"
+        retVal = f"The department of {self.dept_abbr} - {self.dept_name} has the following distributions:\n"
         for dist in self.class_dists:
             retVal += f"{str(dist)}\n"
         return retVal
