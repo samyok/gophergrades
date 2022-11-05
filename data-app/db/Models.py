@@ -65,7 +65,9 @@ class DepartmentDistribution(Base):
             retVal += f"{str(dist)}\n"
         return retVal
 
+
 engine = create_engine("sqlite:///../ProcessedData.db", echo=True, future=True)
-# Base.metadata.drop_all(engine)
+if __name__ == "__main__":
+    Base.metadata.drop_all(engine)
 Base.metadata.create_all(engine)
 session = Session(engine)
