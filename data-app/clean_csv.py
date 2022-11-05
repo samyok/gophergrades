@@ -27,6 +27,8 @@ def fetch_unknown_prof(x):
                             professor=re.findall("\\t(.*)",data[key]["Instructor Data"])[0]
             except ValueError:
                 print("Json malformed, icky!")
+            except KeyError:
+                print("No Instructor data, very sad")
 
         print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {professor}.")
         RUNS += 1
