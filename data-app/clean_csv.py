@@ -16,8 +16,8 @@ def fetch_unknown_prof(x):
     level=catalog_nbr[0]
     professor="Unknown Professor"
 
-    link="http://classinfo.umn.edu/?subject="+dept+"&term="+term+"&level="+level+"&json=1"
-    print("url: "+link)
+    link="http://classinfo.umn.edu/?term="+term+"&json=1"
+    print("getting url: "+link)
     data={}
 
     if link in CACHED_LINKS:
