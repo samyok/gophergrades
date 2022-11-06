@@ -20,26 +20,29 @@ def fetch_unknown_prof(x):
     link="http://classinfo.umn.edu/?term="+term+"&json=1"
     print("getting url: "+link)
 
-    #Get data and filter for lectures - only ran if new link
     if link!=CACHED_LINK:
         with requests.get(link) as url:
             CACHED_LINK=link
             try:
                 decodedContent=url.content.decode("latin-1")
-                courses=json.loads(decodedContent,strict=False)
-                #Filter out discussion sections - we only want lectures
-                for key in courses:
-                    classComp=courses[key]["Class Component"]
-                    if classComp=="Lecture" or classComp=="LEC":
-                        CACHED_REQ[key]=courses[key]
+                CACHED_REQ=json.loads(decodedContent,strict=False)
             except ValueError:
                 print("Json malformed, icky!")
                 CACHED_REQ={}
     #Go through lecutres and find professors
     try:
         for key in CACHED_REQ:
-            if re.search((term+"-"+dept+"-"+catalog_nbr),key)!=None:
+            if re.search((term+"-"+dept+"-"+catalog_nbr+"-"+section),key)!=None:
+                classComp=CACHED_REQ[key]["Class Component"]
+                if classComp=="Lecture" or classComp=="LEC":
                     professor=re.findall("\\t(.*)",CACHED_REQ[key]["Instructor Data"])[0]
+                else:
+                    if CACHED_REQ[key]["Instruction Mode"]!="Online & Distance Lrng (ODL)":
+                        profSec=re.findall("Section (\d+)",CACHED_REQ[key]["Auto Enrolls With"])[0]
+                        profKey=term+"-"+dept+"-"+catalog_nbr+"-"+profSec
+                        professor=re.findall("\\t(.*)",CACHED_REQ[profKey]["Instructor Data"])[0]
+                    else:
+                        professor=re.findall("\\t(.*)",CACHED_REQ[key]["Instructor Data"])[0]
     except KeyError:
         print("No instructor data, :(")
 
