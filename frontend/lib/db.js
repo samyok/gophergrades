@@ -70,3 +70,39 @@ export const getClassInfo = async (classCode) => {
 
   return rows.map(parseJSONFromRow);
 };
+
+export const getSearch = async (search) => {
+  const classDistSQL = `
+      SELECT id, class_name, total_students
+      FROM classdistribution
+      WHERE REPLACE(class_name, ' ', '') LIKE $search
+      ORDER BY total_students DESC
+      LIMIT 5`;
+
+  const professorSQL = `
+      SELECT *
+      FROM professor
+      WHERE name LIKE $search
+      ORDER BY RMP_score DESC
+      LIMIT 5`;
+
+  const deptSQL = `
+      SELECT *
+      FROM departmentdistribution
+      WHERE dept_name LIKE $search
+      LIMIT 5`;
+
+  const params = {
+    $search: `%${search.replace(/ /g, "")}%`,
+  };
+
+  const departments = await promisedQuery(deptSQL, params);
+  const classes = await promisedQuery(classDistSQL, params);
+  const professors = await promisedQuery(professorSQL, params);
+
+  return {
+    departments: departments.map(parseJSONFromRow),
+    classes: classes.map(parseJSONFromRow),
+    professors: professors.map(parseJSONFromRow),
+  };
+};

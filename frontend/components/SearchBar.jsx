@@ -20,11 +20,19 @@ const SearchBar = ({ onChange }) => {
         value={search}
         onChange={handleChange}
         placeholder={"Search by Class Code, Instructor, or Department"}
+        background={"rgba(255,255,255,0.3)"}
+        boxShadow={"0px 0px 20px rgba(111, 19, 29, 0.1)"}
         style={{
-          boxShadow: "0px 0px 20px rgba(111, 19, 29, 0.2)",
           borderRadius: "9px",
           border: "none",
-          background: "rgba(255,255,255,0.4)",
+        }}
+        _hover={{
+          background: "rgba(255,255,255,0.7)",
+          boxShadow: "0px 0px 20px rgba(111, 19, 29, 0.1)",
+        }}
+        _focus={{
+          boxShadow: "0px 0px 20px rgba(111, 19, 29, 0.35)",
+          background: "rgba(255,255,255,0.9)",
         }}
       />
     </InputGroup>

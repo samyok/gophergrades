@@ -23,17 +23,32 @@ const Home = () => {
   const [search, setSearch] = useState("");
   const [showLandingPage, setShowLandingPage] = useState(true);
 
+  const [searchResults, setSearchResults] = useState(null);
   const debouncedShowLandingPage = useRef(
     debounce(() => {
       setShowLandingPage(true);
     }, 750)
   ).current;
 
+  const debouncedSearch = useRef(
+    debounce((text) => {
+      fetch(`/api/search?q=${text}`)
+        .then((r) => r.json())
+        .then((data) => setSearchResults(data));
+    }, 500)
+  ).current;
+
   const handleChange = (value) => {
     setSearch(value);
     setShowLandingPage(false);
-    if (value === "") debouncedShowLandingPage();
-    else debouncedShowLandingPage.cancel();
+    if (value === "") {
+      debouncedShowLandingPage();
+      debouncedSearch.cancel();
+    } else {
+      setSearchResults(null);
+      debouncedShowLandingPage.cancel();
+      debouncedSearch(value);
+    }
   };
   return (
     <PageLayout>
@@ -127,7 +142,7 @@ const Home = () => {
               },
             }}
           >
-            <SearchResults search={search} />
+            <SearchResults search={search} searchResults={searchResults} />
           </Collapse>
         </Box>
       </Flex>
