@@ -5,10 +5,11 @@ import re
 import json
 
 CACHED_REQ={}
-CACHED_LINKS=set()
+CACHED_LINK=""
+
 def fetch_unknown_prof(x):
     global CACHED_REQ
-    global CACHED_LINKS
+    global CACHED_LINK
     dept = x["SUBJECT"].iloc[0]
     catalog_nbr = x["CATALOG_NBR"].iloc[0]
     term = str(x["TERM"].iloc[0])
@@ -20,23 +21,20 @@ def fetch_unknown_prof(x):
     print("getting url: "+link)
     data={}
 
-    if link in CACHED_LINKS:
-        data=CACHED_REQ[link]
-    else:
+    if link!=CACHED_LINK:
         with requests.get(link) as url:
-            CACHED_LINKS.add(link)
+            CACHED_LINK=link
             try:
                 decodedContent=url.content.decode("latin-1")
-                data=json.loads(decodedContent,strict=False)
-                CACHED_REQ[link]=data
+                CACHED_REQ=json.loads(decodedContent,strict=False)
             except ValueError:
                 print("Json malformed, icky!")
-                CACHED_REQ[link]={}
+                CACHED_REQ={}
 
     try:
-        for key in data:
+        for key in CACHED_REQ:
             if re.search((term+"-"+dept+"-"+catalog_nbr),key)!=None:
-                classComp=data[key]["Class Component"]
+                classComp=CACHED_REQ[key]["Class Component"]
                 if classComp=="Lecture" or classComp=="LEC": #Are there any other ways they specifiy lectures?
                     professor=re.findall("\\t(.*)",data[key]["Instructor Data"])[0]
     except KeyError:
