@@ -4,27 +4,44 @@ import requests
 import re
 import json
 
+CACHED_REQ={}
+CACHED_LINKS=set()
 def fetch_unknown_prof(x):
+    global CACHED_REQ
+    global CACHED_LINKS
     dept = x["SUBJECT"].iloc[0]
     catalog_nbr = x["CATALOG_NBR"].iloc[0]
     term = str(x["TERM"].iloc[0])
     section = x["CLASS_SECTION"].iloc[0]
     level=catalog_nbr[0]
     professor="Unknown Professor"
-    with requests.get("http://classinfo.umn.edu/?subject="+dept+"&term="+term+"&level="+level+"&json=1") as url:
-        print("url: http://classinfo.umn.edu/?subject="+dept+"&term="+term+"&level="+level+"&json=1")
-        try:
-            decodedContent=url.content.decode("latin-1")
-            data=json.loads(decodedContent,strict=False)
-            for key in data:
-                if re.search((term+"-"+dept+"-"+catalog_nbr),key)!=None:
-                    classComp=data[key]["Class Component"]
-                    if classComp=="Lecture" or classComp=="LEC": #Are there any other ways they specifiy lectures?
-                        professor=re.findall("\\t(.*)",data[key]["Instructor Data"])[0]
-        except ValueError:
-            print("Json malformed, icky!")
-        except KeyError:
-            print("No instructor data, :(")
+
+    link="http://classinfo.umn.edu/?subject="+dept+"&term="+term+"&level="+level+"&json=1"
+    print("url: "+link)
+    data={}
+
+    if link in CACHED_LINKS:
+        data=CACHED_REQ[link]
+    else:
+        with requests.get(link) as url:
+            CACHED_LINKS.add(link)
+            try:
+                decodedContent=url.content.decode("latin-1")
+                data=json.loads(decodedContent,strict=False)
+                CACHED_REQ[link]=data
+            except ValueError:
+                print("Json malformed, icky!")
+                CACHED_REQ[link]={}
+
+    try:
+        for key in data:
+            if re.search((term+"-"+dept+"-"+catalog_nbr),key)!=None:
+                classComp=data[key]["Class Component"]
+                if classComp=="Lecture" or classComp=="LEC": #Are there any other ways they specifiy lectures?
+                    professor=re.findall("\\t(.*)",data[key]["Instructor Data"])[0]
+    except KeyError:
+        print("No instructor data, :(")
+
 
     print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {professor}.")
     x["HR_NAME"] = professor
