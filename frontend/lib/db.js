@@ -84,13 +84,13 @@ export const getSearch = async (search) => {
       FROM professor
       WHERE name LIKE $search
       ORDER BY RMP_score DESC
-      LIMIT 5`;
+      LIMIT 10`;
 
   const deptSQL = `
       SELECT *
       FROM departmentdistribution
       WHERE dept_name LIKE $search
-      LIMIT 5`;
+      LIMIT 3`;
 
   const params = {
     $search: `%${search.replace(/ /g, "")}%`,
