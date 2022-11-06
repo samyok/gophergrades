@@ -3,6 +3,7 @@ import numpy as np
 import requests
 import re
 import json
+import sys
 
 CACHED_REQ={}
 CACHED_LINK=""
@@ -18,7 +19,8 @@ def fetch_unknown_prof(x):
     professor="Unknown Professor"
 
     link="http://classinfo.umn.edu/?term="+term+"&json=1"
-    print("getting url: "+link)
+    classLink=f"http://classinfo.umn.edu/?term={term}&subject={dept}&level={level}"
+    print(f"Link to class: "+classLink)
 
     if link!=CACHED_LINK:
         with requests.get(link) as url:
@@ -29,23 +31,40 @@ def fetch_unknown_prof(x):
             except ValueError:
                 print("Json malformed, icky!")
                 CACHED_REQ={}
+
     #Go through lecutres and find professors
+    key=""
     try:
-        for key in CACHED_REQ:
-            if re.search((term+"-"+dept+"-"+catalog_nbr+"-"+section),key)!=None:
-                classComp=CACHED_REQ[key]["Class Component"]
-                if classComp=="Lecture" or classComp=="LEC":
-                    professor=re.findall("\\t(.*)",CACHED_REQ[key]["Instructor Data"])[0]
-                else:
-                    if CACHED_REQ[key]["Instruction Mode"]!="Online & Distance Lrng (ODL)":
-                        profSec=re.findall("Section (\d+)",CACHED_REQ[key]["Auto Enrolls With"])[0]
-                        profKey=term+"-"+dept+"-"+catalog_nbr+"-"+profSec
-                        professor=re.findall("\\t(.*)",CACHED_REQ[profKey]["Instructor Data"])[0]
-                    else:
-                        professor=re.findall("\\t(.*)",CACHED_REQ[key]["Instructor Data"])[0]
+        key=term+"-"+dept+"-"+catalog_nbr+"-"+section
+        classComp=CACHED_REQ[key]["Class Component"]
+        if classComp=="Lecture" or classComp=="LEC" or classComp=="Independent Study" or\
+        classComp=="Field Work":
+            professor=re.findall("\\t(.*)",CACHED_REQ[key]["Instructor Data"])[0]
+        else:
+            profSec=re.findall("Section (\d+)",CACHED_REQ[key]["Auto Enrolls With"])[0]
+            profKey=term+"-"+dept+"-"+catalog_nbr+"-"+profSec
+            professor=re.findall("\\t(.*)",CACHED_REQ[profKey]["Instructor Data"])[0]
     except KeyError:
         print("No instructor data, :(")
+        #Create a file with error contained.
 
+        #Also, I don't know how to delete the file between runs,
+        #so delete the file or save it before running this part <3
+        with open("No-Instructor-data.txt","a") as f:
+            lineNum=sys.exc_info()[-1].tb_lineno
+            problem="Unknown Issue"
+            if lineNum==39:
+                problem="No Class Component, or Key doesn't exist"
+                #Generally, this is data that's hard to go through or doesn't exist.
+            elif lineNum==42:
+                problem="No Instructor Data within lecture"
+                #No traceback possible
+            elif lineNum==44:
+                problem="No auto enroll data"
+                #No traceback possible
+            elif lineNum==46:
+                problem="Auto enroll key may be incorrect"
+            f.write(classLink+"\t"+key+" "+problem+'\n')
 
     print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {professor}.")
     x["HR_NAME"] = professor
