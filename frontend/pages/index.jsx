@@ -63,23 +63,20 @@ const Home = () => {
                   fontSize={["50px", "55px", "90px"]}
                   paddingTop={[0, 10, "calc(50vh - 185px)"]}
                   textAlign={["center", "left", "left"]}
-                  style={{
-                    color: "rgb(91 0 19)",
-                    fontWeight: "bold",
-                  }}
                 >
                   Gopher Grades
                 </Heading>
                 <Text
-                  maxW={["100%", "50%", "60%"]}
+                  maxW={["100%", "50%", "100%"]}
                   style={{
                     color: "black",
                   }}
                   textAlign={["center", "left", "left"]}
-                  py={[8, 10, 0]}
+                  py={[8, 10, 2]}
+                  fontWeight={300}
                 >
                   View all the past grades for classes taken at the University
-                  of Minnesota
+                  of Minnesota, Twin Cities.
                 </Text>
               </Collapse>
               <Box pt={[0, 5, 2]} maxW={"calc(100vw - 50px)"} width={"100%"}>
