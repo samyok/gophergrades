@@ -21,7 +21,7 @@ const Classes = ({ searchResults }) => {
           key={row.class_name}
           href={`/class/${row.class_name.replace(/ /g, "")}`}
         >
-          {row.class_name} - {row.class_title}
+          {row.class_name} - {row.class_desc}
         </Card>
       ))}
     </VStack>
@@ -43,8 +43,8 @@ const Departments = ({ searchResults }) => {
         Departments
       </Heading>
       {searchResults.data.departments.map((row) => (
-        <Card key={row.id} href={`/dept/${row.dept_name}`}>
-          {row.dept_name}
+        <Card key={row.id} href={`/dept/${row.dept_abbr}`}>
+          {row.dept_abbr} - {row.dept_name}
         </Card>
       ))}{" "}
     </VStack>

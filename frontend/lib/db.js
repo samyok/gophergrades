@@ -73,9 +73,9 @@ export const getClassInfo = async (classCode) => {
 
 export const getSearch = async (search) => {
   const classDistSQL = `
-      SELECT id, class_name, total_students
+      SELECT id, class_name, class_desc, total_students
       FROM classdistribution
-      WHERE REPLACE(class_name, ' ', '') LIKE $search
+      WHERE REPLACE(class_name, ' ', '') LIKE $search OR REPLACE(class_desc, ' ', '') LIKE $search
       ORDER BY total_students DESC
       LIMIT 5`;
 
@@ -89,8 +89,8 @@ export const getSearch = async (search) => {
   const deptSQL = `
       SELECT *
       FROM departmentdistribution
-      WHERE dept_name LIKE $search
-      LIMIT 3`;
+      WHERE dept_name LIKE $search OR dept_abbr LIKE $search
+      LIMIT 8`;
 
   const params = {
     $search: `%${search.replace(/ /g, "")}%`,
