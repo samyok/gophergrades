@@ -19,24 +19,27 @@ def fetch_unknown_prof(x):
 
     link="http://classinfo.umn.edu/?term="+term+"&json=1"
     print("getting url: "+link)
-    data={}
 
+    #Get data and filter for lectures - only ran if new link
     if link!=CACHED_LINK:
         with requests.get(link) as url:
             CACHED_LINK=link
             try:
                 decodedContent=url.content.decode("latin-1")
-                CACHED_REQ=json.loads(decodedContent,strict=False)
+                courses=json.loads(decodedContent,strict=False)
+                #Filter out discussion sections - we only want lectures
+                for key in courses:
+                    classComp=courses[key]["Class Component"]
+                    if classComp=="Lecture" or classComp=="LEC":
+                        CACHED_REQ[key]=courses[key]
             except ValueError:
                 print("Json malformed, icky!")
                 CACHED_REQ={}
-
+    #Go through lecutres and find professors
     try:
         for key in CACHED_REQ:
             if re.search((term+"-"+dept+"-"+catalog_nbr),key)!=None:
-                classComp=CACHED_REQ[key]["Class Component"]
-                if classComp=="Lecture" or classComp=="LEC": #Are there any other ways they specifiy lectures?
-                    professor=re.findall("\\t(.*)",data[key]["Instructor Data"])[0]
+                    professor=re.findall("\\t(.*)",CACHED_REQ[key]["Instructor Data"])[0]
     except KeyError:
         print("No instructor data, :(")
 
