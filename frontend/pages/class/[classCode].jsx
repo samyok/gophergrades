@@ -75,7 +75,7 @@ export default function Class({ classData }) {
       );
     });
   return (
-    <PageLayout>
+    <PageLayout title={`${classDesc} (${className}) | GopherGrades`}>
       <VStack spacing={4} py={8} align={"start"}>
         <SearchBar onChange={() => {}} placeholder={"Back to search"} />
         <Heading>
