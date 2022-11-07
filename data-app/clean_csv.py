@@ -9,6 +9,10 @@ CACHED_REQ={}
 CACHED_LINK=""
 
 def fetch_unknown_prof(x):
+
+    if not x["HR_NAME"].isnull().all():
+        return x
+    
     global CACHED_REQ
     global CACHED_LINK
     dept = x["SUBJECT"].iloc[0]
@@ -86,6 +90,6 @@ df = df.astype({"TERM":int})
 # Write class name as the proper full name that students are accustomed to.
 df["FULL_NAME"] = df["SUBJECT"] + ' ' + df["CATALOG_NBR"]
 # Replace unknown professor values with either a correct name or "Unknown Professor"
-df = df.groupby(["TERM","FULL_NAME","CLASS_SECTION"],group_keys=False).apply(lambda x: x if x["HR_NAME"].iloc[0] == np.nan else fetch_unknown_prof(x))
+df = df.groupby(["TERM","FULL_NAME","CLASS_SECTION"],group_keys=False).apply(fetch_unknown_prof)
 print(df[df["HR_NAME"].isnull()])
 df.to_csv("cleaned_data.csv",index=False)
