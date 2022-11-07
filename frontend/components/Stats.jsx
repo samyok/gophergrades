@@ -114,9 +114,11 @@ const Graph = ({ distribution, averageGPA }) => {
           <stop offset={"0%"} stopColor={"#ff0000"} />
           <stop offset={"40.5%"} stopColor={"#ec6c17"} />
           <stop offset={"50%"} stopColor={"#e89029"} />
-          <stop offset={"70%"} stopColor={"#ecc94b"} />
-          <stop offset={"80%"} stopColor={"#c0c246"} />
+          <stop offset={"65%"} stopColor={"#ecc94b"} />
+          <stop offset={"80%"} stopColor={"#ecc94b"} />
+          <stop offset={"85%"} stopColor={"#c0c246"} />
           <stop offset={"90%"} stopColor={"#93ba41"} />
+          <stop offset={"95%"} stopColor={"#38a169"} />
           <stop offset={"100%"} stopColor={"#38a169"} />
         </linearGradient>
       </defs>
