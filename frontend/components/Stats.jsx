@@ -103,6 +103,23 @@ const Graph = ({ distribution, averageGPA }) => {
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
     >
+      <defs>
+        <linearGradient
+          id={"trafficLight"}
+          x1={"0"}
+          y1={"0.5"}
+          x2={"1"}
+          y2={"0.5"}
+        >
+          <stop offset={"0%"} stopColor={"#ff0000"} />
+          <stop offset={"40.5%"} stopColor={"#ec6c17"} />
+          <stop offset={"50%"} stopColor={"#e89029"} />
+          <stop offset={"70%"} stopColor={"#ecc94b"} />
+          <stop offset={"80%"} stopColor={"#c0c246"} />
+          <stop offset={"90%"} stopColor={"#93ba41"} />
+          <stop offset={"100%"} stopColor={"#38a169"} />
+        </linearGradient>
+      </defs>
       {hovered && hoveredGrade && (
         <g>
           <line
@@ -174,7 +191,9 @@ const Graph = ({ distribution, averageGPA }) => {
       <polygon
         points={points}
         style={{
-          fill: "rgba(0, 0, 0, 0.1)",
+          opacity: 0.7,
+          // fill: "rgba(0, 0, 0, 0.1)",
+          fill: 'url("#trafficLight")',
         }}
       />
     </svg>
