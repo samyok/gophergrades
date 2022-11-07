@@ -91,7 +91,7 @@ const Home = () => {
             <SearchBar onChange={handleChange} />
           </Box>
         </VStack>
-        <Box ml={[0, -200, -75]} zIndex={-1}>
+        <Box ml={[0, -200, -75]} zIndex={-1} alignSelf={"center"}>
           <Collapse
             in={showLandingPage}
             transition={{
