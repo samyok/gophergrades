@@ -14,11 +14,10 @@ const tryJSONParse = (str) => {
 };
 
 const parseJSONFromRow = (row) => {
-  return {
-    ...row,
-    grades: tryJSONParse(row.grades),
-    total_grades: tryJSONParse(row.total_grades),
-  };
+  const newRow = { ...row };
+  if (row.grades) newRow.grades = tryJSONParse(row.grades);
+  if (row.total_grades) newRow.total_grades = tryJSONParse(row.total_grades);
+  return newRow;
 };
 
 const promisedQuery = (query, params) => {
@@ -75,7 +74,8 @@ export const getSearch = async (search) => {
   const classDistSQL = `
       SELECT id, class_name, class_desc, total_students
       FROM classdistribution
-      WHERE REPLACE(class_name, ' ', '') LIKE $search OR REPLACE(class_desc, ' ', '') LIKE $search
+      WHERE REPLACE(class_name, ' ', '') LIKE $search
+         OR REPLACE(class_desc, ' ', '') LIKE $search
       ORDER BY total_students DESC
       LIMIT 5`;
 
@@ -89,7 +89,8 @@ export const getSearch = async (search) => {
   const deptSQL = `
       SELECT *
       FROM departmentdistribution
-      WHERE dept_name LIKE $search OR dept_abbr LIKE $search
+      WHERE dept_name LIKE $search
+         OR dept_abbr LIKE $search
       LIMIT 8`;
 
   const params = {
