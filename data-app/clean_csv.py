@@ -18,7 +18,7 @@ def fetch_unknown_prof(x):
     level=catalog_nbr[0]
     professor="Unknown Professor"
 
-    link="http://classinfo.umn.edu/?term="+term+"&json=1"
+    link="http://classinfo.umn.edu/?term="+term+"&subject="+dept+"&json=1"
     classLink=f"http://classinfo.umn.edu/?term={term}&subject={dept}&level={level}"
     print(f"Link to class: "+classLink)
 
@@ -86,6 +86,6 @@ df = df.astype({"TERM":int})
 # Write class name as the proper full name that students are accustomed to.
 df["FULL_NAME"] = df["SUBJECT"] + ' ' + df["CATALOG_NBR"]
 # Replace unknown professor values with either a correct name or "Unknown Professor"
-df.groupby(["TERM","FULL_NAME","CLASS_SECTION"]).apply(lambda x: x if x["HR_NAME"].iloc[0] == np.nan else fetch_unknown_prof(x))
+df = df.groupby(["TERM","FULL_NAME","CLASS_SECTION"],group_keys=False).apply(lambda x: x if x["HR_NAME"].iloc[0] == np.nan else fetch_unknown_prof(x))
 print(df[df["HR_NAME"].isnull()])
 df.to_csv("cleaned_data.csv",index=False)
