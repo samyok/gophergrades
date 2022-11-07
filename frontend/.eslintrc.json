@@ -1,0 +1,131 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "airbnb",
+    "airbnb-typescript",
+    "airbnb/hooks",
+    "plugin:@next/next/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "globals": {
+    "drift": "readonly",
+    "process": true,
+    "NodeJS": true
+  },
+  "overrides": [
+    {
+      "files": [
+        "packages/frontend/**/test-utils.js",
+        "packages/frontend/**/*.test.{j,t}s?(x)"
+      ],
+      "env": {
+        "jest": true
+      },
+      "extends": [
+        "airbnb",
+        "airbnb-typescript",
+        "airbnb/hooks",
+        "plugin:@next/next/recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier"
+      ],
+      "rules": {
+        "max-lines": "off",
+        "max-lines-per-function": "off"
+      }
+    },
+    {
+      "files": [
+        "packages/backend/**/*",
+        "packages/io/**/*"
+      ],
+      "rules": {
+        "@next/next/no-html-link-for-pages": "off"
+      }
+    },
+    {
+      "files": [
+        "*.js",
+        "*.jsx"
+      ],
+      "rules": {
+        "@typescript-eslint/explicit-module-boundary-types": "off"
+      }
+    }
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "sourceType": "module",
+    "project": "./tsconfig.eslint.json"
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "prettier"
+  ],
+  "root": true,
+  "rules": {
+    "@next/next/link-passhref": "off",
+    "@next/next/next-script-for-ga": "error",
+    "@next/next/no-html-link-for-pages": "error",
+    "@next/next/no-img-element": "off",
+    "@next/next/no-sync-scripts": "error",
+    "@typescript-eslint/explicit-module-boundary-types": "warn",
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-var-requires": "off",
+    "arrow-body-style": "off",
+    "import/no-import-module-exports": [
+      "error",
+      {
+        "exceptions": [
+          "**/*/store.js"
+        ]
+      }
+    ],
+    "import/prefer-default-export": "off",
+    "no-alert": "error",
+    "no-console": "error",
+    "no-plusplus": [
+      "error",
+      {
+        "allowForLoopAfterthoughts": true
+      }
+    ],
+    "no-underscore-dangle": "off",
+    "prettier/prettier": "error",
+    "react/function-component-definition": "off",
+    "react/jsx-curly-brace-presence": [
+      "error",
+      {
+        "props": "always",
+        "children": "never"
+      }
+    ],
+    "react/jsx-filename-extension": [
+      2,
+      {
+        "extensions": [
+          ".tsx",
+          ".jsx"
+        ]
+      }
+    ],
+    "react/jsx-no-bind": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/no-danger": "error",
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/require-default-props": "off",
+    "react-hooks/exhaustive-deps": "warn"
+  },
+  "settings": {
+    "next": {
+      "rootDir": "packages/frontend/"
+    }
+  }
+}
