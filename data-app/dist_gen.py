@@ -45,11 +45,14 @@ def process_class(x):
     else:
         class_dist.total_grades = Counter(class_dist.total_grades) + Counter(grade_hash)
         class_dist.total_students += num_students
-    if prof_name != "Unknown Professor" and session.query(Professor).filter(Professor.name == prof_name).first() == None:
+    prof_query = session.query(Professor).filter(Professor.name == prof_name).first()
+    if prof_name != "Unknown Professor" and prof_query == None:
         professor = Professor(name=prof_name,RMP_score=0.0)
         session.add(professor)
         session.flush()
         professor = professor.id
+    elif prof_name != "Unknown Professor":
+        professor = prof_query.id
     else:
         professor = None
     dist = Distribution(students=num_students,terms=num_sems,grades=grade_hash,class_id=class_dist.id,professor_id=professor)
@@ -60,6 +63,7 @@ def process_class(x):
 df = pd.read_csv("cleaned_data.csv",dtype={3:str})
 
 # print(df[(df["FULL_NAME"]=="CSCI 2021") & (df["HR_NAME"]=="Kauffman,Christopher Daniel")].groupby("TERM").nunique().sum())
-print(df.groupby(["FULL_NAME","HR_NAME"]).apply(process_class))
+# print(df[(df["HR_NAME"] == "James Moen") | (df["HR_NAME"] == "Moen, James")]["FULL_NAME"].unique())
+df.groupby(["FULL_NAME","HR_NAME"]).apply(process_class)
 
 # professor = session.query(Professor).filter(Professor.name == "Kauffman,Christopher Daniel").first()
