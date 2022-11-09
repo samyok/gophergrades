@@ -68,11 +68,7 @@ export const Footer = () => {
       <VStack spacing={8}>
         <Text fontSize={"md"} fontWeight={300} color={"gray.600"}>
           <NextLink href={"/"}>Gopher Grades</NextLink> is maintained by Social
-          Coding with the support of the{" "}
-          <ChakraLink href={"https://sesb.umn.edu/"} isExternal>
-            Science and Engineering Student Board
-          </ChakraLink>
-          .
+          Coding with data from Summer 2017 to Summer 2022.
         </Text>
         <ContributorGroup />
         <Button
