@@ -45,11 +45,19 @@ export const distributionsToCards = (
             </Text>
             <HStack>
               {dist.averageGPA > 0 && (
-                <Tag colorScheme={letterToColor(dist.averageGradeLetter)}>
+                <Tag
+                  textAlign={"center"}
+                  colorScheme={letterToColor(dist.averageGradeLetter)}
+                  py={1}
+                >
                   {dist.averageGradeLetter} Average ({dist.averageGPA})
                 </Tag>
               )}
-              <Tag colorScheme={letterToColor(dist.mostStudents)}>
+              <Tag
+                textAlign={"center"}
+                colorScheme={letterToColor(dist.mostStudents)}
+                py={1}
+              >
                 Most Common: {dist.mostStudents} ({dist.mostStudentsPercent}%)
               </Tag>
             </HStack>
