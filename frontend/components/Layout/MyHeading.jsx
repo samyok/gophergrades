@@ -30,6 +30,14 @@ const MyHeading = ({ title, imageURL }) => (
     />
     <meta property={"twitter:title"} content={title || DEFAULT_TITLE} />
     <meta property={"twitter:description"} content={DEFAULT_DESC} />
+    <script
+      async
+      defer
+      data-website-id={"67c6918e-d23c-42aa-a392-cad37e4eeaee"}
+      data-domains={"umn.lol"}
+      data-host-url={"https://dash.umn.lol"}
+      src={"/dash.js"}
+    />
   </Head>
 );
 export default MyHeading;
