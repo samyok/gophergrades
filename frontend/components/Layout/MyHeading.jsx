@@ -8,6 +8,7 @@ const MyHeading = ({ title }) => (
     <title>{title || DEFAULT_TITLE}</title>
     <meta name={"description"} content={DEFAULT_DESC} />
     <link rel={"icon"} href={"/favicon.ico"} />
+    <meta name={"theme-color"} content={"#5B0013"} />
   </Head>
 );
 export default MyHeading;
