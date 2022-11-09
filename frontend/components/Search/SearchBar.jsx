@@ -4,7 +4,7 @@ import { Search2Icon } from "@chakra-ui/icons";
 
 const SearchBar = ({
   onChange,
-  placeholder = "Search by Class Code, Instructor, or Department",
+  placeholder = "Search by Class, Instructor, or Department",
 }) => {
   const [search, setSearch] = useState("");
 
