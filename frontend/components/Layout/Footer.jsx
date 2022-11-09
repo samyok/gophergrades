@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   Divider,
-  Link as ChakraLink,
   Text,
   Tooltip,
   VStack,
@@ -38,7 +37,7 @@ const ContributorGroup = () => {
             src={c.avatar_url}
             href={c.html_url}
             as={"a"}
-            onClick={(e) => {
+            onClick={() => {
               window?.umami?.trackEvent(`avatar.${c.login}.click`, "footer");
             }}
             target={"_blank"}
