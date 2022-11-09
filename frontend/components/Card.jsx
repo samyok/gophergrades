@@ -1,13 +1,16 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Spinner } from "@chakra-ui/react";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Card({
   children,
   href = "",
   style,
   isSummary,
+  onClick = () => {},
   ...props
 }) {
+  const [clicked, setClicked] = useState(false);
   const extraStyles = style || {};
   const hoverStyles = href
     ? {
@@ -40,9 +43,14 @@ export default function Card({
         ...extraStyles,
       }}
       _hover={hoverStyles}
+      onClick={() => {
+        if (href) setClicked(true);
+        onClick();
+      }}
       {...props}
     >
       {children}
+      {clicked && <Spinner size={"sm"} ml={2} />}
     </Box>
   );
 

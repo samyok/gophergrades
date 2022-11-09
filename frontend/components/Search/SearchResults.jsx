@@ -1,4 +1,4 @@
-import { Collapse, Heading, VStack } from "@chakra-ui/react";
+import { Collapse, Heading, Spinner, VStack } from "@chakra-ui/react";
 import React from "react";
 import Card from "../Card";
 import { searchDurations } from "../../lib/config";
@@ -113,6 +113,7 @@ export default function SearchResults({
         {/* Loading indicator: */}
         {searchResults === null && (
           <Heading size={"md"} pt={4}>
+            <Spinner size={"sm"} mr={2} />
             Loading...
           </Heading>
         )}
