@@ -4,7 +4,6 @@ import {
   Collapse,
   Divider,
   Heading,
-  Text,
   useMediaQuery,
   VStack,
 } from "@chakra-ui/react";

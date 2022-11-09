@@ -22,6 +22,12 @@ const SearchBar = ({
         type={"text"}
         value={search}
         onChange={handleChange}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            onChange(e.currentTarget.value);
+          }
+        }}
         placeholder={placeholder}
         background={"rgba(255,255,255,0.3)"}
         boxShadow={"0px 0px 20px rgba(111, 19, 29, 0.1)"}
