@@ -96,7 +96,15 @@ export default function SearchResults({
       }}
       width={"100%"}
     >
-      <VStack spacing={4} width={"100%"} align={"start"} px={2} pt={2} pb={16}>
+      <VStack
+        spacing={4}
+        width={"100%"}
+        align={"start"}
+        px={2}
+        pt={2}
+        pb={16}
+        minH={"75vh"}
+      >
         <Heading pt={4}>
           Search Results for &ldquo;{search.trim()}&rdquo;
         </Heading>

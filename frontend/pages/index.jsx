@@ -105,6 +105,7 @@ const Home = () => {
         searchResults={searchResults}
         pageShown={[showPage, setShowPage]}
       />
+      <Box pb={[200, 250, 100]} />
     </PageLayout>
   );
 };

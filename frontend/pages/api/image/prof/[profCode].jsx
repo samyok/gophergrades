@@ -105,7 +105,7 @@ export default async function handler(req) {
             marginLeft: 20,
           }}
         >
-          {profData.prof_abbr}: {profData.prof_name}
+          {profData.name}
         </h1>
         {hasGrades && (
           <p
