@@ -27,7 +27,13 @@ const Home = () => {
   const showPage = rawShowPage && !search;
 
   return (
-    <PageLayout>
+    <PageLayout
+      imageUrl={`${
+        process.env.NEXT_PUBLIC_VERCEL_URL
+          ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/home/images/home-og.png`
+          : "/images/home-og.png"
+      }`}
+    >
       <Flex
         alignItems={"start"}
         justifyContent={"space-between"}
