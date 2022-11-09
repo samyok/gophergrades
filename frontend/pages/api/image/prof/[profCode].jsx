@@ -30,7 +30,7 @@ export default async function handler(req) {
     (acc, curr) => ({
       ...acc,
       ...Object.fromEntries(
-        Object.entries(curr.total_grades).map(([key, val]) => [
+        Object.entries(curr.grades).map(([key, val]) => [
           key,
           (acc[key] || 0) + val,
         ])
