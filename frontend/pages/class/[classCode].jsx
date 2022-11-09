@@ -1,13 +1,29 @@
 import React from "react";
-import { Divider, Heading, useMediaQuery, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Collapse,
+  Divider,
+  Heading,
+  Text,
+  useMediaQuery,
+  VStack,
+} from "@chakra-ui/react";
 import PageLayout from "../../components/Layout/PageLayout";
-import SearchBar from "../../components/SearchBar";
+import SearchBar from "../../components/Search/SearchBar";
 import { getClassInfo, getDistribution } from "../../lib/db";
 import { distributionsToCards } from "../../components/distributionsToCards";
+import { useSearch } from "../../components/Search/useSearch";
+import SearchResults from "../../components/Search/SearchResults";
 
 export default function Class({ classData }) {
   const { class_name: className, class_desc: classDesc } = classData;
   const [isMobile] = useMediaQuery("(max-width: 550px)");
+  const {
+    search,
+    searchResults,
+    pageShown: [showPage, setShowPage],
+    handleChange,
+  } = useSearch();
 
   const totalDistributions = distributionsToCards(
     [
@@ -34,24 +50,40 @@ export default function Class({ classData }) {
           : ""
       }/api/image/class/${className.replace(" ", "")}`}
     >
-      <VStack spacing={4} py={8} align={"start"}>
-        <SearchBar onChange={() => {}} placeholder={"Back to search"} />
-        <Heading>
-          {className}: {classDesc}
-        </Heading>
-        <VStack spacing={4} align={"start"} width={"100%"}>
-          {totalDistributions}
-          <Divider
-            orientation={"horizontal"}
-            style={{
-              borderColor: "#49080F",
-              borderBottomWidth: 1,
-              opacity: 0.15,
-            }}
-          />
-          {distributions}
-        </VStack>
-      </VStack>
+      <Box py={8} align={"start"} width={"100%"}>
+        <SearchBar onChange={handleChange} />
+        <SearchResults
+          searchResults={searchResults}
+          search={search}
+          pageShown={[showPage, setShowPage]}
+        />
+        <Collapse
+          in={showPage}
+          animateOpacity
+          style={{
+            width: "100%",
+            paddingRight: 10,
+            paddingLeft: 10,
+          }}
+        >
+          <Heading my={4}>
+            {className}: {classDesc}
+          </Heading>
+          {/* <Text mb={4}></Text> */}
+          <VStack spacing={4} align={"start"}>
+            {totalDistributions}
+            <Divider
+              orientation={"horizontal"}
+              style={{
+                borderColor: "#49080F",
+                borderBottomWidth: 1,
+                opacity: 0.15,
+              }}
+            />
+            {distributions}
+          </VStack>
+        </Collapse>
+      </Box>
     </PageLayout>
   );
 }

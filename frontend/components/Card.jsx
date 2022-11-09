@@ -29,11 +29,13 @@ export default function Card({
     <Box
       background={"rgba(255,255,255,0.35)"}
       boxShadow={"0px 0px 4px rgba(111, 19, 29, 0.1)"}
+      as={href ? "button" : "div"}
       style={{
         borderRadius: 8,
         width: "100%",
         padding: "12px 20px",
         backdropFilter: "blur(10px)",
+        textAlign: "left",
         ...summaryStyles,
         ...extraStyles,
       }}

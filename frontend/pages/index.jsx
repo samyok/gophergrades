@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import {
   Box,
   chakra,
@@ -8,51 +8,22 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import debounce from "lodash/debounce";
 import PageLayout from "../components/Layout/PageLayout";
-import SearchBar from "../components/SearchBar";
-import SearchResults from "../components/SearchResults";
-
-const DURATIONS = {
-  enter: 0.3,
-  exit: 0.75,
-};
+import SearchBar from "../components/Search/SearchBar";
+import SearchResults from "../components/Search/SearchResults";
+import { useSearch } from "../components/Search/useSearch";
+import { searchDurations } from "../lib/config";
 
 const Home = () => {
-  const [search, setSearch] = useState("");
-  const [showLandingPage, setShowLandingPage] = useState(true);
+  const {
+    search,
+    searchResults,
+    pageShown: [_showPage, setShowPage],
+    handleChange,
+  } = useSearch();
 
-  const [searchResults, setSearchResults] = useState(null);
-  const debouncedShowLandingPage = useRef(
-    debounce(() => {
-      setShowLandingPage(true);
-    }, 750)
-  ).current;
+  const showPage = _showPage && !search;
 
-  const debouncedSearch = useRef(
-    debounce((text) => {
-      fetch(`/api/search?q=${text}`)
-        .then((r) => r.json())
-        .then((data) => setSearchResults(data));
-    }, 500)
-  ).current;
-
-  const handleChange = (value) => {
-    setSearch(value);
-    setShowLandingPage(false);
-    if (value === "") {
-      debouncedShowLandingPage();
-      debouncedSearch.cancel();
-    } else if (value.trim() === "") {
-      setSearchResults(null);
-      debouncedShowLandingPage.cancel();
-      debouncedSearch.cancel();
-    } else {
-      setSearchResults(null);
-      debouncedShowLandingPage.cancel();
-      debouncedSearch(value);
-    }
-  };
   return (
     <PageLayout>
       <Flex
@@ -63,12 +34,12 @@ const Home = () => {
         <VStack alignItems={["center", "start", "start"]} spacing={[0, 8, 8]}>
           <Collapse
             unmountOnExit={false}
-            in={showLandingPage}
+            in={showPage}
             startingHeight={0.01}
             animateOpacity
             transition={{
-              exit: { duration: DURATIONS.exit },
-              enter: { duration: DURATIONS.enter },
+              exit: { duration: searchDurations.exit },
+              enter: { duration: searchDurations.enter },
             }}
           >
             <Heading
@@ -97,17 +68,17 @@ const Home = () => {
         </VStack>
         <Box ml={[0, -200, -75]} zIndex={-1} alignSelf={"center"}>
           <Collapse
-            in={showLandingPage}
+            in={showPage}
             transition={{
-              exit: { duration: DURATIONS.exit / 2 },
+              exit: { duration: searchDurations.exit / 2 },
               enter: {
-                duration: (3 * DURATIONS.enter) / 4,
-                delay: DURATIONS.enter / 4,
+                duration: (3 * searchDurations.enter) / 4,
+                delay: searchDurations.enter / 4,
               },
             }}
           >
             <Box
-              pt={[0, 0, showLandingPage ? "calc(50vh - 267px)" : "5px"]}
+              pt={[0, 0, showPage ? "calc(50vh - 267px)" : "5px"]}
               width={"650px"}
               transitionDuration={"0.2s"}
               transitionDelay={"0.2s"}
@@ -129,18 +100,11 @@ const Home = () => {
           </Collapse>
         </Box>
       </Flex>
-      <Collapse
-        in={!showLandingPage}
-        transition={{
-          exit: { duration: DURATIONS.enter },
-          enter: {
-            duration: (3 * DURATIONS.exit) / 4,
-            delay: DURATIONS.exit / 8,
-          },
-        }}
-      >
-        <SearchResults search={search} searchResults={searchResults} />
-      </Collapse>
+      <SearchResults
+        search={search}
+        searchResults={searchResults}
+        pageShown={[showPage, setShowPage]}
+      />
     </PageLayout>
   );
 };
