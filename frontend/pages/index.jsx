@@ -18,11 +18,11 @@ const Home = () => {
   const {
     search,
     searchResults,
-    pageShown: [_showPage, setShowPage],
+    pageShown: [rawShowPage, setShowPage],
     handleChange,
   } = useSearch();
 
-  const showPage = _showPage && !search;
+  const showPage = rawShowPage && !search;
 
   return (
     <PageLayout>

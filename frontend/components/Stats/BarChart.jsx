@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BAR_GRADES } from "../../lib/letterTo";
 
 export const BarChart = ({ distribution, isMobile = true }) => {
   const { isSummary } = distribution;
@@ -11,17 +12,16 @@ export const BarChart = ({ distribution, isMobile = true }) => {
   const { grades } = distribution;
   // create a bar graph of the grade distribution of S, P, N, and W only in that order
 
-  const barGrades = ["S", "P", "N", "W"];
-
   // filter out grades that aren't in the bar graph, and sort them to be in that order
-  // also, if there are no P grades, don't show that bar
+  // also, for each of P and NG, if there are no students in that grade, don't show that bar
   const filteredGrades = Object.entries(grades)
-    .filter(([grade]) => barGrades.includes(grade))
+    .filter(([grade]) => BAR_GRADES.includes(grade))
     .sort(
       ([gradeA], [gradeB]) =>
-        barGrades.indexOf(gradeA) - barGrades.indexOf(gradeB)
+        BAR_GRADES.indexOf(gradeA) - BAR_GRADES.indexOf(gradeB)
     )
-    .filter(([grade]) => grade !== "P" || grades.P > 0);
+    .filter(([grade]) => grade !== "P" || grades.P > 0)
+    .filter(([grade]) => grade !== "NG" || grades.NG > 0);
 
   // get the max value of ALL the grades so the graphs have the same scale
   const maxValue = Math.max(...Object.values(grades));

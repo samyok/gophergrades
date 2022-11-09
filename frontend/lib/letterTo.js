@@ -50,6 +50,8 @@ export const GRADE_ORDER = [
   "A+",
 ];
 
+export const BAR_GRADES = ["NG", "S", "P", "N", "W"];
+
 export const letterToColor = (letter) => {
   if (letter === undefined || !LETTER_TO_COLOR[letter]) return "blackAlpha";
   return LETTER_TO_COLOR[letter];

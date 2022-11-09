@@ -59,10 +59,44 @@ export const getClassInfo = async (classCode) => {
   const sql = `
       SELECT *
       FROM classdistribution
+      LEFT JOIN departmentdistribution d on classdistribution.department_id = d.id
       WHERE REPLACE(class_name, ' ', '') = REPLACE($class_name, ' ', '')`;
 
   const params = {
     $class_name: classCode,
+  };
+
+  const rows = await promisedQuery(sql, params);
+
+  return rows.map(parseJSONFromRow);
+};
+
+export const getDeptInfo = async (deptCode) => {
+  const sql = `
+      SELECT *
+      FROM departmentdistribution
+      WHERE dept_abbr = $dept_code`;
+
+  const params = {
+    $dept_code: deptCode.toUpperCase(),
+  };
+
+  const rows = await promisedQuery(sql, params);
+
+  return rows.map(parseJSONFromRow);
+};
+
+export const getClassDistribtionsInDept = async (deptCode) => {
+  const sql = `
+      SELECT *
+      FROM departmentdistribution
+               LEFT JOIN classdistribution on classdistribution.department_id = departmentdistribution.id
+      WHERE dept_abbr = $dept_code
+      ORDER BY replace(classdistribution.class_name, ' ', '')
+  `;
+
+  const params = {
+    $dept_code: deptCode.toUpperCase(),
   };
 
   const rows = await promisedQuery(sql, params);

@@ -16,7 +16,7 @@ export default function Card({
     ? {
         cursor: "pointer",
         boxShadow: "0px 0px 4px rgba(111, 19, 29, 0.175)",
-        background: "rgba(255,255,255,0.95)",
+        background: "rgba(255,255,255,0.25)",
         transition: "opacity 0.1s",
       }
     : {};
@@ -38,6 +38,7 @@ export default function Card({
         width: "100%",
         padding: "12px 20px",
         backdropFilter: "blur(10px)",
+        position: "relative",
         textAlign: "left",
         ...summaryStyles,
         ...extraStyles,
@@ -50,7 +51,9 @@ export default function Card({
       {...props}
     >
       {children}
-      {clicked && <Spinner size={"sm"} ml={2} />}
+      {clicked && (
+        <Spinner size={"sm"} ml={2} position={"absolute"} left={-1} top={4} />
+      )}
     </Box>
   );
 
