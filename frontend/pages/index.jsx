@@ -1,5 +1,7 @@
 import React from "react";
 import {
+  Alert,
+  AlertIcon,
   Box,
   chakra,
   Collapse,
@@ -65,6 +67,17 @@ const Home = () => {
           <Box pt={[0, 5, 2]} maxW={"calc(100vw - 50px)"} width={"100%"}>
             <SearchBar onChange={handleChange} />
           </Box>
+          <Collapse in={showPage} animateOpacity>
+            <Alert
+              status={"success"}
+              mt={2}
+              variant={"subtle"}
+              borderRadius={"lg"}
+            >
+              <AlertIcon />
+              Now updated through Spring 2022!
+            </Alert>
+          </Collapse>
         </VStack>
         <Box ml={[0, -200, -75]} zIndex={-1} alignSelf={"center"}>
           <Collapse

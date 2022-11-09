@@ -89,7 +89,7 @@ export default function Class({ classData }) {
               <ChakraLink>View {classData.dept_name} Department</ChakraLink>
             </NextLink>
           </Text>
-          <VStack spacing={4} align={"start"}>
+          <VStack spacing={4} align={"start"} pb={4} minH={"60vh"}>
             {totalDistributions}
             <Divider
               orientation={"horizontal"}

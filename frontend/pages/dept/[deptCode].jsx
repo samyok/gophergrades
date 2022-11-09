@@ -97,8 +97,7 @@ export default function Dept({ deptData }) {
           <Heading my={4}>
             {deptAbbr}: {deptName}
           </Heading>
-          {/* <Text mb={4}></Text> */}
-          <VStack spacing={4} align={"start"}>
+          <VStack spacing={4} align={"start"} pb={4} minH={"60vh"}>
             {totalDistributions}
             <Divider
               orientation={"horizontal"}
