@@ -26,7 +26,14 @@ export default function Class({ classData }) {
   const distributions = distributionsToCards(classData.distributions, isMobile);
 
   return (
-    <PageLayout title={`${classDesc} (${className}) | GopherGrades`}>
+    <PageLayout
+      title={`${classDesc} (${className}) | GopherGrades`}
+      imageURL={`${
+        process.env.NEXT_PUBLIC_VERCEL_URL
+          ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+          : ""
+      }/api/image/class/${className.replace(" ", "")}`}
+    >
       <VStack spacing={4} py={8} align={"start"}>
         <SearchBar onChange={() => {}} placeholder={"Back to search"} />
         <Heading>
