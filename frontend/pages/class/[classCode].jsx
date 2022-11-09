@@ -1,82 +1,30 @@
 import React from "react";
-import { Badge, Heading, HStack, Tag, Text, VStack } from "@chakra-ui/react";
+import { Divider, Heading, useMediaQuery, VStack } from "@chakra-ui/react";
 import PageLayout from "../../components/Layout/PageLayout";
 import SearchBar from "../../components/SearchBar";
 import { getClassInfo, getDistribution } from "../../lib/db";
-import Card from "../../components/Card";
-import Stats from "../../components/Stats";
-
-const LetterToColor = {
-  "A+": "green",
-  A: "green",
-  "A-": "green",
-  "B+": "yellow",
-  B: "yellow",
-  "B-": "yellow",
-  "C+": "orange",
-  C: "orange",
-  "C-": "orange",
-  "D+": "red",
-  D: "red",
-  "D-": "red",
-  F: "red",
-  W: "pink",
-  P: "purple",
-  S: "blue",
-  N: "red",
-};
+import { distributionsToCards } from "../../components/distributionsToCards";
 
 export default function Class({ classData }) {
-  // const handleChange = (value) => {
-  //   console.log(value);
-  // };
-  const {
-    class_name: className,
-    class_desc: classDesc,
-    // department_id: departmentId,
-  } = classData;
-  // useEffect(() => {
-  //   console.log(classData);
-  // }, []);
-  const distributions = classData.distributions
-    .filter((dist) => dist.professor_name)
-    .map((distribution) => ({ ...distribution, ...Stats({ distribution }) }))
-    .sort((a, b) => (b.mostStudentsPercent < a.mostStudentsPercent ? -1 : 1))
-    .sort((a, b) => (b.averageGPA < a.averageGPA ? -1 : 1))
-    .map((dist) => {
-      const profName =
-        dist.professor_name?.split(",").reverse().join(" ") ?? "Unknown";
-      return (
-        <Card key={dist.distribution_id}>
-          <HStack justify={"space-between"} align={"center"} width={"100%"}>
-            <VStack align={"start"}>
-              <Text fontSize={"lg"} fontWeight={"bold"}>
-                {profName}
-              </Text>
-              <HStack>
-                {dist.averageGPA > 0 && (
-                  <Tag colorScheme={LetterToColor?.[dist.averageGradeLetter]}>
-                    {dist.averageGradeLetter} Average ({dist.averageGPA})
-                  </Tag>
-                )}
-                <Tag colorScheme={LetterToColor?.[dist.mostStudents]}>
-                  Most Common: {dist.mostStudents} ({dist.mostStudentsPercent}%)
-                </Tag>
-              </HStack>
-            </VStack>
-            <VStack>
-              <HStack>
-                <Badge>{dist.students} students</Badge>
-              </HStack>
-              <HStack>
-                {dist.BarChart}
-                {dist.averageGPA > 0 && dist.Component}
-              </HStack>
-            </VStack>
-          </HStack>
-        </Card>
-      );
-    });
+  const { class_name: className, class_desc: classDesc } = classData;
+  const [isMobile] = useMediaQuery("(max-width: 550px)");
+
+  const totalDistributions = distributionsToCards(
+    [
+      {
+        grades: classData.total_grades,
+        students: classData.total_students,
+        professor_name: "All Instructors",
+        distribution_id: classData.id,
+        isSummary: true,
+        info: "This total also includes data from semesters with unknown instructors.",
+      },
+    ],
+    isMobile
+  );
+
+  const distributions = distributionsToCards(classData.distributions, isMobile);
+
   return (
     <PageLayout title={`${classDesc} (${className}) | GopherGrades`}>
       <VStack spacing={4} py={8} align={"start"}>
@@ -85,6 +33,15 @@ export default function Class({ classData }) {
           {className}: {classDesc}
         </Heading>
         <VStack spacing={4} align={"start"} width={"100%"}>
+          {totalDistributions}
+          <Divider
+            orientation={"horizontal"}
+            style={{
+              borderColor: "#49080F",
+              borderBottomWidth: 1,
+              opacity: 0.15,
+            }}
+          />
           {distributions}
         </VStack>
       </VStack>
