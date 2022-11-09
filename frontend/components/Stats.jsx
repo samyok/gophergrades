@@ -32,8 +32,12 @@ const GPA_MAP = {
   F: 0,
 };
 
-const HEIGHT = 50;
-const WIDTH = 300;
+const GRAPH_HEIGHT = 50;
+const AREA_GRAPH_HEIGHT = GRAPH_HEIGHT;
+const AREA_GRAPH_WIDTH = 300;
+
+const BAR_GRAPH_HEIGHT = GRAPH_HEIGHT;
+const BAR_GRAPH_WIDTH = 75;
 
 const Graph = ({ distribution, averageGPA }) => {
   const [hovered, setHovered] = useState(false);
@@ -44,16 +48,16 @@ const Graph = ({ distribution, averageGPA }) => {
 
   const maxGrade = Math.max(...Object.values(grades ?? {}));
 
-  const points = `0,${HEIGHT} ${GRADE_ORDER.filter(
+  const points = `0,${AREA_GRAPH_HEIGHT} ${GRADE_ORDER.filter(
     (grade) => hasAPlus || grade !== "A+"
   )
     .map(
       (grade, index, arr) =>
-        `${(WIDTH * index) / (arr.length - 1)},${
-          HEIGHT * (1 - (grades?.[grade] ?? 0) / maxGrade)
+        `${(AREA_GRAPH_WIDTH * index) / (arr.length - 1)},${
+          AREA_GRAPH_HEIGHT * (1 - (grades?.[grade] ?? 0) / maxGrade)
         }`
     )
-    .join(" ")} ${WIDTH},${HEIGHT}`;
+    .join(" ")} ${AREA_GRAPH_WIDTH},${AREA_GRAPH_HEIGHT}`;
 
   const maxGPA = hasAPlus ? 4.333 : 4;
 
@@ -71,7 +75,7 @@ const Graph = ({ distribution, averageGPA }) => {
     const { x, y } = getMouseCoords(e);
 
     // get the grade that the mouse is over
-    const grade = GRADE_ORDER[Math.floor((x / WIDTH) * numGrades)];
+    const grade = GRADE_ORDER[Math.floor((x / AREA_GRAPH_WIDTH) * numGrades)];
 
     // get the number of students that got that grade
     const gradeCount = grades?.[grade] ?? 0;
@@ -80,7 +84,7 @@ const Graph = ({ distribution, averageGPA }) => {
     const gpa = GPA_MAP[grade];
 
     // if the mouse is over the graph, show the tooltip
-    if (x > 0 && x < WIDTH && y > 0 && y < HEIGHT) {
+    if (x > 0 && x < AREA_GRAPH_WIDTH && y > 0 && y < AREA_GRAPH_HEIGHT) {
       setHovered(true);
       setHoveredGrade({
         grade,
@@ -95,10 +99,24 @@ const Graph = ({ distribution, averageGPA }) => {
   const handleMouseEnter = () => setHovered(true);
   const handleMouseLeave = () => setHovered(false);
 
+  const hoverCoordinates =
+    hovered && hoveredGrade
+      ? {
+          closestGrade: {
+            y:
+              AREA_GRAPH_HEIGHT *
+              (1 - (hoveredGrade.gradeCount ?? 0) / maxGrade),
+            x:
+              (AREA_GRAPH_WIDTH * GRADE_ORDER.indexOf(hoveredGrade.grade)) /
+              (numGrades - 1),
+          },
+        }
+      : {};
+
   return (
     <svg
-      height={"50"}
-      width={"300"}
+      height={AREA_GRAPH_HEIGHT}
+      width={AREA_GRAPH_WIDTH}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
@@ -122,69 +140,11 @@ const Graph = ({ distribution, averageGPA }) => {
           <stop offset={"100%"} stopColor={"#38a169"} />
         </linearGradient>
       </defs>
-      {hovered && hoveredGrade && (
-        <g>
-          <line
-            x1={0}
-            y1={HEIGHT * (1 - (hoveredGrade.gradeCount ?? 0) / maxGrade)}
-            x2={WIDTH}
-            y2={HEIGHT * (1 - (hoveredGrade.gradeCount ?? 0) / maxGrade)}
-            style={{
-              stroke: "rgba(0, 0, 0, 0.025)",
-              strokeWidth: 4,
-            }}
-          />
-          <line
-            x1={
-              (WIDTH * GRADE_ORDER.indexOf(hoveredGrade.grade)) /
-              (numGrades - 1)
-            }
-            y1={0}
-            x2={
-              (WIDTH * GRADE_ORDER.indexOf(hoveredGrade.grade)) /
-              (numGrades - 1)
-            }
-            y2={HEIGHT}
-            style={{
-              stroke: "rgba(0, 0, 0, 0.1)",
-              strokeWidth: 4,
-            }}
-          />
-          <circle
-            cx={
-              (WIDTH * GRADE_ORDER.indexOf(hoveredGrade.grade)) /
-              (numGrades - 1)
-            }
-            cy={HEIGHT * (1 - (hoveredGrade.gradeCount ?? 0) / maxGrade)}
-            r={3}
-            style={{
-              fill: "rgba(0, 0, 0, 0.5)",
-            }}
-          />
-          <text
-            x={WIDTH / 2}
-            y={HEIGHT / 8}
-            style={{
-              textAnchor: "middle",
-              dominantBaseline: "middle",
-              fontSize: 12,
-              userSelect: "none",
-            }}
-          >
-            {hoveredGrade.gradeCount} students got a
-            {hoveredGrade.grade.startsWith("A") ||
-            hoveredGrade.grade.startsWith("F")
-              ? "n"
-              : ""}{" "}
-            {hoveredGrade.grade}
-          </text>
-        </g>
-      )}
       <line
-        x1={(WIDTH * averageGPA) / maxGPA}
+        x1={(AREA_GRAPH_WIDTH * averageGPA) / maxGPA}
         y1={0}
-        x2={(WIDTH * averageGPA) / maxGPA}
-        y2={HEIGHT}
+        x2={(AREA_GRAPH_WIDTH * averageGPA) / maxGPA}
+        y2={AREA_GRAPH_HEIGHT}
         style={{
           stroke: "rgba(0, 0, 0, 0.25)",
           strokeWidth: 1,
@@ -194,10 +154,175 @@ const Graph = ({ distribution, averageGPA }) => {
         points={points}
         style={{
           opacity: 0.7,
-          // fill: "rgba(0, 0, 0, 0.1)",
           fill: 'url("#trafficLight")',
         }}
       />
+      {hovered && hoveredGrade && (
+        <g>
+          <line
+            x1={0}
+            y1={hoverCoordinates.closestGrade.y}
+            x2={AREA_GRAPH_WIDTH}
+            y2={hoverCoordinates.closestGrade.y}
+            style={{
+              stroke: "rgba(0, 0, 0, 0.025)",
+              strokeWidth: 4,
+            }}
+          />
+          <line
+            x1={hoverCoordinates.closestGrade.x}
+            y1={0}
+            x2={hoverCoordinates.closestGrade.x}
+            y2={AREA_GRAPH_HEIGHT}
+            style={{
+              stroke: "rgba(0, 0, 0, 0.1)",
+              strokeWidth: 4,
+            }}
+          />
+          <circle
+            cx={hoverCoordinates.closestGrade.x}
+            cy={hoverCoordinates.closestGrade.y}
+            r={3}
+            style={{
+              fill: "rgba(0, 0, 0, 0.5)",
+            }}
+          />
+          <text
+            x={AREA_GRAPH_WIDTH / 2}
+            y={AREA_GRAPH_HEIGHT / 4}
+            style={{
+              textAnchor: "middle",
+              dominantBaseline: "middle",
+              fontSize: 12,
+              userSelect: "none",
+              fontWeight: "bold",
+              fill: "#1B202B",
+            }}
+          >
+            {hoveredGrade.gradeCount} student
+            {hoveredGrade.gradeCount > 1 && "s"} got a
+            {hoveredGrade.grade.startsWith("A") ||
+            hoveredGrade.grade.startsWith("F")
+              ? "n"
+              : ""}{" "}
+            {hoveredGrade.grade}
+          </text>
+        </g>
+      )}
+    </svg>
+  );
+};
+
+const BarChart = ({ distribution }) => {
+  const { grades } = distribution;
+  // create a bar graph of the grade distribution of S, P, N, and W only in that order
+
+  const barGrades = ["S", "P", "N", "W"];
+
+  // filter out grades that aren't in the bar graph, and sort them to be in that order
+  // also, if there are no P grades, don't show that bar
+  const filteredGrades = Object.entries(grades)
+    .filter(([grade]) => barGrades.includes(grade))
+    .sort(
+      ([gradeA], [gradeB]) =>
+        barGrades.indexOf(gradeA) - barGrades.indexOf(gradeB)
+    )
+    .filter(([grade]) => grade !== "P" || grades.P > 0);
+
+  // get the max value of ALL the grades so the graphs have the same scale
+  const maxValue = Math.max(...Object.values(grades));
+
+  const totalStudents = Object.values(grades).reduce(
+    (total, gradeCount) => total + gradeCount,
+    0
+  );
+
+  const barWidth = BAR_GRAPH_WIDTH / filteredGrades.length;
+
+  // leave 10 pixels of padding on the top, and create an array of [grade, count, height, color] for each bar
+  // the color should be "red" if the grade is "W" and the number of Ws is greater than 7.5% of the total number of grades, otherwise it should be "rgba(0,0,0,0.5)"
+  const barHeights = filteredGrades.map(([grade, count]) => [
+    grade,
+    count,
+    (count / maxValue) * BAR_GRAPH_HEIGHT,
+    grade === "W" && count > 0.075 * totalStudents ? "#ff0d14" : "#1B202B",
+  ]);
+
+  // if a bar is hovered over, change the color to "rgba(0,0,0,0.5)" and change the text of that bar to be the number of students who got that grade
+
+  const [hovered, setHovered] = useState(false);
+  const [hoveredGrade, setHoveredGrade] = useState(null);
+
+  const handleMouseEnter = () => setHovered(true);
+
+  const handleMouseLeave = () => {
+    setHovered(false);
+    setHoveredGrade(null);
+  };
+
+  const handleMouseMove = (event) => {
+    const { clientX } = event;
+    const { left } = event.currentTarget.getBoundingClientRect();
+    const x = clientX - left;
+    const barIndex = Math.floor(x / barWidth);
+    setHoveredGrade(barIndex);
+  };
+
+  return (
+    <svg
+      height={BAR_GRAPH_HEIGHT}
+      width={BAR_GRAPH_WIDTH}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
+    >
+      {
+        // create a bar and label for each grade
+        barHeights.map(([grade, , height, color], i) => (
+          <g key={grade}>
+            {/*  if it's hovered, show the same sort of vertical line as above */}
+            {hovered && hoveredGrade === i && (
+              <line
+                x1={i * barWidth + barWidth / 2}
+                y1={0}
+                x2={i * barWidth + barWidth / 2}
+                y2={BAR_GRAPH_HEIGHT}
+                style={{
+                  stroke: "rgba(0, 0, 0, 0.1)",
+                  strokeWidth: 4,
+                }}
+              />
+            )}
+
+            <rect
+              x={i * barWidth}
+              y={BAR_GRAPH_HEIGHT - height}
+              width={barWidth}
+              height={height}
+              style={{
+                fill: color,
+                opacity: hovered && hoveredGrade === i ? 0.2 : 0.1,
+              }}
+            />
+
+            <text
+              x={i * barWidth + barWidth / 2}
+              // if the text is off the top of the graph, move it down
+              y={Math.max(BAR_GRAPH_HEIGHT - height - 10, 10)}
+              style={{
+                textAnchor: "middle",
+                dominantBaseline: "middle",
+                fontSize: 9,
+                userSelect: "none",
+                fontWeight: "bold",
+                fill: color,
+              }}
+            >
+              {hovered && hoveredGrade === i ? grades[grade] : grade}
+            </text>
+          </g>
+        ))
+      }
     </svg>
   );
 };
@@ -208,16 +333,25 @@ export default function Stats({ distribution = {} }) {
   const impactingGrades = Object.entries(grades ?? {}).filter(([grade]) =>
     Object.keys(GPA_MAP).includes(grade)
   );
-  const totalStudents = impactingGrades.reduce(
+
+  const allGrades = Object.entries(grades ?? {});
+
+  const totalStudents = allGrades.reduce(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (acc, [_, count]) => acc + count,
     0
   );
+
+  const totalImpactingStudents = impactingGrades.reduce(
+    (acc, [, count]) => acc + count,
+    0
+  );
+
   const averageGPA = (
     impactingGrades.reduce(
       (acc, [grade, count]) => acc + GPA_MAP[grade] * count,
       0
-    ) / totalStudents
+    ) / totalImpactingStudents
   ).toFixed(3);
 
   // find closest letter grade to averageGPA
@@ -231,7 +365,7 @@ export default function Stats({ distribution = {} }) {
   )[0];
 
   // get the letter grade with the most students
-  const mostStudents = impactingGrades.reduce(
+  const mostStudents = allGrades.reduce(
     (acc, [grade, count]) => (count > acc[1] ? [grade, count] : acc),
     ["", 0]
   )[0];
@@ -244,6 +378,7 @@ export default function Stats({ distribution = {} }) {
 
   return {
     Component: <Graph distribution={distribution} averageGPA={averageGPA} />,
+    BarChart: <BarChart distribution={distribution} />,
     averageGPA,
     averageGradeLetter,
     mostStudents,

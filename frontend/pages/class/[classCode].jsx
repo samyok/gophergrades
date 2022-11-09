@@ -20,6 +20,10 @@ const LetterToColor = {
   D: "red",
   "D-": "red",
   F: "red",
+  W: "pink",
+  P: "purple",
+  S: "blue",
+  N: "red",
 };
 
 export default function Class({ classData }) {
@@ -37,6 +41,7 @@ export default function Class({ classData }) {
   const distributions = classData.distributions
     .filter((dist) => dist.professor_name)
     .map((distribution) => ({ ...distribution, ...Stats({ distribution }) }))
+    .sort((a, b) => (b.mostStudentsPercent < a.mostStudentsPercent ? -1 : 1))
     .sort((a, b) => (b.averageGPA < a.averageGPA ? -1 : 1))
     .map((dist) => {
       const profName =
@@ -49,25 +54,23 @@ export default function Class({ classData }) {
                 {profName}
               </Text>
               <HStack>
-                <Tag colorScheme={LetterToColor?.[dist.averageGradeLetter]}>
-                  {dist.averageGradeLetter} Average ({dist.averageGPA})
-                </Tag>
+                {dist.averageGPA > 0 && (
+                  <Tag colorScheme={LetterToColor?.[dist.averageGradeLetter]}>
+                    {dist.averageGradeLetter} Average ({dist.averageGPA})
+                  </Tag>
+                )}
                 <Tag colorScheme={LetterToColor?.[dist.mostStudents]}>
                   Most Common: {dist.mostStudents} ({dist.mostStudentsPercent}%)
                 </Tag>
               </HStack>
             </VStack>
             <VStack>
-              {dist.Component}
               <HStack>
                 <Badge>{dist.students} students</Badge>
-                <Badge
-                  colorScheme={
-                    dist.grades.W / dist.students > 0.075 ? "red" : "blackAlpha"
-                  }
-                >
-                  {dist.grades.W} W
-                </Badge>
+              </HStack>
+              <HStack>
+                {dist.BarChart}
+                {dist.averageGPA > 0 && dist.Component}
               </HStack>
             </VStack>
           </HStack>
