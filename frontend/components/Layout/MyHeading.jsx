@@ -6,7 +6,10 @@ const DEFAULT_DESC = "View grades for past classes, professors, and more.";
 const publicURL = process.env.NEXT_PUBLIC_VERCEL_URL
   ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
   : "";
-const MyHeading = ({ title, imageURL = `${publicURL}/images/advert.png` }) => (
+const MyHeading = ({
+  title,
+  imageURL = `${publicURL}/images/advert-small.png`,
+}) => (
   <Head>
     <title>{title || DEFAULT_TITLE}</title>
     <meta name={"description"} content={DEFAULT_DESC} />
