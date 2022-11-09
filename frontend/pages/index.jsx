@@ -43,6 +43,10 @@ const Home = () => {
     if (value === "") {
       debouncedShowLandingPage();
       debouncedSearch.cancel();
+    } else if (value.trim() === "") {
+      setSearchResults(null);
+      debouncedShowLandingPage.cancel();
+      debouncedSearch.cancel();
     } else {
       setSearchResults(null);
       debouncedShowLandingPage.cancel();

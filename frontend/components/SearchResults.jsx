@@ -77,7 +77,7 @@ const Professors = ({ searchResults }) => {
 export default function SearchResults({ search, searchResults }) {
   return (
     <VStack spacing={4} width={"100%"} align={"start"} px={2} pt={2} pb={16}>
-      <Heading pt={4}>Search Results for &ldquo;{search}&rdquo;</Heading>
+      <Heading pt={4}>Search Results for &ldquo;{search.trim()}&rdquo;</Heading>
       {/* no results box: */}
       {searchResults !== null &&
         searchResults.data.classes.length +

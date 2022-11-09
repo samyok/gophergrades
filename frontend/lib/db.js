@@ -82,7 +82,7 @@ export const getSearch = async (search) => {
   const professorSQL = `
       SELECT *
       FROM professor
-      WHERE name LIKE $search
+      WHERE REPLACE(name, ' ', '') LIKE $search
       ORDER BY RMP_score DESC
       LIMIT 10`;
 
