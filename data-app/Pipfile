@@ -8,6 +8,7 @@ pandas = "*"
 openpyxl = "*"
 sqlalchemy = "*"
 requests = "*"
+nameparser = "*"
 
 [dev-packages]
 

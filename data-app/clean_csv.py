@@ -1,6 +1,6 @@
 import pandas as pd
-import numpy as np
 import requests
+from nameparser import HumanName
 import re
 import json
 import sys
@@ -74,6 +74,16 @@ def fetch_unknown_prof(x):
     x["HR_NAME"] = professor
     return x
 
+def format_name(x):
+    if not x == "Unknown Professor":
+        name = HumanName(x)
+        name.string_format = "{first} {last}"
+        retVal = str(name)
+    else:
+        retVal = x
+    return retVal
+
+
 df = pd.read_csv("raw_data.csv",dtype={6:str,14:str})
 # Unneeded Data
 del df["INSTITUTION"]
@@ -91,5 +101,6 @@ df = df.astype({"TERM":int})
 df["FULL_NAME"] = df["SUBJECT"] + ' ' + df["CATALOG_NBR"]
 # Replace unknown professor values with either a correct name or "Unknown Professor"
 df = df.groupby(["TERM","FULL_NAME","CLASS_SECTION"],group_keys=False).apply(fetch_unknown_prof)
-print(df[df["HR_NAME"].isnull()])
+df["HR_NAME"] = df["HR_NAME"].apply(format_name)
+print(df)
 df.to_csv("cleaned_data.csv",index=False)
