@@ -18,7 +18,11 @@ import { useSearch } from "../../components/Search/useSearch";
 import SearchResults from "../../components/Search/SearchResults";
 
 export default function Class({ classData }) {
-  const { class_name: className, class_desc: classDesc } = classData;
+  const {
+    class_name: className,
+    class_desc: classDesc,
+    distributions,
+  } = classData;
   const [isMobile] = useMediaQuery("(max-width: 550px)");
   const {
     search,
@@ -32,7 +36,7 @@ export default function Class({ classData }) {
       {
         grades: classData.total_grades,
         students: classData.total_students,
-        professor_name: "All Instructors",
+        title: "All Instructors",
         distribution_id: classData.id,
         isSummary: true,
         info: "This total also includes data from semesters with unknown instructors.",
@@ -41,7 +45,16 @@ export default function Class({ classData }) {
     isMobile
   );
 
-  const distributions = distributionsToCards(classData.distributions, isMobile);
+  const formattedDistributions = distributions.map((dist) => ({
+    ...dist,
+    href: `/prof/${dist.professor_id}`,
+    title: dist.professor_name,
+  }));
+
+  const renderedDistributions = distributionsToCards(
+    formattedDistributions,
+    isMobile
+  );
 
   return (
     <PageLayout
@@ -86,7 +99,7 @@ export default function Class({ classData }) {
                 opacity: 0.15,
               }}
             />
-            {distributions}
+            {renderedDistributions}
           </VStack>
         </Collapse>
       </Box>

@@ -52,7 +52,7 @@ export default function Card({
     >
       {children}
       {clicked && (
-        <Spinner size={"sm"} ml={2} position={"absolute"} left={-1} top={4} />
+        <Spinner size={"sm"} ml={2} position={"absolute"} left={-1.5} top={4} />
       )}
     </Box>
   );

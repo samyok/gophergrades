@@ -20,13 +20,13 @@ export const distributionsToCards = (
   array &&
   sortingFunctions[sortingFunc](
     array
-      .filter((dist) => dist.professor_name)
+      .filter((dist) => dist.title)
       .map((distribution) => ({
         ...distribution,
         ...Stats({ distribution, isMobile }),
       }))
   ).map((dist) => {
-    const profName = dist.professor_name ?? "Unknown";
+    const title = dist.title ?? "Unknown";
     return (
       <Card
         key={dist.distribution_id}
@@ -41,7 +41,7 @@ export const distributionsToCards = (
         >
           <VStack align={"start"} flexGrow={1} pb={4}>
             <Text fontSize={dist.isSummary ? "3xl" : "lg"} fontWeight={"bold"}>
-              {profName}
+              {title}
             </Text>
             <HStack>
               {dist.averageGPA > 0 && (

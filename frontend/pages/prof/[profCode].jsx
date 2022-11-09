@@ -9,13 +9,13 @@ import {
 } from "@chakra-ui/react";
 import PageLayout from "../../components/Layout/PageLayout";
 import SearchBar from "../../components/Search/SearchBar";
-import { getClassDistribtionsInDept, getDeptInfo } from "../../lib/db";
+import { getInstructorClasses, getInstructorInfo } from "../../lib/db";
 import { distributionsToCards } from "../../components/distributionsToCards";
 import { useSearch } from "../../components/Search/useSearch";
 import SearchResults from "../../components/Search/SearchResults";
 
-export default function Dept({ deptData }) {
-  const { dept_abbr: deptAbbr, dept_name: deptName, distributions } = deptData;
+export default function Prof({ profData }) {
+  const { id, name, distributions } = profData;
   const [isMobile] = useMediaQuery("(max-width: 550px)");
 
   const {
@@ -52,10 +52,10 @@ export default function Dept({ deptData }) {
       (acc, curr) => acc + (curr.total_students || 0),
       0
     ),
-    title: `Overall Classes in ${deptAbbr}`,
+    title: `${name}`,
     isSummary: true,
-    info: "This total also includes classes that may not currently be offered.",
-    distribution_id: deptAbbr,
+    info: "This total also includes classes that they may not teach anymore.",
+    distribution_id: id,
   };
 
   const totalDistributions = distributionsToCards(
@@ -71,12 +71,12 @@ export default function Dept({ deptData }) {
 
   return (
     <PageLayout
-      title={`${deptAbbr}: ${deptName} | GopherGrades`}
+      title={`${name} | GopherGrades`}
       imageURL={`${
         process.env.NEXT_PUBLIC_VERCEL_URL
           ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
           : ""
-      }/api/image/dept/${deptAbbr}`}
+      }/api/image/prof/${id}`}
     >
       <Box py={8} align={"start"} width={"100%"}>
         <SearchBar onChange={handleChange} />
@@ -94,9 +94,7 @@ export default function Dept({ deptData }) {
             paddingLeft: 10,
           }}
         >
-          <Heading my={4}>
-            {deptAbbr}: {deptName}
-          </Heading>
+          <Heading my={4}>{name}</Heading>
           {/* <Text mb={4}></Text> */}
           <VStack spacing={4} align={"start"}>
             {totalDistributions}
@@ -123,7 +121,7 @@ export async function getServerSideProps({ res, params }) {
       60 * 60 * 24 * 30 // if loaded within a month, use the stale cache, but re-render in the background
     }`
   );
-  if (!params.deptCode) {
+  if (!params.profCode) {
     return {
       redirect: {
         destination: `/`,
@@ -132,24 +130,24 @@ export async function getServerSideProps({ res, params }) {
     };
   }
 
-  const { deptCode } = params;
+  const { profCode } = params;
 
-  const info = await getDeptInfo(deptCode);
+  const info = await getInstructorInfo(profCode);
 
   if (info.length === 0) {
     return {
       redirect: {
-        destination: `/?q=${deptCode}`,
+        destination: `/?q=${profCode}`,
         permanent: false,
       },
     };
   }
 
-  const distributions = await getClassDistribtionsInDept(deptCode);
+  const distributions = await getInstructorClasses(profCode);
 
   return {
     props: {
-      deptData: {
+      profData: {
         ...info[0],
         distributions,
       },
