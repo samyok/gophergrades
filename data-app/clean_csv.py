@@ -83,24 +83,37 @@ def format_name(x):
         retVal = x
     return retVal
 
+def term_desc_to_val(x):
+    mapping = {
+        "Fall 2020": 1209,
+        "Spr 2021" : 1213,
+        "Sum 2021" : 1215,
+        "Fall 2021" : 1219,
+        "Spr 2022" : 1223,
+        "Sum 2022" : 1225
+    }
+    x["TERM"] = mapping[x["TERM_DESCR"].iloc[0]]
+    return x
 
-df = pd.read_csv("raw_data.csv",dtype={6:str,14:str})
+
+df = pd.read_csv("new_temp_raw_data.csv",dtype={"CLASS_SECTION":str,"Unnamed: 14":str})
 # Unneeded Data
 del df["INSTITUTION"]
 del df["CAMPUS"]
 del df["Unnamed: 14"]
 del df["JOBCODE_DESCR"]
-del df["TERM_DESCR"]
 del df["CLASS_HDCNT"]
 del df["INSTR_ROLE"]
 df = df[~(df["CRSE_GRADE_OFF"] == "NR")]
 # Add missing term numbers for most recent semester, cast to take from float to int.
-df["TERM"] = df["TERM"].fillna(1209)
+df = df.groupby("TERM_DESCR",group_keys=False).apply(term_desc_to_val)
 df = df.astype({"TERM":int})
+del df["TERM_DESCR"]
 # Write class name as the proper full name that students are accustomed to.
 df["FULL_NAME"] = df["SUBJECT"] + ' ' + df["CATALOG_NBR"]
 # Replace unknown professor values with either a correct name or "Unknown Professor"
+df["CLASS_SECTION"] = df["CLASS_SECTION"].apply(lambda x: x.zfill(3))
 df = df.groupby(["TERM","FULL_NAME","CLASS_SECTION"],group_keys=False).apply(fetch_unknown_prof)
 df["HR_NAME"] = df["HR_NAME"].apply(format_name)
 print(df)
-df.to_csv("cleaned_data.csv",index=False)
+df.to_csv("new_cleaned_data.csv",index=False)
