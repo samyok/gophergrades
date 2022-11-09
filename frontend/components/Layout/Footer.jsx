@@ -38,6 +38,9 @@ const ContributorGroup = () => {
             src={c.avatar_url}
             href={c.html_url}
             as={"a"}
+            onClick={(e) => {
+              window?.umami?.trackEvent(`avatar.${c.login}.click`, "footer");
+            }}
             target={"_blank"}
             opacity={0.7}
             transitionDuration={"200ms"}
@@ -53,6 +56,9 @@ const ContributorGroup = () => {
         variant={"outline"}
         as={"a"}
         target={"_blank"}
+        onClick={() => {
+          window?.umami?.trackEvent(`button.github_contribute.click`, "footer");
+        }}
         href={"https://github.com/samyok/gophergrades"}
       >
         Contribute on our Github
