@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export const BarChart = ({ distribution, isMobile = false }) => {
+export const BarChart = ({ distribution, isMobile = true }) => {
   const { isSummary } = distribution;
   let scale = isSummary ? 1.3 : 1;
   if (isMobile) scale = 0.8;

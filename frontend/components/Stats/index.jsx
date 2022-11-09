@@ -1,8 +1,14 @@
 import { GPA_MAP } from "../../lib/letterTo";
 import { AreaChart } from "./AreaChart";
 import { BarChart } from "./BarChart";
+import { StaticAreaChart } from "./StaticAreaChart";
+import { StaticBarChart } from "./StaticBarChart";
 
-export default function Stats({ distribution = {}, isMobile = false }) {
+export default function Stats({
+  distribution = {},
+  isMobile = false,
+  isStatic = false,
+}) {
   const { grades } = distribution;
 
   const impactingGrades = Object.entries(grades ?? {}).filter(([grade]) =>
@@ -51,15 +57,19 @@ export default function Stats({ distribution = {}, isMobile = false }) {
     totalStudents
   ).toFixed(0);
 
+  const AreaChartComponent = isStatic ? StaticAreaChart : AreaChart;
+  const BarChartComponent = isStatic ? StaticBarChart : BarChart;
   return {
     Component: (
-      <AreaChart
+      <AreaChartComponent
         isMobile={isMobile}
         distribution={distribution}
         averageGPA={averageGPA}
       />
     ),
-    BarChart: <BarChart isMobile={isMobile} distribution={distribution} />,
+    BarChart: (
+      <BarChartComponent isMobile={isMobile} distribution={distribution} />
+    ),
     averageGPA,
     averageGradeLetter,
     mostStudents,

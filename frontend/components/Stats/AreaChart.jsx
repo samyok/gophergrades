@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { GRADE_ORDER, letterToGpa } from "../../lib/letterTo";
 
-export const AreaChart = ({ distribution, averageGPA, isMobile }) => {
+export const AreaChart = ({ distribution, averageGPA, isMobile = true }) => {
   const { isSummary } = distribution;
   let scale = isSummary ? 1.3 : 1;
   if (isMobile) scale = 0.8;
