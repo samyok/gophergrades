@@ -75,7 +75,7 @@ const Home = () => {
               borderRadius={"lg"}
             >
               <AlertIcon />
-              Now updated through Spring 2022!
+              Now updated through Summer 2022!
             </Alert>
           </Collapse>
         </VStack>

@@ -28,8 +28,8 @@ export default function Prof({ profData }) {
   // map all class distribution to a proper format:
   const formattedDistributions = distributions.map((dist) => ({
     ...dist,
-    grades: dist.total_grades,
-    students: dist.total_students,
+    grades: dist.grades,
+    students: dist.students,
     title: `${dist.class_name}: ${dist.class_desc}`,
     href: `/class/${dist.class_name.replace(" ", "")}`,
   }));
@@ -49,7 +49,7 @@ export default function Prof({ profData }) {
       {}
     ),
     students: distributions.reduce(
-      (acc, curr) => acc + (curr.total_students || 0),
+      (acc, curr) => acc + (curr.students || 0),
       0
     ),
     title: `${name}`,
