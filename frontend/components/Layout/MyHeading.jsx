@@ -3,7 +3,10 @@ import Head from "next/head";
 const DEFAULT_TITLE = "Gopher Grades - A Gopher Grades Project";
 const DEFAULT_DESC = "View grades for past classes, professors, and more.";
 
-const MyHeading = ({ title, imageURL }) => (
+const publicURL = process.env.NEXT_PUBLIC_VERCEL_URL
+  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+  : "";
+const MyHeading = ({ title, imageURL = `${publicURL}/images/advert.png` }) => (
   <Head>
     <title>{title || DEFAULT_TITLE}</title>
     <meta name={"description"} content={DEFAULT_DESC} />
