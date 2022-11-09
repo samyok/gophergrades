@@ -30,8 +30,8 @@ const Home = () => {
     <PageLayout
       imageUrl={`${
         process.env.NEXT_PUBLIC_VERCEL_URL
-          ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/home/images/home-og.png`
-          : "/images/home-og.png"
+          ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/images/advert.png`
+          : "/images/advert.png"
       }`}
     >
       <Flex
