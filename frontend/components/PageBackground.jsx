@@ -13,7 +13,8 @@ const PageBackground = () => {
         height: "100vh",
         top: 0,
         left: 0,
-        background: "url(/images/background.png) no-repeat center center fixed",
+        background:
+          "url(/images/background-xs.png) no-repeat center center fixed",
         backgroundSize: "cover",
       }}
     >
