@@ -17,7 +17,7 @@ export const useSearch = () => {
       fetch(`/api/search?q=${text}`)
         .then((r) => r.json())
         .then((data) => setSearchResults(data));
-    }, 750)
+    }, 500)
   ).current;
 
   const handleChange = (value) => {

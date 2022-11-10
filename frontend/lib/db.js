@@ -143,7 +143,7 @@ export const getSearch = async (search) => {
       WHERE REPLACE(class_name, ' ', '') LIKE $search
          OR REPLACE(class_desc, ' ', '') LIKE $search
       ORDER BY total_students DESC
-      LIMIT 5`;
+      LIMIT 10`;
 
   const professorSQL = `
       SELECT *
@@ -157,7 +157,7 @@ export const getSearch = async (search) => {
       FROM departmentdistribution
       WHERE dept_name LIKE $search
          OR dept_abbr LIKE $search
-      LIMIT 8`;
+      LIMIT 10`;
 
   const params = {
     $search: `%${search.replace(/ /g, "")}%`,

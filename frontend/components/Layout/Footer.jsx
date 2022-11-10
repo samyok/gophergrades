@@ -71,7 +71,12 @@ export const Footer = () => {
     <Box pt={5} pb={5}>
       <Divider borderColor={"rgba(91,0,19,0.42)"} mb={4} />
       <VStack spacing={8}>
-        <Text fontSize={"md"} fontWeight={300} color={"gray.600"}>
+        <Text
+          textAlign={"center"}
+          fontSize={"md"}
+          fontWeight={300}
+          color={"gray.600"}
+        >
           <NextLink href={"/"}>Gopher Grades</NextLink> is maintained by Social
           Coding with data from Summer 2017 to Summer 2022.
         </Text>
