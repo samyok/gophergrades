@@ -37,7 +37,7 @@ export default function Card({
         borderRadius: 8,
         width: "100%",
         padding: "12px 20px",
-        backdropFilter: "blur(10px)",
+        // backdropFilter: "blur(10px)",
         position: "relative",
         textAlign: "left",
         ...summaryStyles,
