@@ -59,10 +59,76 @@ export const getClassInfo = async (classCode) => {
   const sql = `
       SELECT *
       FROM classdistribution
+      LEFT JOIN departmentdistribution d on classdistribution.department_id = d.id
       WHERE REPLACE(class_name, ' ', '') = REPLACE($class_name, ' ', '')`;
 
   const params = {
     $class_name: classCode,
+  };
+
+  const rows = await promisedQuery(sql, params);
+
+  return rows.map(parseJSONFromRow);
+};
+
+export const getDeptInfo = async (deptCode) => {
+  const sql = `
+      SELECT *
+      FROM departmentdistribution
+      WHERE dept_abbr = $dept_code`;
+
+  const params = {
+    $dept_code: deptCode.toUpperCase(),
+  };
+
+  const rows = await promisedQuery(sql, params);
+
+  return rows.map(parseJSONFromRow);
+};
+
+export const getClassDistribtionsInDept = async (deptCode) => {
+  const sql = `
+      SELECT *
+      FROM departmentdistribution
+               LEFT JOIN classdistribution on classdistribution.department_id = departmentdistribution.id
+      WHERE dept_abbr = $dept_code
+      ORDER BY replace(classdistribution.class_name, ' ', '')
+  `;
+
+  const params = {
+    $dept_code: deptCode.toUpperCase(),
+  };
+
+  const rows = await promisedQuery(sql, params);
+
+  return rows.map(parseJSONFromRow);
+};
+
+export const getInstructorInfo = async (instructorId) => {
+  const sql = `
+      SELECT *
+      FROM professor
+      WHERE id = $instructor_id`;
+
+  const params = {
+    $instructor_id: instructorId,
+  };
+
+  const rows = await promisedQuery(sql, params);
+
+  return rows.map(parseJSONFromRow);
+};
+
+export const getInstructorClasses = async (instructorId) => {
+  const sql = `
+      SELECT *
+      FROM professor
+               LEFT JOIN distribution on distribution.professor_id = professor.id
+               LEFT JOIN classdistribution on classdistribution.id = distribution.class_id
+      WHERE professor.id = $instructor_id`;
+
+  const params = {
+    $instructor_id: instructorId,
   };
 
   const rows = await promisedQuery(sql, params);
@@ -77,12 +143,12 @@ export const getSearch = async (search) => {
       WHERE REPLACE(class_name, ' ', '') LIKE $search
          OR REPLACE(class_desc, ' ', '') LIKE $search
       ORDER BY total_students DESC
-      LIMIT 5`;
+      LIMIT 10`;
 
   const professorSQL = `
       SELECT *
       FROM professor
-      WHERE name LIKE $search
+      WHERE REPLACE(name, ' ', '') LIKE $search
       ORDER BY RMP_score DESC
       LIMIT 10`;
 
@@ -91,7 +157,7 @@ export const getSearch = async (search) => {
       FROM departmentdistribution
       WHERE dept_name LIKE $search
          OR dept_abbr LIKE $search
-      LIMIT 8`;
+      LIMIT 10`;
 
   const params = {
     $search: `%${search.replace(/ /g, "")}%`,

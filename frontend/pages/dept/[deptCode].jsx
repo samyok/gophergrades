@@ -1,29 +1,23 @@
 import React from "react";
 import {
   Box,
-  Text,
   Collapse,
   Divider,
   Heading,
-  Link as ChakraLink,
   useMediaQuery,
   VStack,
 } from "@chakra-ui/react";
-import NextLink from "next/link";
 import PageLayout from "../../components/Layout/PageLayout";
 import SearchBar from "../../components/Search/SearchBar";
-import { getClassInfo, getDistribution } from "../../lib/db";
+import { getClassDistribtionsInDept, getDeptInfo } from "../../lib/db";
 import { distributionsToCards } from "../../components/distributionsToCards";
 import { useSearch } from "../../components/Search/useSearch";
 import SearchResults from "../../components/Search/SearchResults";
 
-export default function Class({ classData }) {
-  const {
-    class_name: className,
-    class_desc: classDesc,
-    distributions,
-  } = classData;
+export default function Dept({ deptData }) {
+  const { dept_abbr: deptAbbr, dept_name: deptName, distributions } = deptData;
   const [isMobile] = useMediaQuery("(max-width: 550px)");
+
   const {
     search,
     searchResults,
@@ -31,39 +25,58 @@ export default function Class({ classData }) {
     handleChange,
   } = useSearch();
 
+  // map all class distribution to a proper format:
+  const formattedDistributions = distributions.map((dist) => ({
+    ...dist,
+    grades: dist.total_grades,
+    students: dist.total_students,
+    title: `${dist.class_name}: ${dist.class_desc}`,
+    href: `/class/${dist.class_name.replace(" ", "")}`,
+  }));
+
+  const totalDistribution = {
+    // take every distributions grades map and sum up each key
+    grades: formattedDistributions.reduce(
+      (acc, curr) => ({
+        ...acc,
+        ...Object.fromEntries(
+          Object.entries(curr.grades).map(([key, val]) => [
+            key,
+            (acc[key] || 0) + val,
+          ])
+        ),
+      }),
+      {}
+    ),
+    students: distributions.reduce(
+      (acc, curr) => acc + (curr.total_students || 0),
+      0
+    ),
+    title: `Overall Classes in ${deptAbbr}`,
+    isSummary: true,
+    info: "This total also includes classes that may not currently be offered.",
+    distribution_id: deptAbbr,
+  };
+
   const totalDistributions = distributionsToCards(
-    [
-      {
-        grades: classData.total_grades,
-        students: classData.total_students,
-        title: "All Instructors",
-        distribution_id: classData.id,
-        isSummary: true,
-        info: "This total also includes data from semesters with unknown instructors.",
-      },
-    ],
+    [totalDistribution],
     isMobile
   );
 
-  const formattedDistributions = distributions.map((dist) => ({
-    ...dist,
-    href: `/prof/${dist.professor_id}`,
-    title: dist.professor_name,
-  }));
-
   const renderedDistributions = distributionsToCards(
     formattedDistributions,
-    isMobile
+    isMobile,
+    "NONE"
   );
 
   return (
     <PageLayout
-      title={`${classDesc} (${className}) | GopherGrades`}
+      title={`${deptAbbr}: ${deptName} | GopherGrades`}
       imageURL={`${
         process.env.NEXT_PUBLIC_VERCEL_URL
           ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
           : ""
-      }/api/image/class/${className.replace(" ", "")}`}
+      }/api/image/dept/${deptAbbr}`}
     >
       <Box py={8} align={"start"} width={"100%"}>
         <SearchBar onChange={handleChange} />
@@ -81,14 +94,9 @@ export default function Class({ classData }) {
             paddingLeft: 10,
           }}
         >
-          <Heading mt={4}>
-            {className}: {classDesc}
+          <Heading my={4}>
+            {deptAbbr}: {deptName}
           </Heading>
-          <Text mb={4} mt={2} opacity={0.8}>
-            <NextLink href={`/dept/${classData.dept_abbr}`} passHref>
-              <ChakraLink>View {classData.dept_name} Department</ChakraLink>
-            </NextLink>
-          </Text>
           <VStack spacing={4} align={"start"} pb={4} minH={"60vh"}>
             {totalDistributions}
             <Divider
@@ -114,7 +122,7 @@ export async function getServerSideProps({ res, params }) {
       60 * 60 * 24 * 30 // if loaded within a month, use the stale cache, but re-render in the background
     }`
   );
-  if (!params.classCode) {
+  if (!params.deptCode) {
     return {
       redirect: {
         destination: `/`,
@@ -123,24 +131,24 @@ export async function getServerSideProps({ res, params }) {
     };
   }
 
-  const { classCode } = params;
+  const { deptCode } = params;
 
-  const info = await getClassInfo(classCode);
+  const info = await getDeptInfo(deptCode);
 
   if (info.length === 0) {
     return {
       redirect: {
-        destination: `/?q=${classCode}`,
+        destination: `/?q=${deptCode}`,
         permanent: false,
       },
     };
   }
 
-  const distributions = await getDistribution(classCode);
+  const distributions = await getClassDistribtionsInDept(deptCode);
 
   return {
     props: {
-      classData: {
+      deptData: {
         ...info[0],
         distributions,
       },
