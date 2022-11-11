@@ -9,10 +9,6 @@ CACHED_REQ={}
 CACHED_LINK=""
 
 def fetch_unknown_prof(x):
-
-    if not x["HR_NAME"].isnull().all():
-        return x
-    
     global CACHED_REQ
     global CACHED_LINK
     dept = x["SUBJECT"].iloc[0]
@@ -70,9 +66,17 @@ def fetch_unknown_prof(x):
                 problem="Auto enroll key may be incorrect"
             f.write(classLink+"\t"+key+" "+problem+'\n')
 
-    print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {professor}.")
-    x["HR_NAME"] = professor
-    return x
+    if not x["HR_NAME"].isnull().all() and professor != "Unknown Professor":
+        print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {professor}.")
+        x["HR_NAME"] = professor
+        return x
+    elif not x["HR_NAME"].isnull().all():
+        print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {x['HR_NAME'].iloc[0]}.")
+        return x
+    else: 
+        print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {professor}.")
+        x["HR_NAME"] = professor
+        return x
 
 def format_name(x):
     if not x == "Unknown Professor":
@@ -96,7 +100,7 @@ def term_desc_to_val(x):
     return x
 
 
-df = pd.read_csv("new_temp_raw_data.csv",dtype={"CLASS_SECTION":str,"Unnamed: 14":str})
+df = pd.read_csv("old_raw_data.csv",dtype={"CLASS_SECTION":str,"Unnamed: 14":str})
 # Unneeded Data
 del df["INSTITUTION"]
 del df["CAMPUS"]
@@ -116,4 +120,4 @@ df["CLASS_SECTION"] = df["CLASS_SECTION"].apply(lambda x: x.zfill(3))
 df = df.groupby(["TERM","FULL_NAME","CLASS_SECTION"],group_keys=False).apply(fetch_unknown_prof)
 df["HR_NAME"] = df["HR_NAME"].apply(format_name)
 print(df)
-df.to_csv("new_cleaned_data.csv",index=False)
+df.to_csv("old_cleaned_data.csv",index=False)
