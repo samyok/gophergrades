@@ -94,7 +94,7 @@ class DepartmentDistribution(Base):
         return retVal
 
 
-engine = create_engine("sqlite:///../ProcessedData.db",echo=False,future=True)
+engine = create_engine("sqlite:///../ProcessedData.db", echo=True,future=True)
 if __name__ == "__main__":
     Base.metadata.drop_all(engine)
 Base.metadata.create_all(engine)
