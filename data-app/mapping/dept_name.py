@@ -1,4 +1,4 @@
-dept_mapping = {
+mapping = {
     'AAS': 'Asian American Studies',
     'ABUS': 'Applied Business',
     'ACCT': 'Accounting',
@@ -333,21 +333,3 @@ dept_mapping = {
     'WRS': 'Water Resources Science',
     'YOST': 'Youth Development and Research',
     }
-libed_mapping = {
-    'AH': 'Arts/Humanities',
-    'BIOL': 'Biological Sciences',
-    'CIV': 'Civic Life and Ethics',
-    'ENV': 'Environment',
-    'GP': 'Global Perspectives',
-    'IP': 'International Perspective Theme',
-    'HIS': 'Historical Perspectives',
-    'LITR': 'Literature',
-    'MATH': 'Mathematical Thinking',
-    'PHYS': 'Physical Sciences',
-    'DSJ': 'Race, Power, and Justice in the United States',
-    'SOCS': 'Social Sciences',
-    'TS': 'Technology and Society',
-    'WI': 'Writing Intensive',
-    'HON': 'Honors',
-    'FR SEMINAR': 'Freshman Seminar'
-}
