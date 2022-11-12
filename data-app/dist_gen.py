@@ -60,7 +60,7 @@ def process_class(x):
     session.commit()
     
 
-df = pd.read_csv("combined_data.csv",dtype={"CLASS_SECTION":str})
+df = pd.read_csv("combined_clean_data.csv",dtype={"CLASS_SECTION":str})
 
 # print(df[(df["FULL_NAME"]=="CSCI 2021") & (df["HR_NAME"]=="Kauffman,Christopher Daniel")].groupby("TERM").nunique().sum())
 # print(df[(df["HR_NAME"] == "James Moen") | (df["HR_NAME"] == "Moen, James")]["FULL_NAME"].unique())
