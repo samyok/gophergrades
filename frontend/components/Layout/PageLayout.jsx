@@ -4,7 +4,7 @@ import MyHeading from "./MyHeading";
 import PageBackground from "../PageBackground";
 import { Footer } from "./Footer";
 
-const PageLayout = ({ children, ...props }) => (
+const PageLayout = ({ footer = true, children, ...props }) => (
   <Box>
     <MyHeading {...props} />
     <PageBackground />
@@ -12,7 +12,7 @@ const PageLayout = ({ children, ...props }) => (
       <Box px={[2, 5, 10]} maxW={"1300px"} width={"100%"}>
         {children}
 
-        <Footer />
+        {footer && <Footer />}
       </Box>
     </Flex>
   </Box>

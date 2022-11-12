@@ -1,0 +1,34 @@
+.gopher-grades-result-iframe {
+    width: 100%;
+    border: none;
+    height: 110px;
+    background: url(https://umn.lol/images/icon.png) 0px 0px no-repeat;
+    background-size: 100px 100px;
+    animation: breathe 2s ease-in-out infinite alternate;
+}
+
+.gopher-grades-container {
+    height: 110px;
+}
+
+.table-responsive {
+    overflow-y: hidden;
+}
+
+@keyframes breathe {
+    0% {
+        background-size: 90px 90px;
+    }
+    50% {
+        background-size: 100px 100px;
+    }
+    100% {
+        background-size: 90px 90px;
+    }
+}
+
+@media (max-width: 1250px) {
+    .gopher-grades-container, .gopher-grades-result-iframe {
+        height: 200px;
+    }
+}
