@@ -3,9 +3,6 @@ import html as h
 import json 
 import requests
 
-CACHED_REQ={}
-CACHED_LINK=""
-
 def fetch_better_descr(x):
     global CACHED_REQ
     global CACHED_LINK
