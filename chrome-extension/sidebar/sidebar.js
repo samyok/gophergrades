@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://umn.lol";
 
 console.log("sidebar grades is loaded :)");
 

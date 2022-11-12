@@ -10,6 +10,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import PageLayout from "../components/Layout/PageLayout";
 import SearchBar from "../components/Search/SearchBar";
 import SearchResults from "../components/Search/SearchResults";
@@ -71,7 +72,10 @@ const Home = () => {
             </Text>
           </Collapse>
           <Box pt={[0, 5, 2]} maxW={"calc(100vw - 50px)"} width={"100%"}>
-            <SearchBar onChange={handleChange} />
+            <SearchBar
+              placeholder={search || undefined}
+              onChange={handleChange}
+            />
           </Box>
           <Collapse in={showPage} animateOpacity>
             <Alert
