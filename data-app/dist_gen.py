@@ -68,38 +68,7 @@ def process_class(x):
     session.commit()
     
 
-def fetch_asr(dept_dist,term):
-    global CACHED_LINK
-    global CACHED_REQ
-    dept = dept_dist.dept_abbr
-
-    link=f"https://courses.umn.edu/campuses/UMNTC/terms/{term}/courses.json?q=subject_id={dept}"
-
-    if link!=CACHED_LINK:
-        with requests.get(link) as url:
-            CACHED_LINK=link
-            try:
-                CACHED_REQ=url.json()
-            except ValueError:
-                print("Json malformed, icky!")
-                CACHED_REQ={}
-                return
-    for course in CACHED_REQ["courses"]:
-        subj = course["subject"]["subject_id"]
-        nbr = course["catalog_number"]
-        class_dist = session.query(ClassDistribution).filter(and_(ClassDistribution.onestop == None,ClassDistribution.class_name == f"{subj} {nbr}")).first()
-        if class_dist:
-            class_dist.class_desc = course["title"]
-            class_dist.cred_min = course["credits_minimum"]
-            class_dist.cred_max = course["credits_maximum"]
-            class_dist.onestop = f"https://onestop2.umn.edu/pcas/viewCatalogCourse.do?courseId={course['course_id']}"
-            for attribute in course["course_attributes"]:
-                if attribute["family"] in ["CLE","HON","FSEM"]:
-                    libed_dist = session.query(Libed).filter(Libed.name == libed_mapping[attribute['attribute_id']]).first()
-                    libed_dist.class_dists.append(class_dist)
-        session.commit()
-            
-
+df = pd.read_csv("combined_clean_data.csv",dtype={"CLASS_SECTION":str})
 
 
 session.add_all([Libed(name=libed) for libed in libed_mapping.values()])

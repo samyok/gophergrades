@@ -3,6 +3,9 @@ import html as h
 import json 
 import requests
 
+CACHED_REQ={}
+CACHED_LINK=""
+
 def fetch_better_descr(x):
     global CACHED_REQ
     global CACHED_LINK
@@ -12,7 +15,7 @@ def fetch_better_descr(x):
     section = x["CLASS_SECTION"].iloc[0]
     level=catalog_nbr[0]
 
-    link=f"http://classinfo.umn.edu/?subject={dept}&level={level}&json=1"
+    link="http://classinfo.umn.edu/?subject="+dept+"&level="+level+"&json=1"
 
     if link!=CACHED_LINK:
         with requests.get(link) as url:
