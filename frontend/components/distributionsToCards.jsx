@@ -41,7 +41,7 @@ export const distributionsToCards = (
           width={"100%"}
           flexWrap={"wrap"}
         >
-          <VStack align={"start"} flexGrow={1} pb={4}>
+          <VStack align={"start"} flexGrow={1} pb={4} width={"50%"}>
             <Text fontSize={dist.isSummary ? "3xl" : "lg"} fontWeight={"bold"}>
               {(!isStatic || !dist.isSummary) && title}
             </Text>
