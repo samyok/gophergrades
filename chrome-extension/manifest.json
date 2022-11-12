@@ -9,7 +9,7 @@
   "omnibox": { "keyword" : "gg" },
   "content_scripts": [
     {
-      "matches": ["https://*.umn.edu/*"],
+      "matches": ["https://schedulebuilder.umn.edu/*", "https://www.schedulebuilder.umn.edu/*"],
       "css": ["sidebar/sidebar.css"],
       "js": ["sidebar/sidebar.js"]
     }
