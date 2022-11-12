@@ -1,10 +1,12 @@
 {
-  "name": "GopherGrades - View past grades for UMN classes!",
+  "name": "GopherGrades - Past grades for UMN classes!",
+  "description": "Now you can view directly from the course catalog!",
   "version": "1.0",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
   },
+  "omnibox": { "keyword" : "gg" },
   "content_scripts": [
     {
       "matches": ["https://*.umn.edu/*"],

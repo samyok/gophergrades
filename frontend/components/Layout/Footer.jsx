@@ -29,7 +29,7 @@ const ContributorGroup = () => {
 
   return (
     <VStack>
-      <AvatarGroup size={"md"}>
+      <AvatarGroup size={"lg"}>
         {contributors.map((c) => (
           <GithubAvatar
             key={c.login}
@@ -50,7 +50,7 @@ const ContributorGroup = () => {
         ))}
       </AvatarGroup>
       <Button
-        fontSize={"sm"}
+        size={"xs"}
         fontWeight={300}
         variant={"outline"}
         as={"a"}
@@ -68,26 +68,26 @@ const ContributorGroup = () => {
 
 export const Footer = () => {
   return (
-    <Box pt={5} pb={5}>
+    <Box pt={10} pb={5}>
       <Divider borderColor={"rgba(91,0,19,0.42)"} mb={4} />
-      <VStack spacing={8}>
+      <VStack spacing={4}>
+        <ContributorGroup />
         <Text
           textAlign={"center"}
-          fontSize={"md"}
+          fontSize={"sm"}
           fontWeight={300}
           color={"gray.600"}
         >
           <NextLink href={"/"}>Gopher Grades</NextLink> is maintained by Social
           Coding with data from Summer 2017 to Summer 2022.
         </Text>
-        <ContributorGroup />
         <Button
           variant={"link"}
           as={"a"}
           target={"_blank"}
           href={"https://gophergrades.com"}
           fontSize={"sm"}
-          fontWeight={200}
+          fontWeight={300}
         >
           Inspired by the original Gopher Grades project
         </Button>

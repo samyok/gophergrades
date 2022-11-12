@@ -76,7 +76,7 @@ export default function Class({ classData, query }) {
       }/api/image/class/${className.replace(" ", "")}`}
     >
       <Box py={8} align={"start"} width={"100%"}>
-        <SearchBar onChange={handleChange} />
+        <SearchBar placeholder={search || undefined} onChange={handleChange} />
         <SearchResults
           searchResults={searchResults}
           search={search}

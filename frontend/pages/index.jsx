@@ -71,7 +71,10 @@ const Home = () => {
             </Text>
           </Collapse>
           <Box pt={[0, 5, 2]} maxW={"calc(100vw - 50px)"} width={"100%"}>
-            <SearchBar onChange={handleChange} />
+            <SearchBar
+              placeholder={search || undefined}
+              onChange={handleChange}
+            />
           </Box>
           <Collapse in={showPage} animateOpacity>
             <Alert
