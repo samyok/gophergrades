@@ -6,7 +6,8 @@ export const BarChart = ({ distribution, isMobile = true }) => {
   let scale = isSummary ? 1.3 : 1;
   if (isMobile) scale = 0.8;
 
-  const BAR_GRAPH_HEIGHT = 50 * scale;
+  const BOTTOM_MARGIN = 10;
+  const BAR_GRAPH_HEIGHT = 50 * scale - BOTTOM_MARGIN;
   const BAR_GRAPH_WIDTH = 75 * scale;
 
   const { grades } = distribution;
@@ -64,7 +65,7 @@ export const BarChart = ({ distribution, isMobile = true }) => {
 
   return (
     <svg
-      height={BAR_GRAPH_HEIGHT}
+      height={BAR_GRAPH_HEIGHT + BOTTOM_MARGIN}
       width={BAR_GRAPH_WIDTH}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -102,10 +103,9 @@ export const BarChart = ({ distribution, isMobile = true }) => {
             <text
               x={i * barWidth + barWidth / 2}
               // if the text is off the top of the graph, move it down
-              y={Math.max(BAR_GRAPH_HEIGHT - height - 10, 10)}
+              y={BAR_GRAPH_HEIGHT + BOTTOM_MARGIN}
               style={{
                 textAnchor: "middle",
-                dominantBaseline: "middle",
                 fontSize: 9,
                 userSelect: "none",
                 fontWeight: "bold",

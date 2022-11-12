@@ -6,7 +6,8 @@ export const AreaChart = ({ distribution, averageGPA, isMobile = true }) => {
   let scale = isSummary ? 1.3 : 1;
   if (isMobile) scale = 0.8;
 
-  const AREA_GRAPH_HEIGHT = 50 * scale;
+  const BOTTOM_MARGIN = 10;
+  const AREA_GRAPH_HEIGHT = 50 * scale - BOTTOM_MARGIN;
   const AREA_GRAPH_WIDTH = 300 * scale;
 
   const [hovered, setHovered] = useState(false);
@@ -17,9 +18,11 @@ export const AreaChart = ({ distribution, averageGPA, isMobile = true }) => {
 
   const maxGrade = Math.max(...Object.values(grades ?? {}));
 
-  const points = `0,${AREA_GRAPH_HEIGHT} ${GRADE_ORDER.filter(
+  const letterGrades = GRADE_ORDER.filter(
     (grade) => hasAPlus || grade !== "A+"
-  )
+  );
+
+  const points = `0,${AREA_GRAPH_HEIGHT} ${letterGrades
     .map(
       (grade, index, arr) =>
         `${(AREA_GRAPH_WIDTH * index) / (arr.length - 1)},${
@@ -27,6 +30,17 @@ export const AreaChart = ({ distribution, averageGPA, isMobile = true }) => {
         }`
     )
     .join(" ")} ${AREA_GRAPH_WIDTH},${AREA_GRAPH_HEIGHT}`;
+
+  // add text labels above every major grade (A, B, C, D, F)
+
+  const labelPoints = letterGrades
+    .map((grade, index, arr) => [
+      (AREA_GRAPH_WIDTH * index) / (arr.length - 1),
+      // AREA_GRAPH_HEIGHT * (1 - (grades?.[grade] ?? 0) / maxGrade),
+      AREA_GRAPH_HEIGHT + BOTTOM_MARGIN,
+      grade,
+    ])
+    .filter(([, , grade]) => !grade.includes("+") && !grade.includes("-"));
 
   const maxGPA = hasAPlus ? 4.333 : 4;
 
@@ -84,7 +98,7 @@ export const AreaChart = ({ distribution, averageGPA, isMobile = true }) => {
 
   return (
     <svg
-      height={AREA_GRAPH_HEIGHT}
+      height={AREA_GRAPH_HEIGHT + BOTTOM_MARGIN}
       width={AREA_GRAPH_WIDTH}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -126,6 +140,23 @@ export const AreaChart = ({ distribution, averageGPA, isMobile = true }) => {
           fill: 'url("#trafficLight")',
         }}
       />
+      {labelPoints.map(([x, y, grade]) => (
+        <text
+          key={`label-${grade}`}
+          x={Math.max(3, Math.min(AREA_GRAPH_WIDTH - 5, x))}
+          // if the text is off the top of the graph, move it down
+          y={Math.max(y, 10)}
+          style={{
+            textAnchor: "middle",
+            fontSize: 9,
+            userSelect: "none",
+            fontWeight: "bold",
+            fill: "rgba(128, 128, 128, 0.5)",
+          }}
+        >
+          {grade}
+        </text>
+      ))}
       {hovered && hoveredGrade && (
         <g>
           <line
@@ -142,7 +173,7 @@ export const AreaChart = ({ distribution, averageGPA, isMobile = true }) => {
             x1={hoverCoordinates.closestGrade.x}
             y1={0}
             x2={hoverCoordinates.closestGrade.x}
-            y2={AREA_GRAPH_HEIGHT}
+            y2={AREA_GRAPH_HEIGHT + BOTTOM_MARGIN}
             style={{
               stroke: "rgba(0, 0, 0, 0.1)",
               strokeWidth: 4,

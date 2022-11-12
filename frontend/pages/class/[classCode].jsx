@@ -1,11 +1,10 @@
 import React from "react";
 import {
   Box,
-  Text,
   Collapse,
   Divider,
   Heading,
-  Link as ChakraLink,
+  Text,
   useMediaQuery,
   VStack,
 } from "@chakra-ui/react";
@@ -17,7 +16,7 @@ import { distributionsToCards } from "../../components/distributionsToCards";
 import { useSearch } from "../../components/Search/useSearch";
 import SearchResults from "../../components/Search/SearchResults";
 
-export default function Class({ classData }) {
+export default function Class({ classData, query }) {
   const {
     class_name: className,
     class_desc: classDesc,
@@ -42,7 +41,9 @@ export default function Class({ classData }) {
         info: "This total also includes data from semesters with unknown instructors.",
       },
     ],
-    isMobile
+    isMobile,
+    "NONE",
+    !!query.static
   );
 
   const formattedDistributions = distributions.map((dist) => ({
@@ -50,6 +51,15 @@ export default function Class({ classData }) {
     href: `/prof/${dist.professor_id}`,
     title: dist.professor_name,
   }));
+
+  if (query.static === "all") return totalDistributions;
+  if (query.static) {
+    const filtered = formattedDistributions.filter((dist) =>
+      dist.title.toLowerCase().includes(query.static.toLowerCase())
+    );
+
+    return distributionsToCards(filtered, isMobile, "NONE", true);
+  }
 
   const renderedDistributions = distributionsToCards(
     formattedDistributions,
@@ -84,9 +94,15 @@ export default function Class({ classData }) {
           <Heading mt={4}>
             {className}: {classDesc}
           </Heading>
-          <Text mb={4} mt={2} opacity={0.8}>
-            <NextLink href={`/dept/${classData.dept_abbr}`} passHref>
-              <ChakraLink>View {classData.dept_name} Department</ChakraLink>
+          <Text
+            mb={4}
+            mt={2}
+            opacity={0.8}
+            display={"inline-block"}
+            _hover={{ textDecoration: "underline" }}
+          >
+            <NextLink href={`/dept/${classData.dept_abbr}`}>
+              View {classData.dept_name} Department
             </NextLink>
           </Text>
           <VStack spacing={4} align={"start"} pb={4} minH={"60vh"}>
@@ -107,7 +123,7 @@ export default function Class({ classData }) {
   );
 }
 
-export async function getServerSideProps({ res, params }) {
+export async function getServerSideProps({ res, params, query }) {
   res.setHeader(
     "Cache-Control",
     `public, s-maxage=${60 * 60 * 24 * 7}, stale-while-revalidate=${
@@ -127,7 +143,7 @@ export async function getServerSideProps({ res, params }) {
 
   const info = await getClassInfo(classCode);
 
-  if (info.length === 0) {
+  if (info.length === 0 && !query.static) {
     return {
       redirect: {
         destination: `/?q=${classCode}`,
@@ -135,8 +151,24 @@ export async function getServerSideProps({ res, params }) {
       },
     };
   }
+  if (info.length === 0 && query.static) {
+    return {
+      notFound: true,
+    };
+  }
 
   const distributions = await getDistribution(classCode);
+
+  if (query.static && query.static !== "all") {
+    const filtered = distributions.filter((dist) =>
+      dist.professor_name.toLowerCase().includes(query.static.toLowerCase())
+    );
+    if (filtered.length === 0) {
+      return {
+        notFound: true,
+      };
+    }
+  }
 
   return {
     props: {
@@ -144,6 +176,7 @@ export async function getServerSideProps({ res, params }) {
         ...info[0],
         distributions,
       },
+      query,
     },
   };
 }
