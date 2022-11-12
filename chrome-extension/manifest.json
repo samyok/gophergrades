@@ -1,0 +1,31 @@
+{
+  "name": "GopherGrades - View past grades for UMN classes!",
+  "version": "1.0",
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.umn.edu/*"],
+      "css": ["sidebar/sidebar.css"],
+      "js": ["sidebar/sidebar.js"]
+    }
+  ],
+  "action": {
+    "default_title": "GopherGrades - use on Schedule Builder or OneStop!",
+    "default_popup": "popups/popup.html",
+    "default_icon": {
+      "32": "icons/icon-32.png",
+      "72": "icons/icon-72.png",
+      "128": "icons/icon-128.png",
+      "512": "icons/icon-512.png"
+    }
+  },
+  "icons": {
+    "32": "icons/icon-32.png",
+    "72": "icons/icon-72.png",
+    "128": "icons/icon-128.png",
+    "512": "icons/icon-512.png"
+  }
+}
