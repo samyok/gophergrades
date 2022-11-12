@@ -2,6 +2,13 @@ import pandas as pd
 from collections import Counter
 from db.Models import *
 from mapping.dept_name import mapping
+import requests
+import json
+
+CACHED_REQ={}
+CACHED_LINK=""
+CURRENT_TERM = 1233
+missing_list = []
 
 def process_class(x):
     num_sems = x["TERM"].nunique()
@@ -60,10 +67,52 @@ def process_class(x):
     session.commit()
     
 
-df = pd.read_csv("combined_clean_data.csv",dtype={"CLASS_SECTION":str})
+def fetch_asr(dept_dist):
+    global CACHED_LINK
+    global CACHED_REQ
+    global CURRENT_TERM
+    global missing_list
+    dept = dept_dist.dept_abbr
 
-# print(df[(df["FULL_NAME"]=="CSCI 2021") & (df["HR_NAME"]=="Kauffman,Christopher Daniel")].groupby("TERM").nunique().sum())
-# print(df[(df["HR_NAME"] == "James Moen") | (df["HR_NAME"] == "Moen, James")]["FULL_NAME"].unique())
-df.groupby(["FULL_NAME","HR_NAME"]).apply(process_class)
+    link=f"https://courses.umn.edu/campuses/UMNTC/terms/{CURRENT_TERM}/courses.json?q=subject_id={dept}"
 
-# professor = session.query(Professor).filter(Professor.name == "Kauffman,Christopher Daniel").first()
+    if link!=CACHED_LINK:
+        with requests.get(link) as url:
+            CACHED_LINK=link
+            try:
+                print(link)
+                CACHED_REQ=url.json()
+            except ValueError:
+                print("Json malformed, icky!")
+                CACHED_REQ={}
+                return
+    for course in CACHED_REQ["courses"]:
+        subj = course["subject"]["subject_id"]
+        nbr = course["catalog_number"]
+        class_dist = class_dist = session.query(ClassDistribution).filter(ClassDistribution.class_name == f"{subj} {nbr}").first()
+        if class_dist:
+            title = course["title"]
+            min_cred = course["credits_minimum"]
+            max_cred = course["credits_maximum"]
+            instr_list = set()
+            for section in course["sections"]:
+                for instructor in section["instructors"]:
+                    if instructor["role"] == "PI" and instructor["name"]:
+                        instr_list.add(instructor["name"])
+            if len(instr_list) > 0:
+                instr_list = ', '.join(sorted(list(instr_list)))
+            else:
+                instr_list = "No Professor Listed"
+            print(f"{subj} {nbr} : {title} | {min_cred} - {max_cred} credits taught by {instr_list}")
+        else:
+            missing_list.append(f"{subj} {nbr}")
+
+
+#df = pd.read_csv("combined_clean_data.csv",dtype={"CLASS_SECTION":str})
+#df.groupby(["FULL_NAME","HR_NAME"]).apply(process_class)
+
+dept_dists = session.query(DepartmentDistribution).all()
+for dept_dist in dept_dists:
+    fetch_asr(dept_dist)
+print(missing_list)
+
