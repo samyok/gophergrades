@@ -1,6 +1,7 @@
 import { Box, Spinner } from "@chakra-ui/react";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 export default function Card({
   children,
@@ -8,8 +9,10 @@ export default function Card({
   style,
   isSummary,
   onClick = () => {},
+  isStatic = false,
   ...props
 }) {
+  const router = useRouter();
   const [clicked, setClicked] = useState(false);
   const extraStyles = style || {};
   const hoverStyles = href
@@ -28,6 +31,13 @@ export default function Card({
         padding: "36px 20px",
       }
     : {};
+  const staticStyles = isStatic
+    ? {
+        padding: 0,
+        margin: 0,
+        boxShadow: "none",
+      }
+    : {};
   const card = (
     <Box
       background={"rgba(255,255,255,0.35)"}
@@ -37,15 +47,23 @@ export default function Card({
         borderRadius: 8,
         width: "100%",
         padding: "12px 20px",
-        // backdropFilter: "blur(10px)",
         position: "relative",
         textAlign: "left",
         ...summaryStyles,
         ...extraStyles,
+        ...staticStyles,
       }}
       _hover={hoverStyles}
       onClick={() => {
-        if (href) setClicked(true);
+        if (href && !isStatic) setClicked(true);
+        else if (isStatic) {
+          const path = router.asPath.split("?")[0];
+          window.parent.postMessage(
+            { url: `https://umn.lol${path}?ref=ext` },
+            "*"
+          );
+          onClick();
+        }
         onClick();
       }}
       {...props}
@@ -57,7 +75,7 @@ export default function Card({
     </Box>
   );
 
-  if (href)
+  if (href && !isStatic) {
     return (
       <Link
         href={href}
@@ -68,5 +86,6 @@ export default function Card({
         {card}
       </Link>
     );
+  }
   return card;
 }

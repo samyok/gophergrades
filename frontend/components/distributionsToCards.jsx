@@ -15,7 +15,8 @@ const sortingFunctions = {
 export const distributionsToCards = (
   array,
   isMobile,
-  sortingFunc = "AVERAGE_GPA"
+  sortingFunc = "AVERAGE_GPA",
+  isStatic = false
 ) =>
   array &&
   sortingFunctions[sortingFunc](
@@ -31,7 +32,8 @@ export const distributionsToCards = (
       <Card
         key={dist.distribution_id}
         isSummary={dist.isSummary}
-        href={dist.href}
+        href={isStatic ? "#" : dist.href}
+        isStatic={isStatic}
       >
         <HStack
           justify={"center"}
@@ -41,7 +43,7 @@ export const distributionsToCards = (
         >
           <VStack align={"start"} flexGrow={1} pb={4}>
             <Text fontSize={dist.isSummary ? "3xl" : "lg"} fontWeight={"bold"}>
-              {title}
+              {(!isStatic || !dist.isSummary) && title}
             </Text>
             <HStack>
               {dist.averageGPA > 0 && (
