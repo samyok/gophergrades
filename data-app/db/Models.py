@@ -47,7 +47,7 @@ class Professor(Base):
     __tablename__ = "professor"
     id = Column(Integer,primary_key=True)
     name = Column(VARCHAR(255),nullable=False)
-    RMP_score = Column(Float,nullable=False)
+    RMP_score = Column(Float,nullable=True)
     dists = relationship('Distribution',backref="prof")
 
     def __repr__(self) -> str:
