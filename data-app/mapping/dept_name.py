@@ -333,7 +333,6 @@ dept_mapping = {
     'WRS': 'Water Resources Science',
     'YOST': 'Youth Development and Research',
     }
-
 libed_mapping = {
     'AH': 'Arts/Humanities',
     'BIOL': 'Biological Sciences',
