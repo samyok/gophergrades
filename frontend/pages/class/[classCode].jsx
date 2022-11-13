@@ -4,11 +4,14 @@ import {
   Collapse,
   Divider,
   Heading,
-  Text,
+  Link as ChakraLink,
+  Stack,
+  Tag,
   useMediaQuery,
   VStack,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 import PageLayout from "../../components/Layout/PageLayout";
 import SearchBar from "../../components/Search/SearchBar";
 import { getClassInfo, getDistribution } from "../../lib/db";
@@ -16,11 +19,17 @@ import { distributionsToCards } from "../../components/distributionsToCards";
 import { useSearch } from "../../components/Search/useSearch";
 import SearchResults from "../../components/Search/SearchResults";
 
+const SPECIAL_TAGS = ["Honors", "Freshman Seminar"];
+
 export default function Class({ classData, query }) {
   const {
     class_name: className,
     class_desc: classDesc,
     distributions,
+    libEds,
+    onestop,
+    cred_min: creditMin,
+    cred_max: creditMax,
   } = classData;
   const [isMobile] = useMediaQuery("(max-width: 550px)");
   const {
@@ -66,6 +75,23 @@ export default function Class({ classData, query }) {
     isMobile
   );
 
+  const libEdTags = libEds
+    .sort(
+      (a, b) =>
+        SPECIAL_TAGS.includes(b.name) - SPECIAL_TAGS.includes(a.name) ||
+        a.name.localeCompare(b.name)
+    )
+    .map((libEd) => (
+      <Tag
+        key={libEd.id}
+        colorScheme={SPECIAL_TAGS.includes(libEd.name) ? "yellow" : "blue"}
+        variant={"solid"}
+        size={"sm"}
+      >
+        {libEd.name}
+      </Tag>
+    ));
+
   return (
     <PageLayout
       title={`${classDesc} (${className}) | GopherGrades`}
@@ -94,17 +120,27 @@ export default function Class({ classData, query }) {
           <Heading mt={4}>
             {className}: {classDesc}
           </Heading>
-          <Text
-            mb={4}
-            mt={2}
-            opacity={0.8}
-            display={"inline-block"}
-            _hover={{ textDecoration: "underline" }}
-          >
-            <NextLink href={`/dept/${classData.dept_abbr}`}>
-              View {classData.dept_name} Department
-            </NextLink>
-          </Text>
+          <Stack direction={["column", "row"]} mt={1} spacing={2} wrap={"wrap"}>
+            {creditMin !== null && (
+              <Tag size={"sm"}>
+                {creditMin + (creditMax > creditMin ? `-${creditMax}` : "")}{" "}
+                Credit{creditMax > 1 ? "s" : ""}
+              </Tag>
+            )}
+            {libEdTags}
+          </Stack>
+          <Stack my={4} direction={["column", "row"]}>
+            {onestop && (
+              <ChakraLink as={NextLink} href={onestop} isExternal>
+                OneStop
+                <ExternalLinkIcon mx={1} mb={1} />
+              </ChakraLink>
+            )}
+            <ChakraLink as={NextLink} href={`/dept/${classData.dept_abbr}`}>
+              {classData.dept_name} Department
+              <ExternalLinkIcon mx={1} mb={1} />
+            </ChakraLink>
+          </Stack>
           <VStack spacing={4} align={"start"} pb={4} minH={"60vh"}>
             {totalDistributions}
             <Divider
