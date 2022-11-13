@@ -2,12 +2,15 @@ import pandas as pd
 from collections import Counter
 from db.Models import *
 from mapping.dept_name import dept_mapping, libed_mapping
+from getRMP import *
 import requests
 from sqlalchemy import and_
 
 CACHED_REQ={}
 CACHED_LINK=""
 TERMS = [1233, 1229, 1225, 1223, 1219]
+generate_rmp()
+
 
 def process_class(x):
     num_sems = x["TERM"].nunique()
@@ -102,13 +105,16 @@ def fetch_asr(dept_dist,term):
 session.add_all([Libed(name=libed) for libed in libed_mapping.values()])
 session.commit()
 
-
+print("Beginning Insertion")
 df = pd.read_csv("combined_clean_data.csv",dtype={"CLASS_SECTION":str})
 df.groupby(["FULL_NAME","HR_NAME"]).apply(process_class)
+print("Finished Insertion")
 
 print("Inserting Libed Search")
 for term in TERMS:
     dept_dists = session.query(DepartmentDistribution).all()
     for dept_dist in dept_dists:
         fetch_asr(dept_dist, term)
+print("Finished Libed Search")
+
 

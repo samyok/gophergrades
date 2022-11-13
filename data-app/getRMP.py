@@ -18,6 +18,10 @@ def generate_rmp():
             for prof in profs:
                 name=prof["tFname"]+" "+prof["tLname"]
                 score=prof["overall_rating"]
+                if score == "N/A":
+                    score = float('nan')
+                else:
+                    float(score)
                 numOfRatings=prof["tNumRatings"]
                 dept=prof["tDept"]
                 print(f"[{pgNum}/{pages+1}]Getting {name} with {score} on RMP")
@@ -41,9 +45,4 @@ def getRMP(x):
     try:
         return RMP[name]["overallRatings"]
     except KeyError:
-        return "N/A"
-
-generate_rmp()
-df=pd.read_csv("combined_data.csv")
-df["RMP_SCORE"]=df["HR_NAME"].apply(getRMP)
-df.to_csv("RMP_combined_data.csv",index=False)
+        return float('nan')
