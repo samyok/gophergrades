@@ -1,8 +1,29 @@
-from sqlalchemy import Column, Integer, ForeignKey, VARCHAR, JSON, Float, create_engine
+from sqlalchemy import Column, Integer, SmallInteger, ForeignKey, VARCHAR, JSON, Float, Table, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, Session
 
 Base = declarative_base()
+
+libedAssociationTable = Table(
+    "libedAssociationTable",
+    Base.metadata,
+    Column("left_id", ForeignKey("libed.id"),primary_key=True),
+    Column("right_id", ForeignKey("classdistribution.id"),primary_key=True),
+)
+
+class Libed(Base):
+    __tablename__ = "libed"
+    id = Column(Integer,primary_key=True)
+    name = Column(VARCHAR(128),nullable=False)
+    class_dists = relationship('ClassDistribution',secondary=libedAssociationTable,back_populates="libeds")
+    def __str__(self) -> str:
+        retVal = f"Libed: {self.name}"
+        for class_dist in self.class_dists:
+            retVal += "\n" + str(class_dist)
+        return retVal       
+    def __repr__(self) -> str:
+        return f"Libed: {self.name}"
+
 
 class Distribution(Base):
     __tablename__ = "distribution"
@@ -43,8 +64,13 @@ class ClassDistribution(Base):
     class_desc = Column(VARCHAR(255),nullable=False)
     total_students = Column(Integer,nullable=False)
     total_grades = Column(JSON,nullable=False)
+    onestop = Column(VARCHAR(512),nullable=True)
+    cred_min = Column(SmallInteger,nullable=True)
+    cred_max = Column(SmallInteger,nullable=True)
+
     department_id = Column(Integer, ForeignKey('departmentdistribution.id',ondelete="CASCADE"))
     dists = relationship('Distribution',backref="classdist")
+    libeds = relationship('Libed',secondary=libedAssociationTable,back_populates="class_dists")
 
     def __str__(self) -> str:
         return f"{self.class_name}: {self.total_grades}"
@@ -68,7 +94,7 @@ class DepartmentDistribution(Base):
         return retVal
 
 
-engine = create_engine("sqlite:///../ProcessedData.db",future=True)
+engine = create_engine("sqlite:///../ProcessedData.db",echo=False,future=True)
 if __name__ == "__main__":
     Base.metadata.drop_all(engine)
 Base.metadata.create_all(engine)
