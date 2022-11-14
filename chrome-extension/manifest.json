@@ -1,7 +1,7 @@
 {
-  "name": "GopherGrades - Past grades for UMN classes!",
+  "name": "Gopher Grades - Past grades for UMN classes!",
   "description": "Now you can view directly from the course catalog!",
-  "version": "1.0",
+  "version": "1.1.0",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
@@ -16,7 +16,6 @@
   ],
   "action": {
     "default_title": "GopherGrades - use on Schedule Builder or OneStop!",
-    "default_popup": "popups/popup.html",
     "default_icon": {
       "32": "icons/icon-32.png",
       "72": "icons/icon-72.png",
