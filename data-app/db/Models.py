@@ -2,6 +2,13 @@ from sqlalchemy import Column, Integer, SmallInteger, ForeignKey, VARCHAR, JSON,
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, Session
 
+"""
+This file establishes the ORM for SqlAlchemy.
+
+Has definitions for Libeds, Distributions, Class Distributions, Professors, and Department Distributions.
+"""
+
+
 Base = declarative_base()
 
 libedAssociationTable = Table(
