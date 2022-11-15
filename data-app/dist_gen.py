@@ -138,7 +138,7 @@ session.commit()
 
 print("Beginning Insertion")
 # For each class taught by each professor insert it into the database.
-df = pd.read_csv("combined_clean_data.csv",dtype={"CLASS_SECTION":str})
+df = pd.read_csv("CLASS_DATA/combined_clean_data.csv",dtype={"CLASS_SECTION":str})
 df.groupby(["FULL_NAME","HR_NAME"]).apply(process_class)
 print("Finished Insertion")
 
