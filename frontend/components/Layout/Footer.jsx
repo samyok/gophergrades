@@ -79,7 +79,8 @@ export const Footer = () => {
           color={"gray.600"}
         >
           <NextLink href={"/"}>Gopher Grades</NextLink> is maintained by Social
-          Coding with data from Summer 2017 to Summer 2022 provided by the <Button
+          Coding with data from Summer 2017 to Summer 2022 provided by the{" "}
+          <Button
             variant={"link"}
             as={"a"}
             target={"_blank"}
@@ -87,7 +88,9 @@ export const Footer = () => {
             fontWeight={300}
             color={"gray.600"}
             href={"https://ogc.umn.edu/data-access-and-privacy"}
-        >Office of Data Access and Privacy</Button>
+          >
+            Office of Data Access and Privacy
+          </Button>
         </Text>
         <Button
           variant={"link"}
