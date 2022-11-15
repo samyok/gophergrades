@@ -138,7 +138,7 @@ THIS WILL LIKELY NOT STAY CONSISTENT.
 """
 
 
-df = pd.read_csv("old_raw_data.csv",dtype={"CLASS_SECTION":str,"Unnamed: 14":str})
+df = pd.read_csv("CLASS_DATA/SUM2017-FALL2020_raw_data.csv",dtype={"CLASS_SECTION":str,"Unnamed: 14":str})
 # Unneeded Data
 del df["INSTITUTION"]
 del df["CAMPUS"]
@@ -158,4 +158,4 @@ df["CLASS_SECTION"] = df["CLASS_SECTION"].apply(lambda x: x.zfill(3))
 df = df.groupby(["TERM","FULL_NAME","CLASS_SECTION"],group_keys=False).apply(fetch_unknown_prof)
 df["HR_NAME"] = df["HR_NAME"].apply(format_name)
 print(df)
-df.to_csv("old_cleaned_data.csv",index=False)
+df.to_csv("CLASS_DATA/SUM2017-FALL2020_cleaned_data.csv",index=False)

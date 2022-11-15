@@ -41,6 +41,6 @@ def fetch_better_descr(x):
         return x
 
 if __name__ == "__main__":
-    df = pd.read_csv("combined_data.csv",dtype={"CLASS_SECTION":str})
+    df = pd.read_csv("CLASS_DATA/combined_data.csv",dtype={"CLASS_SECTION":str})
     df = df.groupby("FULL_NAME",group_keys=False).apply(fetch_better_descr)
-    df.to_csv("combined_clean_data.csv",index=False)
+    df.to_csv("CLASS_DATA/combined_clean_data.csv",index=False)
