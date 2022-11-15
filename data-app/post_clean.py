@@ -1,7 +1,10 @@
 import pandas as pd
-import html as h
 import json 
 import requests
+
+"""
+    TODO: Move function over to dist_gen and operate on database instead.
+"""
 
 def fetch_better_descr(x):
     global CACHED_REQ

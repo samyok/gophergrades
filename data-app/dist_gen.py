@@ -6,13 +6,32 @@ from getRMP import *
 import requests
 from sqlalchemy import and_
 
+"""
+    This file handles post-processing the cleaned data and feature engineering. Run this once you've
+    properly cleaned and combined the old and new data. Keep in mind that you'll need to update the constants below.
+    It is in this file where we associate classes with their libeds, their onestop, and their credits. Additionally,
+    we also associate professors with their RMP score should it be found. Lastly, this is also where we will utilize
+    the SRT data to gain more information about classes.
+"""
+
+# Worry not about the CACHED variables, this is simply to help store previous requests in order to prevent redundant calls to an API
 CACHED_REQ={}
 CACHED_LINK=""
+# TERMS should hold the value of the next 2 terms, current term, and past 2 term in decreasing order.
 TERMS = [1233, 1229, 1225, 1223, 1219]
+# Runs the generate function to fetch data from API
+# TODO: Potential switch to GraphQL API?
 generate_rmp()
 
 
-def process_class(x):
+def process_class(x: pd.Dataframe) -> None:
+    """
+    On a grouped element by FULL_NAME and HR_NAME (individual class taught by a specific professor) it will generate
+    a distribution and associate it with the appropriate class distribution and professor. Should neither of those two exist
+    then it will create them as well. If the department of the class doesn't exist then that will be created.
+
+    :type x: pd.Dataframe
+    """
     num_sems = x["TERM"].nunique()
     prof_name = x["HR_NAME"].iloc[0]
     class_name = x["FULL_NAME"].iloc[0]
@@ -68,7 +87,18 @@ def process_class(x):
     session.commit()
     
 
-def fetch_asr(dept_dist,term):
+def fetch_asr(dept_dist:DepartmentDistribution,term:int) -> None:
+    """
+    Uses the ASR Api: https://github.com/umn-asr/courses
+    to fetch class information for relavent classes, classes that are recently being conducted +- 2 terms
+    from current semester. This is because these are the bounds of data held by the server, any before or
+    futher are not guarenteed to be found. 
+
+    :param dept_dist: The department distribution that we might modify depending on the results returned.
+    :type dept_dist: DepartmentDistribution
+    :param term: A term id
+    :type term: int
+    """
     global CACHED_LINK
     global CACHED_REQ
     dept = dept_dist.dept_abbr
@@ -102,15 +132,19 @@ def fetch_asr(dept_dist,term):
 
 
 
+# Add all libeds as defined in libed_mapping. This is a constant addition as there are a finite amount of libed requirements.
 session.add_all([Libed(name=libed) for libed in libed_mapping.values()])
 session.commit()
 
 print("Beginning Insertion")
+# For each class taught by each professor insert it into the database.
 df = pd.read_csv("combined_clean_data.csv",dtype={"CLASS_SECTION":str})
 df.groupby(["FULL_NAME","HR_NAME"]).apply(process_class)
 print("Finished Insertion")
 
 print("Inserting Libed Search")
+# For each term, search every department's classes and insert information regarding credits, libeds, onestop link, etc
+# IF the class distribution has not already been modified.
 for term in TERMS:
     dept_dists = session.query(DepartmentDistribution).all()
     for dept_dist in dept_dists:
