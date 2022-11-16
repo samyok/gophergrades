@@ -5,10 +5,21 @@ import re
 import json
 import sys
 
+# Worry not about the CACHED variables, this is simply to help store previous requests in order to prevent redundant calls to an API
 CACHED_REQ={}
 CACHED_LINK=""
 
-def fetch_unknown_prof(x):
+def fetch_unknown_prof(x:pd.DataFrame) -> pd.DataFrame:
+    """
+    Given a dataframe with grouped Term, Class Name, and Section number trace back on the classinfo API
+    to find the true lecturer. The purpose of this function is to ensure that TAs are not listed as lecturers
+    on the site. Additionally, this corrects information in case the university does not provide information regarding a lecturer.
+
+    :param x: The grouping of Term, Class Name, and Section
+    :type x: pd.DataFrame
+    :return: A new same sized dataframe with updated professor name, "Unknown Professor", or no change.
+    :rtype: pd.DataFrame
+    """
     global CACHED_REQ
     global CACHED_LINK
     dept = x["SUBJECT"].iloc[0]
@@ -78,7 +89,17 @@ def fetch_unknown_prof(x):
         x["HR_NAME"] = professor
         return x
 
-def format_name(x):
+def format_name(x: str):
+    """
+    Given a string it will use the HumanName library to parse it to better consolidate names. 
+    Names vary wildly, so not all issues will be corrected some may have to be manually identified and
+    cleaned at the worst case.
+
+    :param x: A string that represents a name
+    :type x: str
+    :return: A parsed string that is formated with a First and Last name.
+    :rtype: _type_
+    """
     if not x == "Unknown Professor":
         name = HumanName(x)
         name.string_format = "{first} {last}"
@@ -87,7 +108,17 @@ def format_name(x):
         retVal = x
     return retVal
 
-def term_desc_to_val(x):
+def term_desc_to_val(x:pd.Dataframe):
+    """
+    This function is technically feature engineering. New data from the university might not have
+    term ids and only a term description. The purpose of this function is to add that to the dataframe grouped by
+    Term Description.
+
+    :param x: The dataframe grouped by term description
+    :type x: _type_
+    :return: The new dataframe with a series of data all containing the proper term mapping.
+    :rtype: _type_
+    """
     mapping = {
         "Fall 2020": 1209,
         "Spr 2021" : 1213,
@@ -100,7 +131,14 @@ def term_desc_to_val(x):
     return x
 
 
-df = pd.read_csv("old_raw_data.csv",dtype={"CLASS_SECTION":str,"Unnamed: 14":str})
+"""
+WARNING:
+ANY CODE BEYOND THIS POINT IS VOLATILE AND MAY CHANGE DEPENDING ON THE DATA PROVIDED TO US BY THE UNIVERSITY
+THIS WILL LIKELY NOT STAY CONSISTENT.
+"""
+
+
+df = pd.read_csv("CLASS_DATA/SUM2017-FALL2020_raw_data.csv",dtype={"CLASS_SECTION":str,"Unnamed: 14":str})
 # Unneeded Data
 del df["INSTITUTION"]
 del df["CAMPUS"]
@@ -120,4 +158,4 @@ df["CLASS_SECTION"] = df["CLASS_SECTION"].apply(lambda x: x.zfill(3))
 df = df.groupby(["TERM","FULL_NAME","CLASS_SECTION"],group_keys=False).apply(fetch_unknown_prof)
 df["HR_NAME"] = df["HR_NAME"].apply(format_name)
 print(df)
-df.to_csv("old_cleaned_data.csv",index=False)
+df.to_csv("CLASS_DATA/SUM2017-FALL2020_cleaned_data.csv",index=False)

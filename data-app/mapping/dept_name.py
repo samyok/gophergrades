@@ -1,3 +1,9 @@
+"""
+This file has constant definitions for mappings from deptartment abbreviations to their actual name,
+libed mapping from their abbreviations to actual name, and grade mapping from letters to GPA.
+These may need to be edited manually on the creation of new departments, or changes to libed names but
+these are infrequent and can be done by hand.
+"""
 dept_mapping = {
     'AAS': 'Asian American Studies',
     'ABUS': 'Applied Business',
@@ -350,4 +356,18 @@ libed_mapping = {
     'WI': 'Writing Intensive',
     'HON': 'Honors',
     'FR SEMINAR': 'Freshman Seminar'
+}
+grade_mapping = {
+    'A+': 4.3,
+    'A': 4.0,
+    'A-': 3.667,
+    'B+': 3.333,
+    'B': 3.0,
+    'B-': 2.667,
+    'C+': 2.333,
+    'C': 2.0,
+    'C-': 1.667,
+    'D+': 1.333,
+    'D': 1.0,
+    'F': 0
 }
