@@ -1,5 +1,6 @@
 import pandas as pd
 from collections import Counter
+import html as h
 from db.Models import *
 from mapping.dept_name import dept_mapping, libed_mapping
 from getRMP import *
@@ -23,14 +24,13 @@ TERMS = [1233, 1229, 1225, 1223, 1219]
 # TODO: Potential switch to GraphQL API?
 generate_rmp()
 
-
-def process_class(x: pd.Dataframe) -> None:
+def process_class(x: pd.DataFrame) -> None:
     """
     On a grouped element by FULL_NAME and HR_NAME (individual class taught by a specific professor) it will generate
     a distribution and associate it with the appropriate class distribution and professor. Should neither of those two exist
     then it will create them as well. If the department of the class doesn't exist then that will be created.
 
-    :type x: pd.Dataframe
+    :type x: pd.DataFrame
     """
     num_sems = x["TERM"].nunique()
     prof_name = x["HR_NAME"].iloc[0]
@@ -66,9 +66,11 @@ def process_class(x: pd.Dataframe) -> None:
             dept = DepartmentDistribution(dept_abbr=dept_abbr,dept_name=dept_mapping.get(dept_abbr,"Unknown Department"))
             session.add(dept)
             session.flush()
+            print(f"Created New Department: {dept.dept_abbr} : {dept.dept_name}")
         class_dist = ClassDistribution(class_name=class_name,class_desc=class_descr,total_students=num_students,total_grades=grade_hash,department_id=dept.id)
         session.add(class_dist)
         session.flush()
+        print(f"Created New Class Distribution {class_dist.class_name} : {class_dist.class_desc}")
     else:
         class_dist.total_grades = Counter(class_dist.total_grades) + Counter(grade_hash)
         class_dist.total_students += num_students
@@ -77,6 +79,7 @@ def process_class(x: pd.Dataframe) -> None:
         professor = Professor(name=prof_name,RMP_score=getRMP(prof_name))
         session.add(professor)
         session.flush()
+        print(f"Added New Professor {professor.name} : {professor.RMP_score} stars on RMP")
         professor = professor.id
     elif prof_name != "Unknown Professor":
         professor = prof_query.id
@@ -86,6 +89,36 @@ def process_class(x: pd.Dataframe) -> None:
     session.add(dist)
     session.commit()
     
+def fetch_better_title(class_dist):
+    global CACHED_REQ
+    global CACHED_LINK
+    dept = class_dist.dept.dept_abbr
+    catalog_nbr = class_dist.class_name.split(" ")[1]
+    level=catalog_nbr[0]
+
+    link=f"http://classinfo.umn.edu/?subject={dept}&level={level}&json=1"
+
+    if link!=CACHED_LINK:
+        with requests.get(link) as url:
+            CACHED_LINK=link
+            try:
+                decodedContent=url.content.decode("latin-1")
+                CACHED_REQ=json.loads(decodedContent,strict=False)
+            except ValueError:
+                print("Json malformed, icky!")
+                CACHED_REQ={}
+                return
+
+    #Go through lectures and find professors
+    for key in sorted(CACHED_REQ.keys(),reverse=True):
+        splits = key.split("-")
+        if splits[1] == dept and splits[2] == catalog_nbr and "Class Title" in CACHED_REQ[key]:
+            class_dist.class_desc = h.unescape(CACHED_REQ[key]["Class Title"])
+            print(f"Updated | {class_dist.class_name}: {class_dist.class_desc}")
+            session.commit()
+            return
+    else:
+        print(f"Not Found | {class_dist.class_name}: {class_dist.class_desc}")
 
 def fetch_asr(dept_dist:DepartmentDistribution,term:int) -> None:
     """
@@ -127,6 +160,7 @@ def fetch_asr(dept_dist:DepartmentDistribution,term:int) -> None:
                 if attribute["family"] in ["CLE","HON","FSEM"]:
                     libed_dist = session.query(Libed).filter(Libed.name == libed_mapping[attribute['attribute_id']]).first()
                     libed_dist.class_dists.append(class_dist)
+            print(f"Updated {class_dist.class_name} ({class_dist.onestop}) : [{class_dist.cred_min} - {class_dist.cred_max}] credits : Libeds: ({class_dist.libeds})")
         session.commit()
             
 
@@ -136,11 +170,18 @@ def fetch_asr(dept_dist:DepartmentDistribution,term:int) -> None:
 session.add_all([Libed(name=libed) for libed in libed_mapping.values()])
 session.commit()
 
+
 print("Beginning Insertion")
 # For each class taught by each professor insert it into the database.
 df = pd.read_csv("CLASS_DATA/combined_clean_data.csv",dtype={"CLASS_SECTION":str})
 df.groupby(["FULL_NAME","HR_NAME"]).apply(process_class)
 print("Finished Insertion")
+
+print("Beginning Title Search")
+class_dists = session.query(ClassDistribution).all()
+for class_dist in class_dists:
+    fetch_better_title(class_dist)
+print("Finished Title Search")
 
 print("Inserting Libed Search")
 # For each term, search every department's classes and insert information regarding credits, libeds, onestop link, etc
