@@ -5,10 +5,12 @@ const dbPath = path.resolve(process.cwd(), "../ProcessedData.db");
 
 const db = new Database(dbPath, OPEN_READONLY);
 
-const tryJSONParse = (str) => {
+const tryJSONParse = (str, err) => {
   try {
-    return JSON.parse(str);
+    if (JSON.parse(str)) return JSON.parse(str);
+    return err;
   } catch (e) {
+    if (err) return err;
     return str;
   }
 };
@@ -17,6 +19,7 @@ const parseJSONFromRow = (row) => {
   const newRow = { ...row };
   if (row.grades) newRow.grades = tryJSONParse(row.grades);
   if (row.total_grades) newRow.total_grades = tryJSONParse(row.total_grades);
+  if (row.libEds !== undefined) newRow.libEds = tryJSONParse(row.libEds, []);
   return newRow;
 };
 
@@ -59,7 +62,11 @@ export const getClassInfo = async (classCode) => {
   const sql = `
       SELECT *
       FROM classdistribution
-      LEFT JOIN departmentdistribution d on classdistribution.department_id = d.id
+               LEFT JOIN departmentdistribution d on classdistribution.department_id = d.id
+               LEFT JOIN (SELECT lat.right_id,json_group_array(json_object('name', l.name, 'id', lat.left_id)) as libEds
+                          FROM libedAssociationTable lat
+                                   LEFT JOIN libEd l ON lat.left_id = l.id
+                          GROUP BY right_id) libEds on classdistribution.id = libEds.right_id
       WHERE REPLACE(class_name, ' ', '') = REPLACE($class_name, ' ', '')`;
 
   const params = {
