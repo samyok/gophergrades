@@ -339,3 +339,35 @@ dept_mapping = {
     'WRS': 'Water Resources Science',
     'YOST': 'Youth Development and Research',
     }
+libed_mapping = {
+    'AH': 'Arts/Humanities',
+    'BIOL': 'Biological Sciences',
+    'CIV': 'Civic Life and Ethics',
+    'ENV': 'Environment',
+    'GP': 'Global Perspectives',
+    'IP': 'International Perspective Theme',
+    'HIS': 'Historical Perspectives',
+    'LITR': 'Literature',
+    'MATH': 'Mathematical Thinking',
+    'PHYS': 'Physical Sciences',
+    'DSJ': 'Race, Power, and Justice in the United States',
+    'SOCS': 'Social Sciences',
+    'TS': 'Technology and Society',
+    'WI': 'Writing Intensive',
+    'HON': 'Honors',
+    'FR SEMINAR': 'Freshman Seminar'
+}
+grade_mapping = {
+    'A+': 4.3,
+    'A': 4.0,
+    'A-': 3.667,
+    'B+': 3.333,
+    'B': 3.0,
+    'B-': 2.667,
+    'C+': 2.333,
+    'C': 2.0,
+    'C-': 1.667,
+    'D+': 1.333,
+    'D': 1.0,
+    'F': 0
+}
