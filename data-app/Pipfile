@@ -9,6 +9,7 @@ openpyxl = "*"
 sqlalchemy = "*"
 requests = "*"
 nameparser = "*"
+scipy = "*"
 
 [dev-packages]
 

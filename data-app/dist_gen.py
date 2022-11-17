@@ -4,6 +4,7 @@ import html as h
 from db.Models import *
 from mapping.dept_name import dept_mapping, libed_mapping
 from getRMP import *
+from gen_srt import srt_frame
 import requests
 from sqlalchemy import and_
 
@@ -89,6 +90,20 @@ def process_class(x: pd.DataFrame) -> None:
     session.add(dist)
     session.commit()
     
+def srt_updating(row):
+    class_dist = session.query(ClassDistribution).filter(ClassDistribution.class_name == row["FULL_NAME"]).first()
+    if class_dist:
+        class_dist.deep_und = row["DEEP_UND"]
+        class_dist.stim_int = row["STIM_INT"]
+        class_dist.tech_eff = row["TECH_EFF"]
+        class_dist.acc_sup = row["ACC_SUP"]
+        class_dist.effort = row["EFFORT"]
+        class_dist.grad_stand = row["GRAD_STAND"]
+        class_dist.reccomend = row["RECC"]
+        class_dist.responses = row["RESP"]
+        session.commit()
+        print(f"Updated {row['FULL_NAME']} with SRT Data.")
+
 def fetch_better_title(class_dist):
     global CACHED_REQ
     global CACHED_LINK
@@ -162,9 +177,6 @@ def fetch_asr(dept_dist:DepartmentDistribution,term:int) -> None:
                     libed_dist.class_dists.append(class_dist)
             print(f"Updated {class_dist.class_name} ({class_dist.onestop}) : [{class_dist.cred_min} - {class_dist.cred_max}] credits : Libeds: ({class_dist.libeds})")
         session.commit()
-            
-
-
 
 # Add all libeds as defined in libed_mapping. This is a constant addition as there are a finite amount of libed requirements.
 session.add_all([Libed(name=libed) for libed in libed_mapping.values()])
@@ -176,6 +188,10 @@ print("Beginning Insertion")
 df = pd.read_csv("CLASS_DATA/combined_clean_data.csv",dtype={"CLASS_SECTION":str})
 df.groupby(["FULL_NAME","HR_NAME"]).apply(process_class)
 print("Finished Insertion")
+
+print("Beginning SRT Updating")
+srt_frame().apply(srt_updating,axis=1)
+print("Finished SRT Updating")
 
 print("Beginning Title Search")
 class_dists = session.query(ClassDistribution).all()
