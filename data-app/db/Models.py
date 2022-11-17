@@ -71,9 +71,19 @@ class ClassDistribution(Base):
     class_desc = Column(VARCHAR(255),nullable=False)
     total_students = Column(Integer,nullable=False)
     total_grades = Column(JSON,nullable=False)
+    # ASR VALS
     onestop = Column(VARCHAR(512),nullable=True)
     cred_min = Column(SmallInteger,nullable=True)
     cred_max = Column(SmallInteger,nullable=True)
+    # SRT VALS
+    deep_und = Column(Float,nullable=True)
+    stim_int = Column(Float,nullable=True)
+    tech_eff = Column(Float,nullable=True)
+    acc_sup = Column(Float,nullable=True)
+    effort = Column(Float,nullable=True)
+    grad_stand = Column(Float,nullable=True)
+    reccomend = Column(Float,nullable=True)
+    responses = Column(Integer,nullable=True)
 
     department_id = Column(Integer, ForeignKey('departmentdistribution.id',ondelete="CASCADE"))
     dists = relationship('Distribution',backref="classdist")
