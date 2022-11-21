@@ -6,7 +6,7 @@ import PageLayout from "../components/Layout/PageLayout";
 const REASONS = {
   "listed.":
     "No instructor listed on the schedule yet, so we don't have any data for them.",
-  all: "No data for this class. Maybe it's a new class, or it got renamed?",
+  all: "No data for this course. It may be new or recently renamed.",
   default: "No GopherGrades data here :(",
 };
 
