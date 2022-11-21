@@ -1,6 +1,7 @@
 import pandas as pd
 from collections import Counter
 import html as h
+import json
 from db.Models import *
 from mapping.dept_name import dept_mapping, libed_mapping
 from getRMP import *
@@ -23,7 +24,6 @@ CACHED_LINK=""
 TERMS = [1233, 1229, 1225, 1223, 1219]
 # Runs the generate function to fetch data from API
 # TODO: Potential switch to GraphQL API?
-generate_rmp()
 
 def process_class(x: pd.DataFrame) -> None:
     """
@@ -77,7 +77,8 @@ def process_class(x: pd.DataFrame) -> None:
         class_dist.total_students += num_students
     prof_query = session.query(Professor).filter(Professor.name == prof_name).first()
     if prof_name != "Unknown Professor" and prof_query == None:
-        professor = Professor(name=prof_name,RMP_score=getRMP(prof_name))
+        RMP_info = getRMP(prof_name)
+        professor = Professor(name=prof_name,RMP_score=RMP_info[0],RMP_diff=RMP_info[1],RMP_link=RMP_info[2])
         session.add(professor)
         session.flush()
         print(f"Added New Professor {professor.name} : {professor.RMP_score} stars on RMP")

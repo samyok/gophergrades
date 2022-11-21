@@ -55,6 +55,9 @@ class Professor(Base):
     id = Column(Integer,primary_key=True)
     name = Column(VARCHAR(255),nullable=False)
     RMP_score = Column(Float,nullable=True)
+    RMP_diff = Column(Float,nullable=True)
+    RMP_link = Column(VARCHAR(512),nullable=True)
+
     dists = relationship('Distribution',backref="prof")
 
     def __repr__(self) -> str:
