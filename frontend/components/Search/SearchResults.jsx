@@ -1,17 +1,14 @@
 import {
-  Alert,
-  Badge,
   Collapse,
   Heading,
   Spinner,
-  Link as ChakraLink,
   useMediaQuery,
   VStack,
-  Text,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import Card from "../Card";
 import { searchDurations } from "../../lib/config";
+import ChromeExtensionBanner from "../ChromeExtensionBanner";
 
 const Classes = ({ searchResults, onClick }) => {
   if (
@@ -132,28 +129,10 @@ export default function SearchResults({
             width: "100%",
           }}
         >
-          <Alert
-            borderRadius={"lg"}
-            colorScheme={"blackAlpha"}
-            variant={"left-accent"}
-            cursor={"pointer"}
-            _hover={{ opacity: 0.9 }}
-            as={"button"}
-            onClick={() => {
-              setShowAlert(false);
-              window.open("/chrome", "_blank");
-              window.umami?.trackEvent("download", "chrome.search");
-              window.localStorage.setItem("downloadedChromeExtension", "true");
-            }}
-          >
-            <Badge mr={2} colorScheme={"purple"} variant={"solid"}>
-              New
-            </Badge>
-            <Text>
-              See grades directly in ScheduleBuilder with our{" "}
-              <ChakraLink>new Chrome extension</ChakraLink>!
-            </Text>
-          </Alert>
+          <ChromeExtensionBanner
+            source={"chrome.search"}
+            setShowAlert={setShowAlert}
+          />
         </Collapse>
         {/* no results box: */}
         {searchResults !== null &&

@@ -1,7 +1,5 @@
 import React from "react";
 import {
-  Alert,
-  AlertIcon,
   Box,
   chakra,
   Collapse,
@@ -15,6 +13,7 @@ import SearchBar from "../components/Search/SearchBar";
 import SearchResults from "../components/Search/SearchResults";
 import { useSearch } from "../components/Search/useSearch";
 import { searchDurations } from "../lib/config";
+import ChromeExtensionBanner from "../components/ChromeExtensionBanner";
 
 const Home = () => {
   const {
@@ -77,15 +76,7 @@ const Home = () => {
             />
           </Box>
           <Collapse in={showPage} animateOpacity>
-            <Alert
-              status={"success"}
-              mt={2}
-              variant={"subtle"}
-              borderRadius={"lg"}
-            >
-              <AlertIcon />
-              Now updated through Summer 2022!
-            </Alert>
+            <ChromeExtensionBanner source={"chrome.index"} />
           </Collapse>
         </VStack>
         <Box ml={[0, -200, -75]} zIndex={-1} alignSelf={"center"}>
