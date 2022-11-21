@@ -10,6 +10,11 @@ const nextConfig = {
           "https://chrome.google.com/webstore/detail/gophergrades-past-grades/lhekbajaehiokcacoaeicphgdnmeaedp",
         permanent: true,
       },
+      {
+        source: "/social-coding",
+        destination: "https://discord.gg/ctcXWjUJqZ",
+        permanent: true,
+      },
     ];
   },
 };

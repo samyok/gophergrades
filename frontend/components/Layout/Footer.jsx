@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useEffect, useState } from "react";
+import LinkButton from "../LinkButton";
 
 const getContributors = async () => {
   return fetch("/api/contributors").then((r) => r.json());
@@ -78,30 +79,26 @@ export const Footer = () => {
           fontWeight={300}
           color={"gray.600"}
         >
-          <NextLink href={"/"}>Gopher Grades</NextLink> is maintained by Social
-          Coding with data from Summer 2017 to Summer 2022 provided by the{" "}
-          <Button
-            variant={"link"}
-            as={"a"}
+          <NextLink href={"/"}>Gopher Grades</NextLink> is maintained by{" "}
+          <LinkButton target={"_blank"} href={"/social-coding"}>
+            Social Coding
+          </LinkButton>{" "}
+          with data from Summer 2017 to Summer 2022 provided by the{" "}
+          <LinkButton
             target={"_blank"}
-            fontSize={"sm"}
-            fontWeight={300}
-            color={"gray.600"}
             href={"https://ogc.umn.edu/data-access-and-privacy"}
           >
             Office of Data Access and Privacy
-          </Button>
+          </LinkButton>
         </Text>
-        <Button
-          variant={"link"}
-          as={"a"}
+        <LinkButton
+          color={"gray.500"}
+          fontWeight={"300"}
           target={"_blank"}
           href={"https://gophergrades.com"}
-          fontSize={"sm"}
-          fontWeight={300}
         >
           Inspired by the original Gopher Grades project
-        </Button>
+        </LinkButton>
       </VStack>
     </Box>
   );
