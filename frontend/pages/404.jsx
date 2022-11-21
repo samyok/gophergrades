@@ -3,17 +3,28 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import PageLayout from "../components/Layout/PageLayout";
 
+const REASONS = {
+  "listed.":
+    "No instructor listed on the schedule yet, so we don't have any data for them.",
+  all: "No data for this class. Maybe it's a new class, or it got renamed?",
+  default: "No GopherGrades data here :(",
+};
+
 export default function NotFound() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-
+  const [reason, setReason] = useState(REASONS.default);
   const [email, setEmail] = useState("");
 
   useEffect(() => {
     window.addEventListener("message", (event) => {
       setEmail(event.data?.email ?? "unknown");
     });
+
+    const query = new URLSearchParams(window.location.search);
+    const r = REASONS[query.get("static") ?? "default"];
+    if (r) setReason(r);
   }, []);
 
   const onClick = async () => {
@@ -51,7 +62,7 @@ export default function NotFound() {
         mx={2}
       >
         <Heading mb={1} fontSize={"lg"}>
-          No GopherGrades data here :(
+          {reason}
         </Heading>
         <Text fontSize={"sm"}>
           Please click the report button if this is a mistake, and we&apos;ll be
