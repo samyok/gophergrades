@@ -13,7 +13,7 @@ const ChromeExtensionBanner = ({ setShowAlert = voidFunc, source }) => {
       onClick={() => {
         setShowAlert(false);
         window.open("/chrome", "_blank");
-        window.umami?.trackEvent("download", source);
+        window.umami?.trackEvent(source, "download");
         window.localStorage.setItem("downloadedChromeExtension", "true");
       }}
     >
