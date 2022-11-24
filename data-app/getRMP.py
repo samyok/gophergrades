@@ -4,7 +4,15 @@ from operator import concat
 import pandas as pd
 
 RMP=dict()
-def standardizeName(name):
+def standardizeName(name:str) -> str:
+    """
+    Cleans a name to match a pattern consistent with the data.
+
+    :param name: The input name that needs to be cleaned
+    :type name: str
+    :return: The cleaned name consistent with data.
+    :rtype: str
+    """
     splits=name.split(" ")
     mappedName=list(map((lambda x:x.split("-")),splits)) #[first,weird-last]->[[first],[weird,last]]
     hyphenSplit=reduce(concat,mappedName)#[[first],[weird,last]]->[first,weird,last]
@@ -15,7 +23,11 @@ def standardizeName(name):
         return name
 
 
-def getProfData():
+def getProfData() -> None:
+    """
+    Performs a query for all professor information and stores it in a global variable called RMP. This will be accessed by 
+    getRMP().
+    """
     global RMP
     url="https://www.ratemyprofessors.com/graphql"
     header={"authorization" : "Basic dGVzdDp0ZXN0"}
@@ -38,7 +50,16 @@ def getProfData():
                      "difficultly":t["avgDifficulty"],
                      "pgLink":link}
 
-def getRMP(x):
+def getRMP(x:str) -> tuple[float,float,str]:
+    """Given a name, return a tuple holding all the professor's information in a tuple with the following order:
+    (overall rating, difficulty rating, link to website). Should the professor not be found it will return a tuple
+    with all null values.
+
+    :param x: The professor's name
+    :type x: str
+    :return: A tuple containing (overall rating, difficulty rating, link to website)
+    :rtype: tuple[float,float,str]
+    """
     global RMP
     name=standardizeName(x)
     try:
