@@ -11,6 +11,16 @@
     height: 110px;
 }
 
+.gopher-grades-portal {
+    margin: 15px;
+    position: relative;
+    width: calc(100% - 30px);
+}
+
+.gopher-grades-portal .portal-label {
+    margin: 0 0 2px 0;
+}
+
 .table-responsive {
     overflow-y: hidden;
 }

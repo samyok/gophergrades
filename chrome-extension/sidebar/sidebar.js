@@ -40,6 +40,7 @@ const getInternetId = () => {
   return internetId;
 };
 
+// code to turn template string into an actual html element
 const htmlToElement = (html) => {
   const template = document.createElement("template");
   html = html.trim(); // Never return a text node of whitespace as the result
@@ -47,15 +48,30 @@ const htmlToElement = (html) => {
   return template.content.firstChild;
 };
 
-const template = `
+const iframeTemplate = `
 <div class="gopher-grades-container">
 <iframe class="gopher-grades-result-iframe"></iframe>
 </div>
 `;
 
+const iframePortalTemplate = (iframeId, courseName) => `
+<div class="gopher-grades-portal" id="${iframeId}">
+<h3 class="portal-label">${courseName}</h3>
+</div>
+`;
+
+const appendPortal = (iframeId, target, courseName) => {
+  const alreadyExists = document.querySelector(`#${iframeId}`);
+  if (alreadyExists) return alreadyExists;
+  const portal = htmlToElement(iframePortalTemplate(iframeId, courseName));
+  target.append(portal);
+  return portal;
+}
+
+// code to add the iframe to the page
 const prependFrame = (url, elem, direction = "prepend") => {
   if (elem.querySelector("iframe")) return;
-  const frameContainer = htmlToElement(template);
+  const frameContainer = htmlToElement(iframeTemplate);
   console.log("[GG] frameContainer", frameContainer);
   const frame = frameContainer.querySelector("iframe");
   frame.src = url.replace(/ /g, "");
@@ -66,12 +82,14 @@ const prependFrame = (url, elem, direction = "prepend") => {
       clearInterval(interval);
       return;
     }
-    frame.contentWindow.postMessage({ email: getInternetId() }, "*");
+    frame.contentWindow.postMessage({email: getInternetId()}, "*");
   }, 1000);
 };
 
+// if we need to go the other way, we can use this function (append instead of prepend)
 const appendFrame = (url, elem) => prependFrame(url, elem, "append");
 
+// find courses in the course list
 const debouncedFindCourses = debounce((courseList) => {
   // list all ".panel" elements in the course list
   const coursePanels = courseList.querySelectorAll(".panel");
@@ -87,11 +105,13 @@ const debouncedFindCourses = debounce((courseList) => {
   });
 }, 50);
 
+// if we're on the course list page (search), load the courses
 const loadCourses = (courseList) => {
   debouncedFindCourses(courseList);
   setTimeout(() => debouncedFindCourses(courseList), 200);
 };
 
+// if we're on the course info page, load the course with all the professors and sections
 const loadCourseInfo = (courseInfo) => {
   const courseTitle = courseInfo.querySelector("h2");
   const courseId = courseTitle.innerText.split(":")[0];
@@ -115,11 +135,39 @@ const loadCourseInfo = (courseInfo) => {
   });
 };
 
+// if we're on a built schedule, load the schedule
+const loadCourseSchedule = (courseSchedule) => {
+  const courses = Array.from(document.querySelectorAll("#schedule-courses tr:has(h4)"))
+    .map(tr =>
+      ({
+        courseId: tr.innerText
+          .trim()
+          .split(":")[0]
+          ?.replaceAll(" ", ""),
+        courseName: tr.innerText.trim(),
+        tr
+      })
+    );
+
+  console.log("[GG] scheduled courses", courses);
+  for (let i = 0; i < courses.length; i++) {
+    const {courseId, courseName} = courses[i];
+    const iframeTarget = document.querySelector("#app-main .col-xs-12");
+    const portal = appendPortal(courseId, iframeTarget, courseName);
+    const url = `${BASE_URL}/class/${courseId}?static=all`;
+    appendFrame(url, portal);
+  }
+}
+
 const onAppChange = () => {
   const courseList = document.querySelector(".course-list-results");
   const courseInfo = document.querySelector("#crse-info");
+  const courseSchedule = document.querySelector("#schedule-courses");
+
+  // determine which page we're on and load the appropriate data.
   if (courseList) loadCourses(courseList);
   else if (courseInfo) loadCourseInfo(courseInfo);
+  else if (courseSchedule) loadCourseSchedule(courseSchedule);
 };
 
 const onLoad = () => {
@@ -129,7 +177,7 @@ const onLoad = () => {
     onAppChange();
   });
 
-  appObserver.observe(app, { childList: true, subtree: true });
+  appObserver.observe(app, {childList: true, subtree: true});
 };
 
 window.addEventListener("load", onLoad);
