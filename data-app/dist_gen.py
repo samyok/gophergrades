@@ -1,9 +1,10 @@
 import pandas as pd
+import numpy as np
 from collections import Counter
 import html as h
 import json
 from db.Models import *
-from mapping.dept_name import dept_mapping, libed_mapping
+from mapping.mappings import dept_mapping, libed_mapping, term_to_name
 from getRMP import *
 from gen_srt import srt_frame
 import requests
@@ -25,19 +26,19 @@ TERMS = [1233, 1229, 1225, 1223, 1219]
 # Runs the generate function to fetch data from API
 # TODO: Potential switch to GraphQL API?
 
-def process_class(x: pd.DataFrame) -> None:
+def process_dist(x: pd.DataFrame) -> None:
     """
-    On a grouped element by FULL_NAME and HR_NAME (individual class taught by a specific professor) it will generate
+    On a grouped element by FULL_NAME, TERM, and HR_NAME (individual class taught by a specific professor) it will generate
     a distribution and associate it with the appropriate class distribution and professor. Should neither of those two exist
     then it will create them as well. If the department of the class doesn't exist then that will be created.
 
     :type x: pd.DataFrame
     """
-    num_sems = x["TERM"].nunique()
     prof_name = x["HR_NAME"].iloc[0]
     class_name = x["FULL_NAME"].iloc[0]
     dept_abbr = x["SUBJECT"].iloc[0]
     class_descr = x["DESCR"].iloc[0]
+    term = x["TERM"].iloc[0]
     grade_hash = {
         'A':0, 
         'A+':0,
@@ -57,17 +58,13 @@ def process_class(x: pd.DataFrame) -> None:
         'P':0,
         'W': 0
     }
-    grade_hash |= x.groupby("CRSE_GRADE_OFF")["GRADE_HDCNT"].sum().to_dict()
+    grade_hash = x.groupby("CRSE_GRADE_OFF")["GRADE_HDCNT"].sum().to_dict()
     num_students = sum(grade_hash.values())
     # Begin Insertion
     class_dist = session.query(ClassDistribution).filter(ClassDistribution.class_name == class_name).first()
     dept = session.query(DepartmentDistribution).filter(DepartmentDistribution.dept_abbr == dept_abbr).first()
+    prof = session.query(Professor).filter(Professor.name == prof_name).first() or session.query(Professor).filter(Professor.name == "Unlisted Professor").first()
     if class_dist == None:
-        if dept == None:
-            dept = DepartmentDistribution(dept_abbr=dept_abbr,dept_name=dept_mapping.get(dept_abbr,"Unknown Department"))
-            session.add(dept)
-            session.flush()
-            print(f"Created New Department: {dept.dept_abbr} : {dept.dept_name}")
         class_dist = ClassDistribution(class_name=class_name,class_desc=class_descr,total_students=num_students,total_grades=grade_hash,department_id=dept.id)
         session.add(class_dist)
         session.flush()
@@ -75,22 +72,45 @@ def process_class(x: pd.DataFrame) -> None:
     else:
         class_dist.total_grades = Counter(class_dist.total_grades) + Counter(grade_hash)
         class_dist.total_students += num_students
-    prof_query = session.query(Professor).filter(Professor.name == prof_name).first()
-    if prof_name != "Unknown Professor" and prof_query == None:
-        RMP_info = getRMP(prof_name)
-        professor = Professor(name=prof_name,RMP_score=RMP_info[0],RMP_diff=RMP_info[1],RMP_link=RMP_info[2])
-        session.add(professor)
-        session.flush()
-        print(f"Added New Professor {professor.name} : {professor.RMP_score} stars on RMP")
-        professor = professor.id
-    elif prof_name != "Unknown Professor":
-        professor = prof_query.id
-    else:
-        professor = None
-    dist = Distribution(students=num_students,terms=num_sems,grades=grade_hash,class_id=class_dist.id,professor_id=professor)
-    session.add(dist)
-    session.commit()
+
+    dist = session.query(Distribution).filter(Distribution.class_id == class_dist.id, Distribution.professor_id == prof.id).first()
     
+    if dist == None:
+        dist = Distribution(class_id = class_dist.id, professor_id = prof.id)
+        session.add(dist)
+        session.flush()
+        print(f"Created New Distribution Linking {class_dist.class_name} to {prof.name}")
+
+    if session.query(TermDistribution).filter(TermDistribution.term == term, TermDistribution.dist_id==dist.id).first() == None:
+        term_dist = TermDistribution(students=num_students,grades=grade_hash,dist_id=dist.id, term=int(term))
+        session.add(term_dist)
+        session.commit()
+        print(f"Added Distribution for {prof.name}'s {class_dist.class_name} for {term_to_name(term)} with {term_dist.students} students.")
+    
+def process_prof(prof_name:str):
+    professor = Professor(name=prof_name)
+    session.add(professor)
+    session.commit()
+    print(f"Added New Professor {professor.name}.")
+
+def RMP_Update():
+    profs = session.query(Professor).all()
+    for prof in profs:
+        RMP_info = getRMP(prof.name)
+        prof.RMP_score = RMP_info[0]
+        prof.RMP_diff = RMP_info[1]
+        prof.RMP_link = RMP_info[2]
+        print(f"Gave {prof.name} an RMP score of {prof.RMP_score}")
+    session.commit()
+
+def process_dept(dept_abbr:str):
+    dept = DepartmentDistribution(dept_abbr=dept_abbr,dept_name=dept_mapping.get(dept_abbr,"Unknown Department"))
+    session.add(dept)
+    session.commit()
+    print(f"Created New Department: {dept.dept_abbr} : {dept.dept_name}")
+
+    
+
 def srt_updating(row):
     class_dist = session.query(ClassDistribution).filter(ClassDistribution.class_name == row["FULL_NAME"]).first()
     if class_dist:
@@ -180,33 +200,62 @@ def fetch_asr(dept_dist:DepartmentDistribution,term:int) -> None:
         session.commit()
 
 # Add all libeds as defined in libed_mapping. This is a constant addition as there are a finite amount of libed requirements.
-session.add_all([Libed(name=libed) for libed in libed_mapping.values()])
-session.commit()
+if len(session.query(Libed).all()) == 0:
+    session.add_all([Libed(name=libed) for libed in libed_mapping.values()])
+    session.commit()
 
+if __name__ == "__main__":
+    df = pd.read_csv("CLASS_DATA/combined_clean_data.csv",dtype={"CLASS_SECTION":str})
+    print("Loaded Data!")
+    print("Adding Profs")
+    # Add All Professors Including an "Unlisted Professor" for non-attributed values to the Database
+    prof_list = np.array([prof.name for prof in session.query(Professor).all()])
+    data_list = np.vectorize(str.title)(df["HR_NAME"].unique())
+    diff_list = np.setdiff1d(data_list,prof_list)
+    if diff_list.size > 0:
+        print(f"Adding {len(diff_list)} new professors: {diff_list}")
+        np.vectorize(process_prof)(diff_list)
+    else:
+        print("No new professors found.")
+    
+    if session.query(Professor).filter(Professor.name == "Unlisted Professor").first() == None:
+        session.add(Professor(name="Unlisted Professor"))
+        session.commit()
 
-print("Beginning Insertion")
-# For each class taught by each professor insert it into the database.
-df = pd.read_csv("CLASS_DATA/combined_clean_data.csv",dtype={"CLASS_SECTION":str})
-df.groupby(["FULL_NAME","HR_NAME"]).apply(process_class)
-print("Finished Insertion")
+    print("Finished Prof Insertion")
 
-print("Beginning SRT Updating")
-srt_frame().apply(srt_updating,axis=1)
-print("Finished SRT Updating")
+    print("RMP Update For Professors")
+    RMP_Update()
+    print("RMP Updated")
 
-print("Beginning Title Search")
-class_dists = session.query(ClassDistribution).all()
-for class_dist in class_dists:
-    fetch_better_title(class_dist)
-print("Finished Title Search")
+    print("Adding Departments")
+    dept_list = np.array([dept.dept_abbr for dept in session.query(DepartmentDistribution).all()])
+    diff_list = np.setdiff1d(df["SUBJECT"].unique(),dept_list)
+    np.vectorize(process_dept)(diff_list)
+    print("Finished Department Insertion")
 
-print("Inserting Libed Search")
-# For each term, search every department's classes and insert information regarding credits, libeds, onestop link, etc
-# IF the class distribution has not already been modified.
-for term in TERMS:
-    dept_dists = session.query(DepartmentDistribution).all()
-    for dept_dist in dept_dists:
-        fetch_asr(dept_dist, term)
-print("Finished Libed Search")
+    print("Generating Distributions")
+    new_additions = df[~df["TERM"].isin(list(set(TermDist.term for TermDist in session.query(TermDistribution).all())))]
+    new_additions.groupby(["TERM","HR_NAME","FULL_NAME"],group_keys=False).apply(process_dist)
+    print("Finished Generating Distributions")
+
+    print("Beginning SRT Updating")
+    srt_frame().apply(srt_updating,axis=1)
+    print("Finished SRT Updating")
+
+    print("Beginning Title Search")
+    class_dists = session.query(ClassDistribution).order_by(ClassDistribution.class_name).all()
+    for class_dist in class_dists:
+        fetch_better_title(class_dist)
+    print("Finished Title Search")
+
+    print("Inserting Libed Search")
+    # For each term, search every department's classes and insert information regarding credits, libeds, onestop link, etc
+    # IF the class distribution has not already been modified.
+    for term in TERMS:
+        dept_dists = session.query(DepartmentDistribution).all()
+        for dept_dist in dept_dists:
+            fetch_asr(dept_dist, term)
+    print("Finished Libed Search")
 
 
