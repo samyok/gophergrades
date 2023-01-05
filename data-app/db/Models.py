@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, SmallInteger, ForeignKey, VARCHAR, JSON, Float, Table, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, Session
+from mapping.mappings import term_to_name
 
 """
 This file establishes the ORM for SqlAlchemy.
@@ -31,24 +32,33 @@ class Libed(Base):
     def __repr__(self) -> str:
         return f"Libed: {self.name}"
 
+class TermDistribution(Base):
+    __tablename__ = "termdistribution"
+    id = Column(Integer,primary_key=True)
+    dist_id = Column(Integer,ForeignKey('distribution.id',ondelete='CASCADE'),nullable=False)
+    students = Column(Integer,nullable=False)
+    term = Column(SmallInteger,nullable=False)
+    grades = Column(JSON,nullable=False)
+
+    def __str__(self) -> str:
+        return f"{self.dist.classdist.class_name} taught by {self.dist.prof.name} in {term_to_name(self.term)} for {self.students} students with a grade distribution of {self.grades}"
+    def __repr__(self) -> str:
+        return f"{self.dist.classdist.class_name} taught by {self.dist.prof.name} in {term_to_name(self.term)} for {self.students} students with a grade distribution of {self.grades}"
+
 
 class Distribution(Base):
     __tablename__ = "distribution"
     id = Column(Integer,primary_key=True)
-    students = Column(Integer,nullable=False)
-    terms = Column(Integer,nullable=False)
-    grades = Column(JSON,nullable=False)
     class_id = Column(Integer,ForeignKey('classdistribution.id',ondelete='CASCADE'),nullable=False)
     professor_id = Column(Integer,ForeignKey('professor.id',ondelete='CASCADE'),nullable=True)
     # There are ocassionally classes that do not have a professor listed, hence why this is nullable
     # It will be displayed as unlisted professor in class distributions.
+    term_dists = relationship('TermDistribution',backref="dist")
     def __str__(self) -> str:
-        return f"A class with {self.students} students, taught over {self.terms} terms with a distribution of {self.grades}."
+        return f"{self.classdist.class_name} taught by {self.prof.name} over {len(self.term_dists)} terms."
     def __repr__(self) -> str:
-        if self.prof:
-            return f"{self.classdist.class_name} taught by {self.prof.name} with {self.students} students over {self.terms} terms. Has a distribution of {self.grades}"
-        else: 
-            return f"{self.classdist.class_name} taught by an Unknown Professor with {self.students} students over {self.terms} terms. Has a distribution of {self.grades}"
+        return f"{self.classdist.class_name} taught by {self.prof.name} over {len(self.term_dists)} terms."
+        
 
 class Professor(Base):
     __tablename__ = "professor"
@@ -85,7 +95,7 @@ class ClassDistribution(Base):
     acc_sup = Column(Float,nullable=True)
     effort = Column(Float,nullable=True)
     grad_stand = Column(Float,nullable=True)
-    reccomend = Column(Float,nullable=True)
+    recommend = Column(Float,nullable=True)
     responses = Column(Integer,nullable=True)
 
     department_id = Column(Integer, ForeignKey('departmentdistribution.id',ondelete="CASCADE"))
