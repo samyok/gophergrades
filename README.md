@@ -1,3 +1,6 @@
+# Schedule Builder Hall Plotter
+This fork is dedicated to mapping out a user's day-to-day schedule from Schedule Builder to a map to provide insight on what their commute between/around campuses will look like.
+
 [![GopherGrades](frontend/public/images/home-og.png)](https://umn.lol)
 # GopherGrades v2!
 
