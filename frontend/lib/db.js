@@ -23,6 +23,44 @@ const parseJSONFromRow = (row) => {
   return newRow;
 };
 
+const groupBy = (array, key) => {
+  return Object.values(
+    array.reduce((result, currentValue) => {
+      // eslint-disable-next-line no-param-reassign
+      (result[currentValue[key]] = result[currentValue[key]] || []).push(
+        currentValue
+      );
+      return result;
+    }, {})
+  );
+};
+
+const summarizeTerms = (groupedDistributions) => {
+  // grouped distributions is an array of arrays of distributions
+  // each distribution has a grades property, which is an object with the letter grades as keys and the number of students as values
+  // we want to sum up the number of students for each letter grade across all distributions
+
+  return groupedDistributions.map((distributions) => {
+    const grades = {};
+    const terms = distributions.map((distribution) => ({
+      term: distribution.term,
+      grades: distribution.grades,
+      students: distribution.students,
+    }));
+    const students = terms.reduce((acc, term) => acc + term.students, 0);
+    distributions.forEach((distribution) => {
+      Object.keys(distribution.grades).forEach((grade) => {
+        if (grades[grade]) {
+          grades[grade] += distribution.grades[grade];
+        } else {
+          grades[grade] = distribution.grades[grade];
+        }
+      });
+    });
+    return { ...distributions[0], grades, terms, students };
+  });
+};
+
 const promisedQuery = (query, params) => {
   return new Promise((resolve, reject) => {
     db.all(query, params, (err, rows) => {
@@ -37,16 +75,17 @@ const promisedQuery = (query, params) => {
 
 export const getDistribution = async (classCode) => {
   const sql = `
-      SELECT distribution.id as distribution_id,
+      SELECT d.id as distribution_id,
              students,
-             terms,
+             term,
              grades,
              professor_id,
              name            as professor_name,
              RMP_score       as professor_RMP_score
-      FROM distribution
-               LEFT JOIN classdistribution c on c.id = distribution.class_id
-               LEFT JOIN professor p on p.id = distribution.professor_id
+      FROM classdistribution
+             LEFT JOIN distribution d on classdistribution.id = d.class_id
+             LEFT JOIN termdistribution t on d.id = t.dist_id
+             LEFT JOIN professor p on d.professor_id = p.id
       WHERE REPLACE(class_name, ' ', '') = REPLACE($class_name, ' ', '')`;
 
   const params = {
@@ -55,7 +94,7 @@ export const getDistribution = async (classCode) => {
 
   const rows = await promisedQuery(sql, params);
 
-  return rows.map(parseJSONFromRow);
+  return summarizeTerms(groupBy(rows.map(parseJSONFromRow), "professor_id"));
 };
 
 export const getClassInfo = async (classCode) => {
