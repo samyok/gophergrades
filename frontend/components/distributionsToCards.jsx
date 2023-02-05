@@ -6,8 +6,8 @@ import {
   IconButton,
   Tag,
   Text,
-  VStack,
   useDisclosure,
+  VStack,
 } from "@chakra-ui/react";
 import React from "react";
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
@@ -21,7 +21,7 @@ const sortingFunctions = {
     array
       .sort((a, b) => (b.mostStudentsPercent < a.mostStudentsPercent ? -1 : 1))
       .sort((a, b) => (b.averageGPA < a.averageGPA ? -1 : 1)),
-  RECENCY: (array) => array.sort((a, b) => (a.term < b.term ? 1 : -1)),
+  RECENCY: (a, b) => (a.term < b.term ? 1 : -1),
 };
 
 const SingleDistribution = ({ dist, isMobile, isStatic }) => {
@@ -99,7 +99,7 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
         {dist.terms && dist.terms.length > 1 && (
           <Collapse in={isOpen} animateOpacity>
             <VStack spacing={3} p={2} pt={3}>
-              {dist.terms.sort(sortingFunctions.RECENCY).map((term) => (
+              {dist.terms?.sort(sortingFunctions.RECENCY).map((term) => (
                 <SingleDistribution
                   dist={{
                     ...term,
