@@ -99,7 +99,7 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
         {dist.terms && dist.terms.length > 1 && (
           <Collapse in={isOpen} animateOpacity>
             <VStack spacing={3} p={2} pt={3}>
-              {dist.terms.map((term) => (
+              {dist.terms.sort(sortingFunctions.RECENCY).map((term) => (
                 <SingleDistribution
                   dist={{
                     ...term,
