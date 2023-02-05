@@ -61,3 +61,24 @@ export const letterToGpa = (letter) => {
   if (letter === undefined || !GPA_MAP[letter]) return 0;
   return GPA_MAP[letter];
 };
+
+/**
+ * Converts a term number to a pretty name
+ * @param term
+ * @returns {string}
+ */
+export const termToName = (term) => {
+  let result = "";
+  if (term % 10 === 5) {
+    result += "Summer ";
+  } else if (term % 10 === 9) {
+    result += "Fall ";
+  } else if (term % 10 === 3) {
+    result += "Spring ";
+  } else {
+    return "Invalid Term";
+  }
+
+  result += (1900 + Math.floor(term / 10)).toString();
+  return result;
+};
