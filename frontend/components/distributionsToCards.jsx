@@ -27,6 +27,12 @@ const sortingFunctions = {
 const SingleDistribution = ({ dist, isMobile, isStatic }) => {
   const { isOpen, onToggle } = useDisclosure();
   const title = dist.title ?? "Unknown";
+  let { subtitle } = dist;
+  if (!subtitle && dist.terms?.length > 1) {
+    subtitle = `${dist.terms.length} terms`;
+  } else if (!subtitle && dist.terms?.length === 1) {
+    subtitle = termToName(dist.term);
+  }
   return (
     <Box pos={"relative"} width={"full"}>
       <Card
@@ -41,23 +47,33 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
           width={"100%"}
           flexWrap={"wrap"}
         >
-          <VStack align={"start"} flexGrow={1} pb={4} width={"50%"}>
-            {!dist.hideTitle && (
-              <Text
-                fontSize={dist.isSummary ? "3xl" : "lg"}
-                fontWeight={"bold"}
-              >
-                {(!isStatic || !dist.isSummary) && title}
-              </Text>
-            )}
-            {dist.subtitle && (
-              <Text fontSize={"md"} color={"gray.600"} fontWeight={"500"}>
-                {dist.subtitle}
-              </Text>
-            )}
+          <VStack
+            align={"start"}
+            flexGrow={1}
+            pb={2}
+            width={"50%"}
+            justifyContent={"center"}
+            height={"100%"}
+          >
+            <HStack>
+              {!dist.hideTitle && (
+                <Text
+                  fontSize={dist.isSummary ? "3xl" : "lg"}
+                  fontWeight={"bold"}
+                >
+                  {(!isStatic || !dist.isSummary) && title}
+                </Text>
+              )}
+              {subtitle && (
+                <Text fontSize={"sm"} fontWeight={"200"}>
+                  {subtitle}
+                </Text>
+              )}
+            </HStack>
             <HStack>
               {dist.averageGPA > 0 && (
                 <Tag
+                  size={"sm"}
                   textAlign={"center"}
                   colorScheme={letterToColor(dist.averageGradeLetter)}
                   py={1}
@@ -66,6 +82,7 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
                 </Tag>
               )}
               <Tag
+                size={"sm"}
                 textAlign={"center"}
                 colorScheme={letterToColor(dist.mostStudents)}
                 py={1}
@@ -84,11 +101,6 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
           <VStack>
             <HStack>
               <Badge>{dist.students} students</Badge>
-              {dist.terms && (
-                <Badge>
-                  {dist.terms.length} term{dist.terms.length > 1 && "s"}
-                </Badge>
-              )}
             </HStack>
             <HStack>
               {dist.BarChart}
@@ -119,7 +131,7 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
         <IconButton
           pos={"absolute"}
           size={"xs"}
-          top={3.5}
+          top={"18px"}
           left={0}
           aria-label={"toggle dropdown"}
           variant={"ghost"}
