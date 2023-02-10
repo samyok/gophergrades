@@ -6,12 +6,33 @@
   "background": {
     "service_worker": "background.js"
   },
-  "omnibox": { "keyword" : "gg" },
+  "omnibox": {
+    "keyword": "gg"
+  },
   "content_scripts": [
     {
-      "matches": ["https://schedulebuilder.umn.edu/*", "https://www.schedulebuilder.umn.edu/*"],
-      "css": ["sidebar/sidebar.css"],
-      "js": ["sidebar/sidebar.js"]
+      "matches": [
+        "https://schedulebuilder.umn.edu/*",
+        "https://www.schedulebuilder.umn.edu/*"
+      ],
+      "css": [
+        "sidebar/sidebar.css"
+      ],
+      "js": [
+        "sidebar/sidebar.js"
+      ]
+    },
+    {
+      "matches": [
+        "https://myu.umn.edu/*",
+        "https://www.myu.umn.edu/*"
+      ],
+      "css": [
+        "calendar/calendar.css"
+      ],
+      "js": [
+        "calendar/calendar.js"
+      ]
     }
   ],
   "action": {
