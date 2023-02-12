@@ -12,15 +12,12 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { Chart as ChartJS } from "chart.js";
 import PageLayout from "../../components/Layout/PageLayout";
 import SearchBar from "../../components/Search/SearchBar";
 import { getClassInfo, getDistribution } from "../../lib/db";
 import { distributionsToCards } from "../../components/distributionsToCards";
 import { useSearch } from "../../components/Search/useSearch";
 import SearchResults from "../../components/Search/SearchResults";
-
-ChartJS.register();
 
 const SPECIAL_TAGS = ["Honors", "Freshman Seminar"];
 
