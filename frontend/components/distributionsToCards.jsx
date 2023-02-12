@@ -29,7 +29,10 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
   const title = dist.title ?? "Unknown";
   let { subtitle } = dist;
   if (!subtitle && dist.terms?.length > 1) {
-    subtitle = `${dist.terms.length} terms`;
+    const sortedTerms = dist.terms.sort((a, b) => (a.term < b.term ? 1 : -1));
+    const startTerm = termToName(sortedTerms[0].term);
+    const endTerm = termToName(sortedTerms[sortedTerms.length - 1].term);
+    subtitle = `${dist.terms.length} terms from ${startTerm} to ${endTerm}`;
   } else if (!subtitle && dist.terms?.length === 1) {
     subtitle = termToName(dist.term);
   }
@@ -54,23 +57,22 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
             width={"50%"}
             justifyContent={"center"}
             height={"100%"}
+            spacing={0}
           >
-            <HStack>
-              {!dist.hideTitle && (
-                <Text
-                  fontSize={dist.isSummary ? "3xl" : "lg"}
-                  fontWeight={"bold"}
-                >
-                  {(!isStatic || !dist.isSummary) && title}
-                </Text>
-              )}
-              {subtitle && (
-                <Text fontSize={"sm"} fontWeight={"200"}>
-                  {subtitle}
-                </Text>
-              )}
-            </HStack>
-            <HStack>
+            {!dist.hideTitle && (
+              <Text
+                fontSize={dist.isSummary ? "3xl" : "lg"}
+                fontWeight={"bold"}
+              >
+                {(!isStatic || !dist.isSummary) && title}
+              </Text>
+            )}
+            {subtitle && (
+              <Text fontSize={"sm"} fontWeight={"200"}>
+                {subtitle}
+              </Text>
+            )}
+            <HStack pt={3}>
               {dist.averageGPA > 0 && (
                 <Tag
                   size={"sm"}
@@ -127,11 +129,11 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
           </Collapse>
         )}
       </Card>
-      {!isStatic && dist.terms && dist.terms.length > 1 && (
+      {!isStatic && !isMobile && dist.terms && dist.terms.length > 1 && (
         <IconButton
           pos={"absolute"}
           size={"xs"}
-          top={"18px"}
+          top={"37px"}
           left={0}
           aria-label={"toggle dropdown"}
           variant={"ghost"}

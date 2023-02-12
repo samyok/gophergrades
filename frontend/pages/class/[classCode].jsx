@@ -12,12 +12,17 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
+import { Chart as ChartJS } from "chart.js";
+import { Bar } from "react-chartjs-2";
 import PageLayout from "../../components/Layout/PageLayout";
 import SearchBar from "../../components/Search/SearchBar";
 import { getClassInfo, getDistribution } from "../../lib/db";
 import { distributionsToCards } from "../../components/distributionsToCards";
 import { useSearch } from "../../components/Search/useSearch";
 import SearchResults from "../../components/Search/SearchResults";
+import Card from "../../components/Card";
+
+ChartJS.register();
 
 const SPECIAL_TAGS = ["Honors", "Freshman Seminar"];
 
@@ -122,7 +127,7 @@ export default function Class({ classData, query }) {
           </Heading>
           <Stack direction={["column", "row"]} mt={1} spacing={2} wrap={"wrap"}>
             {creditMin !== null && (
-              <Tag size={"sm"}>
+              <Tag size={"md"}>
                 {creditMin + (creditMax > creditMin ? `-${creditMax}` : "")}{" "}
                 Credit{creditMax > 1 ? "s" : ""}
               </Tag>

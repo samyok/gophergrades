@@ -16,11 +16,13 @@
     "@next/font": "^13.0.2",
     "@types/sqlite3": "^3.1.8",
     "@vercel/og": "^0.0.20",
+    "chart.js": "^4.2.1",
     "discord-webhook-node": "^1.1.8",
     "framer-motion": "^6",
     "lodash": "^4.17.21",
     "next": "13.0.2",
     "react": "18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "18.2.0",
     "sqlite3": "^5.1.2"
   },
