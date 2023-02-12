@@ -1,12 +1,10 @@
 import React from "react";
 import {
-  Badge,
   Box,
   Collapse,
   Divider,
   Heading,
   HStack,
-  Tag,
   useMediaQuery,
   VStack,
 } from "@chakra-ui/react";
@@ -16,11 +14,17 @@ import { getInstructorClasses, getInstructorInfo } from "../../lib/db";
 import { distributionsToCards } from "../../components/distributionsToCards";
 import { useSearch } from "../../components/Search/useSearch";
 import SearchResults from "../../components/Search/SearchResults";
-import Card from "../../components/Card";
 import BigNumberCard from "../../components/BigNumberCard";
 
 export default function Prof({ profData }) {
-  const { id, name, distributions, RMP_link, RMP_score, RMP_diff } = profData;
+  const {
+    id,
+    name,
+    distributions,
+    RMP_link: RMPLink,
+    RMP_score: RMPScore,
+    RMP_diff: RMPDiff,
+  } = profData;
   const [isMobile] = useMediaQuery("(max-width: 550px)");
 
   const {
@@ -101,18 +105,18 @@ export default function Prof({ profData }) {
         >
           <Heading my={4}>{name}</Heading>
           <VStack spacing={4} align={"start"} pb={4} minH={"60vh"}>
-            {RMP_score && (
+            {RMPScore && (
               <HStack spacing={4} width={"100%"}>
                 <BigNumberCard
-                  href={RMP_link}
+                  href={RMPLink}
                   source={"Rate My Professor"}
-                  val={RMP_score.toFixed(1)}
+                  val={RMPScore.toFixed(1)}
                   outOf={5}
                 />
                 <BigNumberCard
-                  href={RMP_link}
+                  href={RMPLink}
                   source={"Difficulty"}
-                  val={RMP_diff.toFixed(1)}
+                  val={RMPDiff.toFixed(1)}
                   outOf={5}
                 />
               </HStack>

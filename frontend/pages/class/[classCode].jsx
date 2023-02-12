@@ -13,14 +13,12 @@ import {
 import NextLink from "next/link";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { Chart as ChartJS } from "chart.js";
-import { Bar } from "react-chartjs-2";
 import PageLayout from "../../components/Layout/PageLayout";
 import SearchBar from "../../components/Search/SearchBar";
 import { getClassInfo, getDistribution } from "../../lib/db";
 import { distributionsToCards } from "../../components/distributionsToCards";
 import { useSearch } from "../../components/Search/useSearch";
 import SearchResults from "../../components/Search/SearchResults";
-import Card from "../../components/Card";
 
 ChartJS.register();
 
