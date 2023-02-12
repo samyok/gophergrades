@@ -30,7 +30,7 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
   const title = dist.title ?? "Unknown";
   let { subtitle } = dist;
   if (!subtitle && dist.terms?.length > 1) {
-    const sortedTerms = dist.terms.sort((a, b) => (a.term < b.term ? 1 : -1));
+    const sortedTerms = dist.terms.sort((a, b) => (a.term < b.term ? -1 : 1));
     const startTerm = termToName(sortedTerms[0].term);
     const endTerm = termToName(sortedTerms[sortedTerms.length - 1].term);
     subtitle = `${dist.terms.length} terms from ${startTerm} to ${endTerm}`;
@@ -69,7 +69,7 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
               </Text>
             )}
             {subtitle && (
-              <Text fontSize={"sm"} fontWeight={"200"}>
+              <Text fontSize={"xs"} fontWeight={"200"}>
                 {subtitle}
               </Text>
             )}
@@ -149,8 +149,8 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
         <IconButton
           pos={"absolute"}
           size={"xs"}
-          top={"37px"}
-          left={0}
+          top={"35.5px"}
+          left={"1px"}
           aria-label={"toggle dropdown"}
           variant={"ghost"}
           colorScheme={"blackAlpha"}
