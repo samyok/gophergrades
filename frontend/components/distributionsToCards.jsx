@@ -7,6 +7,7 @@ import {
   IconButton,
   Tag,
   Text,
+  Tooltip,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
@@ -75,18 +76,20 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
             )}
             <HStack pt={3}>
               {dist.rating && (
-                <Tag
-                  size={"sm"}
-                  variant={"outline"}
-                  textAlign={"center"}
-                  colorScheme={RMPToColor(dist.rating)}
-                  py={1}
-                >
-                  {dist.rating.toFixed(1)}
-                  <chakra.span pl={1} mt={-0.5}>
-                    {Array(Math.round(dist.rating)).fill(<StarIcon />)}
-                  </chakra.span>
-                </Tag>
+                <Tooltip label={"RateMyProfessor rating"} hasArrow>
+                  <Tag
+                    size={"sm"}
+                    variant={"outline"}
+                    textAlign={"center"}
+                    colorScheme={RMPToColor(dist.rating)}
+                    py={1}
+                  >
+                    {dist.rating.toFixed(1)}
+                    <chakra.span pl={1} mt={-0.5}>
+                      {Array(Math.round(dist.rating)).fill(<StarIcon />)}
+                    </chakra.span>
+                  </Tag>
+                </Tooltip>
               )}
 
               {dist.averageGPA > 0 && (
