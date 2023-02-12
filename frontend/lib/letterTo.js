@@ -57,6 +57,15 @@ export const letterToColor = (letter) => {
   return LETTER_TO_COLOR[letter];
 };
 
+export const RMPToColor = (rating) => {
+  if (rating === undefined) return "blackAlpha";
+  if (rating >= 4) return "green";
+  if (rating >= 3.5) return "yellow";
+  if (rating >= 3) return "orange";
+  if (rating >= 2.5) return "red";
+  return "pink";
+};
+
 export const letterToGpa = (letter) => {
   if (letter === undefined || !GPA_MAP[letter]) return 0;
   return GPA_MAP[letter];
