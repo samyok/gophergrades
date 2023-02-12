@@ -68,7 +68,8 @@ def process_dist(x: pd.DataFrame) -> None:
         class_dist = ClassDistribution(class_name=class_name,class_desc=class_descr,total_students=num_students,total_grades=grade_hash,department_id=dept.id)
         session.add(class_dist)
         session.flush()
-        print(f"Created New Class Distribution {class_dist.class_name} : {class_dist.class_desc}")
+        # print(f"Created New Class Distribution {class_dist.class_name} : {class_dist.class_desc}")
+        print(f"Created New Class Distribution {class_dist.class_name}")
     else:
         class_dist.total_grades = Counter(class_dist.total_grades) + Counter(grade_hash)
         class_dist.total_students += num_students
@@ -120,7 +121,7 @@ def srt_updating(row):
         class_dist.acc_sup = row["ACC_SUP"]
         class_dist.effort = row["EFFORT"]
         class_dist.grad_stand = row["GRAD_STAND"]
-        class_dist.reccomend = row["RECC"]
+        class_dist.recommend = row["RECC"]
         class_dist.responses = row["RESP"]
         session.commit()
         print(f"Updated {row['FULL_NAME']} with SRT Data.")
@@ -150,11 +151,11 @@ def fetch_better_title(class_dist):
         splits = key.split("-")
         if splits[1] == dept and splits[2] == catalog_nbr and "Class Title" in CACHED_REQ[key]:
             class_dist.class_desc = h.unescape(CACHED_REQ[key]["Class Title"])
-            print(f"Updated | {class_dist.class_name}: {class_dist.class_desc}")
+            print(f"Updated | {class_dist.class_name}")
             session.commit()
             return
     else:
-        print(f"Not Found | {class_dist.class_name}: {class_dist.class_desc}")
+        print(f"Not Found | {class_dist.class_name}")
 
 def fetch_asr(dept_dist:DepartmentDistribution,term:int) -> None:
     """
@@ -231,7 +232,8 @@ if __name__ == "__main__":
     print("Adding Departments")
     dept_list = np.array([dept.dept_abbr for dept in session.query(DepartmentDistribution).all()])
     diff_list = np.setdiff1d(df["SUBJECT"].unique(),dept_list)
-    np.vectorize(process_dept)(diff_list)
+    if (len(diff_list) > 0):
+        np.vectorize(process_dept)(diff_list)
     print("Finished Department Insertion")
 
     print("Generating Distributions")
