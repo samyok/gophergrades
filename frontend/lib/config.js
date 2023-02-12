@@ -3,4 +3,8 @@ const searchDurations = {
   exit: 0.75,
 };
 
-export { searchDurations };
+const disabledPages = [
+  "/prof/7670", // "unlisted professor" -- lags too much
+];
+
+export { searchDurations, disabledPages };

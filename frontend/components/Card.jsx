@@ -2,6 +2,7 @@ import { Box, Spinner } from "@chakra-ui/react";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { disabledPages } from "../lib/config";
 
 export default function Card({
   children,
@@ -13,6 +14,8 @@ export default function Card({
   isStatic = false,
   ...props
 }) {
+  // eslint-disable-next-line no-param-reassign
+  if (disabledPages.includes(href)) href = "";
   const router = useRouter();
   const [clicked, setClicked] = useState(false);
   const extraStyles = style || {};
