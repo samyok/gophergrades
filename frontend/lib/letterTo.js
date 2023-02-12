@@ -68,17 +68,16 @@ export const letterToGpa = (letter) => {
  * @returns {string}
  */
 export const termToName = (term) => {
-  let result = "";
-  if (term % 10 === 5) {
-    result += "Summer ";
-  } else if (term % 10 === 9) {
-    result += "Fall ";
-  } else if (term % 10 === 3) {
-    result += "Spring ";
-  } else {
-    return "Invalid Term";
-  }
+  const year = 1900 + Math.floor(term / 10);
 
-  result += (1900 + Math.floor(term / 10)).toString();
-  return result;
+  switch (term % 10) {
+    case 3:
+      return `Spring ${year}`;
+    case 5:
+      return `Summer ${year}`;
+    case 9:
+      return `Fall ${year}`;
+    default:
+      return "Invalid Term";
+  }
 };
