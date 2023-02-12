@@ -82,7 +82,7 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
                   colorScheme={RMPToColor(dist.rating)}
                   py={1}
                 >
-                  {dist.rating}
+                  {dist.rating.toFixed(1)}
                   <chakra.span pl={1} mt={-0.5}>
                     {Array(Math.round(dist.rating)).fill(<StarIcon />)}
                   </chakra.span>
