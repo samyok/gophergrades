@@ -1,0 +1,34 @@
+{
+   "page_action": {
+      "default_icon": {
+         "128": "icons/icon-128.png",
+         "32": "icons/icon-32.png",
+         "512": "icons/icon-512.png",
+         "72": "icons/icon-72.png"
+      },
+      "default_title": "GopherGrades - use on Schedule Builder or OneStop!"
+   },
+   "content_scripts": [ {
+      "css": [ "sidebar/sidebar.css" ],
+      "js": [ "sidebar/sidebar.js" ],
+      "matches": [ "https://schedulebuilder.umn.edu/*", "https://www.schedulebuilder.umn.edu/*" ]
+   } ],
+   "description": "Now you can view directly from the course catalog!",
+   "icons": {
+      "128": "icons/icon-128.png",
+      "32": "icons/icon-32.png",
+      "512": "icons/icon-512.png",
+      "72": "icons/icon-72.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkOxEUP1//bcv7uFyqkhRNXe3UEr2sHUTqloW80+eL5ZMF7mHdl02mBtFcERL0n3vYw7e2MqUtrhPsg0ts8kfNg483sYdRDVocqIvoEbqKrI+KM56jChV/bl2oY0cZGlftHFemaJu3u8tWmOg4HwZcR83mvddC8CZMYjULeGsDyH+nVGQ1JS/ZZbBqsNW5y7nb0i16/jtdG3CNCfNfdeld40YyaXstjI1USHvS5eJuhTcnKNwqqUucDCNMo9X7FxONUYRaqDx8FLt02/fQ+V0xTTddRuiZLrwmfocJyp01EoX92l0Gl9qnHgXExSWniZkZyX0cI9m/pe06cxjVKcQCQIDAQAB",
+   "manifest_version": 2,
+   "name": "Gopher Grades - Past grades for UMN classes!",
+   "omnibox": {
+      "keyword": "gg"
+   },
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "1.2.0",
+   "permissions": [
+      "webRequest"
+    ]
+}
