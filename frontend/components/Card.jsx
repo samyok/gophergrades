@@ -8,6 +8,7 @@ export default function Card({
   href = "",
   style,
   isSummary,
+  isExternal = false,
   onClick = () => {},
   isStatic = false,
   ...props
@@ -69,19 +70,21 @@ export default function Card({
       {...props}
     >
       {children}
-      {clicked && (
+      {clicked && !isExternal && (
         <Spinner size={"sm"} ml={2} position={"absolute"} left={-1.5} top={4} />
       )}
     </Box>
   );
 
   if (href && !isStatic) {
+    const extraProps = isExternal ? { target: "_blank" } : {};
     return (
       <Link
         href={href}
         style={{
           width: "100%",
         }}
+        {...extraProps}
       >
         {card}
       </Link>

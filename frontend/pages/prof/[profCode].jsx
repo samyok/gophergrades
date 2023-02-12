@@ -1,9 +1,12 @@
 import React from "react";
 import {
+  Badge,
   Box,
   Collapse,
   Divider,
   Heading,
+  HStack,
+  Tag,
   useMediaQuery,
   VStack,
 } from "@chakra-ui/react";
@@ -13,9 +16,11 @@ import { getInstructorClasses, getInstructorInfo } from "../../lib/db";
 import { distributionsToCards } from "../../components/distributionsToCards";
 import { useSearch } from "../../components/Search/useSearch";
 import SearchResults from "../../components/Search/SearchResults";
+import Card from "../../components/Card";
+import BigNumberCard from "../../components/BigNumberCard";
 
 export default function Prof({ profData }) {
-  const { id, name, distributions } = profData;
+  const { id, name, distributions, RMP_link, RMP_score, RMP_diff } = profData;
   const [isMobile] = useMediaQuery("(max-width: 550px)");
 
   const {
@@ -28,8 +33,8 @@ export default function Prof({ profData }) {
   // map all class distribution to a proper format:
   const formattedDistributions = distributions.map((dist) => ({
     ...dist,
-    grades: dist.grades,
-    students: dist.students,
+    grades: dist.total_grades,
+    students: dist.total_students,
     title: `${dist.class_name}: ${dist.class_desc}`,
     href: `/class/${dist.class_name.replace(" ", "")}`,
   }));
@@ -48,7 +53,7 @@ export default function Prof({ profData }) {
       }),
       {}
     ),
-    students: distributions.reduce(
+    students: formattedDistributions.reduce(
       (acc, curr) => acc + (curr.students || 0),
       0
     ),
@@ -96,6 +101,22 @@ export default function Prof({ profData }) {
         >
           <Heading my={4}>{name}</Heading>
           <VStack spacing={4} align={"start"} pb={4} minH={"60vh"}>
+            {RMP_score && (
+              <HStack spacing={4} width={"100%"}>
+                <BigNumberCard
+                  href={RMP_link}
+                  source={"Rate My Professor"}
+                  val={RMP_score.toFixed(1)}
+                  outOf={5}
+                />
+                <BigNumberCard
+                  href={RMP_link}
+                  source={"Difficulty"}
+                  val={RMP_diff.toFixed(1)}
+                  outOf={5}
+                />
+              </HStack>
+            )}
             {totalDistributions}
             <Divider
               orientation={"horizontal"}
