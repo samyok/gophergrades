@@ -12,7 +12,12 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React from "react";
-import { ChevronDownIcon, ChevronRightIcon, StarIcon } from "@chakra-ui/icons";
+import {
+  ChevronDownIcon,
+  ChevronRightIcon,
+  InfoOutlineIcon,
+  StarIcon,
+} from "@chakra-ui/icons";
 import Stats from "./Stats";
 import Card from "./Card";
 import { letterToColor, RMPToColor, termToName } from "../lib/letterTo";
@@ -38,6 +43,13 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
   } else if (!subtitle && dist.terms?.length === 1) {
     subtitle = termToName(dist.term);
   }
+
+  let showCOVIDTag = false;
+
+  if (!dist.terms || dist.terms.length === 1) {
+    showCOVIDTag = dist.term > 1200 && dist.term <= 1215;
+  }
+
   return (
     <Box pos={"relative"} width={"full"}>
       <Card
@@ -111,6 +123,24 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
                 Most Common: {dist.mostStudents} ({dist.mostStudentsPercent}
                 %)
               </Tag>
+              {showCOVIDTag && (
+                <Tooltip
+                  label={
+                    "Relaxed grading during COVID-19 might have affected this distribution"
+                  }
+                  hasArrow
+                >
+                  <Tag
+                    size={"sm"}
+                    textAlign={"center"}
+                    py={1.5}
+                    colorScheme={"blackAlpha"}
+                    background={"transparent"}
+                  >
+                    <InfoOutlineIcon />
+                  </Tag>
+                </Tooltip>
+              )}
             </HStack>
             {dist.info && (
               <Text fontSize={"sm"} color={"gray.600"} pt={2}>
