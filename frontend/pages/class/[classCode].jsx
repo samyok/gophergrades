@@ -62,6 +62,7 @@ export default function Class({ classData, query }) {
     ...dist,
     href: `/prof/${dist.professor_id}`,
     title: dist.professor_name,
+    rating: dist.professor_RMP_score,
   }));
 
   if (query.static === "all") return totalDistributions;

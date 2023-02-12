@@ -1,6 +1,7 @@
 import {
   Badge,
   Box,
+  chakra,
   Collapse,
   HStack,
   IconButton,
@@ -10,10 +11,10 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React from "react";
-import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { ChevronDownIcon, ChevronRightIcon, StarIcon } from "@chakra-ui/icons";
 import Stats from "./Stats";
 import Card from "./Card";
-import { letterToColor, termToName } from "../lib/letterTo";
+import { letterToColor, RMPToColor, termToName } from "../lib/letterTo";
 
 const sortingFunctions = {
   NONE: (array) => array,
@@ -73,6 +74,21 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
               </Text>
             )}
             <HStack pt={3}>
+              {dist.rating && (
+                <Tag
+                  size={"sm"}
+                  variant={"outline"}
+                  textAlign={"center"}
+                  colorScheme={RMPToColor(dist.rating)}
+                  py={1}
+                >
+                  {dist.rating}
+                  <chakra.span pl={1} mt={-0.5}>
+                    {Array(Math.round(dist.rating)).fill(<StarIcon />)}
+                  </chakra.span>
+                </Tag>
+              )}
+
               {dist.averageGPA > 0 && (
                 <Tag
                   size={"sm"}
