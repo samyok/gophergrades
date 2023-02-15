@@ -4,6 +4,8 @@ from operator import concat
 import pandas as pd
 
 RMP=dict()
+counter=0
+total=0
 def standardizeName(name:str) -> str:
     """
     Cleans a name to match a pattern consistent with the data.
@@ -35,7 +37,7 @@ def getProfData() -> None:
     #Note - this skips about 10 professors on the first page,
     #and if the U ever gets more than 100k entries this will
     #cutoff data. If this happens change count in variables.
-    query={"query":"query TeacherSearchPaginationQuery(  $count: Int!  $cursor: String  $query: TeacherSearchQuery!) {  search: newSearch {    ...TeacherSearchPagination_search_1jWD3d  }}fragment TeacherSearchPagination_search_1jWD3d on newSearch {  teachers(query: $query, first: $count, after: $cursor) {    didFallback    edges {      cursor      node {        ...TeacherCard_teacher        id        __typename      }    }    pageInfo {      hasNextPage      endCursor    }    resultCount    filters {      field      options {        value        id      }    }  }}fragment TeacherCard_teacher on Teacher {  id  legacyId  avgRating  numRatings  ...CardFeedback_teacher  ...CardSchool_teacher  ...CardName_teacher  ...TeacherBookmark_teacher}fragment CardFeedback_teacher on Teacher {  wouldTakeAgainPercent  avgDifficulty}fragment CardSchool_teacher on Teacher {  department  school {    name    id  }}fragment CardName_teacher on Teacher {  firstName  lastName}fragment TeacherBookmark_teacher on Teacher {  id  isSaved}","variables":{"count":100000,"cursor":"YXJyYXljb25uZWN0aW9uOjc=","query":{"text":"","schoolID":"U2Nob29sLTEyNTc=","fallback":True}}}
+    query={"query":"query TeacherSearchPaginationQuery(  $count: Int!  $cursor: String  $query: TeacherSearchQuery!) {  search: newSearch {    ...TeacherSearchPagination_search_1jWD3d  }}fragment TeacherSearchPagination_search_1jWD3d on newSearch {  teachers(query: $query, first: $count, after: $cursor) {    didFallback    edges {      cursor      node {        ...TeacherCard_teacher        id        __typename      }    }    pageInfo {      hasNextPage      endCursor    }    resultCount    filters {      field      options {        value        id      }    }  }}fragment TeacherCard_teacher on Teacher {  id  legacyId  avgRating  numRatings  ...CardFeedback_teacher  ...CardSchool_teacher  ...CardName_teacher  ...TeacherBookmark_teacher}fragment CardFeedback_teacher on Teacher {  wouldTakeAgainPercent  avgDifficulty}fragment CardSchool_teacher on Teacher {  department  school {    name    id  }}fragment CardName_teacher on Teacher {  firstName  lastName}fragment TeacherBookmark_teacher on Teacher {  id  isSaved}","variables":{"count":100000,"cursor":"","query":{"text":"","schoolID":"U2Nob29sLTEyNTc=","fallback":True}}}
 
     r=requests.post(url,headers=header,json=query,timeout=60).json()
     teachers=r["data"]["search"]["teachers"]["edges"]
@@ -60,17 +62,20 @@ def getRMP(x:str) -> tuple[float,float,str]:
     :return: A tuple containing (overall rating, difficulty rating, link to website)
     :rtype: tuple[float,float,str]
     """
-    global RMP
+    global RMP,counter,total
     name=standardizeName(x)
+    total=total+1
     try:
         overall=RMP[name]["overallRatings"]
         difficulty = RMP[name]["difficultly"]
         overall = float('nan' if overall == 0 else overall)
         difficulty = float('nan' if overall == 0 else difficulty)
         link = RMP[name]["pgLink"]
+        counter=counter+1
         return (overall,difficulty,link)
     except KeyError:
-        print("Key error found, continuing")
+        percent=(counter/total)*100
+        print(f"[{counter}/{total}:{percent}] Key error found for {name}, continuing")
         return (float('nan'),float('nan'),None)
 
 getProfData()
