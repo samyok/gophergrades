@@ -22,7 +22,7 @@ from sqlalchemy import and_
 CACHED_REQ={}
 CACHED_LINK=""
 # TERMS should hold the value of the next 2 terms, current term, and past 2 term in decreasing order.
-TERMS = [1233, 1229, 1225, 1223, 1219]
+TERMS = [1235 ,1233, 1229, 1225, 1223]
 # Runs the generate function to fetch data from API
 # TODO: Potential switch to GraphQL API?
 
@@ -63,13 +63,12 @@ def process_dist(x: pd.DataFrame) -> None:
     # Begin Insertion
     class_dist = session.query(ClassDistribution).filter(ClassDistribution.class_name == class_name).first()
     dept = session.query(DepartmentDistribution).filter(DepartmentDistribution.dept_abbr == dept_abbr).first()
-    prof = session.query(Professor).filter(Professor.name == prof_name).first() or session.query(Professor).filter(Professor.name == "Unlisted Professor").first()
+    prof = session.query(Professor).filter(Professor.name == prof_name).first() or session.query(Professor).filter(Professor.name == "Unknown Professor").first()
     if class_dist == None:
         class_dist = ClassDistribution(class_name=class_name,class_desc=class_descr,total_students=num_students,total_grades=grade_hash,department_id=dept.id)
         session.add(class_dist)
         session.flush()
-        # print(f"Created New Class Distribution {class_dist.class_name} : {class_dist.class_desc}")
-        print(f"Created New Class Distribution {class_dist.class_name}")
+        # print(f"Created New Class Distribution {class_dist.class_name}")
     else:
         class_dist.total_grades = Counter(class_dist.total_grades) + Counter(grade_hash)
         class_dist.total_students += num_students
@@ -80,19 +79,19 @@ def process_dist(x: pd.DataFrame) -> None:
         dist = Distribution(class_id = class_dist.id, professor_id = prof.id)
         session.add(dist)
         session.flush()
-        print(f"Created New Distribution Linking {class_dist.class_name} to {prof.name}")
+        # print(f"Created New Distribution Linking {class_dist.class_name} to {prof.name}")
 
     if session.query(TermDistribution).filter(TermDistribution.term == term, TermDistribution.dist_id==dist.id).first() == None:
         term_dist = TermDistribution(students=num_students,grades=grade_hash,dist_id=dist.id, term=int(term))
         session.add(term_dist)
         session.commit()
-        print(f"Added Distribution for {prof.name}'s {class_dist.class_name} for {term_to_name(term)} with {term_dist.students} students.")
+        # print(f"Added Distribution for {prof.name}'s {class_dist.class_name} for {term_to_name(term)} with {term_dist.students} students.")
     
 def process_prof(prof_name:str):
     professor = Professor(name=prof_name)
     session.add(professor)
     session.commit()
-    print(f"Added New Professor {professor.name}.")
+    # print(f"Added New Professor {professor.name}.")
 
 def RMP_Update():
     profs = session.query(Professor).all()
@@ -101,14 +100,14 @@ def RMP_Update():
         prof.RMP_score = RMP_info[0]
         prof.RMP_diff = RMP_info[1]
         prof.RMP_link = RMP_info[2]
-        print(f"Gave {prof.name} an RMP score of {prof.RMP_score}")
+        # print(f"Gave {prof.name} an RMP score of {prof.RMP_score}")
     session.commit()
 
 def process_dept(dept_abbr:str):
     dept = DepartmentDistribution(dept_abbr=dept_abbr,dept_name=dept_mapping.get(dept_abbr,"Unknown Department"))
     session.add(dept)
     session.commit()
-    print(f"Created New Department: {dept.dept_abbr} : {dept.dept_name}")
+    # print(f"Created New Department: {dept.dept_abbr} : {dept.dept_name}")
 
     
 
@@ -124,7 +123,7 @@ def srt_updating(row):
         class_dist.recommend = row["RECC"]
         class_dist.responses = row["RESP"]
         session.commit()
-        print(f"Updated {row['FULL_NAME']} with SRT Data.")
+        # print(f"Updated {row['FULL_NAME']} with SRT Data.")
 
 def fetch_better_title(class_dist):
     global CACHED_REQ
@@ -142,7 +141,7 @@ def fetch_better_title(class_dist):
                 decodedContent=url.content.decode("latin-1")
                 CACHED_REQ=json.loads(decodedContent,strict=False)
             except ValueError:
-                print("Json malformed, icky!")
+                # print("Json malformed, icky!")
                 CACHED_REQ={}
                 return
 
@@ -151,7 +150,7 @@ def fetch_better_title(class_dist):
         splits = key.split("-")
         if splits[1] == dept and splits[2] == catalog_nbr and "Class Title" in CACHED_REQ[key]:
             class_dist.class_desc = h.unescape(CACHED_REQ[key]["Class Title"])
-            print(f"Updated | {class_dist.class_name}")
+            # print(f"Updated | {class_dist.class_name}")
             session.commit()
             return
     else:
@@ -181,7 +180,7 @@ def fetch_asr(dept_dist:DepartmentDistribution,term:int) -> None:
             try:
                 CACHED_REQ=url.json()
             except ValueError:
-                print("Json malformed, icky!")
+                # print("Json malformed, icky!")
                 CACHED_REQ={}
                 return
     for course in CACHED_REQ["courses"]:
@@ -197,7 +196,7 @@ def fetch_asr(dept_dist:DepartmentDistribution,term:int) -> None:
                 if attribute["family"] in ["CLE","HON","FSEM"]:
                     libed_dist = session.query(Libed).filter(Libed.name == libed_mapping[attribute['attribute_id']]).first()
                     libed_dist.class_dists.append(class_dist)
-            print(f"Updated {class_dist.class_name} ({class_dist.onestop}) : [{class_dist.cred_min} - {class_dist.cred_max}] credits : Libeds: ({class_dist.libeds})")
+            # print(f"Updated {class_dist.class_name} ({class_dist.onestop}) : [{class_dist.cred_min} - {class_dist.cred_max}] credits : Libeds: ({class_dist.libeds})")
         session.commit()
 
 # Add all libeds as defined in libed_mapping. This is a constant addition as there are a finite amount of libed requirements.
@@ -209,18 +208,19 @@ if __name__ == "__main__":
     df = pd.read_csv("CLASS_DATA/combined_clean_data.csv",dtype={"CLASS_SECTION":str})
     print("Loaded Data!")
     print("Adding Profs")
-    # Add All Professors Including an "Unlisted Professor" for non-attributed values to the Database
+    # Add All Professors Including an "Unknown Professor" for non-attributed values to the Database
     prof_list = np.array([prof.name for prof in session.query(Professor).all()])
     data_list = np.vectorize(str.title)(df["HR_NAME"].unique())
     diff_list = np.setdiff1d(data_list,prof_list)
     if diff_list.size > 0:
         print(f"Adding {len(diff_list)} new professors: {diff_list}")
-        np.vectorize(process_prof)(diff_list)
+        for x in diff_list:
+            process_prof(x)
     else:
         print("No new professors found.")
     
-    if session.query(Professor).filter(Professor.name == "Unlisted Professor").first() == None:
-        session.add(Professor(name="Unlisted Professor"))
+    if session.query(Professor).filter(Professor.name == "Unknown Professor").first() == None:
+        session.add(Professor(name="Unknown Professor"))
         session.commit()
 
     print("Finished Prof Insertion")
@@ -233,7 +233,8 @@ if __name__ == "__main__":
     dept_list = np.array([dept.dept_abbr for dept in session.query(DepartmentDistribution).all()])
     diff_list = np.setdiff1d(df["SUBJECT"].unique(),dept_list)
     if (len(diff_list) > 0):
-        np.vectorize(process_dept)(diff_list)
+        for x in diff_list:
+            process_dept(x)
     print("Finished Department Insertion")
 
     print("Generating Distributions")

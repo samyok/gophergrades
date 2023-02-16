@@ -75,7 +75,7 @@ def getRMP(x:str) -> tuple[float,float,str]:
         return (overall,difficulty,link)
     except KeyError:
         percent=(counter/total)*100
-        print(f"[{counter}/{total}:{percent}] Key error found for {name}, continuing")
+        # print(f"[{counter}/{total}:{percent}] Key error found for {name}, continuing")
         return (float('nan'),float('nan'),None)
 
 getProfData()

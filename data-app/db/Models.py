@@ -22,7 +22,7 @@ libedAssociationTable = Table(
 class Libed(Base):
     __tablename__ = "libed"
     id = Column(Integer,primary_key=True)
-    name = Column(VARCHAR(128),nullable=False)
+    name = Column(VARCHAR(128),nullable=False,unique=True)
     class_dists = relationship('ClassDistribution',secondary=libedAssociationTable,back_populates="libeds")
     def __str__(self) -> str:
         retVal = f"Libed: {self.name}"
@@ -80,7 +80,7 @@ class Professor(Base):
 class ClassDistribution(Base):
     __tablename__ = "classdistribution"
     id = Column(Integer,primary_key=True)
-    class_name = Column(VARCHAR(10),nullable=False)
+    class_name = Column(VARCHAR(10),nullable=False, unique=True)
     class_desc = Column(VARCHAR(255),nullable=False)
     total_students = Column(Integer,nullable=False)
     total_grades = Column(JSON,nullable=False)
@@ -114,7 +114,7 @@ class ClassDistribution(Base):
 class DepartmentDistribution(Base):
     __tablename__ = "departmentdistribution"
     id = Column(Integer,primary_key=True)
-    dept_abbr = Column(VARCHAR(4),nullable=False)
+    dept_abbr = Column(VARCHAR(4),nullable=False, unique=True)
     dept_name = Column(VARCHAR(255),nullable=False)
     class_dists = relationship('ClassDistribution',backref="dept")
     def __repr__(self) -> str:
