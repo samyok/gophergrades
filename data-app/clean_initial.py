@@ -31,7 +31,7 @@ def fetch_unknown_prof(x:pd.DataFrame) -> pd.DataFrame:
 
     link="http://classinfo.umn.edu/?term="+term+"&subject="+dept+"&json=1"
     classLink=f"http://classinfo.umn.edu/?term={term}&subject={dept}&level={level}"
-    print(f"Link to class: "+classLink)
+    # print(f"Link to class: "+classLink)
 
     if link!=CACHED_LINK:
         with requests.get(link) as url:
@@ -40,7 +40,7 @@ def fetch_unknown_prof(x:pd.DataFrame) -> pd.DataFrame:
                 decodedContent=url.content.decode("latin-1")
                 CACHED_REQ=json.loads(decodedContent,strict=False)
             except ValueError:
-                print("Json malformed, icky!")
+                # print("Json malformed, icky!")
                 CACHED_REQ={}
 
     #Go through lecutres and find professors
@@ -56,7 +56,7 @@ def fetch_unknown_prof(x:pd.DataFrame) -> pd.DataFrame:
             profKey=term+"-"+dept+"-"+catalog_nbr+"-"+profSec
             professor=re.findall("\\t(.*)",CACHED_REQ[profKey]["Instructor Data"])[0]
     except KeyError:
-        print("No instructor data, :(")
+        # print("No instructor data, :(")
         #Create a file with error contained.
 
         #Also, I don't know how to delete the file between runs,
@@ -78,14 +78,14 @@ def fetch_unknown_prof(x:pd.DataFrame) -> pd.DataFrame:
             f.write(classLink+"\t"+key+" "+problem+'\n')
 
     if not x["HR_NAME"].isnull().all() and professor != "Unknown Professor":
-        print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {professor}.")
+        # print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {professor}.")
         x["HR_NAME"] = professor
         return x
     elif not x["HR_NAME"].isnull().all():
-        print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {x['HR_NAME'].iloc[0]}.")
+        # print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {x['HR_NAME'].iloc[0]}.")
         return x
     else: 
-        print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {professor}.")
+        # print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {professor}.")
         x["HR_NAME"] = professor
         return x
 
@@ -108,7 +108,7 @@ def format_name(x: str):
         retVal = x
     return retVal
 
-def term_desc_to_val(x:pd.Dataframe):
+def term_desc_to_val(x:pd.DataFrame):
     """
     This function is technically feature engineering. New data from the university might not have
     term ids and only a term description. The purpose of this function is to add that to the dataframe grouped by
@@ -138,24 +138,24 @@ THIS WILL LIKELY NOT STAY CONSISTENT.
 """
 
 
-df = pd.read_csv("CLASS_DATA/SUM2017-FALL2020_raw_data.csv",dtype={"CLASS_SECTION":str,"Unnamed: 14":str})
+df = pd.read_csv("CLASS_DATA/FALL2022_raw_data.csv",dtype={"CLASS_SECTION":str,"Unnamed: 14":str})
 # Unneeded Data
 del df["INSTITUTION"]
-del df["CAMPUS"]
-del df["Unnamed: 14"]
+# del df["CAMPUS"]
 del df["JOBCODE_DESCR"]
+del df["UM_JOBCODE_GROUP"]
 del df["CLASS_HDCNT"]
 del df["INSTR_ROLE"]
 df = df[~(df["CRSE_GRADE_OFF"] == "NR")]
 # Add missing term numbers for most recent semester, cast to take from float to int.
-df = df.groupby("TERM_DESCR",group_keys=False).apply(term_desc_to_val)
-df = df.astype({"TERM":int})
-del df["TERM_DESCR"]
+# df = df.groupby("TERM_DESCR",group_keys=False).apply(term_desc_to_val)
+# df = df.astype({"TERM":int})
+# del df["TERM_DESCR"]
 # Write class name as the proper full name that students are accustomed to.
 df["FULL_NAME"] = df["SUBJECT"] + ' ' + df["CATALOG_NBR"]
 # Replace unknown professor values with either a correct name or "Unknown Professor"
 df["CLASS_SECTION"] = df["CLASS_SECTION"].apply(lambda x: x.zfill(3))
 df = df.groupby(["TERM","FULL_NAME","CLASS_SECTION"],group_keys=False).apply(fetch_unknown_prof)
 df["HR_NAME"] = df["HR_NAME"].apply(format_name)
-print(df)
-df.to_csv("CLASS_DATA/SUM2017-FALL2020_cleaned_data.csv",index=False)
+# print(df)
+df.to_csv("CLASS_DATA/FALL2022_cleaned_data.csv",index=False)

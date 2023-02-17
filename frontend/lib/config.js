@@ -4,7 +4,7 @@ const searchDurations = {
 };
 
 const disabledPages = [
-  "/prof/7670", // "unlisted professor" -- lags too much
+  "/prof/7691", // "unknown professor" -- lags too much
 ];
 
 export { searchDurations, disabledPages };
