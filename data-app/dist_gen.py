@@ -210,7 +210,7 @@ if __name__ == "__main__":
     print("Adding Profs")
     # Add All Professors Including an "Unknown Professor" for non-attributed values to the Database
     prof_list = np.array([prof.name for prof in session.query(Professor).all()])
-    data_list = np.vectorize(str.title)(df["HR_NAME"].unique())
+    data_list = df["HR_NAME"].unique()
     diff_list = np.setdiff1d(data_list,prof_list)
     if diff_list.size > 0:
         print(f"Adding {len(diff_list)} new professors: {diff_list}")
