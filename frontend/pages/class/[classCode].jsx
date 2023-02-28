@@ -4,11 +4,13 @@ import {
   Collapse,
   Divider,
   Heading,
+  HStack,
   Link as ChakraLink,
   Stack,
   Tag,
   useMediaQuery,
   VStack,
+  Wrap,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
@@ -18,6 +20,7 @@ import { getClassInfo, getDistribution } from "../../lib/db";
 import { distributionsToCards } from "../../components/distributionsToCards";
 import { useSearch } from "../../components/Search/useSearch";
 import SearchResults from "../../components/Search/SearchResults";
+import BigNumberCard from "../../components/BigNumberCard";
 
 const SPECIAL_TAGS = ["Honors", "Freshman Seminar"];
 
@@ -30,6 +33,14 @@ export default function Class({ classData, query }) {
     onestop,
     cred_min: creditMin,
     cred_max: creditMax,
+    deep_und: deepUnderstanding,
+    stim_int: intellectuallyStimulating,
+    tech_eff: techEfficient,
+    acc_sup: accessibleSupport,
+    effort,
+    grad_stand: gradStanding,
+    recommend,
+    responses: srtResponses,
   } = classData;
   const [isMobile] = useMediaQuery("(max-width: 550px)");
   const {
@@ -144,6 +155,57 @@ export default function Class({ classData, query }) {
           </Stack>
           <VStack spacing={4} align={"start"} pb={4} minH={"60vh"}>
             {totalDistributions}
+            <Wrap spacing={"8px"} width={"100%"} overflow={"visible"} mb={2}>
+              {recommend && (
+                <BigNumberCard
+                  source={"Would Recommend"}
+                  val={recommend.toFixed(2)}
+                  outOf={5}
+                />
+              )}
+              {effort && (
+                <BigNumberCard
+                  source={"Effort"}
+                  val={effort.toFixed(2)}
+                  outOf={5}
+                />
+              )}
+              {/* {gradStanding && ( */}
+              {/*  <BigNumberCard */}
+              {/*    source={"Graduate Standing"} */}
+              {/*    val={gradStanding.toFixed(2)} */}
+              {/*    outOf={5} */}
+              {/*  /> */}
+              {/* )} */}
+              {deepUnderstanding && (
+                <BigNumberCard
+                  source={"Deep Understanding"}
+                  val={deepUnderstanding.toFixed(2)}
+                  outOf={5}
+                />
+              )}
+              {intellectuallyStimulating && (
+                <BigNumberCard
+                  source={"Intellectually Stimulating"}
+                  val={intellectuallyStimulating.toFixed(2)}
+                  outOf={5}
+                />
+              )}
+              {/* {techEfficient && ( */}
+              {/*  <BigNumberCard */}
+              {/*    source={"Technology Efficient"} */}
+              {/*    val={techEfficient.toFixed(2)} */}
+              {/*    outOf={5} */}
+              {/*  /> */}
+              {/* )} */}
+              {accessibleSupport && (
+                <BigNumberCard
+                  source={"Accessible Support"}
+                  val={accessibleSupport.toFixed(2)}
+                  outOf={5}
+                />
+              )}
+            </Wrap>
             <Divider
               orientation={"horizontal"}
               style={{

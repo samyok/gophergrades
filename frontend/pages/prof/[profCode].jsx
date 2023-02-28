@@ -4,9 +4,9 @@ import {
   Collapse,
   Divider,
   Heading,
-  HStack,
   useMediaQuery,
   VStack,
+  Wrap,
 } from "@chakra-ui/react";
 import PageLayout from "../../components/Layout/PageLayout";
 import SearchBar from "../../components/Search/SearchBar";
@@ -105,8 +105,10 @@ export default function Prof({ profData }) {
         >
           <Heading my={4}>{name}</Heading>
           <VStack spacing={4} align={"start"} pb={4} minH={"60vh"}>
+            {totalDistributions}
+
             {RMPScore && (
-              <HStack spacing={4} width={"100%"}>
+              <Wrap spacing={"8px"} width={"100%"} overflow={"visible"} mb={2}>
                 <BigNumberCard
                   href={RMPLink}
                   source={"Rate My Professor"}
@@ -119,9 +121,8 @@ export default function Prof({ profData }) {
                   val={RMPDiff.toFixed(1)}
                   outOf={5}
                 />
-              </HStack>
+              </Wrap>
             )}
-            {totalDistributions}
             <Divider
               orientation={"horizontal"}
               style={{
