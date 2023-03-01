@@ -4,7 +4,6 @@ import {
   Collapse,
   Divider,
   Heading,
-  HStack,
   Link as ChakraLink,
   Stack,
   Tag,
@@ -35,12 +34,12 @@ export default function Class({ classData, query }) {
     cred_max: creditMax,
     deep_und: deepUnderstanding,
     stim_int: intellectuallyStimulating,
-    tech_eff: techEfficient,
+    // tech_eff: techEfficient,
     acc_sup: accessibleSupport,
     effort,
-    grad_stand: gradStanding,
+    // grad_stand: gradStanding,
     recommend,
-    responses: srtResponses,
+    // responses: srtResponses,
   } = classData;
   const [isMobile] = useMediaQuery("(max-width: 550px)");
   const {
