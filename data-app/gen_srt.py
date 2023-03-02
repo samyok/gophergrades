@@ -10,6 +10,7 @@ def srt_frame() -> pd.DataFrame:
     :rtype: pd.DataFrame
     """
     df = pd.read_csv("SRT_DATA/combined_srt.csv")
+    del df["Term"] # Data only for recordkeeping, not important in calculations.
     # Sometimes this divide by zero error occurs in data, replace it with a NaN
     df = df.replace("#DIV/0!",NaN)
     df = df.astype({
