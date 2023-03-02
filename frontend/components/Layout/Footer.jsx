@@ -1,6 +1,5 @@
 import {
   Avatar,
-  AvatarGroup,
   Box,
   Button,
   Divider,
@@ -24,9 +23,11 @@ const getContributors = async () => {
 };
 
 const GithubAvatar = ({ name, ...props }) => (
-  <Tooltip label={name} placement={"top"} hasArrow>
-    <Avatar name={name} {...props} />
-  </Tooltip>
+  <WrapItem>
+    <Tooltip label={name} placement={"top"} hasArrow>
+      <Avatar size={"lg"} name={name} {...props} />
+    </Tooltip>
+  </WrapItem>
 );
 
 const ContributorGroup = () => {
@@ -121,7 +122,7 @@ const ContributorGroup = () => {
         ))}
       </Wrap>
 
-      <AvatarGroup size={"lg"}>
+      <Wrap justify={"center"}>
         {contributors.map((c) => (
           <GithubAvatar
             key={c.login}
@@ -140,7 +141,7 @@ const ContributorGroup = () => {
             }}
           />
         ))}
-      </AvatarGroup>
+      </Wrap>
       <Button
         size={"xs"}
         fontWeight={300}
