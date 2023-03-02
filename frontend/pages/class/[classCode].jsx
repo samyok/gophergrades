@@ -33,9 +33,9 @@ export default function Class({ classData, query }) {
     cred_min: creditMin,
     cred_max: creditMax,
     deep_und: deepUnderstanding,
-    stim_int: intellectuallyStimulating,
+    stim_int: interestStimulated,
     // tech_eff: techEfficient,
-    acc_sup: accessibleSupport,
+    acc_sup: activitiesSupported,
     effort,
     // grad_stand: gradStanding,
     recommend,
@@ -157,7 +157,8 @@ export default function Class({ classData, query }) {
             <Wrap spacing={"8px"} width={"100%"} overflow={"visible"} mb={2}>
               {recommend && (
                 <BigNumberCard
-                  source={"Would Recommend"}
+                  source={"Recommend"}
+                  tooltip={"I would recommend this class to a friend."}
                   val={recommend.toFixed(2)}
                   outOf={5}
                 />
@@ -165,6 +166,7 @@ export default function Class({ classData, query }) {
               {effort && (
                 <BigNumberCard
                   source={"Effort"}
+                  tooltip={"Effort needed to succeed is reasonable."}
                   val={effort.toFixed(2)}
                   outOf={5}
                 />
@@ -178,15 +180,17 @@ export default function Class({ classData, query }) {
               {/* )} */}
               {deepUnderstanding && (
                 <BigNumberCard
-                  source={"Deep Understanding"}
+                  source={"Understanding"}
+                  tooltip={"Deeper understanding of the subject matter."}
                   val={deepUnderstanding.toFixed(2)}
                   outOf={5}
                 />
               )}
-              {intellectuallyStimulating && (
+              {interestStimulated && (
                 <BigNumberCard
-                  source={"Intellectually Stimulating"}
-                  val={intellectuallyStimulating.toFixed(2)}
+                  source={"Interesting"}
+                  tooltip={"Interest in the subject matter was stimulated."}
+                  val={interestStimulated.toFixed(2)}
                   outOf={5}
                 />
               )}
@@ -197,10 +201,11 @@ export default function Class({ classData, query }) {
               {/*    outOf={5} */}
               {/*  /> */}
               {/* )} */}
-              {accessibleSupport && (
+              {activitiesSupported && (
                 <BigNumberCard
-                  source={"Accessible Support"}
-                  val={accessibleSupport.toFixed(2)}
+                  source={"Activities"}
+                  tooltip={"Activities in course supported learning."}
+                  val={activitiesSupported.toFixed(2)}
                   outOf={5}
                 />
               )}

@@ -1,8 +1,15 @@
-import { Badge, Heading, HStack, VStack, WrapItem } from "@chakra-ui/react";
+import {
+  Badge,
+  Heading,
+  HStack,
+  Tooltip,
+  VStack,
+  WrapItem,
+} from "@chakra-ui/react";
 import React from "react";
 import Card from "./Card";
 
-const BigNumberCard = ({ val, outOf, source, href, style }) => (
+const BigNumberCard = ({ val, outOf, source, href, style, tooltip = "" }) => (
   <WrapItem flexGrow={1}>
     <Card
       isSummary
@@ -23,9 +30,11 @@ const BigNumberCard = ({ val, outOf, source, href, style }) => (
             /{outOf}
           </Heading>
         </HStack>
-        <Badge color={"gray.500"} background={"transparent"}>
-          {source}
-        </Badge>
+        <Tooltip label={tooltip} hasArrow>
+          <Badge color={"gray.500"} background={"transparent"}>
+            {source}
+          </Badge>
+        </Tooltip>
       </VStack>
     </Card>
   </WrapItem>
