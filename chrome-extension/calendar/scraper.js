@@ -27,7 +27,7 @@ const weekToJson = async (date="unset") => {
   // appends the date info to our base url
   let url = "https://www.myu.umn.edu/psp/psprd/EMPLOYEE/CAMP/s/WEBLIB_IS_DS.ISCRIPT1.FieldFormula.IScript_DrawSection?group=UM_SSS&section=UM_SSS_ACAD_SCHEDULE&pslnk=1&cmd=smartnav" // the base url
   if (date != "unset") {
-    let url = url.concat("&effdt=", date)
+    url = url.concat("&effdt=", date)
   }
   // create a (queryable!) DOM element from the url
   let HTMLText;
