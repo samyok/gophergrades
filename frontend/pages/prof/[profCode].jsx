@@ -35,16 +35,17 @@ export default function Prof({ profData }) {
   } = useSearch();
 
   // map all class distribution to a proper format:
-  const formattedDistributions = distributions.map((dist) => ({
-    ...dist,
-    grades: dist.total_grades,
-    students: dist.total_students,
-    title: `${dist.class_name}: ${dist.class_desc}`,
-    href: `/class/${dist.class_name.replace(" ", "")}`,
-  }));
+  const formattedDistributions = distributions
+    .map((dist) => ({
+      ...dist,
+      title: `${dist.class_name}: ${dist.class_desc}`,
+      href: `/class/${dist.class_name.replace(" ", "")}`,
+    }))
+    // sort by number of students
+    .sort((a, b) => b.students - a.students);
 
   const totalDistribution = {
-    // take every distributions grades map and sum up each key
+    // take every distribution's grades map and sum up each key
     grades: formattedDistributions.reduce(
       (acc, curr) => ({
         ...acc,
