@@ -120,15 +120,16 @@ const generalClassInfo = async (term, courseNum, institution="UMNTC") => {
 
 // Scraping up all meeting times, including catching when classes are canceled for holidays
 // General game plan: 
-// 1. pick a week (where to start?), then grab all the course numbers in it
+// 1. pick a sample week (which week best to pick?), then grab all the course numbers in it
 // 2. Then get the general course info for each of those course numbers, store it somewhere
-// 3. Then take one of the `dateRange`s (they're all the same) and scrape through the whole thing to find instances of when a class should appear but it doesn't
-// sampleWeek = await weekToJson("2023-03-02")
+// 3. Then take one of the `dateRange`s (they're all the same) and scrape through the whole thing to find instances of when a class should appear but it doesn't. store this somehow
 console.log("scraper.js runs!")
 
 // 1. get all the course numbers
-let sampleWeek = await weekToJson("2023-03-02")
-let term = "1233"
+// TRY A WEEK! YES, YOU! TYPE ONE IN BELOW! DO IT NOW!
+let sampleWeek = await weekToJson("2023-03-20") // i think you can type in arbitrary dates now!
+// let term = "1229"
+let term = sampleWeek[0].term // automatic, baybee
 let institution = "UMNTC"
 
 let courseNums = []
@@ -160,4 +161,13 @@ for (let date = startDate; date <= endDate; date.setDate(date.getDate() + 7)) { 
   weeks.push(currentWeekData)
 }
 
+// `weeks` now contains all the meeting time info, and `coursesInfo` contains all the general info about courses
+// We could just dump this info directly into a calendar file, but it'd be best to try to compress it down a bit
+// Idea: (does this work with .ics files?)
+// i. Create calendar with all of the meetings as prescribed (using repeating events)
+// ii. add extra meeting times as needed (e.g. exams), delete meeting times as needed for holidays
+// if we can't delete individual instances of repeating events, we could end up creating 2 repeating events per class? (e.g. one for before break, one for after)
+
 // 3. 
+let missingMeetings = [] // holdiays/breaks
+let extraMeetings = [] // e.g. midterms
