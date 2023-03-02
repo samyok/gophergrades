@@ -37,14 +37,14 @@ const ContributorGroup = () => {
       const rowContributors = c.data.filter(
         (contrib) => !footerOverrides[contrib?.login]?.big
       );
-      const _bigContributors = c.data
+      const filteredBigContributors = c.data
         .filter((contrib) => footerOverrides[contrib?.login]?.big)
         .map((contrib) => ({
           ...contrib,
           ...footerOverrides[contrib?.login],
         }))
         .sort((a, b) => (a.index > b.index ? 1 : -1));
-      setBigContributors(_bigContributors);
+      setBigContributors(filteredBigContributors);
       setContributors(rowContributors);
     });
   }, []);
