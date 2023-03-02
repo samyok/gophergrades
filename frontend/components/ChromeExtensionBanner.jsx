@@ -27,8 +27,8 @@ const ChromeExtensionBanner = ({ setShowAlert = voidFunc, source }) => {
       <Badge mr={2} colorScheme={colorScheme} variant={"solid"}>
         New
       </Badge>
-      <VStack spacing={0} pl={2} pr={20} align={"start"}>
-        <Text color={"green.900"}>
+      <VStack spacing={0} pl={2} align={"start"}>
+        <Text color={"green.900"} textAlign={"left"}>
           Check out our <ChakraLink>Chrome extension</ChakraLink>!
         </Text>
         <Text fontSize={"xs"} color={"green.500"}>
