@@ -174,7 +174,7 @@ export const Footer = () => {
           <LinkButton target={"_blank"} href={"/social-coding"}>
             Social Coding
           </LinkButton>{" "}
-          with data from Summer 2017 to Summer 2022 provided by the{" "}
+          with data from Summer 2017 to Fall 2022 provided by the{" "}
           <LinkButton
             target={"_blank"}
             href={"https://ogc.umn.edu/data-access-and-privacy"}
