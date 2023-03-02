@@ -7,6 +7,7 @@ import {
   WrapItem,
 } from "@chakra-ui/react";
 import React from "react";
+import { InfoOutlineIcon } from "@chakra-ui/icons";
 import Card from "./Card";
 
 const BigNumberCard = ({ val, outOf, source, href, style, tooltip = "" }) => (
@@ -30,9 +31,14 @@ const BigNumberCard = ({ val, outOf, source, href, style, tooltip = "" }) => (
             /{outOf}
           </Heading>
         </HStack>
-        <Tooltip label={tooltip} hasArrow>
-          <Badge color={"gray.500"} background={"transparent"}>
-            {source}
+        <Tooltip label={tooltip} hasArrow textAlign={"center"}>
+          <Badge
+            color={"gray.500"}
+            background={"transparent"}
+            display={"flex"}
+            alignItems={"center"}
+          >
+            {source} {tooltip && <InfoOutlineIcon ml={1} />}
           </Badge>
         </Tooltip>
       </VStack>

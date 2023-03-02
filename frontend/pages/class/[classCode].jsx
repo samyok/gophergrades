@@ -39,7 +39,7 @@ export default function Class({ classData, query }) {
     effort,
     // grad_stand: gradStanding,
     recommend,
-    // responses: srtResponses,
+    responses: srtResponses,
   } = classData;
   const [isMobile] = useMediaQuery("(max-width: 550px)");
   const {
@@ -158,7 +158,7 @@ export default function Class({ classData, query }) {
               {recommend && (
                 <BigNumberCard
                   source={"Recommend"}
-                  tooltip={"I would recommend this class to a friend."}
+                  tooltip={`I would recommend this class to a friend. (${srtResponses} responses)`}
                   val={recommend.toFixed(2)}
                   outOf={5}
                 />
@@ -166,7 +166,7 @@ export default function Class({ classData, query }) {
               {effort && (
                 <BigNumberCard
                   source={"Effort"}
-                  tooltip={"Effort needed to succeed is reasonable."}
+                  tooltip={`Effort needed to succeed is reasonable. (${srtResponses} responses)`}
                   val={effort.toFixed(2)}
                   outOf={5}
                 />
@@ -181,7 +181,7 @@ export default function Class({ classData, query }) {
               {deepUnderstanding && (
                 <BigNumberCard
                   source={"Understanding"}
-                  tooltip={"Deeper understanding of the subject matter."}
+                  tooltip={`Deeper understanding of the subject matter. (${srtResponses} responses)`}
                   val={deepUnderstanding.toFixed(2)}
                   outOf={5}
                 />
@@ -189,7 +189,7 @@ export default function Class({ classData, query }) {
               {interestStimulated && (
                 <BigNumberCard
                   source={"Interesting"}
-                  tooltip={"Interest in the subject matter was stimulated."}
+                  tooltip={`Interest in the subject matter was stimulated. (${srtResponses} responses)`}
                   val={interestStimulated.toFixed(2)}
                   outOf={5}
                 />
