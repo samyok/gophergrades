@@ -39,8 +39,9 @@ const formatDateForURL = (date) => {
     var el = document.createElement('html'); 
     await fetch(url).then(r => r.text()).then(r => HTMLText = r);
     el.innerHTML = HTMLText;
-  
-    var meetingElements = el.querySelectorAll(".myu_calendar-class") // list of all the classes this week as HTML elems
+    
+    var setDaysTimes = el.querySelector(".myu_calendar") // HTML div containing only the classes with set days and times
+    var meetingElements = setDaysTimes.querySelectorAll(".myu_calendar-class") // list of all the classes this week as HTML elems
     const meetingObjects = []; // list of json objects holding meeting data
     for (let i = 0; i < meetingElements.length; i++) {
   

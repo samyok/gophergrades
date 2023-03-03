@@ -31,8 +31,7 @@
         "calendar/calendar.css"
       ],
       "js": [
-        "calendar/calendar.js",
-        "calendar/scraper.js"
+        "calendar/calendar.js"
       ]
     }
   ],
