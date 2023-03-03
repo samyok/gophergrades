@@ -51,7 +51,7 @@ const ContributorGroup = () => {
   }, []);
 
   return (
-    <VStack>
+    <VStack spacing={0}>
       <Wrap spacing={10} overflow={"visible"} justify={"center"} mb={4}>
         {bigContributors.map((c) => (
           <WrapItem>
@@ -122,7 +122,7 @@ const ContributorGroup = () => {
         ))}
       </Wrap>
 
-      <Wrap justify={"center"}>
+      <Wrap justify={"center"} pb={4}>
         {contributors.map((c) => (
           <GithubAvatar
             key={c.login}
