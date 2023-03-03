@@ -55,7 +55,6 @@ const Home = () => {
               textAlign={["center", "left", "left"]}
             >
               Gopher Grades!
-
             </Heading>
             <Text
               maxW={["100%", "50%", "100%"]}
