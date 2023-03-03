@@ -81,93 +81,103 @@ const weekToJson = async (dateString="unset") => {
  * @return {Array} generalMeetingObjectArray // these variable names could use some thought
  */
 const generalClassInfo = async (term, courseNum, institution="UMNTC") => { 
-  // example formatted url. note strm, institution, class_nbr
-  // var url = "https://www.myu.umn.edu/psp/psprd/EMPLOYEE/CAMP/s/WEBLIB_IS_DS.ISCRIPT1.FieldFormula.IScript_DrawSection?group=UM_SSS&section=UM_SSS_CLASS_DETAIL&cmd=smartnav&STRM=1233&INSTITUTION=UMNTC&CLASS_NBR=59662"
-  const baseURL = "https://www.myu.umn.edu/psp/psprd/EMPLOYEE/CAMP/s/WEBLIB_IS_DS.ISCRIPT1.FieldFormula.IScript_DrawSection?group=UM_SSS&section=UM_SSS_CLASS_DETAIL&cmd=smartnav"
-  let url = baseURL.concat("&STRM=", term, "&CLASS_NBR=", courseNum, "&INSTITUTION=", institution)
+    // example formatted url. note strm, institution, class_nbr
+    // var url = "https://www.myu.umn.edu/psp/psprd/EMPLOYEE/CAMP/s/WEBLIB_IS_DS.ISCRIPT1.FieldFormula.IScript_DrawSection?group=UM_SSS&section=UM_SSS_CLASS_DETAIL&cmd=smartnav&STRM=1233&INSTITUTION=UMNTC&CLASS_NBR=59662"
+    const baseURL = "https://www.myu.umn.edu/psp/psprd/EMPLOYEE/CAMP/s/WEBLIB_IS_DS.ISCRIPT1.FieldFormula.IScript_DrawSection?group=UM_SSS&section=UM_SSS_CLASS_DETAIL&cmd=smartnav"
+    let url = baseURL.concat("&STRM=", term, "&CLASS_NBR=", courseNum, "&INSTITUTION=", institution)
 
-  // set up element to parse
-  var el = document.createElement('html')
-  await fetch(url).then(r => r.text()).then(r => el.innerHTML = r)
+    // set up element to parse
+    var el = document.createElement('html')
+    await fetch(url).then(r => r.text()).then(r => el.innerHTML = r)
 
-  // dateRange parsing
-  let dateRangeString = el.querySelector('[data-th="Meeting Dates"]').innerText
-  let dateRange = dateRangeString.split(" - ").map(dateString => {
-    let splitDate = dateString.split("/")
-    let year = splitDate[2]
-    let month = splitDate[0]
-    let day = splitDate[1]
-    return new Date(Date.UTC(year, month-1, day))
+    // dateRange parsing
+    let dateRangeString = el.querySelector('[data-th="Meeting Dates"]').innerText
+    let dateRange = dateRangeString.split(" - ").map(dateString => {
+      let splitDate = dateString.split("/")
+      let year = splitDate[2]
+      let month = splitDate[0]
+      let day = splitDate[1]
+      return new Date(Date.UTC(year, month-1, day))
+    }
+    )
+
+    return ({
+      "term"        : term,
+      "courseNum"   : courseNum,
+      "institution" : institution,
+      "dateRange"   : dateRange,
+      // "dateRangeString" : dateRangeString, for debugging
+      "daysOfWeek"  : el.querySelector('[data-th="Days and Times"]').innerText.slice(0,7), // everything before character 8 // TODO: put this in better format? esp bc Thursday ("Th") messes stuff up I expect
+      "timeRange"   : el.querySelector('[data-th="Days and Times"]').innerText.slice(8), // everything after character 8 (inclusive)
+      // "meetingType" : el.querySelector('[data-th="Meeting Dates"]').innerText, // uh not doing this rn
+      "room"        : el.querySelector('[data-th="Room"]').innerText,
+      // "courseName"  : el.querySelector('[data-th="Meeting Dates"]').innerText, // hm not actually given by this url
+      // "address"     : el.querySelector('[data-th="Meeting Dates"]').innerText // this is also not included and may be hard to get too? accessible through outside sit,
+    })
   }
-  )
 
-  return ({
-    "term"        : term,
-    "courseNum"   : courseNum,
-    "institution" : institution,
-    "dateRange"   : dateRange,
-    // "dateRangeString" : dateRangeString, for debugging
-    "daysOfWeek"  : el.querySelector('[data-th="Days and Times"]').innerText.slice(0,7), // everything before character 8 // TODO: put this in better format? esp bc Thursday ("Th") messes stuff up I expect
-    "timeRange"   : el.querySelector('[data-th="Days and Times"]').innerText.slice(8), // everything after character 8 (inclusive)
-    // "meetingType" : el.querySelector('[data-th="Meeting Dates"]').innerText, // uh not doing this rn
-    "room"        : el.querySelector('[data-th="Room"]').innerText,
-    // "courseName"  : el.querySelector('[data-th="Meeting Dates"]').innerText, // hm not actually given by this url
-    // "address"     : el.querySelector('[data-th="Meeting Dates"]').innerText // this is also not included and may be hard to get too? accessible through outside sit,
-  })
+  // BEGIN ZONE OF EXTRA JANK
+
+  // Scraping up all meeting times, including catching when classes are canceled for holidays
+  // General game plan: 
+  // 1. pick a sample week (which week best to pick?), then grab all the course numbers in it
+  // 2. Then get the general course info for each of those course numbers, store it somewhere
+  // 3. Then take one of the `dateRange`s (they're all the same) and scrape through the whole thing to find instances of when a class should appear but it doesn't. store this somehow
+  console.log("scraper.js runs!")
+
+  // 1. get all the course numbers
+  // TRY A WEEK! YES, YOU! TYPE ONE IN BELOW! DO IT NOW!
+  const scrapeASemester = async (sampleDateString="unset") => { // format: yyyy-mm-dd
+    let sampleWeek = await weekToJson(sampleDateString) // i think you can type in arbitrary dates now!
+    // let term = "1229"
+    let term = sampleWeek[0].term // automatic, baybee
+    let institution = "UMNTC"
+
+    let courseNums = []
+    for (let i = 0; i < sampleWeek.length; i++) {
+      if (!courseNums.includes(sampleWeek[i].courseNum)) {
+        courseNums.push(sampleWeek[i].courseNum)
+      }
+    }
+
+    // 2. 
+    let coursesInfo = [] // list containing general class info for all the courses you're enrolled in
+    for (let i = 0; i < courseNums.length; i++) {
+      coursesInfo.push(await generalClassInfo(term, courseNums[i], institution))
+    }
+
+    // 3: loop through week by week and do ...stuff
+    startDate = endDate = coursesInfo[0].dateRange[0]
+    endDate = coursesInfo[0].dateRange[1]
+    endDate.setDate(endDate.getDate() + 7) // pad an extra week onto endDate so we can be sure we got everything
+
+    // for loop from startDate to endDate. step size is one week
+    // `date` is a date lying in the week of interest
+    // this is so cursed
+    let weeks = []
+    for (let date = startDate; date <= endDate; date.setDate(date.getDate() + 7)) { // the reason we need to pad endDate
+      let currentWeekData = await weekToJson(formatDateForURL(date))
+      // now um somehow check for when a class should be happening, but isn't (e.g. break/holiday)
+      // ??? think about this later
+      weeks.push(currentWeekData)
+    }
+
+    // `weeks` now contains all the meeting time info, and `coursesInfo` contains all the general info about courses
+    // We could just dump this info directly into a calendar file, but it'd be best to try to compress it down a bit
+    // Idea: (does this work with .ics files?)
+    // i. Create calendar with all of the meetings as prescribed (using repeating events)
+    // ii. add extra meeting times as needed (e.g. exams), delete meeting times as needed for holidays
+    // if we can't delete individual instances of repeating events, we could end up creating 2 repeating events per class? (e.g. one for before break, one for after)
+
+    // 3. 
+    let missingMeetings = [] // holdiays/breaks
+    let extraMeetings = [] // e.g. midterms
+
+    return ({"weeks" : weeks, 
+             "courseInfo" : coursesInfo})
 }
+window.scrapeASemester = scrapeASemester
+console.log("scope lifted????")
 
-// BEGIN ZONE OF EXTRA JANK
-
-// Scraping up all meeting times, including catching when classes are canceled for holidays
-// General game plan: 
-// 1. pick a sample week (which week best to pick?), then grab all the course numbers in it
-// 2. Then get the general course info for each of those course numbers, store it somewhere
-// 3. Then take one of the `dateRange`s (they're all the same) and scrape through the whole thing to find instances of when a class should appear but it doesn't. store this somehow
-console.log("scraper.js runs!")
-
-// 1. get all the course numbers
-// TRY A WEEK! YES, YOU! TYPE ONE IN BELOW! DO IT NOW!
-let sampleWeek = await weekToJson("2023-03-20") // i think you can type in arbitrary dates now!
-// let term = "1229"
-let term = sampleWeek[0].term // automatic, baybee
-let institution = "UMNTC"
-
-let courseNums = []
-for (let i = 0; i < sampleWeek.length; i++) {
-  if (!courseNums.includes(sampleWeek[i].courseNum)) {
-    courseNums.push(sampleWeek[i].courseNum)
-  }
-}
-
-// 2. 
-let coursesInfo = [] // list containing general class info for all the courses you're enrolled in
-for (let i = 0; i < courseNums.length; i++) {
-  coursesInfo.push(await generalClassInfo(term, courseNums[i], institution))
-}
-
-// 3: loop through week by week and do ...stuff
-startDate = endDate = coursesInfo[0].dateRange[0]
-endDate = coursesInfo[0].dateRange[1]
-endDate.setDate(endDate.getDate() + 7) // pad an extra week onto endDate so we can be sure we got everything
-
-// for loop from startDate to endDate. step size is one week
-// `date` is a date lying in the week of interest
-// this is so cursed
-let weeks = []
-for (let date = startDate; date <= endDate; date.setDate(date.getDate() + 7)) { // the reason we need to pad endDate
-  let currentWeekData = await weekToJson(formatDateForURL(date))
-  // now um somehow check for when a class should be happening, but isn't (e.g. break/holiday)
-  // ??? think about this later
-  weeks.push(currentWeekData)
-}
-
-// `weeks` now contains all the meeting time info, and `coursesInfo` contains all the general info about courses
-// We could just dump this info directly into a calendar file, but it'd be best to try to compress it down a bit
-// Idea: (does this work with .ics files?)
-// i. Create calendar with all of the meetings as prescribed (using repeating events)
-// ii. add extra meeting times as needed (e.g. exams), delete meeting times as needed for holidays
-// if we can't delete individual instances of repeating events, we could end up creating 2 repeating events per class? (e.g. one for before break, one for after)
-
-// 3. 
-let missingMeetings = [] // holdiays/breaks
-let extraMeetings = [] // e.g. midterms
+// console.log("trying to scrape...")
+// console.log(scrapeASemester("2023-03-02"))
