@@ -1,12 +1,17 @@
 .calendar_button{
-    background-color: #4CAF50; /* Green */
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
+    background-color: #7A0019; /* Green */
+    border: 1px solid black;
+    color: #ffd65b;
+    padding: 12px 16px;
+    margin: 0 auto;
+    width: 60%;
+    align-items: center;
+    justify-content: center;
     text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
+    display: flex;
+    /*display used to be inline*/
+    font-size: 24px;
+    font-weight: 400;
+    /*margin: 4px 2px*/
     cursor: pointer;
 }
