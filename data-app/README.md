@@ -4,8 +4,9 @@ This document details the functions and reasons regarding each file present here
 
 ## clean_initial.py
 This file's primary purpose is to cut down the information stored in a CSV to the following column names:
+
 | Column Name    |                                                                                                    Description |
-| :------------- | -------------------------------------------------------------------------------------------------------------: |
+|:---------------|---------------------------------------------------------------------------------------------------------------:|
 | TERM           |                 The Term ID Refering to the grade term. Can be found on [Classinfo](http://classinfo.umn.edu/) |
 | SUBJECT        |                                                           The department from which this class is offered from |
 | CATALOG_NBR    |                                                               The specific course number refering to the class |

@@ -167,11 +167,12 @@ export const getInstructorInfo = async (instructorId) => {
 
 export const getInstructorClasses = async (instructorId) => {
   const sql = `
-      SELECT *
-      FROM professor
-               LEFT JOIN distribution on distribution.professor_id = professor.id
-               LEFT JOIN classdistribution on classdistribution.id = distribution.class_id
-      WHERE professor.id = $instructor_id`;
+    SELECT *
+    FROM professor
+             LEFT JOIN distribution d on professor.id = d.professor_id
+             LEFT JOIN termdistribution t on d.id = t.dist_id
+             LEFT JOIN classdistribution c on d.class_id = c.id
+    WHERE professor.id = $instructor_id`;
 
   const params = {
     $instructor_id: instructorId,
@@ -179,7 +180,7 @@ export const getInstructorClasses = async (instructorId) => {
 
   const rows = await promisedQuery(sql, params);
 
-  return rows.map(parseJSONFromRow);
+  return summarizeTerms(groupBy(rows.map(parseJSONFromRow), "class_id"));
 };
 
 export const getSearch = async (search) => {

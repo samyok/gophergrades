@@ -1,11 +1,18 @@
-import { Alert, Badge, Link as ChakraLink, Text } from "@chakra-ui/react";
+import {
+  Alert,
+  Badge,
+  Link as ChakraLink,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 
 const voidFunc = () => {};
 const ChromeExtensionBanner = ({ setShowAlert = voidFunc, source }) => {
+  const colorScheme = "green";
   return (
     <Alert
       borderRadius={"lg"}
-      colorScheme={"blackAlpha"}
+      colorScheme={colorScheme}
       variant={"left-accent"}
       cursor={"pointer"}
       _hover={{ opacity: 0.9 }}
@@ -17,13 +24,17 @@ const ChromeExtensionBanner = ({ setShowAlert = voidFunc, source }) => {
         window.localStorage.setItem("downloadedChromeExtension", "true");
       }}
     >
-      <Badge mr={2} colorScheme={"purple"} variant={"solid"}>
+      <Badge mr={2} colorScheme={colorScheme} variant={"solid"}>
         New
       </Badge>
-      <Text>
-        See grades directly in ScheduleBuilder with our{" "}
-        <ChakraLink>new Chrome extension</ChakraLink>!
-      </Text>
+      <VStack spacing={0} pl={2} align={"start"}>
+        <Text color={"green.900"} textAlign={"left"}>
+          Check out our <ChakraLink>Chrome extension</ChakraLink>!
+        </Text>
+        <Text fontSize={"xs"} color={"green.500"}>
+          Now with data from Fall 2022.
+        </Text>
+      </VStack>
     </Alert>
   );
 };
