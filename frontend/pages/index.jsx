@@ -54,7 +54,8 @@ const Home = () => {
               paddingTop={[0, 10, "calc(50vh - 185px)"]}
               textAlign={["center", "left", "left"]}
             >
-              Gopher Grades
+              Gopher Grades!
+
             </Heading>
             <Text
               maxW={["100%", "50%", "100%"]}
