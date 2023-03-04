@@ -20,6 +20,10 @@ def fetch_unknown_prof(x:pd.DataFrame) -> pd.DataFrame:
     :return: A new same sized dataframe with updated professor name, "Unknown Professor", or no change.
     :rtype: pd.DataFrame
     """
+    if not x["HR_NAME"].isnull().all():
+        # If an HR_NAME is already defined don't make any modifications.
+        return x
+    
     global CACHED_REQ
     global CACHED_LINK
     dept = x["SUBJECT"].iloc[0]
@@ -80,9 +84,6 @@ def fetch_unknown_prof(x:pd.DataFrame) -> pd.DataFrame:
     if not x["HR_NAME"].isnull().all() and professor != "Unknown Professor":
         # print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {professor}.")
         x["HR_NAME"] = professor
-        return x
-    elif not x["HR_NAME"].isnull().all():
-        # print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {x['HR_NAME'].iloc[0]}.")
         return x
     else: 
         # print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {professor}.")
