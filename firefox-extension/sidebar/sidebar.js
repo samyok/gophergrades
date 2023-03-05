@@ -15,8 +15,7 @@ window.addEventListener("message", (event) => {
 const debounce = (func, wait = 20, immediate = true) => {
   let timeout;
   return function () {
-    let context = this,
-      args = arguments;
+    let context = this, args = arguments;
     let later = function () {
       timeout = null;
       if (!immediate) func.apply(context, args);
@@ -35,8 +34,8 @@ const getInternetId = () => {
   if (internetId) return internetId;
   const matches = document
     .querySelector("[href='/logout.php']")
-    .innerText.match(/\((.+)\)/);
-  if (matches.length > 1) internetId = matches[1];
+    ?.innerText.match(/\((.+)\)/);
+  if (matches?.length > 1) internetId = matches[1];
   return internetId;
 };
 
@@ -98,10 +97,7 @@ const debouncedFindCourses = debounce((courseList) => {
     const courseId = parentPanel.querySelector("a[name]")?.getAttribute("name");
     console.log("[GG] coursePanels", courseId);
 
-    prependFrame(
-      `${BASE_URL}/class/${courseId}?static=all`,
-      parentPanel.querySelector(".panel-body")
-    );
+    prependFrame(`${BASE_URL}/class/${courseId}?static=all`, parentPanel.querySelector(".panel-body"));
   });
 }, 50);
 
@@ -138,16 +134,12 @@ const loadCourseInfo = (courseInfo) => {
 // if we're on a built schedule, load the schedule
 const loadCourseSchedule = (courseSchedule) => {
   const courses = Array.from(document.querySelectorAll("#schedule-courses tr:has(h4)"))
-    .map(tr =>
-      ({
-        courseId: tr.innerText
-          .trim()
-          .split(":")[0]
-          ?.replaceAll(" ", ""),
-        courseName: tr.innerText.trim(),
-        tr
-      })
-    );
+    .map(tr => ({
+      courseId: tr.innerText
+        .trim()
+        .split(":")[0]
+        ?.replaceAll(" ", ""), courseName: tr.innerText.trim(), tr
+    }));
 
   console.log("[GG] scheduled courses", courses);
   for (let i = 0; i < courses.length; i++) {
@@ -165,19 +157,14 @@ const onAppChange = () => {
   const courseSchedule = document.querySelector("#schedule-courses");
 
   // determine which page we're on and load the appropriate data.
-  if (courseList) {
-    console.log("loading course list...");
-    loadCourses(courseList);
-  } else if (courseInfo) {
-    console.log("loading course info...");
-    loadCourseInfo(courseInfo);
-  } else if (courseSchedule) {
-    console.log("loading course schedule...");
-    loadCourseSchedule(courseSchedule);
-  }
+  if (courseList) loadCourses(courseList); else if (courseInfo) loadCourseInfo(courseInfo); else if (courseSchedule) loadCourseSchedule(courseSchedule);
 };
 
+let loaded = false;
 const onLoad = () => {
+  if (loaded) return;
+  loaded = true;
+
   const app = document.querySelector("#app-container");
 
   const appObserver = new MutationObserver((mutations) => {
@@ -188,3 +175,5 @@ const onLoad = () => {
 };
 
 window.addEventListener("load", onLoad);
+// also call the onLoad function immediately; this fixes an issue in Firefox where the page loads before the script is loaded and thus the script doesn't run.
+onLoad();
