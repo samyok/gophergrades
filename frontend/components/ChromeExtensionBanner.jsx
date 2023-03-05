@@ -13,9 +13,8 @@ import { BsBrowserEdge, BsBrowserFirefox } from "react-icons/bs";
 const voidFunc = () => {};
 const ChromeExtensionBanner = ({ setShowAlert = voidFunc, source }) => {
   const isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
-  const isMicrosoftEdge =
-    navigator.userAgent.toLowerCase().indexOf("chrome") > -1;
-  const isChrome = navigator.userAgent.toLowerCase().indexOf("crome") > -1;
+  const isMicrosoftEdge = navigator.userAgent.toLowerCase().indexOf("edg") > -1;
+  const isChrome = navigator.userAgent.toLowerCase().indexOf("chrome") > -1;
   const colorScheme = isFirefox ? "orange" : "green";
 
   let browser;
