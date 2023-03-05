@@ -2,9 +2,9 @@ const manifest = require('../chrome-extension/manifest.json');
 const fs = require('fs');
 const exec = require('child_process').exec;
 
-const FgGray = "\x1b[90m", FgMagenta = "\x1b[36m", FgRed = "\x1b[31m";
+const colors = require('./lib/colors');
 
-const DebugColor = `${FgGray}`, SuccessColor = `${FgMagenta}`, ErrorColor = `${FgRed}`;
+const DebugColor = colors.FgGray, SuccessColor = colors.FgGreen, ErrorColor = colors.FgRed;
 
 // delete all the firefox folder contents
 fs.rmSync('firefox-extension', { recursive: true });
@@ -24,6 +24,11 @@ const firefoxManifest = {
   ...manifest,
   background: {
     scripts: ['background.js'],
+  },
+  browser_specific_settings: {
+    gecko: {
+      id: "firefox@umn.lol"
+    }
   }
 }
 
