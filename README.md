@@ -14,3 +14,10 @@ yarn install
 yarn dev
 # live at http://localhost:3000
 ```
+
+# Building the Firefox Extension
+
+```bash
+cp chrome-extension firefox-extension
+rm firefox-extension/manifest.json
+node bin/manifet.json 
