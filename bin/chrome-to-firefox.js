@@ -1,9 +1,10 @@
 const manifest = require('../chrome-extension/manifest.json');
 const fs = require('fs');
+const exec = require('child_process').exec;
 
-const FgGray = "\x1b[90m", FgMagenta = "\x1b[36m";
+const FgGray = "\x1b[90m", FgMagenta = "\x1b[36m", FgRed = "\x1b[31m";
 
-const DebugColor = `${FgGray}`, SuccessColor = `${FgMagenta}`;
+const DebugColor = `${FgGray}`, SuccessColor = `${FgMagenta}`, ErrorColor = `${FgRed}`;
 
 // delete all the firefox folder contents
 fs.rmSync('firefox-extension', { recursive: true });
@@ -31,8 +32,32 @@ console.log(DebugColor, 'Updated manifest.json');
 
 
 console.log("\n");
-console.log(SuccessColor, 'Successfully converted chrome-extension to firefox-extension');
-console.log("\n");
-console.log(SuccessColor, 'To test the extension, run the following command:');
-console.log(DebugColor, '\tweb-ext run -s firefox-extension');
-console.log("\n");
+console.log(SuccessColor, 'Successfully converted chrome-extension to firefox-extension\n');
+console.log(SuccessColor, 'Running firefox-extension...\n');
+
+
+// check if web-ext is installed on path
+// if not, install it
+
+exec('web-ext --version', (err, stdout, stderr) => {
+  if (err) {
+    console.log(DebugColor, 'web-ext not found on path. Installing...');
+    exec('npm install --global web-ext', (err, stdout, stderr) => {
+      if (err) {
+        console.log(ErrorColor, 'Failed to install web-ext. Please install it manually.');
+        return;
+      }
+      console.log(SuccessColor, 'Successfully installed web-ext');
+    });
+  }
+  else {
+    console.log(DebugColor, 'web-ext found on path');
+  }
+  exec('web-ext run -s firefox-extension --start-url https://schedulebuilder.umn.edu', (err, stdout, stderr) => {
+    if (err) {
+      console.log(ErrorColor, 'Failed to run firefox-extension');
+      return;
+    }
+    console.log(SuccessColor, 'Successfully ran firefox-extension');
+  });
+});
