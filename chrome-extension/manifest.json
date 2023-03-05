@@ -1,7 +1,7 @@
 {
   "name": "Gopher Grades - Past grades for UMN classes!",
   "description": "Now you can view directly from the course catalog!",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
@@ -13,7 +13,7 @@
     {
       "matches": [
         "https://schedulebuilder.umn.edu/*",
-        "https://www.schedulebuilder.umn.edu/*"
+        "https://*.schedulebuilder.umn.edu/*"
       ],
       "css": [
         "sidebar/sidebar.css"
@@ -24,8 +24,17 @@
     },
     {
       "matches": [
+        "https://*.umn.lol/*",
+        "https://umn.edu/*"
+      ],
+      "css": [
+        "umn.lol/clearExtensionBanner.css"
+      ]
+    },
+    {
+      "matches": [
         "https://myu.umn.edu/*",
-        "https://www.myu.umn.edu/*"
+        "https://*.myu.umn.edu/*"
       ],
       "css": [
         "calendar/calendar.css"

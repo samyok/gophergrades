@@ -6,9 +6,13 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import Card from "../Card";
 import { searchDurations } from "../../lib/config";
-import ChromeExtensionBanner from "../ChromeExtensionBanner";
+
+const ChromeExtensionBanner = dynamic(import("../ChromeExtensionBanner"), {
+  ssr: false,
+});
 
 const Classes = ({ searchResults, onClick }) => {
   if (
@@ -124,13 +128,14 @@ export default function SearchResults({
           Search Results for &ldquo;{search.trim()}&rdquo;
         </Heading>
         <Collapse
+          className={"hide-if-extension-downloaded"}
           in={!isMobile && showAlert}
           style={{
             width: "100%",
           }}
         >
           <ChromeExtensionBanner
-            source={"chrome.search"}
+            source={"search"}
             setShowAlert={setShowAlert}
           />
         </Collapse>

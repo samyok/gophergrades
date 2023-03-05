@@ -8,12 +8,17 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import dynamic from "next/dynamic";
 import PageLayout from "../components/Layout/PageLayout";
 import SearchBar from "../components/Search/SearchBar";
 import SearchResults from "../components/Search/SearchResults";
 import { useSearch } from "../components/Search/useSearch";
 import { searchDurations } from "../lib/config";
-import ChromeExtensionBanner from "../components/ChromeExtensionBanner";
+
+const ChromeExtensionBanner = dynamic(
+  import("../components/ChromeExtensionBanner"),
+  { ssr: false }
+);
 
 const Home = () => {
   const {
@@ -81,7 +86,7 @@ const Home = () => {
             />
           </Box>
           <Collapse in={showPage} animateOpacity>
-            <ChromeExtensionBanner source={"chrome.index"} />
+            <ChromeExtensionBanner source={"index"} />
           </Collapse>
         </VStack>
         <Box ml={[0, -200, -75]} zIndex={-1} alignSelf={"center"}>

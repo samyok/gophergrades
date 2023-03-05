@@ -11,6 +11,12 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: "/firefox",
+        destination:
+          "https://addons.mozilla.org/en-US/firefox/addon/gophergrades/",
+        permanent: true,
+      },
+      {
         source: "/social-coding",
         destination: "https://discord.gg/ctcXWjUJqZ",
         permanent: true,
