@@ -6,26 +6,26 @@ const colors = require('./lib/colors');
 
 const DebugColor = colors.FgGray, SuccessColor = colors.FgGreen, ErrorColor = colors.FgRed;
 
-// delete all the firefox folder contents
-fs.rmSync('firefox-extension', { recursive: true });
-console.log(DebugColor, 'Deleted firefox-extension folder');
+// delete all the firefox folder content, if it exists
+if (fs.existsSync('firefox-extension')) {
+  fs.rmSync('firefox-extension', {recursive: true});
+  console.log(DebugColor, 'Deleted firefox-extension folder');
+}
 
 // create the firefox folder
 fs.mkdirSync('firefox-extension');
 console.log(DebugColor, 'Created firefox-extension folder');
 
 // copy all the chrome folder contents recursively to the firefox folder
-fs.cpSync('chrome-extension', 'firefox-extension', { recursive: true });
+fs.cpSync('chrome-extension', 'firefox-extension', {recursive: true});
 console.log(DebugColor, 'Copied chrome-extension folder to firefox-extension folder');
 
 
 // update the manifest
 const firefoxManifest = {
-  ...manifest,
-  background: {
+  ...manifest, background: {
     scripts: ['background.js'],
-  },
-  browser_specific_settings: {
+  }, browser_specific_settings: {
     gecko: {
       id: "firefox@umn.lol"
     }
@@ -54,8 +54,7 @@ exec('web-ext --version', (err, stdout, stderr) => {
       }
       console.log(SuccessColor, 'Successfully installed web-ext');
     });
-  }
-  else {
+  } else {
     console.log(DebugColor, 'web-ext found on path');
   }
   exec('web-ext run -s firefox-extension --start-url https://schedulebuilder.umn.edu', (err, stdout, stderr) => {
