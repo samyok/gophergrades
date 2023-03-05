@@ -3,3 +3,5 @@ No-Instructor-data.txt
 # .idea
 .vscode
 *.zip
+
+*.DS_Store
