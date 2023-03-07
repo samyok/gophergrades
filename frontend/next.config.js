@@ -21,6 +21,23 @@ const nextConfig = {
         destination: "https://discord.gg/ctcXWjUJqZ",
         permanent: true,
       },
+      {
+        source: "/ext",
+        destination: "/firefox",
+        permanent: false,
+        has: [
+          {
+            type: "header",
+            key: "User-Agent",
+            value: "(.*Firefox.*)",
+          },
+        ],
+      },
+      {
+        source: "/ext",
+        destination: "/chrome",
+        permanent: false,
+      },
     ];
   },
 };
