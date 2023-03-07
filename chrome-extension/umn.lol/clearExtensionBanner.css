@@ -1,0 +1,7 @@
+.hide-if-extension-downloaded {
+    display: none !important;
+}
+
+.show-if-extension-downloaded {
+    display: block !important;
+}

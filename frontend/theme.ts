@@ -3,10 +3,13 @@ import { IBM_Plex_Sans, Inter } from "@next/font/google";
 
 const inter = Inter({
   subsets: ["latin"],
+  fallback: ["system-ui", "arial"],
 });
+
 const ibmPlexSans = IBM_Plex_Sans({
   weight: "700",
   subsets: ["latin"],
+  display: "block",
 });
 
 export default extendTheme({
