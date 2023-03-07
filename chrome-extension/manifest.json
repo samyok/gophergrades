@@ -1,7 +1,7 @@
 {
   "name": "Gopher Grades - Past grades for UMN classes!",
   "description": "Now you can view directly from the course catalog!",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
@@ -43,6 +43,12 @@
         "calendar/calendar.js"
       ]
     }
+  ],
+  "host_permissions": [
+    "*://*.umn.lol/*",
+    "*://umn.lol/*",
+    "*://*.umn.edu/*",
+    "*://umn.edu/*"
   ],
   "action": {
     "default_title": "GopherGrades - use on Schedule Builder or OneStop!",
