@@ -2,6 +2,14 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  rewrites: async () => {
+    return [
+      {
+        source: "/stats/:match*",
+        destination: "https://analytics.umami.is/:match*",
+      },
+    ];
+  },
   redirects: async () => {
     return [
       {
