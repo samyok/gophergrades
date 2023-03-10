@@ -29,9 +29,10 @@ export default function NotFound() {
 
   const onClick = async () => {
     setLoading(true);
-    window.umami?.trackEvent("report-broken-link", {
-      type: router.asPath.replaceAll("/", "_"),
-    });
+    window.umami?.trackEvent(
+      router.asPath.replaceAll("/", "_"),
+      "report-broken-link"
+    );
     await fetch("/api/report", {
       method: "POST",
       headers: {

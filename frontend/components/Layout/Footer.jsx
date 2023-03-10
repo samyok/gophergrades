@@ -73,9 +73,10 @@ const ContributorGroup = () => {
                     href={c.linkedin}
                     target={"_blank"}
                     onClick={() => {
-                      window?.umami?.trackEvent("footer", {
-                        type: `button.${c.login}.linkedin`,
-                      });
+                      window?.umami?.trackEvent(
+                        `button.${c.login}.linkedin.click`,
+                        "footer"
+                      );
                     }}
                     as={"a"}
                     size={"sm"}
@@ -88,9 +89,10 @@ const ContributorGroup = () => {
                     href={c.website}
                     target={"_blank"}
                     onClick={() => {
-                      window?.umami?.trackEvent("footer", {
-                        type: `button.${c.login}.website`,
-                      });
+                      window?.umami?.trackEvent(
+                        `button.${c.login}.website.click`,
+                        "footer"
+                      );
                     }}
                     as={"a"}
                     size={"sm"}
@@ -103,9 +105,10 @@ const ContributorGroup = () => {
                     href={c.github}
                     target={"_blank"}
                     onClick={() => {
-                      window?.umami?.trackEvent("footer", {
-                        type: `button.${c.login}.github`,
-                      });
+                      window?.umami?.trackEvent(
+                        `button.${c.login}.github.click`,
+                        "footer"
+                      );
                     }}
                     as={"a"}
                     size={"sm"}
@@ -128,9 +131,7 @@ const ContributorGroup = () => {
             href={c.html_url}
             as={"a"}
             onClick={() => {
-              window?.umami?.trackEvent("footer", {
-                type: `avatar.${c.login}`,
-              });
+              window?.umami?.trackEvent(`avatar.${c.login}.click`, "footer");
             }}
             target={"_blank"}
             opacity={0.7}
@@ -148,9 +149,7 @@ const ContributorGroup = () => {
         as={"a"}
         target={"_blank"}
         onClick={() => {
-          window?.umami?.trackEvent("footer", {
-            type: `button.github_contribute`,
-          });
+          window?.umami?.trackEvent(`button.github_contribute.click`, "footer");
         }}
         href={"https://github.com/samyok/gophergrades"}
       >
