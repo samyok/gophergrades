@@ -39,10 +39,9 @@ const MyHeading = ({
     <script
       async
       defer
-      data-website-id={"67c6918e-d23c-42aa-a392-cad37e4eeaee"}
+      data-website-id={"462e9b6e-7059-477e-a8ce-245b5a5d1599"}
       data-domains={"umn.lol"}
-      data-host-url={"https://dash.umn.lol"}
-      src={"/dash.js"}
+      src={"/stats/script.js"}
     />
   </Head>
 );
