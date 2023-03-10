@@ -36,9 +36,8 @@ const MyHeading = ({
     />
     <meta property={"twitter:title"} content={title || DEFAULT_TITLE} />
     <meta property={"twitter:description"} content={DEFAULT_DESC} />
+    {/* eslint-disable-next-line @next/next/no-sync-scripts */}
     <script
-      async
-      defer
       data-website-id={"462e9b6e-7059-477e-a8ce-245b5a5d1599"}
       data-domains={"umn.lol"}
       src={"/stats/script.js"}
