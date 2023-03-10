@@ -75,7 +75,7 @@ const ContributorGroup = () => {
                     onClick={() => {
                       window?.umami?.trackEvent(
                         `button.${c.login}.linkedin.click`,
-                        "footer"
+                        { type: "footer" }
                       );
                     }}
                     as={"a"}
@@ -91,7 +91,7 @@ const ContributorGroup = () => {
                     onClick={() => {
                       window?.umami?.trackEvent(
                         `button.${c.login}.website.click`,
-                        "footer"
+                        { type: "footer" }
                       );
                     }}
                     as={"a"}
@@ -107,7 +107,7 @@ const ContributorGroup = () => {
                     onClick={() => {
                       window?.umami?.trackEvent(
                         `button.${c.login}.github.click`,
-                        "footer"
+                        { type: "footer" }
                       );
                     }}
                     as={"a"}
@@ -131,7 +131,9 @@ const ContributorGroup = () => {
             href={c.html_url}
             as={"a"}
             onClick={() => {
-              window?.umami?.trackEvent(`avatar.${c.login}.click`, "footer");
+              window?.umami?.trackEvent(`avatar.${c.login}.click`, {
+                type: "footer",
+              });
             }}
             target={"_blank"}
             opacity={0.7}
@@ -149,7 +151,9 @@ const ContributorGroup = () => {
         as={"a"}
         target={"_blank"}
         onClick={() => {
-          window?.umami?.trackEvent(`button.github_contribute.click`, "footer");
+          window?.umami?.trackEvent(`button.github_contribute.click`, {
+            type: "footer",
+          });
         }}
         href={"https://github.com/samyok/gophergrades"}
       >

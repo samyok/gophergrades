@@ -46,7 +46,10 @@ const ChromeExtensionBanner = ({ setShowAlert = voidFunc, source }) => {
         if (isFirefox) window.open("/firefox", "_blank");
         else window.open("/chrome", "_blank");
 
-        window.umami?.trackEvent(eventSource, "download");
+        window.umami?.trackEvent(
+          eventSource + (isFirefox ? ".firefox" : ".chrome"),
+          { type: "download" }
+        );
         window.localStorage.setItem("downloadedChromeExtension", "true");
       }}
     >
