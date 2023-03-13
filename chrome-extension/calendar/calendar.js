@@ -22,13 +22,13 @@ const formatDateForURL = (date) => {
   return [year, ('0' + month).slice(-2), ('0' + day).slice(-2)].join("-")
 }
   
-/**
- * Scrapes a list of json objects containing all the meetings in a given week
- * Json includes course name, number, date (a single date!), time, room, etc. 
- * @param {string} [dateString="unset"] // a day during the week in question (Let's say the Sunday.), in format "yyyy-mm-dd", WITH DASHES. "unset" gives the current week
- * @returns {Array<Object>} meetingObjectArray
- */
-const weekToJson = async (dateString="unset") => {
+  /**
+   * Scrapes a list of json objects containing all the meetings in a given week
+   * Json includes course name, number, date (a single date!), time, room, etc. 
+   * @param {string} [dateString="unset"] // a day during the week in question (Let's say the Sunday.), in format "yyyy-mm-dd", WITH DASHES. "unset" gives the current week
+   * @returns {Array<Object>} meetingObjectArray
+   */
+  const weekToJson = async (dateString="unset") => {
   // utility func to parse yyyymmdd into Date object
   let parseDate = (dateString) => {
     let year = dateString.slice(0, 4)
@@ -43,45 +43,45 @@ const weekToJson = async (dateString="unset") => {
     return new Date(Date.UTC(year, month-1, day)) // month-1 ew
   }
 
-  // appends the date info to our base url
-  let url = "https://www.myu.umn.edu/psp/psprd/EMPLOYEE/CAMP/s/WEBLIB_IS_DS.ISCRIPT1.FieldFormula.IScript_DrawSection?group=UM_SSS&section=UM_SSS_ACAD_SCHEDULE&pslnk=1&cmd=smartnav" // the base url
-  if (dateString != "unset") {
-    url = url.concat("&effdt=", dateString)
-  }
-  // create a (queryable!) DOM element from the url
-  let HTMLText;
-  var el = document.createElement('html'); 
-  await fetch(url).then(r => r.text()).then(r => HTMLText = r);
-  el.innerHTML = HTMLText;
-  
-  var setDaysTimes = el.querySelector(".myu_calendar") // HTML div containing only the classes with set days and times
-  var meetingElements = setDaysTimes.querySelectorAll(".myu_calendar-class") // list of all the classes this week as HTML elems
-  const meetingObjects = []; // list of json objects holding meeting data
-  for (let i = 0; i < meetingElements.length; i++) {
-
-    // defined for convenience/readability(?)
-    let meetingEl = meetingElements[i];
-
-    // sometimes a meetingEl marks when there are no classes in a day?
-    if (meetingEl.classList.contains("no-class")) {
-      console.log("encountered a no-class meetingElement. skipping...")
-      continue
+    // appends the date info to our base url
+    let url = "https://www.myu.umn.edu/psp/psprd/EMPLOYEE/CAMP/s/WEBLIB_IS_DS.ISCRIPT1.FieldFormula.IScript_DrawSection?group=UM_SSS&section=UM_SSS_ACAD_SCHEDULE&pslnk=1&cmd=smartnav" // the base url
+    if (dateString != "unset") {
+      url = url.concat("&effdt=", dateString)
     }
-
-    let classDetails = meetingEl.querySelector(".myu_calendar-class-details").innerHTML
-                        .replace(/\n/g,"").split("<br>") // regex is to get rid of random newlines that are in there for some reason
-    meetingObjects.push({
-      "term"        : meetingEl.getAttribute("data-strm"), // in format `xyyx', where `yy` is the year and `xx` = `13` is spring, `19` is fall
-      "courseNum"   : meetingEl.getAttribute("data-class-nbr"),
-      "date"        : parseDate(meetingEl.getAttribute("data-fulldate")),
-      "meetingType" : classDetails[0],
-      "timeRange"   : classDetails[1],
-      "room"        : classDetails[2].replace(/^ | $/g,""), // strip off the leading and trailing space with regex
-      "courseName"  : meetingEl.querySelector(".myu_calendar-class-name-color-referencer").innerText,
-    });
-    // console.log([semester, date, timeRange, courseName, meetingType, room].join(","))
-  }
-  // console.log(meetingObjects);
+    // create a (queryable!) DOM element from the url
+    let HTMLText;
+    var el = document.createElement('html'); 
+    await fetch(url).then(r => r.text()).then(r => HTMLText = r);
+    el.innerHTML = HTMLText;
+    
+    var setDaysTimes = el.querySelector(".myu_calendar") // HTML div containing only the classes with set days and times
+    var meetingElements = setDaysTimes.querySelectorAll(".myu_calendar-class") // list of all the classes this week as HTML elems
+    const meetingObjects = []; // list of json objects holding meeting data
+    for (let i = 0; i < meetingElements.length; i++) {
+  
+      // defined for convenience/readability(?)
+      let meetingEl = meetingElements[i];
+  
+      // sometimes a meetingEl marks when there are no classes in a day?
+      if (meetingEl.classList.contains("no-class")) {
+        console.log("encountered a no-class meetingElement. skipping...")
+        continue
+      }
+  
+      let classDetails = meetingEl.querySelector(".myu_calendar-class-details").innerHTML
+                          .replace(/\n/g,"").split("<br>") // regex is to get rid of random newlines that are in there for some reason
+      meetingObjects.push({
+        "term"        : meetingEl.getAttribute("data-strm"), // in format `xyyx', where `yy` is the year and `xx` = `13` is spring, `19` is fall
+        "courseNum"   : meetingEl.getAttribute("data-class-nbr"),
+        "date"        : parseDate(meetingEl.getAttribute("data-fulldate")),
+        "meetingType" : classDetails[0],
+        "timeRange"   : classDetails[1],
+        "room"        : classDetails[2].replace(/^ | $/g,""), // strip off the leading and trailing space with regex
+        "courseName"  : meetingEl.querySelector(".myu_calendar-class-name-color-referencer").innerText,
+      });
+      // console.log([semester, date, timeRange, courseName, meetingType, room].join(","))
+    }
+    // console.log(meetingObjects);
 
   // let sundayDate = null // TODO: fix the problems this will cause
   console.log(`datestring: ${dateString}`)
@@ -104,36 +104,36 @@ const sundayThisWeek = (date) => {
   let result = new Date(date.getTime()) // make a copy
   result.setDate(result.getDate() - result.getUTCDay())
   return result
-}
+  }
   
-/**
- * Scrapes general info on a class: session start, days of week, meeting times, location, etc
- * @param {string} term
- * @param {string} courseNum
- * @param {string} [institution="UMNTC"] // TODO: figure out institution codes for other campuses
- * @return {Array} generalMeetingObjectArray // these variable names could use some thought
- */
-const generalClassInfo = async (term, courseNum, institution="UMNTC") => { 
-    // example formatted url. note strm, institution, class_nbr
-    // var url = "https://www.myu.umn.edu/psp/psprd/EMPLOYEE/CAMP/s/WEBLIB_IS_DS.ISCRIPT1.FieldFormula.IScript_DrawSection?group=UM_SSS&section=UM_SSS_CLASS_DETAIL&cmd=smartnav&STRM=1233&INSTITUTION=UMNTC&CLASS_NBR=59662"
-    const baseURL = "https://www.myu.umn.edu/psp/psprd/EMPLOYEE/CAMP/s/WEBLIB_IS_DS.ISCRIPT1.FieldFormula.IScript_DrawSection?group=UM_SSS&section=UM_SSS_CLASS_DETAIL&cmd=smartnav"
-    let url = baseURL.concat("&STRM=", term, "&CLASS_NBR=", courseNum, "&INSTITUTION=", institution)
-
-    // set up element to parse
-    var el = document.createElement('html')
-    await fetch(url).then(r => r.text()).then(r => el.innerHTML = r)
-
-    // dateRange parsing
-    let dateRangeString = el.querySelector('[data-th="Meeting Dates"]').innerText
-    let dateRange = dateRangeString.split(" - ").map(dateString => {
-      let splitDate = dateString.split("/")
-      let year = splitDate[2]
-      let month = splitDate[0]
-      let day = splitDate[1]
-      return new Date(Date.UTC(year, month-1, day))
-    }
-    )
-
+  /**
+   * Scrapes general info on a class: session start, days of week, meeting times, location, etc
+   * @param {string} term
+   * @param {string} courseNum
+   * @param {string} [institution="UMNTC"] // TODO: figure out institution codes for other campuses
+   * @return {Array} generalMeetingObjectArray // these variable names could use some thought
+   */
+  const generalClassInfo = async (term, courseNum, institution="UMNTC") => { 
+      // example formatted url. note strm, institution, class_nbr
+      // var url = "https://www.myu.umn.edu/psp/psprd/EMPLOYEE/CAMP/s/WEBLIB_IS_DS.ISCRIPT1.FieldFormula.IScript_DrawSection?group=UM_SSS&section=UM_SSS_CLASS_DETAIL&cmd=smartnav&STRM=1233&INSTITUTION=UMNTC&CLASS_NBR=59662"
+      const baseURL = "https://www.myu.umn.edu/psp/psprd/EMPLOYEE/CAMP/s/WEBLIB_IS_DS.ISCRIPT1.FieldFormula.IScript_DrawSection?group=UM_SSS&section=UM_SSS_CLASS_DETAIL&cmd=smartnav"
+      let url = baseURL.concat("&STRM=", term, "&CLASS_NBR=", courseNum, "&INSTITUTION=", institution)
+  
+      // set up element to parse
+      var el = document.createElement('html')
+      await fetch(url).then(r => r.text()).then(r => el.innerHTML = r)
+  
+      // dateRange parsing
+      let dateRangeString = el.querySelector('[data-th="Meeting Dates"]').innerText
+      let dateRange = dateRangeString.split(" - ").map(dateString => {
+        let splitDate = dateString.split("/")
+        let year = splitDate[2]
+        let month = splitDate[0]
+        let day = splitDate[1]
+        return new Date(Date.UTC(year, month-1, day))
+      }
+      )
+  
     /**
      * Given a string of format "Su--WThF-", returns an array of 7 booleans representing which days of the week are represented
      * @param {string} daysOfWeekString 
@@ -144,20 +144,20 @@ const generalClassInfo = async (term, courseNum, institution="UMNTC") => {
       return patterns.map(p => !(daysOfWeekString.search(p) == -1)) // this is so fancy
     }
 
-    return ({
-      "term"        : term,
-      "courseNum"   : courseNum,
-      "institution" : institution,
-      "dateRange"   : dateRange,
-      // "dateRangeString" : dateRangeString, for debugging
+      return ({
+        "term"        : term,
+        "courseNum"   : courseNum,
+        "institution" : institution,
+        "dateRange"   : dateRange,
+        // "dateRangeString" : dateRangeString, for debugging
       "daysOfWeek"  : daysOfWeekToArray(el.querySelector('[data-th="Days and Times"]').innerText.slice(0,7)),
       "timeRange"   : el.querySelector('[data-th="Days and Times"]').innerText.slice(8), // everything after character 8 (inclusive) // format: hh:mm pm - hh:mm pm
-      // "meetingType" : el.querySelector('[data-th="Meeting Dates"]').innerText, // uh not doing this rn
-      "room"        : el.querySelector('[data-th="Room"]').innerText,
-      // "courseName"  : el.querySelector('[data-th="Meeting Dates"]').innerText, // hm not actually given by this url
-      // "address"     : el.querySelector('[data-th="Meeting Dates"]').innerText // this is also not included and may be hard to get too? accessible through outside sit,
-    })
-  }
+        // "meetingType" : el.querySelector('[data-th="Meeting Dates"]').innerText, // uh not doing this rn
+        "room"        : el.querySelector('[data-th="Room"]').innerText,
+        // "courseName"  : el.querySelector('[data-th="Meeting Dates"]').innerText, // hm not actually given by this url
+        // "address"     : el.querySelector('[data-th="Meeting Dates"]').innerText // this is also not included and may be hard to get too? accessible through outside sit,
+      })
+    }
   
   /**
    * Enhances coursesInfo by cross-referencing between it and `weeks`. 
@@ -449,7 +449,6 @@ END:VEVENT
 /**
  * Create a recurring event
  * @param {Object} [courseData]
- * @param {Array<Date>} [excludedDates]
  * @return {string} // .ics lines for this recurring event
  */
 const createRecurringVEVENT = (courseData, excludedDates) => {
@@ -461,13 +460,18 @@ const createRecurringVEVENT = (courseData, excludedDates) => {
   let accum = `BEGIN:VEVENT
   DTSTART:${startDate}
   DTEND:${endDate}
-  LOCATION: ${courseData.room}
-  SUMMARY: ${courseData.courseName} ${courseData.meetingType}
   `
 
   // Now add the excluded dates
+    for (e = 0; e < course.excludedDates.length; e++) {
+      accum += `EXDATE:${course.excludedDates[e]}\n`
+    }
 
-  // Now add the extra dates
+  // Now add the rest of the info
+  accum += `LOCATION: ${courseData.room}
+  SUMMARY: ${courseData.courseName} ${courseData.meetingType}
+  END:VEVENT
+  `
 
   return accum
 }
@@ -489,6 +493,25 @@ const recurringGetTimes = (timeRange, day) => {
   result = [startStr, endStr].map(parseDate)
 
   return result
+}
+
+const dataToRecurringICS = (scrapedData) => {
+  console.log("Composing ics file...")
+  let accum = `BEGIN:VCALENDAR
+  PRODID:-//GopherGrades//Classes//EN
+  VERSION:1.0
+  CALSCALE:GREGORIAN
+  METHOD:PUBLISH
+  X-WR-CALNAME: Class Calendar
+  X-WR-TIMEZONE:America/Chicago
+  ` // header stuff yknow
+  for (courseInfo of scrapedData.coursesInfo) {
+    accum += createRecurringVEVENT(courseInfo)
+  }
+
+  accum += "END:VCALENDAR"
+  console.log(accum)
+  return accum
 }
 
 /**
@@ -575,12 +598,15 @@ const buttonBody = async () => {
   // console.log("Beginning scrape and download..")
   // fileDownload(createData(await scrapeASemester()))
 
-  scrape = await scrapeASemester(formatDateForURL(new Date()))
-  console.log(scrape.coursesInfo)
-  console.log(scrape.weeks)
-  console.log(scrape)
-  c = scrape.coursesInfo[0]
-  console.log(createRecurringVEVENT(c, []))
+  console.log("Beginning scrape and download..")
+  fileDownload(dataToRecurringICS(await scrapeASemester()))
+  
+  // scrape = await scrapeASemester(formatDateForURL(new Date()))
+  // console.log(scrape.coursesInfo)
+  // console.log(scrape.weeks)
+  // console.log(scrape)
+  // c = scrape.coursesInfo[0]
+  // console.log(createRecurringVEVENT(c, []))
 }
 
 setTimeout(appendButton, 10000); //Wait 5 seconds after load before applying button. There has to be a better way 
