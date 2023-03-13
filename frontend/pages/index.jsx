@@ -54,7 +54,7 @@ const Home = () => {
               paddingTop={[0, 10, "calc(50vh - 185px)"]}
               textAlign={["center", "left", "left"]}
             >
-              Gopher Grades
+              Gopher Grades!
             </Heading>
             <Text
               maxW={["100%", "50%", "100%"]}
@@ -69,7 +69,12 @@ const Home = () => {
               Minnesota, Twin Cities.
             </Text>
           </Collapse>
-          <Box pt={[0, 5, 2]} maxW={"calc(100vw - 50px)"} width={"100%"}>
+          <Box
+            pt={[0, 5, 2]}
+            pb={[5, 0, 0]}
+            maxW={"calc(100vw - 50px)"}
+            width={"100%"}
+          >
             <SearchBar
               placeholder={search || undefined}
               onChange={handleChange}

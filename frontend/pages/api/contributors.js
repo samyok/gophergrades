@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   const contribs = await fetch(
-    "https://api.github.com/repos/samyok/gophergrades/contributors",
+    "https://api.github.com/repos/samyok/gophergrades/collaborators",
     {
       headers: {
         Authorization: `token ${process.env.GITHUB_TOKEN}`,
@@ -10,18 +10,16 @@ export default async function handler(req, res) {
   // get the name of each user by looping through contribs and making a request to the github api
 
   const contribsWithNames = await Promise.all(
-    contribs
-      .filter((c) => c.contributions >= 5)
-      .map(async (contrib) => {
-        const user = await fetch(contrib.url, {
-          headers: {
-            Authorization: `token ${process.env.GITHUB_TOKEN}`,
-          },
-        }).then((r) => r.json());
-        return {
-          ...user,
-        };
-      })
+    contribs.map(async (contrib) => {
+      const user = await fetch(contrib.url, {
+        headers: {
+          Authorization: `token ${process.env.GITHUB_TOKEN}`,
+        },
+      }).then((r) => r.json());
+      return {
+        ...user,
+      };
+    })
   );
 
   // cache this request for a month
