@@ -57,10 +57,7 @@ const formatDateForURL = (date) => {
     var setDaysTimes = el.querySelector(".myu_calendar") // HTML div containing only the classes with set days and times
     var meetingElements = setDaysTimes.querySelectorAll(".myu_calendar-class") // list of all the classes this week as HTML elems
     const meetingObjects = []; // list of json objects holding meeting data
-    for (let i = 0; i < meetingElements.length; i++) {
-  
-      // defined for convenience/readability(?)
-      let meetingEl = meetingElements[i];
+    for (let meetingEl of meetingElements) {
   
       // sometimes a meetingEl marks when there are no classes in a day?
       if (meetingEl.classList.contains("no-class")) {
@@ -83,12 +80,12 @@ const formatDateForURL = (date) => {
     }
     // console.log(meetingObjects);
 
-  // let sundayDate = null // TODO: fix the problems this will cause
-  console.log(`datestring: ${dateString}`)
+  let sundayDate = null // TODO: fix the problems this will cause
+  // console.log(`datestring: ${dateString}`)
   if (dateString != "unset") {
     sundayDate = sundayThisWeek(parseDateWithDashes(dateString))
   }
-  console.log(sundayDate)
+  // console.log(sundayDate)
 
   weekObject = {"meetingObjects" : meetingObjects,
                 "sundayDate"     : sundayDate}
@@ -168,11 +165,9 @@ const sundayThisWeek = (date) => {
    */
   const scraperSecondPass = (weeks, coursesInfo) => {
     // first, copy over `meetingType` and `courseName`
-    courseloop: for (c = 0; c < coursesInfo.length; c++) { // for course in coursesInfo
-      let course = coursesInfo[c]
-      for (w = 0; w < weeks.length; w++) { // for week in `weeks`
-        for (m = 0; m < weeks[w].meetingObjects.length; m++) { // for meeting in week
-          let meeting = weeks[w].meetingObjects[m]
+    courseloop: for (let course of coursesInfo) { // for course in coursesInfo
+      for (let week of weeks) { // for week in `weeks`
+        for (let meeting of week.meetingObjects) { // for meeting in week
           if (meeting.courseNum == course.courseNum) {
             course.meetingType = meeting.meetingType
             course.courseName = meeting.courseName
@@ -184,10 +179,10 @@ const sundayThisWeek = (date) => {
 
     /**
      * Excluded meetings are stored in their respective `coursesInfo` entry; additional meetings are returned
-     * @param {<Object>} week object 
-     * @returns {Array<Object>} list of additional meetings
+     * @param {Array<Object>} weeks 
+     * @returns {Array<Object>} list of additional meetings. the excluded meetings are stored directly inside of the `coursesInfo` object
      */
-    const findExcludedAndAdditionalMeetings = (week) => {
+    const findExcludedAndAdditionalMeetings = (weeks) => {
       const timeRangeRepr = (timeRangeString, format) => {
         let ARBITRARY_DATE = new Date("Oct 10 1990")
         if (format == "week") {
@@ -200,12 +195,14 @@ const sundayThisWeek = (date) => {
         return timeRange.map(s => s.slice(9, 13)).join("-") // crop off extraneous info
       }
 
+      // ###################################
+      // First, set up model week hash table
+      // ###################################
       let modelWeekHT = {} // empty json object (hash table)
       for (day = 0; day < 7; day++) { // for day in a week
         
         // console.log(coursesInfo) // debug
-        for (c = 0; c < coursesInfo.length; c++) {
-          let course = coursesInfo[c]
+        for (let course of coursesInfo) {
           course.excludedDates = [] // initialize to no excluded dates
           // console.log(course) // debug
           if (course.daysOfWeek[day]) { // if the course has a meeting on this day, add the course to today's hash table
@@ -218,13 +215,19 @@ const sundayThisWeek = (date) => {
       }
       let modelWeekKeys = Object.keys(modelWeekHT)
 
-      // 2nd hash table: the actual week
+      let additionalMeetings = []
+
+      // ###############################
+      // Main loop through all the weeks
+      // ###############################
+      for (let week of weeks) {
+        
+      // Create a hash table for the actual week as well
       let thisWeekHT = {}
-      for (m = 0; m < week.meetingObjects.length; m++) {
-        let meeting = week.meetingObjects[m]
+      for (let meeting of week.meetingObjects) {
         let day = meeting.date.getUTCDay()
-        timeRange = timeRangeRepr(meeting.timeRange, "week") // single standarized string representing the timeRange
-        hash = [day, timeRange, meeting.courseNum].join("-")
+        let timeRange = timeRangeRepr(meeting.timeRange, "week") // single standarized string representing the timeRange
+        let hash = [day, timeRange, meeting.courseNum].join("-")
         thisWeekHT[hash] = meeting
       }
       let thisWeekKeys = Object.keys(thisWeekHT)
@@ -233,38 +236,33 @@ const sundayThisWeek = (date) => {
       // now the fun begins
 
       // finding excluded meetings
-      // for meeting in model week, ensure that it appears in the actual week. if it doesn't, 
-      for (i = 0; i < modelWeekKeys.length; i++) {
-        let hash = modelWeekKeys[i]
+      // for meeting in model week, ensure that it appears in the actual week. if it doesn't, add it to the excluded meetings list
+      for (let hash of modelWeekKeys) {
         if (thisWeekHT[hash] == null) {
           let dayOfWeek = modelWeekHT[hash].day
-          console.log(dayOfWeek)
+          // console.log(dayOfWeek)
           excludedDate = new Date(week.sundayDate.getTime()) // make copy of the sunday
-          console.log(excludedDate)
           excludedDate.setDate(excludedDate.getDate() + dayOfWeek) // then shift the date to the correct day of week
-          console.log(excludedDate)
+          // console.log(excludedDate)
           
-          // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
           console.log(`Excluded meeting found! hash: ${hash}`)
           console.log(`date: ${excludedDate}`)
           modelWeekHT[hash].course.excludedDates.push(excludedDate)
         }
       }
 
-      // finding additional dates
+      // finding additional meetings
       // for meeting in actual week, ensure it appears in the model week. If it doesn't, add it to the additional dates
-      let additionalMeetings = []
-      for (i = 0; i < week.meetingObjects.length; i++) { // for meeting in week
-        let hash = thisWeekKeys[i]
+      for (let hash of thisWeekKeys) { // for meeting in week
         if (modelWeekHT[hash] == null) { // if this meeting doesn't appear in the model week
           console.log(`Additional meeting found! hash: ${hash}`)
           additionalMeeting = thisWeekHT[hash]
           additionalMeetings.push(additionalMeeting)
         }
       }
-
-
-
+    
+    }
+      
       // console.log(modelWeek)
       return additionalMeetings
 
@@ -272,15 +270,9 @@ const sundayThisWeek = (date) => {
 
     console.log("weeks: \n")
     console.log(weeks)
-    console.log(findExcludedAndAdditionalMeetings(weeks[0]))
+    let additionalMeetings = findExcludedAndAdditionalMeetings(weeks)
+    console.log(additionalMeetings)
 
-
-    // now, track all the excluded meetings and additional meetings
-    // for (w = 0; w < weeks.length; w++) { // for week in `weeks`
-    //   for (m = 0; m < weeks[w].length; m++) { // for meeting in week
-    //     let meeting = weeks[w][m]
-    //   }}
-        // idea for how to do this: create function that, given a week, spots any missing meetings and any additional meetings. then map this function onto each week
   }
 
   
@@ -315,8 +307,8 @@ const sundayThisWeek = (date) => {
   
       // 2. 
       let coursesInfo = [] // list containing general class info for all the courses you're enrolled in
-      for (let i = 0; i < courseNums.length; i++) {
-        coursesInfo.push(await generalClassInfo(term, courseNums[i], institution))
+      for (let courseNum of courseNums) {
+        coursesInfo.push(await generalClassInfo(term, courseNum, institution))
       }
   
       // 3: loop through week by week and do ...stuff
@@ -453,44 +445,66 @@ END:VEVENT
  */
 const createRecurringVEVENT = (courseData, excludedDates) => {
   // let [startDate, endDate] = getTimes(courseData.timeRange)
-  console.log(courseData)
-  console.log(courseData.timeRange)
-  console.log(recurringGetTimes(courseData.timeRange, courseData.dateRange[0]))
+  // console.log(courseData)
+  // console.log(courseData.timeRange)
+  // console.log(recurringGetTimes(courseData.timeRange, courseData.dateRange[0]))
   let [startDate, endDate] = recurringGetTimes(courseData.timeRange, courseData.dateRange[0]) // date is first day of semester
   let accum = `BEGIN:VEVENT
-  DTSTART:${startDate}
-  DTEND:${endDate}
-  `
+DTSTART:${startDate}
+DTEND:${endDate}
+`
 
+  // recurrence info
+  accum += `RRULE:FREQ=WEEKLY;WKST=SU;`
+  let recurrenceEndDate = formatDate(23, 59, courseData.dateRange[1])
+  accum += `UNTIL=${recurrenceEndDate};`
+
+  let formatDaysOfWeek = (daysOfWeek) => {
+    let weekdayNames = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"]
+    let includedDays = []
+    for (d = 0; d < 7; d++) {
+      if (daysOfWeek[d]) {
+        includedDays.push(weekdayNames[d])
+      }
+    }
+
+    return includedDays.join(",")
+  }
+  accum += `BYDAY=${formatDaysOfWeek(courseData.daysOfWeek)}\n`
+
+  let eventStartTime = parseTime(courseData.timeRange.split(" - ")[0])
   // Now add the excluded dates
-    for (e = 0; e < course.excludedDates.length; e++) {
-      accum += `EXDATE:${course.excludedDates[e]}\n`
+    for (excludedDate of courseData.excludedDates) {
+      accum += `EXDATE:${formatDate(eventStartTime.hour, eventStartTime.min, excludedDate)}\n`
     }
 
   // Now add the rest of the info
   accum += `LOCATION: ${courseData.room}
-  SUMMARY: ${courseData.courseName} ${courseData.meetingType}
-  END:VEVENT
-  `
+SUMMARY: ${courseData.courseName} ${courseData.meetingType}
+END:VEVENT
+`
 
   return accum
+}
+
+const parseTime = (timeString) => { // takes format "hh:mm pm"
+  let [hhmm, ampm] = timeString.split(" ")
+  let [hour, min] = hhmm.split(":").map(s => Number(s)) // parse hhmm into ints
+  hour = hour % 12 // have to reduce out that 12am is actually 0:00
+  if (ampm == "PM") {
+    hour += 12;
+  }
+  return {"hour": hour, "min" : min}
 }
 
 const recurringGetTimes = (timeRange, day) => {
   timeRange = timeRange.replace(/^ | $/g,"") // again, we need to remove leading/trailing whitespace. ew!
   let [startStr, endStr] = timeRange.split(" - ")
-  
-  const parseDate = (timeString) => { // takes format "hh:mm pm"
-    let [hhmm, ampm] = timeString.split(" ")
-    let [hour, min] = hhmm.split(":").map(s => Number(s)) // parse hhmm into ints
-    hour = hour % 12 // have to reduce out that 12am is actually 0:00
-    if (ampm == "PM") {
-      hour += 12;
-    }
-    return formatDate(hour, min, day)
-  }
 
-  result = [startStr, endStr].map(parseDate)
+  result = [startStr, endStr].map((timeString) => {
+    time = parseTime(timeString)
+    return formatDate(time.hour, time.min, day)
+  })
 
   return result
 }
@@ -498,13 +512,13 @@ const recurringGetTimes = (timeRange, day) => {
 const dataToRecurringICS = (scrapedData) => {
   console.log("Composing ics file...")
   let accum = `BEGIN:VCALENDAR
-  PRODID:-//GopherGrades//Classes//EN
-  VERSION:1.0
-  CALSCALE:GREGORIAN
-  METHOD:PUBLISH
-  X-WR-CALNAME: Class Calendar
-  X-WR-TIMEZONE:America/Chicago
-  ` // header stuff yknow
+PRODID:-//GopherGrades//Classes//EN
+VERSION:1.0
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME: Class Calendar
+X-WR-TIMEZONE:America/Chicago
+` // header stuff yknow
   for (courseInfo of scrapedData.coursesInfo) {
     accum += createRecurringVEVENT(courseInfo)
   }
@@ -523,7 +537,7 @@ function createData(scrapedData){ //creates ics file string
 console.log("Started createData")
 let ouputString = `BEGIN:VCALENDAR
 PRODID:-//GopherGrades//Classes//EN
-VERSION:1.0
+VERSION:2.0
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 X-WR-CALNAME: Class Calendar
@@ -534,7 +548,7 @@ for (week of scrapedData.weeks){
     ouputString += createVEVENT(classEvent)
   }
 }
-ouputString += `END:VCALENDAR`
+ouputString += `END:VCALENDAR`  
 console.log(ouputString)
 return ouputString
 }
@@ -592,7 +606,7 @@ const appendButton = () => {
 }
 
 /**
- * What runs on button press
+ * Function that runs on button press
  */
 const buttonBody = async () => {
   // console.log("Beginning scrape and download..")
