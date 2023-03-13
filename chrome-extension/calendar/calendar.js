@@ -131,12 +131,16 @@ const formatDateForURL = (date) => {
     // 3. Then take one of the `dateRange`s (they're all the same) and scrape through the whole thing to find instances of when a class should appear but it doesn't. store this somehow
     console.log("scraper.js runs!")
   
-    // 1. get all the course numbers
-    // TRY A WEEK! YES, YOU! TYPE ONE IN BELOW! DO IT NOW!
-    const scrapeASemester = async (sampleDateString="unset") => { // format: yyyy-mm-dd
-      let sampleWeek = await weekToJson(sampleDateString) // i think you can type in arbitrary dates now!
-      // let term = "1229"
-      let term = sampleWeek[0].term // automatic, baybee
+    /**
+     * Given a date, returns info on each course meeting in the semester containing that date. Also returns generally-true info about the courses in the semester
+     * @param {string} sampleDateString // format: "yyyy-mm-dd". Note: this should be a *representative week of the semester*, not breaktime
+     * @returns {Object} // has fields `.weeks` and `.coursesInfo`
+     * `.weeks` is a doubly-nested array of every single class meeting in the semester
+     * `.coursesInfo` is the general course info (e.g. term start and end days) for each class *found in the sample week*
+     */
+    const scrapeASemester = async (sampleDateString="unset") => {
+      let sampleWeek = await weekToJson(sampleDateString) // samples from the sample week
+      let term = sampleWeek[0].term // extracts term. we'll need this later
       let institution = "UMNTC"
   
       let courseNums = []
@@ -195,6 +199,11 @@ const formatDateForURL = (date) => {
 // ##########
 // Begin icsFile.js
 // ##########
+
+/**
+ * Downloads a file `cal.ics` with contents `stringData` (as plaintext) 
+ * @param {string} stringData 
+ */
 function fileDownload(stringData){
   // Create element with <a> tag
   const link = document.createElement("a");
@@ -213,16 +222,34 @@ function fileDownload(stringData){
   URL.revokeObjectURL(link.href);
 }
 
-function pad(n){ //ensures numbers are 2 digits long
+/**
+ * Ensures numbers are 2 digits long
+ * @param {number} n
+ * @returns {string}
+ */
+function pad(n){
 if (n<10) return "0"+n
 return n
 }
 
-function formatDate(h, m, date){ //Format: YYYYMMDDTHHMMSS
-return `${date.getUTCFullYear()}${pad(date.getUTCMonth()+1)}${pad(date.getUTCDate())}T${pad(h)}${pad(m)}00`
+/**
+ * Formats time as YYYYMMDDTHHMMSS
+ * @param {number} hour
+ * @param {number} min
+ * @param {Date} date 
+ * @returns {string}
+ */
+function formatDate(hour, min, date){ 
+return `${date.getUTCFullYear()}${pad(date.getUTCMonth()+1)}${pad(date.getUTCDate())}T${pad(hour)}${pad(min)}00`
 }
 
-function getTimes(timeRange, date){ //gets start and end times for event
+/**
+ * Gets start and end times for event (array of formatted strings)
+ * @param {string} timeRange 
+ * @param {Date} date 
+ * @returns {Array<string>}
+ */
+function getTimes(timeRange, date){
 let [t1, _, t2, end] = timeRange.split(" ")
 let [t1H,t1M] = t1.split(":")
 let [t2H,t2M] = t2.split(":")
@@ -241,20 +268,28 @@ if (end == "PM"){
 return [formatDate(t1H,t1M,date),formatDate(t2H,t2M,date)]
 }
 
-
-function createVEVENT(data){ //create EVENT calendar lines
-let [startDate, endDate] = getTimes(data.timeRange, data.date)
+/**
+ * Given a `classEvent` JSON object, returns a string: the lines representing the event in .ics format
+ * @param {Object} [classEvent] // JSON object: the elements of `ScrapeASemester().weeks`
+ * @return {string} 
+ */
+function createVEVENT(classEvent){ //create EVENT calendar lines
+let [startDate, endDate] = getTimes(classEvent.timeRange, classEvent.date)
 return `BEGIN:VEVENT
 DTSTART:${startDate}
 DTEND:${endDate}
-LOCATION:${data.room}
-SUMMARY:${data.courseName + " " +data.meetingType}
+LOCATION:${classEvent.room}
+SUMMARY:${classEvent.courseName + " " +classEvent.meetingType}
 END:VEVENT
 `
 }
 
-
-function createData(data){ //creates ics file string
+/**
+ * Given the output of `ScrapeASemester`, returns the semester's full .ics calendar file as a string
+ * @param {Object} [scrapedData] // JSON object: what is directly returned by `ScrapeASemester()`
+ * @return {string} // The full text
+ */
+function createData(scrapedData){ //creates ics file string
 console.log("Started createData")
 let ouputString = `BEGIN:VCALENDAR
 PRODID:-//GopherGrades//Classes//EN
@@ -264,7 +299,7 @@ METHOD:PUBLISH
 X-WR-CALNAME: Class Calendar
 X-WR-TIMEZONE:America/Chicago
 `
-for (week of data.weeks){
+for (week of scrapedData.weeks){
   for (classEvent of week){
     ouputString += createVEVENT(classEvent)
   }
@@ -286,7 +321,11 @@ const buttonTemplate =
 <button class="calendar_button">Export to Google Calendar</button>
 </div>` ; 
 
-// code to turn template string into an actual html element
+/**
+ * Turns template string into an actual html element
+ * @param {string} [html]
+ * @returns {HTMLElement}
+ */ 
 const htmlToElement = (html) => {
     const template = document.createElement("template");
     html = html.trim(); // Never return a text node of whitespace as the result
@@ -294,10 +333,11 @@ const htmlToElement = (html) => {
     return template.content.firstChild;
 };
 
-//A function to append a new button on the MyU academics tab. 
+/**
+ * A function to append a new button on the MyU academics tab. 
+ */
 const appendButton = () => {
     const newDiv = htmlToElement(buttonTemplate); //This should be a new element node?
-    
     
     //This is the div that contains buttons "View Calendar" "List View" and "Textbooks (UMTC)"
     const calendarDiv = document.getElementsByClassName("myu_btn-group col-lg-12")[0];
