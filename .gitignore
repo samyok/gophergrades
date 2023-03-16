@@ -1,6 +1,6 @@
 __pycache__/
 No-Instructor-data.txt
-.idea
+# .idea
 .vscode
 *.zip
 
