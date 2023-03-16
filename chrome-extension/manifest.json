@@ -1,7 +1,7 @@
 {
   "name": "Gopher Grades - Past grades for UMN classes!",
   "description": "Now you can view directly from the course catalog!",
-  "version": "1.4.1",
+  "version": "2.0.0",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
@@ -19,7 +19,8 @@
         "sidebar/sidebar.css"
       ],
       "js": [
-        "sidebar/sidebar.js"
+        "sidebar/sidebar.js",
+        "sidebar/plotter.js"
       ]
     },
     {
@@ -50,19 +51,41 @@
     "*://*.umn.edu/*",
     "*://umn.edu/*"
   ],
+  "permissions": [
+    "storage",
+    "identity",
+    "identity.email"
+  ],
   "action": {
-    "default_title": "GopherGrades - use on Schedule Builder or OneStop!",
+    "default_title": "GopherGrades - View Options",
     "default_icon": {
       "32": "icons/icon-32.png",
       "72": "icons/icon-72.png",
       "128": "icons/icon-128.png",
       "512": "icons/icon-512.png"
-    }
+    },
+    "default_popup": "popup/popup.html"
   },
   "icons": {
     "32": "icons/icon-32.png",
     "72": "icons/icon-72.png",
     "128": "icons/icon-128.png",
     "512": "icons/icon-512.png"
-  }
+  },
+  "key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkOxEUP1//bcv7uFyqkhR\nNXe3UEr2sHUTqloW80+eL5ZMF7mHdl02mBtFcERL0n3vYw7e2MqUtrhPsg0ts8kf\nNg483sYdRDVocqIvoEbqKrI+KM56jChV/bl2oY0cZGlftHFemaJu3u8tWmOg4HwZ\ncR83mvddC8CZMYjULeGsDyH+nVGQ1JS/ZZbBqsNW5y7nb0i16/jtdG3CNCfNfdel\nd40YyaXstjI1USHvS5eJuhTcnKNwqqUucDCNMo9X7FxONUYRaqDx8FLt02/fQ+V0\nxTTddRuiZLrwmfocJyp01EoX92l0Gl9qnHgXExSWniZkZyX0cI9m/pe06cxjVKcQ\nCQIDAQAB\n-----END PUBLIC KEY-----",
+  "oauth2": {
+    "client_id": "927875466012-l0lmgul3tb81tce30m0smhnvhqprf248.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/calendar",
+      "https://www.googleapis.com/auth/calendar.events"
+    ]
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["sidebar/walking.png"],
+      "matches": ["https://schedulebuilder.umn.edu/*"]
+    }
+  ]
 }
