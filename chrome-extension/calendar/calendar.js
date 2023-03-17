@@ -751,4 +751,13 @@ const buttonBody = async () => {
   // console.log(createRecurringVEVENT(c, []))
 }
 
-setTimeout(appendButton, 5000); //Wait 5 seconds after load before applying button. There has to be a better way 
+const appObserver = new MutationObserver((mutations) => {
+  const look = document.querySelector("div[class='myu_btn-group col-lg-12']")
+  if (look) {
+    if (look.parentNode.children.length < 4) {
+      appendButton()
+    }
+  }
+});
+
+appObserver.observe(document.body, {childList: true, subtree: true});
