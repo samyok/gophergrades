@@ -319,8 +319,9 @@ const scraperSecondPass = (weeks, coursesInfo) => {
         excludedDate.setDate(excludedDate.getDate() + dayOfWeek) // then shift the date to the correct day of week
         // console.log(excludedDate)
         
-        console.log(`Excluded meeting found! hash: ${hash}`)
-        console.log(`date: ${excludedDate}`)
+        console.log("Excluded meeting found!")
+        // console.log(`hash: ${hash}, date: ${excludedDate}`)
+
         modelWeekHT[hash].course.excludedDates.push(excludedDate)
       }
     }
@@ -330,6 +331,7 @@ const scraperSecondPass = (weeks, coursesInfo) => {
     for (let hash of thisWeekKeys) { // for meeting in week
       if (modelWeekHT[hash] == null) { // if this meeting doesn't appear in the model week
         console.log(`Additional meeting found! hash: ${hash}`)
+        console.log(`date: ${additionalMeeting.date}$`)
         additionalMeeting = thisWeekHT[hash]
         additionalMeetings.push(additionalMeeting)
       }
@@ -344,7 +346,7 @@ const scraperSecondPass = (weeks, coursesInfo) => {
   console.log("weeks: \n")
   console.log(weeks)
   let additionalMeetings = findExcludedAndAdditionalMeetings(weeks)
-  console.log(additionalMeetings)
+  // console.log(additionalMeetings)
   return additionalMeetings
 }
 
@@ -640,7 +642,7 @@ X-WR-TIMEZONE:America/Chicago
   }
 
   outputString += "END:VCALENDAR"
-  console.log(outputString)
+  // console.log(outputString)
   return outputString
 }
 
@@ -726,18 +728,17 @@ const appendButton = () => {
       
   //A div that holds calendarDiv inside of it
   const parentDiv = document.getElementsByClassName("row")[4];
+    
+    //This is the div that contains buttons "View Calendar" "List View" and "Textbooks (UMTC)"
+    const calendarDiv = document.getElementsByClassName("myu_btn-group col-lg-12")[0];
+    
+    if(calendarDiv != null) {
+        
+        parentDiv.insertBefore(newDiv, calendarDiv.nextSibling);
 
-  //This is the div that contains buttons "View Calendar" "List View" and "Textbooks (UMTC)"
-  const calendarDiv = document.getElementsByClassName("myu_btn-group col-lg-12")[0];
-  
-  if(calendarDiv != null) {
-      
-      parentDiv.insertBefore(newDiv, calendarDiv.nextSibling);
-
-      //Apply following 
-      newDiv.querySelector("button").addEventListener("click", () => {
-
-      });
+        //Apply following 
+      newDiv.querySelector("button").addEventListener("click", buttonBody); // note: only applies listener to *first* button
+      // newDiv.querySelectorAll("button").map(b => b.addEventListener("click", buttonBody)) // apply it to all the buttons in the div
       ButtonIsAdded= true; 
   }
 }
@@ -750,8 +751,10 @@ const buttonBody = async () => {
   // fileDownload(createData(await scrapeASemester()))
 
   console.log("Beginning scrape and download..")
-  fileDownload(dataToRecurringICS(await scrapeASemester()))
-    
+  let scrape = await scrapeASemester()
+  fileDownload(dataToRecurringICS(scrape))
+  console.log(dataToExportJSON(scrape))
+  
   // scrape = await scrapeASemester(formatDate(new Date(), "yyyy-mm-dd"))
   // console.log(scrape.coursesInfo)
   // console.log(scrape.weeks)
@@ -760,16 +763,13 @@ const buttonBody = async () => {
   // console.log(createRecurringVEVENT(c, []))
 }
 
-const onLoad = () => {
-  const app = document.querySelector("body");
+const appObserver = new MutationObserver((mutations) => {
+  const look = document.querySelector("div[class='myu_btn-group col-lg-12']")
+  if (look) {
+    if (look.parentNode.children.length < 4) {
+      appendButton()
+    }
+  }
+});
 
-  const appObserver = new MutationObserver((mutations) => {
-    if(!ButtonIsAdded) appendButton();
-    if(document.querySelector("#homepageTabList li.active").innerText?.trim() != 'ACADEMICS') ButtonIsAdded = false;
-
-  });
-
-  appObserver.observe(app, {childList: true, subtree: true});
-};
-
-window.addEventListener("load", onLoad);
+appObserver.observe(document.body, {childList: true, subtree: true});
