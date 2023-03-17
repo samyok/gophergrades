@@ -83,7 +83,7 @@ const sundayThisWeek = (date) => {
  * @returns {Array<boolean>} Sunday is index 0, Monday 1, etc.
  */
 const daysOfWeekToArray = (daysOfWeekString) => {
-  let patterns = [/Su/, /M/, /T[^h]/, /W/, /Th/, /F/, /Sa/] // the sunday and saturday patterns are guesses. TODO: find someone with a sunday/saturday class and see what the real pattern is
+  let patterns = [/S([^a]||$)/, /M/, /T[^h]/, /W/, /Th/, /F/, /Sa/] 
   return patterns.map(p => !(daysOfWeekString.search(p) == -1)) // this is so fancy
 }
 
@@ -224,7 +224,7 @@ const scraperSecondPass = (weeks, coursesInfo) => {
      * @returns {string} "hhmm-hhmm" (start time, then end time)
      */
     const timeRangeRepr = (timeRangeString, format) => {
-      let ARBITRARY_DATE = new Date("Oct 10 1990")
+      let ARBITRARY_DATE = new Date()
       if (format == "week") { // "hh:mm - hh:mm pm" (first am/pm is ommitted)
         timeRange = getTimes(timeRangeString, ARBITRARY_DATE) // long string that is dumb
       } else if (format == "coursesInfo") { // "hh:mm pm - hh:mm pm"
