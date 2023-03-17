@@ -597,9 +597,11 @@ return ouputString
 
 
 const buttonTemplate = 
-`<div id="calendar_button">
-<button class="calendar_button">Export to Google Calendar</button>
-</div>` ; 
+`<div id="gcal_btn_group">
+<button id = "gg_button">  </button>
+<button id = "gcal_button">Export to Google Calender</button>
+<button id = "ics_button">.ics</button>
+</div>` ;
 
 /**
  * Turns template string into an actual html element
