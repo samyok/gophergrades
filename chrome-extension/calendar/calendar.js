@@ -87,6 +87,22 @@ const daysOfWeekToArray = (daysOfWeekString) => {
   return patterns.map(p => !(daysOfWeekString.search(p) == -1)) // this is so fancy
 }
 
+/**
+ * Util: turn array of 7 bools into string of days of week
+ * @param {Array<boolean>} daysOfWeek index 0 is Sunday, index 6 is Saturday
+ * @returns {string} format: "SU,TU,WE,FR,SA" for instance
+ */
+let formatDaysOfWeek = (daysOfWeek) => {
+  let weekdayNames = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"]
+  let includedDays = []
+  for (d = 0; d < 7; d++) {
+    if (daysOfWeek[d]) {
+      includedDays.push(weekdayNames[d])
+    }
+  }
+  return includedDays.join(",")
+}
+
 // ######################
 // End date utility funcs
 // ######################
@@ -133,6 +149,8 @@ const weekToJson = async (dateString="today") => {
     let classDetails = meetingEl.querySelector(".myu_calendar-class-details")
                                 .innerHTML
                                 .replace(/\n/g,"").split("<br>") // regex is to get rid of random newlines that are in there for some reason
+    let courseTitleScrape = meetingEl.querySelector(".myu_calendar-class-name").innerText
+
     meetingObjects.push({
       "term"        : meetingEl.getAttribute("data-strm").trim(), // {string} // in format `xyyx', where `yy` is the year and `xx` = `13` is spring, `19` is fall
       "courseNum"   : meetingEl.getAttribute("data-class-nbr").trim(), // {string}
@@ -141,6 +159,8 @@ const weekToJson = async (dateString="today") => {
       "timeRange"   : classDetails[1].trim(), // {string}
       "room"        : classDetails[2].trim(), // {string}
       "courseName"  : meetingEl.querySelector(".myu_calendar-class-name-color-referencer").innerText.trim(), // {string}
+      "prettyName"  : courseTitleScrape.match(/(?<=\d\) ).*/)[0].trim(), // {string} e.g. "Adv Programming Principles"
+      "sectionID"   : courseTitleScrape.match(/(?<=\()\d+(?=\))/)[0] // {string} e.g. "001" of "CSCI 2021 (001)"
     });
   }
 
@@ -181,7 +201,9 @@ return ({
   // "meetingType"   : // {string} populated in scraperSecondPass
   // "courseName"    : // {string} populated in scraperSecondPass
   // "excludedDates" : // {Array<Date>} populated in scraperSecondPass
-  // "firstDate"     : // {Date} /// populated in scraperSecondPass
+  // "firstDate"     : // {Date} // populated in scraperSecondPass
+  // "prettyName"   : // {string} // populated in scraperSecondPass
+  // "sectionID"     : // {string} // populated in scraperSecondPass
   // "address"       : // COMING LATER // accessible only through outside site, likely will need to just make local lookup table
 })
 }
@@ -204,6 +226,8 @@ const scraperSecondPass = (weeks, coursesInfo) => {
           course.firstDate = meeting.date
           course.meetingType = meeting.meetingType
           course.courseName = meeting.courseName
+          course.sectionID = meeting.sectionID
+          course.prettyName = meeting.prettyName
           continue courseloop // hah, this is fun! 
         }
       }
@@ -226,12 +250,11 @@ const scraperSecondPass = (weeks, coursesInfo) => {
     const timeRangeRepr = (timeRangeString, format) => {
       let ARBITRARY_DATE = new Date()
       if (format == "week") { // "hh:mm - hh:mm pm" (first am/pm is ommitted)
-        timeRange = getTimes(timeRangeString, ARBITRARY_DATE) // long string that is dumb
+        timeRange = getTimes(timeRangeString, ARBITRARY_DATE) // long string that is dumb. we will cut it down >:)
       } else if (format == "coursesInfo") { // "hh:mm pm - hh:mm pm"
         timeRange = recurringGetTimes(timeRangeString, ARBITRARY_DATE) // long string that is dumb
       } else {
         throw new Error(`timeRangeRepr() was passed unrecognized format ${format}`)
-        console.log("Uh oh rip m8 uncaught error in timeRangeRepr") // TODO: handle error
       }
       return timeRange.map(s => s.slice(9, 13)).join("-") // crop off extraneous info
     }
@@ -306,73 +329,73 @@ const scraperSecondPass = (weeks, coursesInfo) => {
     
     // console.log(modelWeek)
     return additionalMeetings
-
   }
 
   console.log("weeks: \n")
   console.log(weeks)
   let additionalMeetings = findExcludedAndAdditionalMeetings(weeks)
   console.log(additionalMeetings)
-
+  return additionalMeetings
 }
 
-  
-    // BEGIN ZONE OF EXTRA JANK
-  
-    // Scraping up all meeting times, including catching when classes are canceled for holidays
-    // General game plan: 
-    // 1. pick a sample week (which week best to pick?), then grab all the course numbers in it
-    // 2. Then get the general course info for each of those course numbers, store it somewhere
-    // 3. Then take one of the `dateRange`s (they're all the same) and scrape through the whole thing to find instances of when a class should appear but it doesn't. store this somehow
-    console.log("scraper.js runs!")
-  
-    /**
-     * Given a date, returns info on each course meeting in the semester containing that date. Also returns generally-true info about the courses in the semester
-     * @param {string} [sampleDateString="today"] // format: "yyyy-mm-dd". Note: this should be a *representative week of the semester*, not breaktime
-     * @returns {Object} // has fields `.weeks` and `.coursesInfo`
-     * `.weeks` is a doubly-nested array of every single class meeting in the semester
-     * `.coursesInfo` is the general course info (e.g. term start and end days) for each class *found in the sample week*
-     */
-    const scrapeASemester = async (sampleDateString="today") => {
-      // NOTE: sampleWeek is just an array of meeting objects
-      let sampleWeek = (await weekToJson(sampleDateString)).meetingObjects // samples from the sample week
-      let term = sampleWeek[0].term // extracts term. we'll need this later
-      let institution = "UMNTC"
-  
-      let courseNums = []
-      for (let i = 0; i < sampleWeek.length; i++) {
-        if (!courseNums.includes(sampleWeek[i].courseNum)) {
-          courseNums.push(sampleWeek[i].courseNum)
-        }
-      }
-  
-      // 2. 
-      let coursesInfo = [] // list containing general class info for all the courses you're enrolled in
-      for (let courseNum of courseNums) {
-        coursesInfo.push(await generalClassInfo(term, courseNum, institution))
-      }
-  
-      // 3: loop through week by week and do ...stuff
-      startDate = endDate = coursesInfo[0].dateRange[0]
-      endDate = coursesInfo[0].dateRange[1]
-      endDate.setDate(endDate.getDate() + 7) // pad an extra week onto endDate so we can be sure we got everything
-  
-      // for loop from startDate to endDate. step size is one week
-      // `date` is a date lying in the week of interest
-      let weeks = []
-      for (let date = new Date(startDate.getTime()); date <= endDate; date.setDate(date.getDate() + 7)) { // the reason we need to pad endDate
-        let currentWeekData = await weekToJson(formatDate(date, "yyyy-mm-dd"))
-        // now um somehow check for when a class should be happening, but isn't (e.g. break/holiday)
-        // ??? think about this later
-        weeks.push(currentWeekData)
-      }
-  
-      // soup up `coursesInfo` by pulling data out of `weeks`.
-      scraperSecondPass(weeks, coursesInfo)
-  
-      return ({"weeks" : weeks,
-               "coursesInfo" : coursesInfo})
+
+// BEGIN ZONE OF EXTRA JANK
+
+// Scraping up all meeting times, including catching when classes are canceled for holidays
+// General game plan: 
+// 1. pick a sample week (which week best to pick?), then grab all the course numbers in it
+// 2. Then get the general course info for each of those course numbers, store it somewhere
+// 3. Then take one of the `dateRange`s (they're all the same) and scrape through the whole thing to find instances of when a class should appear but it doesn't. store this somehow
+console.log("scraper.js runs!")
+
+/**
+ * Given a date, returns info on each course meeting in the semester containing that date. Also returns generally-true info about the courses in the semester
+ * @param {string} [sampleDateString="today"] // format: "yyyy-mm-dd". Note: this should be a *representative week of the semester*, not breaktime
+ * @returns {Object} // has fields `.weeks` and `.coursesInfo`
+ * `.weeks` is a doubly-nested array of every single class meeting in the semester
+ * `.coursesInfo` is the general course info (e.g. term start and end days) for each class *found in the sample week*
+ */
+const scrapeASemester = async (sampleDateString="today") => {
+  // NOTE: sampleWeek is just an array of meeting objects
+  let sampleWeek = (await weekToJson(sampleDateString)).meetingObjects // samples from the sample week
+  let term = sampleWeek[0].term // extracts term. we'll need this later
+  let institution = "UMNTC"
+
+  let courseNums = []
+  for (let i = 0; i < sampleWeek.length; i++) {
+    if (!courseNums.includes(sampleWeek[i].courseNum)) {
+      courseNums.push(sampleWeek[i].courseNum)
+    }
   }
+
+  // 2. 
+  let coursesInfo = [] // list containing general class info for all the courses you're enrolled in
+  for (let courseNum of courseNums) {
+    coursesInfo.push(await generalClassInfo(term, courseNum, institution))
+  }
+
+  // 3: loop through week by week and do ...stuff
+  startDate = endDate = coursesInfo[0].dateRange[0]
+  endDate = coursesInfo[0].dateRange[1]
+  endDate.setDate(endDate.getDate() + 7) // pad an extra week onto endDate so we can be sure we got everything
+
+  // for loop from startDate to endDate. step size is one week
+  // `date` is a date lying in the week of interest
+  let weeks = []
+  for (let date = new Date(startDate.getTime()); date <= endDate; date.setDate(date.getDate() + 7)) { // the reason we need to pad endDate
+    let currentWeekData = await weekToJson(formatDate(date, "yyyy-mm-dd"))
+    // now um somehow check for when a class should be happening, but isn't (e.g. break/holiday)
+    // ??? think about this later
+    weeks.push(currentWeekData)
+  }
+
+  // soup up `coursesInfo` by pulling data out of `weeks`.
+  let additionalMeetings = scraperSecondPass(weeks, coursesInfo)
+
+  return ({ "weeks" : weeks,
+            "coursesInfo" : coursesInfo,
+            "additionalMeetings" : additionalMeetings}) // {Array<Meeting Objects>}
+}
   
 // ##########
 // End scraper.js
@@ -472,7 +495,7 @@ END:VEVENT
  * @param {Object} courseData
  * @return {string} // .ics lines for this recurring event
  */
-const createRecurringVEVENT = (courseData, excludedDates) => {
+const createRecurringVEVENT = (courseData) => {
   // let [startDate, endDate] = getTimes(courseData.timeRange)
   // console.log(courseData)
   // console.log(courseData.timeRange)
@@ -487,22 +510,7 @@ DTEND:${endDate}
   accum += `RRULE:FREQ=WEEKLY;WKST=SU;`
   let recurrenceEndDate = formatDateWithTime(23, 59, courseData.dateRange[1])
   accum += `UNTIL=${recurrenceEndDate};`
-
-  let formatDaysOfWeek = (daysOfWeek) => {
-    let weekdayNames = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"]
-    let includedDays = []
-    for (d = 0; d < 7; d++) {
-      if (daysOfWeek[d]) {
-        includedDays.push(weekdayNames[d])
-      }
-    }
-
-    return includedDays.join(",")
-  }
   accum += `BYDAY=${formatDaysOfWeek(courseData.daysOfWeek)}\n`
-
-  // console.log()
-  // console.log()
 
   let eventStartTime = parseTime(courseData.timeRange.split(" - ")[0])
   // Now add the excluded dates
@@ -519,6 +527,56 @@ END:VEVENT
   return accum
 }
 
+/**
+ * Turns a single course into its full JSON representation
+ * @param {Object} courseData
+ * @returns {Object} shallow copy of courseData with extra info requested by Samyok (will write documentation soon)
+ */
+const courseToExportJSON = (courseData) => {
+  let result = Object.assign({}, courseData) // shallow copy
+
+  let [startDate, endDate] = recurringGetTimes(courseData.timeRange, courseData.firstDate) // date is exact first day of class
+  let recurrenceEndDate = formatDateWithTime(23, 59, courseData.dateRange[1])
+  let daysOfWeekString = formatDaysOfWeek(courseData.daysOfWeek)
+  let eventStartTime = parseTime(courseData.timeRange.split(" - ")[0])
+
+  result.calendarStrings = {
+    "rRule"   : `FREQ=WEEKLY;WKST=SU;UNTIL=${recurrenceEndDate};BYDAY=${daysOfWeekString}`,
+    "exDates" : [], // to be populated just below
+    "dtStart" : startDate,
+    "dtEnd"   : endDate
+  }
+
+  for (excludedDate of courseData.excludedDates) {
+    let exDateString = formatDateWithTime(eventStartTime.hour, eventStartTime.min, excludedDate)
+    result.calendarStrings.exDates.push(exDateString)
+  }
+  
+  return result
+}
+
+/**
+ * Used solely for additional/outlier meetings. Converts into full JSON representation for calendar export
+ * @param {Object} meeting
+ * @returns {Object} 
+ */
+const meetingToExportJSON = (meeting) => {
+  let result = Object.assign({}, meeting) // shallow copy
+  
+  let [startDate, endDate] = getTimes(meeting.timeRange, meeting.firstDate)
+  result.calendarStrings = {
+    "dtStart" : startDate,
+    "dtEnd"   : endDate
+  }
+
+  return result
+}
+
+/**
+ * Parse "hh:mm pm" into a object with hours and mins
+ * @param {string} timeString 
+ * @returns {Object} {"hour" : number, "min" : number}
+ */
 const parseTime = (timeString) => { // takes format "hh:mm pm"
   let [hhmm, ampm] = timeString.split(" ")
   let [hour, min] = hhmm.split(":").map(s => Number(s)) // parse hhmm into ints
@@ -529,8 +587,14 @@ const parseTime = (timeString) => { // takes format "hh:mm pm"
   return {"hour": hour, "min" : min}
 }
 
+/**
+ * Turns a "hh:mm pm - hh:mm pm" and Date object into an array of 2 ICS-formatted datetime strings
+ * @param {string} timeRange "hh:mm pm - hh:mm pm"
+ * @param {Date} day Only its date is used, not the time
+ * @returns {Array<string>} contains ICS-formatted string of the time and date
+ */
 const recurringGetTimes = (timeRange, day) => {
-  timeRange = timeRange.replace(/^ | $/g,"") // again, we need to remove leading/trailing whitespace. ew!
+  // timeRange = timeRange.replace(/^ | $/g,"") // again, we need to remove leading/trailing whitespace. ew!
   let [startStr, endStr] = timeRange.split(" - ")
 
   result = [startStr, endStr].map((timeString) => {
@@ -541,6 +605,11 @@ const recurringGetTimes = (timeRange, day) => {
   return result
 }
 
+/**
+ * Turns scrapeASemester output into the text of a full .ics file
+ * @param {Object} // given by scrapeASemester
+ * @returns {string} full .ics file contents
+ */
 const dataToRecurringICS = (scrapedData) => {
   console.log("Composing ics file...")
   let outputString = `BEGIN:VCALENDAR
@@ -555,9 +624,30 @@ X-WR-TIMEZONE:America/Chicago
     outputString += createRecurringVEVENT(courseInfo)
   }
 
+  // TODO: add additional dates
+  for (additionalMeeting of scrapedData.additionalMeetings) {
+    outputString += createVEVENT(additionalMeeting)
+  }
+
   outputString += "END:VCALENDAR"
   console.log(outputString)
   return outputString
+}
+
+/**
+ * Turns scrapeASemester output into a big JSON object containing all the data for easy future use
+ * @param {Object} scrapedData // given by scrapeASemester
+ * @returns {Object} fullCalendarData
+ */
+const dataToExportJSON = (scrapedData) => {
+  let result = {"courses" : [], "additionalMeetings": []}
+  for (courseInfo of scrapedData.coursesInfo) {
+    result.courses.push(courseToExportJSON(courseInfo))
+  }
+  for (meeting of scrapedData.additionalMeetings) {
+    result.additionalMeetings.push(meetingToExportJSON(meeting))
+  }
+  return result;
 }
 
 /**
