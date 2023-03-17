@@ -122,7 +122,7 @@ let formatDaysOfWeek = (daysOfWeek) => {
  * @param {string} [dateString="today"] // a day during the week in question (Let's say the Sunday.), in format "yyyy-mm-dd", WITH DASHES. "today" gives the current week
  * @returns {Object} weekObject
  */
-const weekToJson = async (dateString="today") => {
+const weekToJSON = async (dateString="today") => {
   if (dateString == "today") {
     dateString = formatDate(new Date(), "yyyy-mm-dd")
   }
@@ -137,6 +137,10 @@ const weekToJson = async (dateString="today") => {
     
   // parsing begins
   var synchronousMeetings = el.querySelector(".myu_calendar") // HTML div containing only the classes with set days and times
+  if (synchronousMeetings == null) {
+    console.log(`encountered a week without meetings (${dateString}).`)
+    return {"meetingObjects" : [], "sundayDate" : sundayThisWeek(parseDate(dateString, "yyyy-mm-dd"))}
+  }
   var meetingElements = synchronousMeetings.querySelectorAll(".myu_calendar-class") // list of all the classes this week as HTML elems
   const meetingObjects = []; // list of json objects holding meeting data
   for (let meetingEl of meetingElements) {
@@ -363,7 +367,7 @@ console.log("scraper.js runs!")
  */
 const scrapeASemester = async (sampleDateString="today") => {
   // NOTE: sampleWeek is just an array of meeting objects
-  let sampleWeek = (await weekToJson(sampleDateString)).meetingObjects // samples from the sample week
+  let sampleWeek = (await weekToJSON(sampleDateString)).meetingObjects // samples from the sample week
   let term = sampleWeek[0].term // extracts term. we'll need this later
   let institution = sampleWeek[0].institution
 
@@ -389,7 +393,7 @@ const scrapeASemester = async (sampleDateString="today") => {
   // `date` is a date lying in the week of interest
   let weeks = []
   for (let date = new Date(startDate.getTime()); date <= endDate; date.setDate(date.getDate() + 7)) { // the reason we need to pad endDate
-    let currentWeekData = await weekToJson(formatDate(date, "yyyy-mm-dd"))
+    let currentWeekData = await weekToJSON(formatDate(date, "yyyy-mm-dd"))
     // now um somehow check for when a class should be happening, but isn't (e.g. break/holiday)
     // ??? think about this later
     weeks.push(currentWeekData)
