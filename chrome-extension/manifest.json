@@ -19,8 +19,20 @@
         "sidebar/sidebar.css"
       ],
       "js": [
-        "sidebar/sidebar.js",
-        "sidebar/plotter.js"
+        "sidebar/sidebar.js"
+      ]
+    },
+    {
+      "matches": [
+        "https://schedulebuilder.umn.edu/*",
+        "https://*.schedulebuilder.umn.edu/*"
+      ],
+      "css": [
+        "plotter/plotter.css"
+      ],
+      "js": [
+        "plotter/util.js",
+        "plotter/plotter.js"
       ]
     },
     {
@@ -84,7 +96,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["sidebar/walking.png"],
+      "resources": ["plotter/walking.png", "icons/icon-128.png"],
       "matches": ["https://schedulebuilder.umn.edu/*"]
     }
   ]

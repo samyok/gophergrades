@@ -1,0 +1,181 @@
+// TIL multiple js files will be loaded in the order specified in manifest.json
+
+const map_template = () => `
+<canvas width="2304" height="1302" class="card"></canvas>
+`
+
+const sectionTemplate = (section, settings) => `
+<div class="card">
+  <h2>${section.sectionName}</h2>
+  <div class="settings">
+    ${section.settings
+    .map((setting) => settingTemplate(section.code, setting, settings))
+    .join("")}
+  </div>
+</div>
+`;
+
+/**
+ * imagine print() being a function to print to a printer
+ *
+ * @param message what to print to the console
+ */
+function log(message) {
+  console.log("[GG/plotter] "+message)
+}
+log("loaded plotter/util.js")
+
+/**
+ * draws a line from one position to another on a canvas with the provided context
+ * @param ctx 2D canvas context
+ * @param prev first class location
+ * @param curr first class location
+ */
+function do_line(ctx, prev, curr) {
+  ctx.beginPath()
+  ctx.moveTo(prev.x, prev.y);
+  ctx.lineTo(curr.x, curr.y);
+  ctx.stroke()
+  ctx.closePath();
+}
+
+//todo create a dedicated draw function probably that can accept the proper
+// sections object once i make it (it's assumed you have an object with the
+// shape {location{x, y}, color}
+/**
+ * draws a line from one position to another on a canvas with the provided context
+ *
+ * @param ctx 2D canvas context
+ * @param section section object to draw circle for
+ */
+function do_circle(ctx, section) {
+  const {location, color} = section
+  ctx.beginPath()
+  ctx.moveTo(location.x, location.y);
+  ctx.arc(location.x, location.y, 16, 0, 2 * Math.PI);
+  ctx.stroke()
+  ctx.fillStyle = color;
+  ctx.fill()
+  ctx.closePath()
+}
+
+/**
+ * gets term from page's breadcrumb element and converts it to strm for use in API
+ *
+ * @returns {?string}
+ */
+function get_term_strm() {
+  //getting term from breadcrumbs (or so they're called)
+  let term = document.querySelector(
+      "#app-header > div > div.row.app-crumbs.hidden-print > div > ol > li:nth-child(2) > a")
+  if (term) {
+    term = term.textContent
+    term = strms[term]
+  } else {
+    term = null
+  }
+
+  return term
+}
+
+const strms = function () {
+  let terms = {}
+  //future-proofing
+  for (let i = 20; i < 50; i++) {
+    const year = 2000 + i
+    const strm = 1000 + 10 * i
+    terms["Spring " + year] = strm + 3
+    terms["Summer " + year] = strm + 5
+    terms["Fall " + year] = strm + 9
+  }
+  return terms
+}()
+
+//todo succeed this garbage
+const locations = [
+  {location: "Morrill Hall", x: 913, y: 614},
+  {location: "Johnston Hall", x: 778, y: 613},
+  {location: "John T. Tate Hall", x: 908, y: 672},
+  {location: "Smith Hall", x: 778, y: 749},
+  {location: "Vincent Hall", x: 891, y: 752},
+  {location: "Murphy Hall", x: 926, y: 751},
+  {location: "Ford Hall", x: 912, y: 811},
+  {location: "Kolthoff Hall", x: 782, y: 812},
+  {location: "Coffman Memorial Union", x: 847, y: 927},
+  {location: "Amundson Hall", x: 1013, y: 815},
+  {location: "Lind Hall", x: 980, y: 752},
+  {location: "Mechanical Engineering", x: 1006, y: 670},
+  {location: "Akerman Hall", x: 1072, y: 671},
+  {location: "Kenneth H Keller Hall", x: 1048, y: 748},
+  {location: "Physics & Nanotechnology Bldg", x: 1126, y: 661},
+  {location: "Shepherd Labs", x: 1068, y: 612},
+  {location: "Rapson Hall", x: 1006, y: 583},
+  {location: "Pillsbury Hall", x: 916, y: 505},
+  {location: "Nicholson Hall", x: 824, y: 477},
+  {location: "Williamson Hall", x: 887, y: 423},
+  {location: "Jones Hall", x: 850, y: 400},
+  {location: "Folwell Hall", x: 913, y: 365},
+  {location: "Molecular Cellular Biology", x: 1047, y: 886},
+  {location: "Jackson Hall", x: 981, y: 889},
+  {location: "Hasselmo Hall", x: 929, y: 923},
+  {location: "Bruininks Hall", x: 701, y: 797},
+  {location: "Appleby Hall", x: 702, y: 715},
+  {location: "Fraser Hall", x: 700, y: 642},
+  {location: "Peik Hall", x: 720, y: 300},
+  {location: "Cooke Hall", x: 1216, y: 597},
+  {location: "Diehl Hall", x: 1143, y: 1035},
+  {location: "Weaver-Densford Hall", x: 1176, y: 866},
+  {location: "Scott Hall", x: 724, y: 516},
+  {location: "Kaufert Laboratory", x: 1736, y: 319},
+  {location: "Green Hall", x: 1741, y: 419},
+  {location: "Skok Hall", x: 1727, y: 369},
+  {location: "Hodson Hall", x: 1864, y: 320},
+  {location: "Alderman Hall", x: 1879, y: 385},
+  {location: "Borlaug Hall", x: 1913, y: 480},
+  {location: "Gortner Lab", x: 1975, y: 585},
+  {location: "McNeal Hall", x: 1893, y: 664},
+  {location: "Biological Sciences Center", x: 1974, y: 718},
+  {location: "Coffey Hall", x: 1729, y: 834},
+  {location: "Ruttan Hall", x: 1798, y: 877},
+  {location: "Magrath Library", x: 1867, y: 812},
+  {location: "Biosystems & Ag. Eng.", x: 1727, y: 956},
+  {location: "Haecker Hall", x: 1739, y: 1045},
+  {location: "Andrew Boss Laboratory", x: 1772, y: 1104},
+  {location: "Food Science/Nutrition", x: 1766, y: 1168},
+  {location: "Stakman Hall", x: 1944, y: 470},
+  {location: "Hayes Hall", x: 1959, y: 521},
+  {location: "Christensen Lab", x: 1993, y: 483},
+  {location: "Walter Library", x: 774, y: 673},
+  {location: "Mondale Hall", x: 178, y: 887},
+  {location: "Willey Hall", x: 232, y: 914},
+  {location: "Andersen Library", x: 284, y: 886},
+  {location: "Anderson Hall", x: 336, y: 1010},
+  {location: "Social Sciences", x: 285, y: 1056},
+  {location: "Heller Hall", x: 223, y: 1045},
+  {location: "Blegen Hall", x: 257, y: 1045},
+  {location: "Wilson Library", x: 234, y: 1118},
+  {location: "Rarig Center", x: 314, y: 1171},
+  {location: "Ferguson Hall", x: 364, y: 1109},
+  {location: "Ted Mann Concert Hall", x: 400, y: 1152},
+  {location: "Carlson School of Management", x: 146, y: 1174},
+  {location: "Hanson Hall", x: 157, y: 1249},
+  {location: "HHH Ctr.", x: 160, y: 1064},
+  {location: "Pattee Hall", x: 631, y: 318},
+  {location: "Wilkins Hall", x: 601, y: 186},
+  {location: "Learning & Environmental Sci.", x: 1990, y: 814},
+  {location: "St. Paul Student Center", x: 1721, y: 706},
+  {location: "Eng. & Fisheries Lab", x: 1775, y: 961},
+  {location: "Animal Sci./Vet. Medicine", x: 1826, y: 1032},
+  {location: "Veterinary Science", x: 1889, y: 1182},
+  {location: "Peters Hall", x: 2103, y: 890},
+  {location: "Continuing Education & Conference Center", x: 2152, y: 846},
+  {location: "Chiller Bldg", x: 2202, y: 902},
+  {location: "Armory", x: 1078, y: 478},
+  {location: "Northrop", x: 850, y: 556},
+  {location: "Wulling Hall", x: 695, y: 574},
+  {location: "Elliott Hall", x: 666, y: 509},
+  {location: "Burton Hall", x: 682, y: 422},
+  {location: "Shelvin Hall", x: 651, y: 369},
+  {location: "Eddy Hall", x: 754, y: 430},
+  {location: "10 Church Street SE", x: 1000, y: 420},
+]

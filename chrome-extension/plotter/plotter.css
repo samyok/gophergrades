@@ -1,0 +1,12 @@
+#dist {
+    color: blue;
+}
+
+#gg-plotter-map {
+    max-width: 100%;
+}
+
+#gg-map-btn button {
+    background-color: rgb(242, 220, 200);
+    color: rgb(80, 0, 12);
+}
