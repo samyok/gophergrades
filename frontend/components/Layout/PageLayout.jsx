@@ -4,18 +4,33 @@ import MyHeading from "./MyHeading";
 import PageBackground from "../PageBackground";
 import { Footer } from "./Footer";
 
-const PageLayout = ({ footer = true, children, ...props }) => (
-  <Box>
-    <MyHeading {...props} />
-    <PageBackground />
-    <Flex direction={"row"} justifyContent={"center"}>
-      <Box px={[2, 5, 10]} maxW={"1300px"} width={"100%"}>
+const PageLayout = ({
+  footer = true,
+  children,
+  scriptOnly = false,
+  ...props
+}) => {
+  if (scriptOnly) {
+    return (
+      <>
+        <MyHeading {...props} />
         {children}
+      </>
+    );
+  }
+  return (
+    <Box>
+      <MyHeading {...props} />
+      <PageBackground />
+      <Flex direction={"row"} justifyContent={"center"}>
+        <Box px={[2, 5, 10]} maxW={"1300px"} width={"100%"}>
+          {children}
 
-        {footer && <Footer />}
-      </Box>
-    </Flex>
-  </Box>
-);
+          {footer && <Footer />}
+        </Box>
+      </Flex>
+    </Box>
+  );
+};
 
 export default PageLayout;

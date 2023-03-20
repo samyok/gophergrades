@@ -65,6 +65,13 @@ export default function Class({ classData, query }) {
     !!query.static
   );
 
+  const pageLayoutProps = {
+    title: `${classDesc} (${className}) | GopherGrades`,
+    imageURL: `${
+      process.env.NEXT_PUBLIC_VERCEL_URL
+    }/api/image/class/${className.replace(" ", "")}`,
+  };
+
   const formattedDistributions = distributions.map((dist) => ({
     ...dist,
     href: `/prof/${dist.professor_id}`,
@@ -72,13 +79,22 @@ export default function Class({ classData, query }) {
     rating: dist.professor_RMP_score,
   }));
 
-  if (query.static === "all") return totalDistributions;
+  if (query.static === "all")
+    return (
+      <PageLayout {...pageLayoutProps} scriptOnly>
+        {totalDistributions}
+      </PageLayout>
+    );
   if (query.static) {
     const filtered = formattedDistributions.filter((dist) =>
       dist.title.toLowerCase().includes(query.static.toLowerCase())
     );
 
-    return distributionsToCards(filtered, isMobile, "NONE", true);
+    return (
+      <PageLayout {...pageLayoutProps} scriptOnly>
+        {distributionsToCards(filtered, isMobile, "NONE", true)}
+      </PageLayout>
+    );
   }
 
   const renderedDistributions = distributionsToCards(
@@ -104,14 +120,7 @@ export default function Class({ classData, query }) {
     ));
 
   return (
-    <PageLayout
-      title={`${classDesc} (${className}) | GopherGrades`}
-      imageURL={`${
-        process.env.NEXT_PUBLIC_VERCEL_URL
-          ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-          : ""
-      }/api/image/class/${className.replace(" ", "")}`}
-    >
+    <PageLayout {...pageLayoutProps}>
       <Box py={8} align={"start"} width={"100%"}>
         <SearchBar placeholder={search || undefined} onChange={handleChange} />
         <SearchResults

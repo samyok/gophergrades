@@ -14,3 +14,18 @@ yarn install
 yarn dev
 # live at http://localhost:3000
 ```
+
+# Building the Firefox Extension
+
+```bash
+# make sure you're in the root of the repository
+node bin/chrome-to-firefox.js
+# Firefox should start in debug mode
+#   You may have to click on the extension icon in the top right of the browser
+#   to give it permission to run on the current page.
+
+# To build the extension, run
+node bin/build-extensions.js
+
+# The extension will be built to the `web-ext-artifacts` directory
+```
