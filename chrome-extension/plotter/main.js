@@ -71,7 +71,11 @@ function updateButton() {
 
   const newButton = htmlToElement(buttonTemplate(plotterPresented))
   group.insertBefore(newButton, group.children[2])
-  document.querySelector("#gg-map-btn-btn").onclick = toggleMap
+  const group2 = document.querySelector("#button-bar > div.btn-group.btn-group-justified.hidden-print.visible-sm.visible-xs")
+  group2.insertBefore(newButton.cloneNode(true), group2.children[2])
+  document.querySelectorAll("#gg-map-btn-btn").forEach(node => {
+    node.onclick = toggleMap
+  });
 }
 
 function toggleMap() {
@@ -114,7 +118,7 @@ function createUI() {
   // or maybe it doesn't need to add all 5 by default? wouldn't be useful
   const plotterTemplate = `
 <div id="gg-plotter">
-    <div class="btn-group btn-group-justified hidden-print visible-lg visible-md" style="margin-bottom: 1em;">
+    <div class="btn-group btn-group-justified hidden-print" style="margin-bottom: 1em;">
     ${["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(day => {
     //NOW WE'rE CODING
     return `
