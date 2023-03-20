@@ -31,8 +31,9 @@
         "plotter/plotter.css"
       ],
       "js": [
+        "plotter/apiapi.js",
         "plotter/util.js",
-        "plotter/plotter.js"
+        "plotter/main.js"
       ]
     },
     {

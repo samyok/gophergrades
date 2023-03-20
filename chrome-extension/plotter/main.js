@@ -34,28 +34,22 @@ function on_change(mutations) {
   if (do_update_button) update_button();
   if (do_update_map && plotter_presented) update_map();
 
-  // mutations.forEach(mutation => {
-  //   switch(mutation.type) {
-  //     case "childList":
-  //       break;
-  //     case "attributes":
-  //       switch(mutation.attributeName) {
-  //         case "status":
-  //         case "username":
-  //         default:
-  //             break;
-  //       }
-  //       break;
-  //   }
-  // })
+  mutations.forEach(mutation => {
+    switch(mutation.type) {
+      case "childList":
+        break;
+      case "attributes":
+        switch(mutation.attributeName) {
+          case "status":
+          case "username":
+          default:
+              break;
+        }
+        break;
+    }
+  })
 }
 
-
-//todo: minor detail, but the selection outline remains after clicking the
-// button, which is because the button isn't deleted from existence and rebuilt.
-// i think removing the old button and replacing it with the new one is the only
-// way to replicate the behavior of the other buttons that don't even do it
-// consistently ugh whatever
 function update_button() {
   log('updating button')
   const group = document.querySelector("div#rightside div.btn-group")
@@ -75,14 +69,6 @@ function update_button() {
   group.insertBefore(new_button, group.children[2])
   document.querySelector("#gg-map-btn-btn").onclick = toggle_map
 }
-
-// todo make this persistent that would be cool
-//  it appears the only way to accomplish that would require the storage
-//  permission which is icky
-//  popup.html is using storage so i guess that means we're in woOOOO
-let plotter_ui = chrome.storage.local.get(["plotter_ui"]).then((result) => {
-  console.log("Value currently is " + result.key);
-})
 
 function toggle_map() {
   plotter_presented = !plotter_presented
@@ -105,13 +91,6 @@ function toggle_map() {
   // it's a feature
 }
 
-const plotter_template = `
-<div id="gg-plotter">
-    <div id="gg-plotter-distance">unknown</div>
-    <canvas id="gg-plotter-map" width="2304" height="1296" class="card"></canvas>
-</div>
-`
-
 /**
  * creates the plotter UI
  *
@@ -122,133 +101,131 @@ const plotter_template = `
  */
 function create_UI() {
   const right = document.querySelector("#rightside");
+
+  //we must know from update_UI this is already false
+  // if (!right) return
+
   //prepare map to be drawn on
+  //todo: needs to detect sat and sun, but always add mon-fri by default
+  // or maybe it doesn't need to add all 5 by default? wouldn't be useful
+  const plotter_template = `
+<div id="gg-plotter">
+    <div class="btn-group btn-group-justified hidden-print visible-lg visible-md" style="margin-bottom: 1em;">
+    ${["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(day => { 
+      //NOW WE'rE CODING
+      return `
+        <div class="btn-group">
+            <button id="gg-plotter-${day}-btn" type="button" class="btn btn-default">
+                ${day}
+            </button>
+        </div>
+      ` 
+    }).join("")}
+    </div>
+    <div id="gg-plotter-distance">unknown</div>
+    <canvas id="gg-plotter-map" width="2304" height="1296" class="card"></canvas>
+</div>
+  `
   const plotter = htmlToElement(plotter_template)
   if (!plotter_presented) {
     plotter.style.display = "none"
   }
+  //insert as second child (before the second object; the schedule)
   right.insertBefore(plotter, right.children[1])
-
 }
 
+/**
+ * plots on the map the representation of all the classes in a schedule from
+ * information on the page (namely the section list in the left column)
+ */
 function update_map() {
   const canvas = document.querySelector("#gg-plotter-map");
   // canvas not loaded yet
   if (!canvas) return
 
-  let sections = get_schedule_info()
-  // classes not loaded yet
-  // there shouldn't be a case where the scheduler is loaded without sections
-  if (sections.length === 0) return;
-
-  //todo test
-  const section_nbrs = sections.map(s => s.section)
-  log(section_nbrs)
-  //how do i make network requests without roadblocking the browser
-  //do i just change the app structure to be a gigantic chain of .then?
-  // get_section_data(section_nbrs)
-  //     .then((data) => {
-  //
-  //     })
-
-  // monitor changes and update map
-  const ctx = canvas.getContext("2d")
-  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  const img_tag = document.querySelector("#gg-map-image")
-  ctx.drawImage(img_tag, 0, 0)
-  const logo_tag = document.querySelector("#gg-logo-image")
-  ctx.drawImage(logo_tag, 60, 400)
-  ctx.lineWidth = 8
-
+  let sections = get_schedule_sections()
   //use only sections that have a valid location
-  sections = sections.filter(loc => loc.location)
+  sections = sections.filter(sec => sec.location)
   // todo use this to tell user what sections do not have classrooms yet
   // const invalid_sections = sections.filter(loc => !loc.location)
 
-  //no sections have classrooms yet
+  // classes not loaded yet
+  // there shouldn't be a case where the scheduler is loaded without sections
   if (sections.length === 0) {
     log("no classes have assigned classrooms yet")
     return
   }
 
-  let dist = 0
-  //draw connecting lines between locations
-  for (let i = 1; i < sections.length; i++) {
-    const loc0 = sections[i - 1].location
-    const loc1 = sections[i].location
-    dist += Math.sqrt(Math.pow(loc1.x - loc0.x, 2) + Math.pow(loc1.y - loc0.y, 2))
-    do_line(ctx, loc0, loc1)
-  }
-  //scale pixels to miles
-  dist = dist/144*500/5280
+  // monitor changes and update map
+  const ctx = canvas.getContext("2d")
+  const mapper = new Mapper(ctx)
+  mapper.draw_map(sections)
 
+  const dist = calculate_distances(sections)
   const dist_node = document.querySelector("#gg-plotter-distance");
-
   if (!dist_node) {
     log('distance div does not exist???????')
   } else {
     dist_node.textContent = ""+dist
   }
-
-  //todo: a way to implement section highlighting is reading the background
-  // color of the section (it turns blue)
-
-  //draw uncolored, then colored circles so colored ones appear on top
-  // it is purely a coincidence hover works after observing style changes
-  //draw blank circles
-  sections.forEach(section => {
-    if (section.color === "rgb(221, 221, 221)")
-      do_circle(ctx, section);
-  });
-  //draw colored circles
-  sections.forEach(section => {
-    if (section.color !== "rgb(221, 221, 221)")
-      do_circle(ctx, section);
-  });
 }
 
 /**
- * scrapes information about the current schedule's sections
+ * scrapes locally available information about the current schedule's sections
+ * (section number, location, color)
  *
- * @returns {*[]} array of section objects with section, location, and color attributes
+ * @returns {PlotterSection[]} array of section objects with section, location, and color attributes
  */
-function get_schedule_info() {
-  let sections = []
+function get_schedule_sections() {
   let curr_color = null
   const schedule = document.querySelector(
       "#schedule-courses > div > div > table > tbody");
   const schedule_list = Array.from(schedule.children)
+
+  let sections = []
 
   schedule_list.forEach(element => {
     const tds = element.children
     if (tds.length === 3) {
       curr_color = tds[0].style.backgroundColor
     } else if (tds.length === 6) {
+      //todo: a way to implement section highlighting is reading the background
+      // color of the section (it turns blue) but you need a rule where if none
+      // of the sections are highlighted then they should all be colored in
       //section (id/location)
-      let section = tds[1]
-      if (section)
-        section = section.firstElementChild.textContent.trim();
-      else {
-        section = null;
+      let section_nbr = tds[1]
+      if (section_nbr) {
+        section_nbr = section_nbr.firstElementChild.textContent.trim();
+        try {
+          section_nbr = Number(section_nbr)
+        } catch {
+          log("could not read section number "+section_nbr)
+          section_nbr = null
+        }
+      } else {
+        section_nbr = null;
         log("could not obtain section no. (very weird)")
       }
       //location (excl. room no. (for now))
+      //a section can have multiple locations for different meeting times
       let location = tds[4].firstElementChild.textContent.trim();
       if (location === "No room listed.") {
-        location = null
-      } else if (location === "Remote Class") {
+        location = undefined
+      } else if (location === "Remote Class" || location === "Online Only") {
         log("Remote Class detected don't acknowledge")
         //todo: acknowledge
-        location = null
+        location = undefined
       } else {
         const loc_o = locations.find(loc => loc.location === location);
         if (!loc_o) {
           log("could not find location " + location)
+          location = undefined
+        } else {
+          location = loc_o
         }
-        location = loc_o
       }
-
-      sections.push({section, location, color: curr_color})
+      const new_section = new PlotterSection(section_nbr, location, curr_color);
+      sections.push(new_section)
     }
   });
 
@@ -271,7 +248,6 @@ function load_map_image() {
 
 // initialization; keep out of global scope
 {
-  //how does this work
   new MutationObserver(on_change).observe(document, {
     childList: true,
     attributes: true,
