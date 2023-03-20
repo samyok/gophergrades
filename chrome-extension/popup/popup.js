@@ -97,20 +97,20 @@ function login() {
   });
 }
 
-document.getElementById("login").addEventListener("click", login);
+// document.getElementById("login").addEventListener("click", login);
 
 function updateSignInStatus() {
   chrome.identity.getAuthToken({ interactive: false }, function (token) {
     if (chrome.runtime.lastError) {
       // logged out
-      document.getElementById("logged-out").style.display = "block";
+      // document.getElementById("logged-out").style.display = "block";
       console.warn("[GGE] " + chrome.runtime.lastError.message);
       return;
     }
     chrome.identity.getProfileUserInfo(function (userInfo) {
       console.log({ userInfo });
-      document.getElementById("logged-in").style.display = "block";
-      document.getElementById("email").innerText = userInfo.email;
+      // document.getElementById("logged-in").style.display = "block";
+      // document.getElementById("email").innerText = userInfo.email;
     });
     console.log("[GGE] TOKEN: " + token);
   });
@@ -122,3 +122,6 @@ chrome.identity.onSignInChanged.addListener((account, signedIn) => {
   console.log({ account, signedIn });
   updateSignInStatus();
 });
+
+document.querySelector("#version").innerText =
+  chrome.runtime.getManifest().version;
