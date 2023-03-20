@@ -1,9 +1,10 @@
-let schedule_presented = false
+let schedulePresented = false
 //todo use chrome storage
-let plotter_presented = false
+let plotterPresented = false
 
 /**
  * updates the UI to match the current state of the page
+ *
  * this is where all the decisions on when to refresh different components are
  * made:
  *    UI creation
@@ -11,53 +12,56 @@ let plotter_presented = false
  *
  * @param mutations mutations from MutationObserver
  */
-function on_change(mutations) {
+function onChange(mutations) {
   const schedule = document.querySelector("#schedule-main");
 
   //create elements if change is detected
-  if (schedule !== schedule_presented) {
-    schedule_presented = schedule
+  if (schedule !== schedulePresented) {
+    schedulePresented = schedule
     if (schedule) {
       log("schedule has just appeared; creating UI")
-      create_UI()
+      createUI()
     }
   }
 
   //update iff schedule view is present
   if (!schedule) return;
 
-  // update button only when necessary (changes to DOM structure, e.g. button is removed)
-  let do_update_button = mutations.find(m => m.type === "childList")
-  //update map when DOM changes or attributes change (for color hover """"feature"""")
-  let do_update_map = do_update_button || mutations.find(m => m.type === "attributes")
+  // update button only when necessary
+  // (changes to DOM structure, e.g. button is removed)
+  let doUpdateButton = mutations.find(m => m.type === "childList")
+  //update map when DOM changes or attributes change
+  // (for color hover """"feature"""")
+  let doUpdateMap =
+      doUpdateButton || mutations.find(m => m.type === "attributes");
 
-  if (do_update_button) update_button();
-  if (do_update_map && plotter_presented) update_map();
+  if (doUpdateButton) updateButton();
+  if (doUpdateMap && plotterPresented) updateMap();
 
   mutations.forEach(mutation => {
     switch(mutation.type) {
       case "childList":
         break;
       case "attributes":
-        switch(mutation.attributeName) {
+        switch (mutation.attributeName) {
           case "status":
           case "username":
           default:
-              break;
+            break;
         }
         break;
     }
   })
 }
 
-function update_button() {
+function updateButton() {
   log('updating button')
   const group = document.querySelector("div#rightside div.btn-group")
-  const button_present = document.querySelector("#gg-map-btn")
+  const buttonPresent = document.querySelector("#gg-map-btn")
   //button bar not loaded yet or button already exists
-  if (!group || button_present) return;
+  if (!group || buttonPresent) return;
 
-  const button_template = (active) => `
+  const buttonTemplate = (active) => `
   <div id="gg-map-btn" class="btn-group">
     <button id="gg-map-btn-btn" type="button" class="btn btn-default ${active ? "active" : ""}">
       <i class="fa fa-map"></i> Map
@@ -65,18 +69,18 @@ function update_button() {
   </div>
   `;
 
-  const new_button = htmlToElement(button_template(plotter_presented))
-  group.insertBefore(new_button, group.children[2])
-  document.querySelector("#gg-map-btn-btn").onclick = toggle_map
+  const newButton = htmlToElement(buttonTemplate(plotterPresented))
+  group.insertBefore(newButton, group.children[2])
+  document.querySelector("#gg-map-btn-btn").onclick = toggleMap
 }
 
-function toggle_map() {
-  plotter_presented = !plotter_presented
+function toggleMap() {
+  plotterPresented = !plotterPresented
   const plotter = document.querySelector("#gg-plotter")
   // const map = document.querySelector("#gg-plotter-map")
   const button = document.querySelector("div#rightside div.btn-group")
       .children[2].children[0]
-  if (plotter_presented) {
+  if (plotterPresented) {
     plotter.style.display = "block";
     button.className = "btn btn-default active"
   } else {
@@ -99,35 +103,35 @@ function toggle_map() {
  *  - changing from agenda view to calendar view
  *    - (buttons obliterate entire main content view and replace it)
  */
-function create_UI() {
+function createUI() {
   const right = document.querySelector("#rightside");
 
-  //we must know from update_UI this is already false
+  //we must know from updateUI this is already false
   // if (!right) return
 
   //prepare map to be drawn on
   //todo: needs to detect sat and sun, but always add mon-fri by default
   // or maybe it doesn't need to add all 5 by default? wouldn't be useful
-  const plotter_template = `
+  const plotterTemplate = `
 <div id="gg-plotter">
     <div class="btn-group btn-group-justified hidden-print visible-lg visible-md" style="margin-bottom: 1em;">
-    ${["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(day => { 
-      //NOW WE'rE CODING
-      return `
+    ${["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(day => {
+    //NOW WE'rE CODING
+    return `
         <div class="btn-group">
             <button id="gg-plotter-${day}-btn" type="button" class="btn btn-default">
                 ${day}
             </button>
         </div>
-      ` 
-    }).join("")}
+      `
+  }).join("")}
     </div>
     <div id="gg-plotter-distance">unknown</div>
     <canvas id="gg-plotter-map" width="2304" height="1296" class="card"></canvas>
 </div>
   `
-  const plotter = htmlToElement(plotter_template)
-  if (!plotter_presented) {
+  const plotter = htmlToElement(plotterTemplate)
+  if (!plotterPresented) {
     plotter.style.display = "none"
   }
   //insert as second child (before the second object; the schedule)
@@ -138,16 +142,16 @@ function create_UI() {
  * plots on the map the representation of all the classes in a schedule from
  * information on the page (namely the section list in the left column)
  */
-function update_map() {
+function updateMap() {
   const canvas = document.querySelector("#gg-plotter-map");
   // canvas not loaded yet
   if (!canvas) return
 
-  let sections = get_schedule_sections()
+  let sections = getScheduleSections()
   //use only sections that have a valid location
   sections = sections.filter(sec => sec.location)
   // todo use this to tell user what sections do not have classrooms yet
-  // const invalid_sections = sections.filter(loc => !loc.location)
+  // const invalidSections = sections.filter(loc => !loc.location)
 
   // classes not loaded yet
   // there shouldn't be a case where the scheduler is loaded without sections
@@ -159,14 +163,14 @@ function update_map() {
   // monitor changes and update map
   const ctx = canvas.getContext("2d")
   const mapper = new Mapper(ctx)
-  mapper.draw_map(sections)
+  mapper.drawMap(sections)
 
-  const dist = calculate_distances(sections)
-  const dist_node = document.querySelector("#gg-plotter-distance");
-  if (!dist_node) {
+  const dist = calculateDistances(sections)
+  const distNode = document.querySelector("#gg-plotter-distance");
+  if (!distNode) {
     log('distance div does not exist???????')
   } else {
-    dist_node.textContent = ""+dist
+    distNode.textContent = "" + dist
   }
 }
 
@@ -174,36 +178,37 @@ function update_map() {
  * scrapes locally available information about the current schedule's sections
  * (section number, location, color)
  *
- * @returns {PlotterSection[]} array of section objects with section, location, and color attributes
+ * @returns {PlotterSection[]} array of section objects with section, location,
+ * and color attributes
  */
-function get_schedule_sections() {
-  let curr_color = null
+function getScheduleSections() {
+  let currColor = null
   const schedule = document.querySelector(
       "#schedule-courses > div > div > table > tbody");
-  const schedule_list = Array.from(schedule.children)
+  const scheduleList = Array.from(schedule.children)
 
   let sections = []
 
-  schedule_list.forEach(element => {
+  scheduleList.forEach(element => {
     const tds = element.children
     if (tds.length === 3) {
-      curr_color = tds[0].style.backgroundColor
+      currColor = tds[0].style.backgroundColor
     } else if (tds.length === 6) {
       //todo: a way to implement section highlighting is reading the background
       // color of the section (it turns blue) but you need a rule where if none
       // of the sections are highlighted then they should all be colored in
       //section (id/location)
-      let section_nbr = tds[1]
-      if (section_nbr) {
-        section_nbr = section_nbr.firstElementChild.textContent.trim();
+      let sectionNbr = tds[1]
+      if (sectionNbr) {
+        sectionNbr = sectionNbr.firstElementChild.textContent.trim();
         try {
-          section_nbr = Number(section_nbr)
+          sectionNbr = Number(sectionNbr)
         } catch {
-          log("could not read section number "+section_nbr)
-          section_nbr = null
+          log("could not read section number " + sectionNbr)
+          sectionNbr = null
         }
       } else {
-        section_nbr = null;
+        sectionNbr = null;
         log("could not obtain section no. (very weird)")
       }
       //location (excl. room no. (for now))
@@ -216,44 +221,45 @@ function get_schedule_sections() {
         //todo: acknowledge
         location = undefined
       } else {
-        const loc_o = locations.find(loc => loc.location === location);
-        if (!loc_o) {
+        const locationObject = locations.find(loc => loc.location === location);
+        if (!locationObject) {
           log("could not find location " + location)
           location = undefined
         } else {
-          location = loc_o
+          location = locationObject
         }
       }
-      const new_section = new PlotterSection(section_nbr, location, curr_color);
-      sections.push(new_section)
+      const newSection = new PlotterSection(sectionNbr, location, currColor);
+      sections.push(newSection)
     }
   });
 
   return sections
 }
 
-//load map image as an img tag (this seems to be the most valid way for some reason)
-function load_map_image() {
-  const image_template = (imageURL, id) => `
+//load map image as an img tag
+// (this seems to be the most valid way for some reason)
+function loadMapImage() {
+  const imageTemplate = (imageURL, id) => `
   <img src="${imageURL}" id="${id}" style="display: none;">`
 
-  const map_url = chrome.runtime.getURL('plotter/walking.png')
-  const map_tag = htmlToElement(image_template(map_url, "gg-map-image"))
-  document.body.appendChild(map_tag)
+  const mapURL = chrome.runtime.getURL('plotter/walking.png')
+  const mapTag = htmlToElement(imageTemplate(mapURL, "gg-map-image"))
+  document.body.appendChild(mapTag)
 
-  const logo_url = chrome.runtime.getURL('icons/icon-128.png')
-  const logo_tag = htmlToElement(image_template(logo_url, "gg-logo-image"))
-  document.body.appendChild(logo_tag)
+  const logoURL = chrome.runtime.getURL('icons/icon-128.png')
+  const logoTag = htmlToElement(imageTemplate(logoURL, "gg-logo-image"))
+  document.body.appendChild(logoTag)
 }
 
 // initialization; keep out of global scope
 {
-  new MutationObserver(on_change).observe(document, {
+  new MutationObserver(onChange).observe(document, {
     childList: true,
     attributes: true,
     subtree: true
   });
 
   //load only once
-  load_map_image()
+  loadMapImage()
 }

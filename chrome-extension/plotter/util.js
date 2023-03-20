@@ -1,9 +1,9 @@
-let plotter_ui = chrome.storage.local.get(["plotter_ui"]).then((result) => {
+let doPlotterUI = chrome.storage.local.get(["showMapOfClasses"]).then((result) => {
   console.log("Value currently is " + result.key);
 })
 
 // https://stackoverflow.com/questions/46158592/chrome-extensions-storage-listener-for-only-one-stored-variable
-chrome.storage.onChanged.addListener(function(tab) {
+chrome.storage.onChanged.addListener(function (tab) {
   //detect when the value of "showMapOfClasses" changes to create/destroy UI
 });
 
@@ -13,8 +13,9 @@ chrome.storage.onChanged.addListener(function(tab) {
  * @param message what to print to the console
  */
 function log(message) {
-  console.log("[GG/plotter] "+message)
+  console.log("[GG/plotter] " + message)
 }
+
 log("loaded plotter/util.js")
 
 /**
@@ -35,6 +36,7 @@ class PlotterLocation {
     this.y = y
   }
 }
+
 class PlotterSection {
   /**
    *
@@ -60,7 +62,7 @@ class Mapper {
     this.ctx = ctx
   }
 
-  do_line(prev, curr) {
+  doLine(prev, curr) {
     this.ctx.beginPath()
     this.ctx.moveTo(prev.x, prev.y);
     this.ctx.lineTo(curr.x, curr.y);
@@ -68,7 +70,7 @@ class Mapper {
     this.ctx.closePath();
   }
 
-  do_circle(section) {
+  doCircle(section) {
     const {location, color} = section
     this.ctx.beginPath()
     this.ctx.moveTo(location.x, location.y);
@@ -84,19 +86,19 @@ class Mapper {
    *
    * @param sections{PlotterSection[]} section objects
    */
-  draw_map(sections) {
+  drawMap(sections) {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    const img_tag = document.querySelector("#gg-map-image")
-    this.ctx.drawImage(img_tag, 0, 0)
-    const logo_tag = document.querySelector("#gg-logo-image")
-    this.ctx.drawImage(logo_tag, 60, 400)
+    const imgTag = document.querySelector("#gg-map-image")
+    this.ctx.drawImage(imgTag, 0, 0)
+    const logoTag = document.querySelector("#gg-logo-image")
+    this.ctx.drawImage(logoTag, 60, 400)
     this.ctx.lineWidth = 8
 
     //draw connecting lines between locations
     for (let i = 1; i < sections.length; i++) {
       const loc0 = sections[i - 1].location
       const loc1 = sections[i].location
-      this.do_line(loc0, loc1)
+      this.doLine(loc0, loc1)
     }
 
     //draw uncolored, then colored circles so colored ones appear on top
@@ -104,17 +106,17 @@ class Mapper {
     //draw blank circles
     sections.forEach(section => {
       if (section.color === "rgb(221, 221, 221)")
-        this.do_circle(section);
+        this.doCircle(section);
     });
     //draw colored circles
     sections.forEach(section => {
       if (section.color !== "rgb(221, 221, 221)")
-        this.do_circle(section);
+        this.doCircle(section);
     });
   }
 }
 
-function calculate_distances(sections) {
+function calculateDistances(sections) {
   let dist = 0
   //draw connecting lines between locations
   for (let i = 1; i < sections.length; i++) {
@@ -123,7 +125,7 @@ function calculate_distances(sections) {
     dist += Math.sqrt(Math.pow(loc1.x - loc0.x, 2) + Math.pow(loc1.y - loc0.y, 2))
   }
   //scale pixels to miles
-  return dist/144*500/5280
+  return dist / 144 * 500 / 5280
 }
 
 /**
@@ -131,7 +133,7 @@ function calculate_distances(sections) {
  *
  * @returns {?string}
  */
-function get_term_strm() {
+function getTermStrm() {
   //getting term from breadcrumbs (or so they're called)
   let term = document.querySelector(
       "#app-header > div > div.row.app-crumbs.hidden-print > div > ol > li:nth-child(2) > a")
@@ -159,7 +161,7 @@ const strms = function () {
 }()
 
 //todo succeed this garbage
-const locations = function() {
+const locations = function () {
   const locs = [
     {location: "Morrill Hall", x: 913, y: 614},
     {location: "Johnston Hall", x: 778, y: 613},
@@ -248,6 +250,8 @@ const locations = function() {
     {location: "10 Church Street SE", x: 1000, y: 420},
     {location: "Health Sciences Education Cent", x: 1190, y: 1010},
     {location: "Civil Engineering Building", x: 1130, y: 582},
+    //leave out for testing purposes (gracefully handle missing locations)
+    // {location: "University Field House", x: 1166, y: 516}
   ];
 
   return locs.map(loc => new PlotterLocation(loc.location, loc.x, loc.y))
