@@ -737,7 +737,9 @@ const appendButton = () => {
         parentDiv.insertBefore(newDiv, calendarDiv.nextSibling);
 
         //Apply following 
-      newDiv.querySelector("button").addEventListener("click", buttonBody); // note: only applies listener to *first* button
+      newDiv.querySelectorAll("button")[0].addEventListener("click", buttonBody); //Naively apply the event listener to all buttons
+      newDiv.querySelectorAll("button")[1].addEventListener("click", buttonBody);
+      newDiv.querySelectorAll("button")[2].addEventListener("click", buttonBody);
       // newDiv.querySelectorAll("button").map(b => b.addEventListener("click", buttonBody)) // apply it to all the buttons in the div
       ButtonIsAdded= true; 
   }
