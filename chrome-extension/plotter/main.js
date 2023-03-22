@@ -57,7 +57,7 @@ async function onChange(mutations) {
 }
 
 function updateButton() {
-  log('updating button')
+  debug('updating button')
   const group = document.querySelector("div#rightside div.btn-group")
   const buttonPresent = document.querySelector("#gg-map-btn")
   //button bar not loaded yet or button already exists
@@ -127,7 +127,7 @@ function createUI() {
     return `
         <div class="btn-group">
             <button id="gg-plotter-${day.toLowerCase()}-btn" type="button" class="btn btn-default">
-                ${day}
+                ${ day.slice(0, 3) }
             </button>
         </div>
       `
@@ -184,7 +184,6 @@ function setDayButtonSelected(activeDay) {
  */
 async function updateMap() {
   debug("updating map")
-  debug(daySelected)
   const canvas = document.querySelector("#gg-plotter-map");
   // canvas not loaded yet
   if (!canvas) return
@@ -219,7 +218,6 @@ async function updateMap() {
   })
   //sort by start time to plot schedule in order
   day_sections.sort((a, b) => a.startTime - b.startTime)
-  day_sections.forEach(s => debug(s.startTime))
   //map back onto PlotterSections for the plotter to use
   sections = day_sections.map(s => {
     return sections.find(ps => ps.id === s.id)
@@ -235,7 +233,7 @@ async function updateMap() {
   if (!distNode) {
     log('distance div does not exist???????')
   } else {
-    distNode.textContent = "" + dist
+    distNode.textContent = "Distance: " + dist + " miles"
   }
 }
 

@@ -47,6 +47,11 @@ class PlotterLocation {
   }
 }
 
+/**
+ * object which contains the necessary data for the plotter to map out courses
+ *
+ * you pass an array of these objects to the mapper when drawing the map
+ */
 class PlotterSection {
   /**
    *
@@ -111,12 +116,20 @@ class Mapper {
       this.doLine(loc0, loc1)
     }
 
-    //label start node
-    if (sections.length > 0) {
+    //label start node (if there's more than one node)
+    if (sections.length > 1) {
       const { location } = sections[0]
       this.ctx.font = "60px Arial";
-      this.ctx.fillStyle = "rgb(100, 255, 100)";
-      this.ctx.fillText("Start", location.x-65, location.y-30);
+      this.ctx.strokeStyle = "rgba(40, 40, 40, 0.7)";
+      this.ctx.strokeText("Start", location.x-65, location.y+70);
+      this.ctx.strokeStyle = "black";
+      this.ctx.fillStyle = "rgb(128, 222, 160)";
+      this.ctx.fillText("Start", location.x-65, location.y+70);
+    } else if (sections.length === 0) {
+      this.ctx.font = "360px Arial";
+      this.ctx.fillStyle = "rgba(40, 40, 40, 0.25)";
+      this.ctx.fillText("No Classes", 250, 800);
+
     }
     //draw uncolored, then colored circles so colored ones appear on top
     // it is purely a coincidence hover works after observing style changes
@@ -125,7 +138,8 @@ class Mapper {
       if (section.color === "rgb(221, 221, 221)")
         this.doCircle(section);
     });
-    //draw colored circles
+    //draw colored circles (in reverse so earlier classes show up on top)
+    sections.reverse()
     sections.forEach(section => {
       if (section.color !== "rgb(221, 221, 221)")
         this.doCircle(section);

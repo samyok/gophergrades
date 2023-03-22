@@ -21,7 +21,7 @@ class SBAPI {
    * @returns {SBSection[]} SBSchedule object with information from all sections
    */
   static async fetchSectionInformation(sections, semesterStrm) {
-    const cacheSections = sections.filter(s => SBAPI.#cache.has(s))
+    // const cacheSections = sections.filter(s => SBAPI.#cache.has(s))
     const fetchSections = sections.filter(s => !SBAPI.#cache.has(s))
 
     if (fetchSections.length !== 0) {
