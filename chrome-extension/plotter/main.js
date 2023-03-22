@@ -2,6 +2,8 @@ let schedulePresented = false
 //todo use chrome storage
 let plotterPresented = false
 
+let daySelected = "Monday"
+
 /**
  * updates the UI to match the current state of the page
  *
@@ -10,9 +12,9 @@ let plotterPresented = false
  *    UI creation
  *    UI updates
  *
- * @param mutations mutations from MutationObserver
+ * @param mutations{MutationRecord[]} mutations from MutationObserver
  */
-function onChange(mutations) {
+async function onChange(mutations) {
   const schedule = document.querySelector("#schedule-main");
 
   //create elements if change is detected
@@ -36,10 +38,10 @@ function onChange(mutations) {
       doUpdateButton || mutations.find(m => m.type === "attributes");
 
   if (doUpdateButton) updateButton();
-  if (doUpdateMap && plotterPresented) updateMap();
+  if (doUpdateMap && plotterPresented) await updateMap();
 
   mutations.forEach(mutation => {
-    switch(mutation.type) {
+    switch (mutation.type) {
       case "childList":
         break;
       case "attributes":
@@ -108,6 +110,7 @@ function toggleMap() {
  *    - (buttons obliterate entire main content view and replace it)
  */
 function createUI() {
+  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const right = document.querySelector("#rightside");
 
   //we must know from updateUI this is already false
@@ -119,11 +122,11 @@ function createUI() {
   const plotterTemplate = `
 <div id="gg-plotter">
     <div class="btn-group btn-group-justified hidden-print" style="margin-bottom: 1em;">
-    ${["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(day => {
+    ${days.map(day => {
     //NOW WE'rE CODING
     return `
         <div class="btn-group">
-            <button id="gg-plotter-${day}-btn" type="button" class="btn btn-default">
+            <button id="gg-plotter-${day.toLowerCase()}-btn" type="button" class="btn btn-default">
                 ${day}
             </button>
         </div>
@@ -140,13 +143,48 @@ function createUI() {
   }
   //insert as second child (before the second object; the schedule)
   right.insertBefore(plotter, right.children[1])
+
+  //add button functionality
+  days.forEach(day => {
+    const button = document.querySelector(`#gg-plotter-${day.toLowerCase()}-btn`)
+    if (day === "Monday")
+      button.className = "btn btn-default active";
+    button.onclick = async function () {
+      setDayButtonSelected(day)
+      daySelected = day
+      //this technically doesn't need to happen due to setDayButtonSelected
+      // causing an attribute change to be signalled but just in case i ever
+      // need it i'm going to leave it here with this egregiously long note
+      // await updateMap()
+    }
+  })
+}
+
+/**
+ * takes the day and makes the corresponding button have the active styling
+ * while inactivating all others
+ *
+ * @param activeDay string of day to switch to active styling
+ */
+function setDayButtonSelected(activeDay) {
+  //maybe make global at this point
+  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  //reset button styling
+  days.forEach(day => {
+    const button = document.querySelector(`#gg-plotter-${day.toLowerCase()}-btn`)
+    if (day === activeDay) button.className = "btn btn-default active";
+    else button.className = "btn btn-default";
+  })
+
 }
 
 /**
  * plots on the map the representation of all the classes in a schedule from
  * information on the page (namely the section list in the left column)
  */
-function updateMap() {
+async function updateMap() {
+  debug("updating map")
+  debug(daySelected)
   const canvas = document.querySelector("#gg-plotter-map");
   // canvas not loaded yet
   if (!canvas) return
@@ -156,6 +194,8 @@ function updateMap() {
   sections = sections.filter(sec => sec.location)
   // todo use this to tell user what sections do not have classrooms yet
   // const invalidSections = sections.filter(loc => !loc.location)
+  const section_nbrs = sections.map(s => s.id)
+  const term = Number(getTermStrm())
 
   // classes not loaded yet
   // there shouldn't be a case where the scheduler is loaded without sections
@@ -163,6 +203,27 @@ function updateMap() {
     log("no classes have assigned classrooms yet")
     return
   }
+
+  //fetch data from api
+  //this await is necessary despite saying it's not idk it's async bro
+  const section_data = await SBAPI.fetchSectionInformation(section_nbrs, term)
+
+  // sift through returned sections to get sections needed for the day selected
+  const day_sections = []
+  //yeah the order is different on purpose oh god this is so awful
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  section_data.forEach(section => {
+    // i am disgusted by and ashamed of this
+    if (section.days[days.indexOf(daySelected)])
+      day_sections.push(section);
+  })
+  //sort by start time to plot schedule in order
+  day_sections.sort((a, b) => a.startTime - b.startTime)
+  day_sections.forEach(s => debug(s.startTime))
+  //map back onto PlotterSections for the plotter to use
+  sections = day_sections.map(s => {
+    return sections.find(ps => ps.id === s.id)
+  })
 
   // monitor changes and update map
   const ctx = canvas.getContext("2d")
@@ -195,47 +256,48 @@ function getScheduleSections() {
 
   scheduleList.forEach(element => {
     const tds = element.children
+    //class header
     if (tds.length === 3) {
       currColor = tds[0].style.backgroundColor
-    } else if (tds.length === 6) {
-      //todo: a way to implement section highlighting is reading the background
-      // color of the section (it turns blue) but you need a rule where if none
-      // of the sections are highlighted then they should all be colored in
-      //section (id/location)
-      let sectionNbr = tds[1]
-      if (sectionNbr) {
-        sectionNbr = sectionNbr.firstElementChild.textContent.trim();
-        try {
-          sectionNbr = Number(sectionNbr)
-        } catch {
-          log("could not read section number " + sectionNbr)
-          sectionNbr = null
-        }
-      } else {
-        sectionNbr = null;
-        log("could not obtain section no. (very weird)")
-      }
-      //location (excl. room no. (for now))
-      //a section can have multiple locations for different meeting times
-      let location = tds[4].firstElementChild.textContent.trim();
-      if (location === "No room listed.") {
-        location = undefined
-      } else if (location === "Remote Class" || location === "Online Only") {
-        log("Remote Class detected don't acknowledge")
-        //todo: acknowledge
-        location = undefined
-      } else {
-        const locationObject = locations.find(loc => loc.location === location);
-        if (!locationObject) {
-          log("could not find location " + location)
-          location = undefined
-        } else {
-          location = locationObject
-        }
-      }
-      const newSection = new PlotterSection(sectionNbr, location, currColor);
-      sections.push(newSection)
+      return
     }
+    //todo: a way to implement section highlighting is reading the background
+    // color of the section (it turns blue) but you need a rule where if none
+    // of the sections are highlighted then they should all be colored in
+    //section (id/location)
+    let sectionNbr = tds[1]
+    if (sectionNbr) {
+      sectionNbr = sectionNbr.firstElementChild.textContent.trim();
+      try {
+        sectionNbr = Number(sectionNbr)
+      } catch {
+        debug("could not read section number " + sectionNbr)
+        sectionNbr = null
+      }
+    } else {
+      sectionNbr = null;
+      debug("could not obtain section no. (very weird)")
+    }
+    //location (excl. room no. (for now))
+    //a section can have multiple locations for different meeting times
+    let location = tds[4].firstElementChild.textContent.trim();
+    if (location === "No room listed.") {
+      location = undefined
+    } else if (location === "Remote Class" || location === "Online Only") {
+      debug("Remote Class detected don't acknowledge")
+      //todo: acknowledge
+      location = undefined
+    } else {
+      const locationObject = locations.find(loc => loc.location === location);
+      if (!locationObject) {
+        debug("could not find location " + location)
+        location = undefined
+      } else {
+        location = locationObject
+      }
+    }
+    const newSection = new PlotterSection(sectionNbr, location, currColor);
+    sections.push(newSection)
   });
 
   return sections

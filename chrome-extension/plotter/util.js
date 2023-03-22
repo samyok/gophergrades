@@ -16,6 +16,16 @@ function log(message) {
   console.log("[GG/plotter] " + message)
 }
 
+/**
+ * most complicated javascript debugging tool
+ *
+ * @param message what to print to the console
+ */
+function debug(message) {
+  //uncomment for debugging lol
+  console.debug("[GG/plotter] " + message)
+}
+
 log("loaded plotter/util.js")
 
 /**
@@ -40,12 +50,12 @@ class PlotterLocation {
 class PlotterSection {
   /**
    *
-   * @param section{int?}
+   * @param id{int?}
    * @param location{PlotterLocation}
    * @param color
    */
-  constructor(section, location, color) {
-    this.section = section
+  constructor(id, location, color) {
+    this.id = id
     this.location = location
     this.color = color
   }
@@ -101,6 +111,13 @@ class Mapper {
       this.doLine(loc0, loc1)
     }
 
+    //label start node
+    if (sections.length > 0) {
+      const { location } = sections[0]
+      this.ctx.font = "60px Arial";
+      this.ctx.fillStyle = "rgb(100, 255, 100)";
+      this.ctx.fillText("Start", location.x-65, location.y-30);
+    }
     //draw uncolored, then colored circles so colored ones appear on top
     // it is purely a coincidence hover works after observing style changes
     //draw blank circles
