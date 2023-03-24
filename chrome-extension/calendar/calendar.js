@@ -374,17 +374,18 @@ const scrapeASemester = async (sampleDateString="today") => {
   let institution = sampleWeek[0].institution
 
   let courseNums = []
-  for (let i = 0; i < sampleWeek.length; i++) {
-    if (!courseNums.includes(sampleWeek[i].courseNum)) {
-      courseNums.push(sampleWeek[i].courseNum)
+  for (let meeting of sampleWeek) {
+    if (!courseNums.includes(meeting.courseNum)) {
+      courseNums.push(meeting.courseNum)
     }
   }
 
   // 2. 
-  let coursesInfo = [] // list containing general class info for all the courses you're enrolled in
+  let coursesInfoPromises = [] // list containing general class info for all the courses you're enrolled in
   for (let courseNum of courseNums) {
-    coursesInfo.push(await generalClassInfo(term, courseNum, institution))
+    coursesInfoPromises.push(generalClassInfo(term, courseNum, institution))
   }
+  let coursesInfo = await Promise.all(coursesInfoPromises) // concurrency, yo!
 
   // 3: loop through week by week and do ...stuff
   startDate = endDate = coursesInfo[0].dateRange[0]
@@ -393,13 +394,14 @@ const scrapeASemester = async (sampleDateString="today") => {
 
   // for loop from startDate to endDate. step size is one week
   // `date` is a date lying in the week of interest
-  let weeks = []
+  let weeksPromises = []
   for (let date = new Date(startDate.getTime()); date <= endDate; date.setDate(date.getDate() + 7)) { // the reason we need to pad endDate
-    let currentWeekData = await weekToJSON(formatDate(date, "yyyy-mm-dd"))
+    let currentWeekData = weekToJSON(formatDate(date, "yyyy-mm-dd"))
     // now um somehow check for when a class should be happening, but isn't (e.g. break/holiday)
     // ??? think about this later
-    weeks.push(currentWeekData)
+    weeksPromises.push(currentWeekData)
   }
+  let weeks = await Promise.all(weeksPromises) // concurrency, yo!
 
   // soup up `coursesInfo` by pulling data out of `weeks`.
   let additionalMeetings = scraperSecondPass(weeks, coursesInfo)
