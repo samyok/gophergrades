@@ -331,8 +331,8 @@ const scraperSecondPass = (weeks, coursesInfo) => {
     for (let hash of thisWeekKeys) { // for meeting in week
       if (modelWeekHT[hash] == null) { // if this meeting doesn't appear in the model week
         console.log(`Additional meeting found! hash: ${hash}`)
-        console.log(`date: ${additionalMeeting.date}$`)
         additionalMeeting = thisWeekHT[hash]
+        console.log(`date: ${additionalMeeting.date}$`)
         additionalMeetings.push(additionalMeeting)
       }
     }
@@ -461,6 +461,16 @@ function formatDateWithTime(hour, min, date){
 }
 
 /**
+ * Formats datetime as YYYYMMDDTHHMMSS
+ * @param {Date} datetime
+ * @returns {string}
+ */
+function formatDatetime(datetime) {
+  return `${datetime.getUTCFullYear()}${pad(datetime.getUTCMonth()+1)}${pad(datetime.getUTCDate())}`
+         + `T${pad(datetime.getUTCHours())}${pad(datetime.getUTCMinutes())}${pad(datetime.getUTCSeconds())}`
+}
+
+/**
  * Gets start and end times for event (array of formatted strings)
  * Does a little bit of inference of the am/pm status of the first event
  * @param {string} timeRange // format: "hh:mm - hh:mm pm"
@@ -492,14 +502,38 @@ function getTimes(timeRange, date) {
  * @return {string} 
  */
 function createVEVENT(classEvent){ //create EVENT calendar lines
-let [startDate, endDate] = getTimes(classEvent.timeRange, classEvent.date)
-return `BEGIN:VEVENT
+  let [startDate, endDate] = getTimes(classEvent.timeRange, classEvent.date)
+  return `BEGIN:VEVENT
 DTSTART:${startDate}
 DTEND:${endDate}
 LOCATION:${classEvent.room}
 SUMMARY:${classEvent.courseName + " " +classEvent.meetingType}
+DTSTAMP:${formatDatetime(new Date())}
+UID:${createUniqueId(classEvent.term, classEvent.courseNum)}
 END:VEVENT
 `
+}
+
+/**
+ * Creates unique id for a calendar meeting (a repeating course or an additional meeting). 
+ * Ultimately needed to satisfy .ics spec
+ * @param {string} term 
+ * @param {string} courseNum 
+ */
+const createUniqueId = (term, courseNum) => {
+  const randomAlphanumeric = (length) => {
+    let result = '';
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+}
+
+  return `${term}-${courseNum}-${randomAlphanumeric(10)}@umn.lol`
 }
 
 /**
@@ -533,6 +567,8 @@ DTEND:${endDate}
   // Now add the rest of the info
   accum += `LOCATION: ${courseData.room}
 SUMMARY: ${courseData.courseName} ${courseData.meetingType}
+DTSTAMP:${formatDatetime(new Date())}
+UID:${createUniqueId(courseData.term, courseData.courseNum)}
 END:VEVENT
 `
 
@@ -556,7 +592,9 @@ const courseToExportJSON = (courseData) => {
     "rRule"   : `FREQ=WEEKLY;WKST=SU;UNTIL=${recurrenceEndDate};BYDAY=${daysOfWeekString}`,
     "exDates" : [], // to be populated just below
     "dtStart" : startDate,
-    "dtEnd"   : endDate
+    "dtEnd"   : endDate,
+    "dtStamp" : formatDatetime(new Date()),
+    "uID"     : createUniqueId(courseData.term, courseData.courseNum)
   }
 
   for (excludedDate of courseData.excludedDates) {
@@ -578,7 +616,9 @@ const meetingToExportJSON = (meeting) => {
   let [startDate, endDate] = getTimes(meeting.timeRange, meeting.firstDate)
   result.calendarStrings = {
     "dtStart" : startDate,
-    "dtEnd"   : endDate
+    "dtEnd"   : endDate,
+    "dtStamp" : formatDatetime(new Date()),
+    "uID"     : createUniqueId(meeting.term, meeting.courseNum)
   }
 
   return result
@@ -626,7 +666,7 @@ const dataToRecurringICS = (scrapedData) => {
   console.log("Composing ics file...")
   let outputString = `BEGIN:VCALENDAR
 PRODID:-//GopherGrades//Classes//EN
-VERSION:1.0
+VERSION:2.0
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 X-WR-CALNAME: Class Calendar
