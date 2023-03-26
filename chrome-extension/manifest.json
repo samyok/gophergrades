@@ -40,6 +40,9 @@
         "calendar/calendar.css"
       ],
       "js": [
+        "calendar/utils/date.js",
+        "calendar/utils/icsFile.js",
+        "calendar/utils/scraper.js",
         "calendar/calendar.js"
       ]
     }
