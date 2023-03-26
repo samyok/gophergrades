@@ -9,7 +9,7 @@ body, html {
     padding: 0;
     width: 480px;
     height: 580px;
-    background-image: url(../static/background-xs.png);
+    background-image: url(../../static/background-xs.png);
     background-size: cover;
     background-position-x: center;
     /*border: 1px solid black;*/
