@@ -61,18 +61,18 @@
   "action": {
     "default_title": "GopherGrades - View Options",
     "default_icon": {
-      "32": "icons/icon-32.png",
-      "72": "icons/icon-72.png",
-      "128": "icons/icon-128.png",
-      "512": "icons/icon-512.png"
+      "32": "static/icons/icon-32.png",
+      "72": "static/icons/icon-72.png",
+      "128": "static/icons/icon-128.png",
+      "512": "static/icons/icon-512.png"
     },
     "default_popup": "frontend/popup/popup.html"
   },
   "icons": {
-    "32": "icons/icon-32.png",
-    "72": "icons/icon-72.png",
-    "128": "icons/icon-128.png",
-    "512": "icons/icon-512.png"
+    "32": "static/icons/icon-32.png",
+    "72": "static/icons/icon-72.png",
+    "128": "static/icons/icon-128.png",
+    "512": "static/icons/icon-512.png"
   },
   "key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkOxEUP1//bcv7uFyqkhR\nNXe3UEr2sHUTqloW80+eL5ZMF7mHdl02mBtFcERL0n3vYw7e2MqUtrhPsg0ts8kf\nNg483sYdRDVocqIvoEbqKrI+KM56jChV/bl2oY0cZGlftHFemaJu3u8tWmOg4HwZ\ncR83mvddC8CZMYjULeGsDyH+nVGQ1JS/ZZbBqsNW5y7nb0i16/jtdG3CNCfNfdel\nd40YyaXstjI1USHvS5eJuhTcnKNwqqUucDCNMo9X7FxONUYRaqDx8FLt02/fQ+V0\nxTTddRuiZLrwmfocJyp01EoX92l0Gl9qnHgXExSWniZkZyX0cI9m/pe06cxjVKcQ\nCQIDAQAB\n-----END PUBLIC KEY-----",
   "oauth2": {
