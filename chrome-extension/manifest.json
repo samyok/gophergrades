@@ -58,6 +58,7 @@
     "identity",
     "identity.email"
   ],
+  "options_page": "frontend/popup/popup.html",
   "action": {
     "default_title": "GopherGrades - View Options",
     "default_icon": {
