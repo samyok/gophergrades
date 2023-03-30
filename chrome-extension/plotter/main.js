@@ -188,17 +188,17 @@ async function updateMap() {
   // canvas not loaded yet
   if (!canvas) return
 
-  let sections = getScheduleSections()
+  let schedule = getScheduleSections()
   //use only sections that have a valid location
-  sections = sections.filter(sec => sec.location)
+  schedule.sections = schedule.sections.filter(sec => sec.location)
   // todo use this to tell user what sections do not have classrooms yet
   // const invalidSections = sections.filter(loc => !loc.location)
-  const section_nbrs = sections.map(s => s.id)
+  const section_nbrs = schedule.sections.map(s => s.id)
   const term = Number(getTermStrm())
 
   // classes not loaded yet
   // there shouldn't be a case where the scheduler is loaded without sections
-  if (sections.length === 0) {
+  if (schedule.sections.length === 0) {
     log("no classes have assigned classrooms yet")
     return
   }
@@ -219,14 +219,16 @@ async function updateMap() {
   //sort by start time to plot schedule in order
   day_sections.sort((a, b) => a.startTime - b.startTime)
   //map back onto PlotterSections for the plotter to use
-  sections = day_sections.map(s => {
-    return sections.find(ps => ps.id === s.id)
+  const sections = day_sections.map(s => {
+    return schedule.sections.find(ps => ps.id === s.id)
   })
+  //maybe this object stuff is kinda gross, where should this parsing go
+  schedule.sections = sections
 
   // monitor changes and update map
   const ctx = canvas.getContext("2d")
   const mapper = new Mapper(ctx)
-  mapper.drawMap(sections)
+  mapper.drawMap(schedule)
 
   const dist = calculateDistances(sections)
   const distNode = document.querySelector("#gg-plotter-distance");
@@ -241,29 +243,31 @@ async function updateMap() {
  * scrapes locally available information about the current schedule's sections
  * (section number, location, color)
  *
- * @returns {PlotterSection[]} array of section objects with section, location,
+ * @returns {PlotterSchedule} array of section objects with section, location,
  * and color attributes
  */
 function getScheduleSections() {
   let currColor = null
-  const schedule = document.querySelector(
+  const scheduleBody = document.querySelector(
       "#schedule-courses > div > div > table > tbody");
-  const scheduleList = Array.from(schedule.children)
+  const scheduleList = Array.from(scheduleBody.children)
 
   let sections = []
+  let selected = null
 
   scheduleList.forEach(element => {
     const tds = element.children
+
     //class header
     if (tds.length === 3) {
       currColor = tds[0].style.backgroundColor
       return
     }
-    //todo: a way to implement section highlighting is reading the background
-    // color of the section (it turns blue) but you need a rule where if none
-    // of the sections are highlighted then they should all be colored in
+
     //section (id/location)
     let sectionNbr = tds[1]
+    //check this td for highlighting (could check any other than the first)
+    const highlighted = sectionNbr.classList.contains("info")
     if (sectionNbr) {
       sectionNbr = sectionNbr.firstElementChild.textContent.trim();
       try {
@@ -276,6 +280,10 @@ function getScheduleSections() {
       sectionNbr = null;
       debug("could not obtain section no. (very weird)")
     }
+    //this should only evaluate to true once, but shouldn't cause problems
+    // if this statement doesn't hold
+    if (highlighted) selected = sectionNbr;
+
     //location (excl. room no. (for now))
     //a section can have multiple locations for different meeting times
     let location = tds[4].firstElementChild.textContent.trim();
@@ -284,6 +292,8 @@ function getScheduleSections() {
     } else if (location === "Remote Class" || location === "Online Only") {
       debug("Remote Class detected don't acknowledge")
       //todo: acknowledge
+      // when it says remote class that means mandatory attendance which would
+      // be important to tell the user about whatever none of this matters
       location = undefined
     } else {
       const locationObject = locations.find(loc => loc.location === location);
@@ -294,11 +304,12 @@ function getScheduleSections() {
         location = locationObject
       }
     }
+
     const newSection = new PlotterSection(sectionNbr, location, currColor);
     sections.push(newSection)
   });
 
-  return sections
+  return new PlotterSchedule(sections, selected)
 }
 
 //load map image as an img tag
