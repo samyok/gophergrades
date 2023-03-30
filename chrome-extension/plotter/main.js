@@ -110,6 +110,7 @@ function toggleMap() {
  *    - (buttons obliterate entire main content view and replace it)
  */
 function createUI() {
+  debug("creating UI")
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const right = document.querySelector("#rightside");
 
@@ -134,6 +135,7 @@ function createUI() {
   }).join("")}
     </div>
     <div id="gg-plotter-distance">unknown</div>
+    <button id="gg-plotter-gmaps">View in Google Maps</button>
     <canvas id="gg-plotter-map" width="2304" height="1296" class="card"></canvas>
 </div>
   `
@@ -253,6 +255,13 @@ async function updateMap() {
   } else {
     distNode.textContent = "Distance: " + dist + " miles"
   }
+
+  const latLongs = pixelsToLatLong(sections);
+  const link = "https://www.google.com/maps/dir/" +
+      latLongs.map(c => c[0]+","+c[1]).join("/")
+
+  const gMapsNode = document.querySelector("#gg-plotter-gmaps")
+  gMapsNode.onclick = function() { window.open(link) }
 }
 
 /**

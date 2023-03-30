@@ -194,6 +194,36 @@ function calculateDistances(sections) {
 }
 
 /**
+ *
+ * @param sections{PlotterSection[]}
+ * @returns {[number, number][]}
+ */
+function pixelsToLatLong(sections) {
+  const anchor = {
+    px: { x: 306, y: 684 },
+    dg: { x: 44.9788553, y: -93.2375145 }
+  }
+  const a2 = {
+    px: { x: 1166, y: 1438 },
+    dg: { x: 44.9704473, y: -93.2273553 }
+  }
+  //degrees per pixel
+  const scale = {
+    x: (a2.dg.x-anchor.dg.x)/(a2.px.x-anchor.px.x),
+    y: (a2.dg.y-anchor.dg.y)/(a2.px.y-anchor.px.y)
+  }
+  // log(scale.x)
+  // log(scale.y)
+  return sections.map(section => {
+    //god why
+    const {x: y, y: x} = section.location
+    const lat = anchor.dg.x + (x - anchor.px.x)*scale.x
+    const long = anchor.dg.y + (y - anchor.px.y)*scale.y
+    return [lat, long];
+  })
+}
+
+/**
  * gets term from page's breadcrumb element and converts it to strm for use in API
  *
  * @returns {?string}
