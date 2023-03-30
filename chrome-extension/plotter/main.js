@@ -158,6 +158,22 @@ function createUI() {
       // await updateMap()
     }
   })
+  const mapDiv = document.createElement("div")
+  mapDiv.id = "gg-plotter-slippy"
+  mapDiv.style.aspectRatio = "auto 2304/1296";
+  right.appendChild(mapDiv)
+
+  const map = L.map('gg-plotter-slippy').setView([44.9742, -93.2326], 13);
+
+  // we should not be using openstreetmap in production as it is a free service
+  // that is funded by donations
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  L.marker([44.9742, -93.2326]).addTo(map)
+      .bindPopup('meme<br>memes')
+      .openPopup();
 }
 
 /**

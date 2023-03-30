@@ -28,9 +28,11 @@
         "https://*.schedulebuilder.umn.edu/*"
       ],
       "css": [
+        "plotter/leaflet/leaflet.css",
         "plotter/plotter.css"
       ],
       "js": [
+        "plotter/leaflet/leaflet.js",
         "plotter/apiapi.js",
         "plotter/util.js",
         "plotter/main.js"
