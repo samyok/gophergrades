@@ -47,6 +47,10 @@ const appendButton = () => {
   }
 };
 
+const openCalendarTab = async (data) => {
+  await chrome.runtime.sendMessage({ type: "openCalendarTab", data: data });
+};
+
 /**
  * Function that runs on button press
  */
@@ -56,8 +60,9 @@ const buttonBody = async () => {
 
   console.log("Beginning scrape and download..");
   let scrape = await scrapeASemester();
-  fileDownload(dataToRecurringICS(scrape));
+  // fileDownload(dataToRecurringICS(scrape));
   console.log(dataToExportJSON(scrape));
+  openCalendarTab(dataToExportJSON(scrape));
 
   // scrape = await scrapeASemester(formatDate(new Date(), "yyyy-mm-dd"))
   // console.log(scrape.coursesInfo)

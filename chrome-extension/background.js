@@ -6,3 +6,18 @@ chrome.omnibox.onInputEntered.addListener((text) => {
 chrome.action.onClicked.addListener((tab) => {
   chrome.tabs.create({ url: "https://schedulebuilder.umn.edu/" });
 });
+
+const RuntimeMessages = {
+  openCalendarTab: async (request) => {
+    await chrome.storage.sync.set({ cal: request.data });
+
+    await chrome.tabs.create({
+      url: chrome.runtime.getURL("frontend/gcal/add.html"),
+    });
+  },
+};
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  const { type } = request;
+  RuntimeMessages[type](request);
+});
