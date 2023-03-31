@@ -48,9 +48,8 @@ class PlotterLocation {
 }
 
 /**
- * object which contains the necessary data for the plotter to map out courses
- *
- * you pass an array of these objects to the mapper when drawing the map
+ * object which contains the necessary data for the plotter to map out a single
+ * section with id, location, and color information
  */
 class PlotterSection {
   /**
@@ -63,6 +62,24 @@ class PlotterSection {
     this.id = id
     this.location = location
     this.color = color
+  }
+}
+
+/**
+ * object which contains the necessary data for the plotter to map out a
+ * schedule
+ *
+ * you pass this object to the mapper when drawing the map
+ */
+class PlotterSchedule {
+  /**
+   *
+   * @param sections{PlotterSection[]}
+   * @param highlight{boolean?}
+   */
+  constructor(sections, highlight) {
+    this.sections = sections
+    this.highlight = highlight
   }
 }
 
@@ -99,15 +116,17 @@ class Mapper {
   /**
    * draws the map based on provided values
    *
-   * @param sections{PlotterSection[]} section objects
+   * @param schedule{PlotterSchedule}
    */
-  drawMap(sections) {
+  drawMap(schedule) {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     const imgTag = document.querySelector("#gg-map-image")
     this.ctx.drawImage(imgTag, 0, 0)
     const logoTag = document.querySelector("#gg-logo-image")
     this.ctx.drawImage(logoTag, 60, 400)
     this.ctx.lineWidth = 8
+
+    const { sections, highlight } = schedule
 
     //draw connecting lines between locations
     for (let i = 1; i < sections.length; i++) {
@@ -131,19 +150,34 @@ class Mapper {
       this.ctx.fillText("No Classes", 250, 800);
 
     }
+
     //draw uncolored, then colored circles so colored ones appear on top
-    // it is purely a coincidence hover works after observing style changes
-    //draw blank circles
-    sections.forEach(section => {
-      if (section.color === "rgb(221, 221, 221)")
-        this.doCircle(section);
-    });
-    //draw colored circles (in reverse so earlier classes show up on top)
-    sections.reverse()
-    sections.forEach(section => {
-      if (section.color !== "rgb(221, 221, 221)")
-        this.doCircle(section);
-    });
+    if (highlight) {
+      sections.forEach(section => {
+        if (section.id !== highlight)
+          //a section associated with the highlighted
+          // section will still have color
+          section.color = "rgb(221, 221, 221)"
+          this.doCircle(section);
+      });
+      const highlightedSection = sections.find(section => section.id === highlight)
+      if (highlightedSection) {
+        this.doCircle(highlightedSection)
+      } // else the section is probably just not in this day's schedule
+    } else {
+      //when no particular section is highlighted, a class (which groups sections)
+      // may be hovered, so still need to draw grayed nodes
+      //draw circles in reverse so earlier classes show up on top
+      sections.forEach(section => {
+        if (section.color === "rgb(221, 221, 221)")
+          this.doCircle(section);
+      });
+      sections.reverse()
+      sections.forEach(section => {
+        if (section.color !== "rgb(221, 221, 221)")
+          this.doCircle(section);
+      });
+    }
   }
 }
 
@@ -157,6 +191,36 @@ function calculateDistances(sections) {
   }
   //scale pixels to miles
   return dist / 144 * 500 / 5280
+}
+
+/**
+ *
+ * @param sections{PlotterSection[]}
+ * @returns {[number, number][]}
+ */
+function pixelsToLatLong(sections) {
+  const anchor = {
+    px: { x: 306, y: 684 },
+    dg: { x: 44.9788553, y: -93.2375145 }
+  }
+  const a2 = {
+    px: { x: 1166, y: 1438 },
+    dg: { x: 44.9704473, y: -93.2273553 }
+  }
+  //degrees per pixel
+  const scale = {
+    x: (a2.dg.x-anchor.dg.x)/(a2.px.x-anchor.px.x),
+    y: (a2.dg.y-anchor.dg.y)/(a2.px.y-anchor.px.y)
+  }
+  // log(scale.x)
+  // log(scale.y)
+  return sections.map(section => {
+    //god why
+    const {x: y, y: x} = section.location
+    const lat = anchor.dg.x + (x - anchor.px.x)*scale.x
+    const long = anchor.dg.y + (y - anchor.px.y)*scale.y
+    return [lat, long];
+  })
 }
 
 /**
@@ -281,6 +345,7 @@ const locations = function () {
     {location: "10 Church Street SE", x: 1000, y: 420},
     {location: "Health Sciences Education Cent", x: 1190, y: 1010},
     {location: "Civil Engineering Building", x: 1130, y: 582},
+    {location: "Phillips-Wangensteen Building", x: 1138, y: 976},
     //leave out for testing purposes (gracefully handle missing locations)
     // {location: "University Field House", x: 1166, y: 516}
   ];

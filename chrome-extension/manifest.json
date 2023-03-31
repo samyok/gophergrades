@@ -67,7 +67,8 @@
   "permissions": [
     "storage",
     "identity",
-    "identity.email"
+    "identity.email",
+    "tabs"
   ],
   "action": {
     "default_title": "GopherGrades - View Options",
