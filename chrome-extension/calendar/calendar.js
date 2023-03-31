@@ -82,6 +82,8 @@ const buttonBody = async () => {
   console.log(dataToExportJSON(scrape));
   openCalendarTab(dataToExportJSON(scrape));
 
+  loadingPage.remove();
+
 
   // scrape = await scrapeASemester(formatDate(new Date(), "yyyy-mm-dd"))
   // console.log(scrape.coursesInfo)

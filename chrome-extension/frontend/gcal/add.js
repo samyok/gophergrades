@@ -3,7 +3,7 @@
 // #############################################################
 // figure out the canonical/proper way to import these:
 // #############################################################
-// from calendar.js
+// from calendar.js (? maybe import from elsewhere?)
 /**
  * Turns template string into an actual html element
  * @param {string} html
@@ -16,80 +16,6 @@ const htmlToElement = (html) => {
   return template.content.firstChild;
 };
 
-// from date.js
-const MONTH_NAMES = ["December", "January", "February", "March", "April", "May", "June", 
-                    "July", "August", "September", "October", "November", "December"];
-
-/**
- * Formats Date object into date string using specified format
- * @param {Date} date
- * @param {string} format Options: "yyyymmdd", "yyyy-mm-dd", "yyyymmddhhmmss"
- * @returns {string} // yyyy-mm-dd
- *  */
-const formatDate = (date, format) => {
-  let year = date.getUTCFullYear(); // utc to remove annoying timezone shift
-  let month = date.getUTCMonth() + 1; // why is january 0????
-  let day = date.getUTCDate();
-  let hours = date.getUTCHours();
-  let mins = date.getUTCMinutes();
-  let secs = date.getUTCSeconds();
-
-  const pad = (input, width) => {
-    return ("0".repeat(width) + input).slice(-width);
-  };
-
-  if (format == "yyyy-mm-dd") {
-    return [year, pad(month, 2), pad(day, 2)].join("-");
-  } else if (format == "yyyymmdd") {
-    return [year, pad(month, 2), pad(day, 2)].join("");
-  } else if (format == "mm/dd/yyyy") {
-    return [pad(month, 2), pad(day, 2), year].join("/");
-  } else if (format == "yyyymmddhhmmss") {
-    return [
-      year,
-      pad(month, 2),
-      pad(day, 2),
-      pad(hours, 2),
-      pad(mins, 2),
-      pad(secs, 2),
-    ];
-  } else if (format == "Month dd, yyyy") {
-    return `${MONTH_NAMES[month]} ${day}, ${year}`;
-  } else {
-    throw new Error(
-      `formatDate() was passed unrecognized format string "${format}"`
-    );
-  }
-};
-
-/**
- * Util: turn array of 7 bools into string of days of week
- * @param {Array<boolean>} daysOfWeek index 0 is Sunday, index 6 is Saturday
- * @param {string} format "MO," or "Monday, " (encodes day names and delimiter)
- * @returns {string} format: "SU,TU,WE,FR,SA" for instance
- */
-let formatDaysOfWeek = (daysOfWeek, format) => {
-  let weekdayNames;
-  let delimiter;
-  if (format == "MO,") {
-    weekdayNames = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
-    delimiter = ",";
-  } else if (format == "Monday, ") { // there's gotta be a better way than this to support different formats
-    weekdayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    delimiter = ", ";
-  } else {
-    throw new Error(
-      `formatDaysOfWeek() was passed unrecognized format string "${format}"`
-    );
-  }
-  let includedDays = [];
-  for (d = 0; d < 7; d++) {
-    if (daysOfWeek[d]) {
-      includedDays.push(weekdayNames[d]);
-    }
-  }
-  return includedDays.join(delimiter);
-};
 
 // #######################
 // Again, should figure out how to import properly .__.
@@ -359,9 +285,9 @@ function getClasses(cal) {
 
 /**
  * Bundles together all the meetings for each class into li'l arrays, which themselves go in a dict
- * e.g. puts 2041 lecture together with 2041 lab
+ * e.g. bundles 2041 lecture together with 2041 lab
  * @param {Array<classObj>} classes 
- * @returns {Object<Array<classObj>} dict of "bundles"
+ * @returns {Object<Array<classObj>} dict of "bundle" lists
  */
 const unifyClasses = (classes) => {
   let bundles = {};
@@ -371,7 +297,7 @@ const unifyClasses = (classes) => {
     }
     bundles[meeting.courseName].push(meeting);
   });
-  return bundles; // future enhancement: order the bundles: display lecture first, then lab/discussoin
+  return bundles; // future enhancement: order the bundles: display lecture first, then lab/discussion
 }
 
 chrome.storage.sync.get(["cal"], (result) => {
@@ -389,7 +315,7 @@ chrome.storage.sync.get(["cal"], (result) => {
 });
 
 /**
- * Takes a bundle for a course, then makes the 
+ * Takes a bundle for a course, then returns a new card HTMLElement for that course
  * @param {Array<ClassObj>} bundle 
  * @returns {HTMLElement}
  */
@@ -397,20 +323,6 @@ const createCardElement = (bundle) => {
   const courseName = bundle[0].courseName;
   const cardId = courseName.replace(/\s/g, "-");
   const prettyName = bundle[0].prettyName;
-  // const {
-  //   courseName,
-  //   courseNum,
-  //   sectionID,
-  //   prettyName,
-  //   meetingType,
-  //   timeRange,
-  //   room,
-  //   daysOfWeek,
-  //   excludedDates,
-  //   dateRange,
-  //   firstDate,
-  //   calendarStrings,
-  // } = bundle[0];
 
   let htmlText = 
   `<div class="event card" style="--event-color: #ff887c" id="${cardId}-card">
