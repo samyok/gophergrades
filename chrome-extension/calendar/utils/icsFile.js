@@ -221,7 +221,7 @@ const courseToExportJSON = (courseData) => {
 const meetingToExportJSON = (meeting) => {
   let result = Object.assign({}, meeting); // shallow copy
 
-  let [startDate, endDate] = getTimes(meeting.timeRange, meeting.firstDate);
+  let [startDate, endDate] = getTimes(meeting.timeRange, meeting.date);
   result.calendarStrings = {
     dtStart: startDate,
     dtEnd: endDate,

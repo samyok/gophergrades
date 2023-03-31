@@ -2,7 +2,7 @@ console.log("calendar.js is loaded");
 
 const buttonTemplate = `<div id="gcal_btn_group">
 <button id = "gg_button">  </button>
-<button id = "gcal_button">Export to Google Calender</button>
+<button id = "gcal_button">Export to Google Calendar</button>
 <button id = "ics_button">.ics</button>
 </div>`;
 
@@ -58,8 +58,15 @@ const buttonBody = async () => {
   // console.log("Beginning scrape and download..")
   // fileDownload(createData(await scrapeASemester()))
 
+  let currentWeek = parseDate(
+                  document
+                  .querySelector(".myu_heading-nav")
+                  .querySelector("h2")
+                  .innerText.match(/\d{2}\/\d{2}\/\d{4}/)[0], 
+                  "mm/dd/yyyy");
+
   console.log("Beginning scrape and download..");
-  let scrape = await scrapeASemester();
+  let scrape = await scrapeASemester(formatDate(currentWeek, "yyyy-mm-dd"));
   // fileDownload(dataToRecurringICS(scrape));
   console.log(dataToExportJSON(scrape));
   openCalendarTab(dataToExportJSON(scrape));
