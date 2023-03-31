@@ -393,8 +393,9 @@ chrome.storage.sync.get(["cal"], (result) => {
  * @param {Array<ClassObj>} bundle 
  * @returns {HTMLElement}
  */
-const createCardElement = (bundle) => {
+const createCardElement = (bundle) => {  
   const courseName = bundle[0].courseName;
+  const cardId = courseName.replace(/\s/g, "-");
   const prettyName = bundle[0].prettyName;
   // const {
   //   courseName,
@@ -412,7 +413,7 @@ const createCardElement = (bundle) => {
   // } = bundle[0];
 
   let htmlText = 
-  `<div class="event card" style="--event-color: #ff887c">
+  `<div class="event card" style="--event-color: #ff887c" id="${cardId}-card">
     <div class="title">
         <h2 class="event-title">${courseName}: ${prettyName}</h2>
         <div class="color-switcher-container">
