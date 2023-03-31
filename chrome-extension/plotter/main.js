@@ -347,7 +347,7 @@ function loadMapImage() {
   const mapTag = htmlToElement(imageTemplate(mapURL, "gg-map-image"))
   document.body.appendChild(mapTag)
 
-  const logoURL = chrome.runtime.getURL('icons/icon-128.png')
+  const logoURL = chrome.runtime.getURL('static/icons/icon-128.png')
   const logoTag = htmlToElement(imageTemplate(logoURL, "gg-logo-image"))
   document.body.appendChild(logoTag)
 }
