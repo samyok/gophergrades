@@ -1,0 +1,50 @@
+.calendar_button{
+    background-color: #7A0019; /* Green */
+    color: #ffd65b;
+    padding: 12px 16px;
+    margin: 0 auto;
+    display: flex;
+    /*display used to be inline*/
+    font-size: 24px;
+    font-weight: 400;
+    /*margin: 4px 2px*/
+    cursor: pointer;
+}
+
+#gcal_btn_group{
+    padding: 12px 16px;
+    font-size: 18px;
+    display: flex;
+    vertical-align: middle;
+    justify-content: center;
+    height: 54px;
+
+}
+
+#gg_button{
+    background-color: #7A0019;
+    /*sets borders to be only on certain sides*/
+    border: 1px #000;
+    border-style: solid none solid solid;
+
+    background-image: url('https://umn.lol/images/icon-sm.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 30px;
+
+}
+
+#gcal_button{
+    background-color: #7A0019; /* Green */
+    border: 1px #000;
+    border-style: solid none solid none;
+    color: #ffd65b;
+
+}
+
+#ics_button{
+    background-color: #ffd65b; /* Green */
+    border: 1px #000;
+    border-style: solid solid solid solid;
+    color: #7A0019;
+}

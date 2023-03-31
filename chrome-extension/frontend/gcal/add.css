@@ -1,0 +1,113 @@
+.event-container {
+  display: inline-block;
+  --event-color: white;
+}
+
+.events {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+}
+
+.event {
+  background-color: var(--event-color);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: var(--event-color) 0px 0px 8px;
+}
+
+.event h2 {
+  font-weight: 400;
+  color: white;
+  text-shadow: rgba(91, 0, 19, 0.2) 0px 0px 10px;
+}
+
+.event p {
+  font-family: "Inter", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  color: white;
+  margin: 2px 0;
+  text-shadow: rgba(91, 0, 19, 0.4) 0px 0px 5px;
+  letter-spacing: -0.03em;
+}
+
+.event .title {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.event .title h2 {
+  margin: 0;
+}
+
+.color-switcher-container {
+  position: relative;
+}
+
+.color-switcher {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 10px;
+  background: white;
+  cursor: pointer;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  height: 30px;
+}
+
+.color-switcher:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.current-color {
+  margin-right: 9px;
+}
+
+
+.color {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+}
+
+.color-picker {
+  display: none;
+}
+
+.color-switcher:focus + .color-picker {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: absolute;
+  top: 31px;
+  right: 0;
+  background: white;
+  border-radius: 5px;
+  z-index: 1;
+  width: 300%;
+  /*box-shadow: var(--event-color) 1px 0 4px;*/
+  outline: var(--event-color) 1px solid;
+  padding: 5px;
+}
+
+.color-picker .color {
+  margin: 5px;
+  cursor: pointer;
+}
+
+/* Creates a downward pointing triangle */
+.arrow {
+  border: solid #2f2f2f;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 2px;
+}
+
+.down {
+  transform: rotate(45deg);
+}
