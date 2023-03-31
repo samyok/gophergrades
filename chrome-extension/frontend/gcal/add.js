@@ -1,5 +1,101 @@
 /* global rrule */
 
+// #############################################################
+// figure out the canonical/proper way to import these:
+// #############################################################
+// from calendar.js
+/**
+ * Turns template string into an actual html element
+ * @param {string} html
+ * @returns {HTMLElement}
+ */
+const htmlToElement = (html) => {
+  const template = document.createElement("template");
+  html = html.trim(); // Never return a text node of whitespace as the result
+  template.innerHTML = html;
+  return template.content.firstChild;
+};
+
+// from date.js
+const MONTH_NAMES = ["December", "January", "February", "March", "April", "May", "June", 
+                    "July", "August", "September", "October", "November", "December"];
+
+/**
+ * Formats Date object into date string using specified format
+ * @param {Date} date
+ * @param {string} format Options: "yyyymmdd", "yyyy-mm-dd", "yyyymmddhhmmss"
+ * @returns {string} // yyyy-mm-dd
+ *  */
+const formatDate = (date, format) => {
+  let year = date.getUTCFullYear(); // utc to remove annoying timezone shift
+  let month = date.getUTCMonth() + 1; // why is january 0????
+  let day = date.getUTCDate();
+  let hours = date.getUTCHours();
+  let mins = date.getUTCMinutes();
+  let secs = date.getUTCSeconds();
+
+  const pad = (input, width) => {
+    return ("0".repeat(width) + input).slice(-width);
+  };
+
+  if (format == "yyyy-mm-dd") {
+    return [year, pad(month, 2), pad(day, 2)].join("-");
+  } else if (format == "yyyymmdd") {
+    return [year, pad(month, 2), pad(day, 2)].join("");
+  } else if (format == "mm/dd/yyyy") {
+    return [pad(month, 2), pad(day, 2), year].join("/");
+  } else if (format == "yyyymmddhhmmss") {
+    return [
+      year,
+      pad(month, 2),
+      pad(day, 2),
+      pad(hours, 2),
+      pad(mins, 2),
+      pad(secs, 2),
+    ];
+  } else if (format == "Month dd, yyyy") {
+    return `${MONTH_NAMES[month]} ${day}, ${year}`;
+  } else {
+    throw new Error(
+      `formatDate() was passed unrecognized format string "${format}"`
+    );
+  }
+};
+
+/**
+ * Util: turn array of 7 bools into string of days of week
+ * @param {Array<boolean>} daysOfWeek index 0 is Sunday, index 6 is Saturday
+ * @param {string} format "MO," or "Monday, " (encodes day names and delimiter)
+ * @returns {string} format: "SU,TU,WE,FR,SA" for instance
+ */
+let formatDaysOfWeek = (daysOfWeek, format) => {
+  let weekdayNames;
+  let delimiter;
+  if (format == "MO,") {
+    weekdayNames = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+    delimiter = ",";
+  } else if (format == "Monday, ") { // there's gotta be a better way than this to support different formats
+    weekdayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    delimiter = ", ";
+  } else {
+    throw new Error(
+      `formatDaysOfWeek() was passed unrecognized format string "${format}"`
+    );
+  }
+  let includedDays = [];
+  for (d = 0; d < 7; d++) {
+    if (daysOfWeek[d]) {
+      includedDays.push(weekdayNames[d]);
+    }
+  }
+  return includedDays.join(delimiter);
+};
+
+// #######################
+// Again, should figure out how to import properly .__.
+// #######################
+
+
 const sample_data = {
   cal: {
     additionalMeetings: [],
@@ -261,9 +357,106 @@ function getClasses(cal) {
   return classes;
 }
 
+/**
+ * Bundles together all the meetings for each class into li'l arrays, which themselves go in a dict
+ * e.g. puts 2041 lecture together with 2041 lab
+ * @param {Array<classObj>} classes 
+ * @returns {Object<Array<classObj>} dict of "bundles"
+ */
+const unifyClasses = (classes) => {
+  let bundles = {};
+  classes.forEach((meeting) => {
+    if (bundles[meeting.courseName] == null) {
+      bundles[meeting.courseName] = [];
+    }
+    bundles[meeting.courseName].push(meeting);
+  });
+  return bundles; // future enhancement: order the bundles: display lecture first, then lab/discussoin
+}
+
 chrome.storage.sync.get(["cal"], (result) => {
   const { cal } = result;
   console.log(cal);
 
+  // add cards for each class
+  const classes = getClasses(cal.courses);
+  const bundles = unifyClasses(classes);
+  Object.keys(bundles).forEach((courseNum) => { // each bundle is one course, e.g. CSCI 2021 (lecture and lab)
+    addCard(bundles[courseNum]);
+  });
+  
   rrule;
 });
+
+/**
+ * Takes a bundle for a course, then makes the 
+ * @param {Array<ClassObj>} bundle 
+ * @returns {HTMLElement}
+ */
+const createCardElement = (bundle) => {
+  const courseName = bundle[0].courseName;
+  const prettyName = bundle[0].prettyName;
+  // const {
+  //   courseName,
+  //   courseNum,
+  //   sectionID,
+  //   prettyName,
+  //   meetingType,
+  //   timeRange,
+  //   room,
+  //   daysOfWeek,
+  //   excludedDates,
+  //   dateRange,
+  //   firstDate,
+  //   calendarStrings,
+  // } = bundle[0];
+
+  let htmlText = 
+  `<div class="event card" style="--event-color: #ff887c">
+    <div class="title">
+        <h2 class="event-title">${courseName}: ${prettyName}</h2>
+        <div class="color-switcher-container">
+            <button class="color-switcher">
+                <div class="color current-color" style="background-color: #ff887c"></div>
+                <div class="arrow down"></div>
+            </button>
+            <div class="color-picker">
+                <div class="color" style="background-color: #ff0000"></div>
+                <div class="color" style="background-color: #ff7f00"></div>
+                <div class="color" style="background-color: #ffff00"></div>
+                <div class="color" style="background-color: #00ff00"></div>
+                <div class="color" style="background-color: #0000ff"></div>
+                <div class="color" style="background-color: #4b0082"></div>
+                <div class="color" style="background-color: #9400d3"></div>
+            </div>
+        </div>
+    </div>`
+
+    // add in details for lecture AND lab/discussion if applicable (using the bundle)
+    // Q: would it be neater/cleaner to create a template html element, then *insert* the relevant custom things into it 
+    // using `.appendChild()` and stuff? Or is this "directly edit the html text" method okay?
+    bundle.forEach((meeting) => {
+      let prettyDaysOfWeek = formatDaysOfWeek(meeting.daysOfWeek, "Monday, ");
+      let prettyEndDate = formatDate(new Date(meeting.dateRange[1]), "Month dd, yyyy");
+      htmlText += `\n<p class="event-time">${meeting.meetingType}: ${meeting.timeRange} \
+      every week on ${prettyDaysOfWeek} until ${prettyEndDate} in ${meeting.room}</p>`
+    }); 
+  htmlText += `\n</div>` 
+
+  return htmlToElement(htmlText)
+};
+
+/**
+ * 
+ * @param {Object} bundle 
+ */
+const addCard = (bundle) => {
+  const parentDiv = document.querySelector(".events");
+  const newCard = createCardElement(bundle);
+  parentDiv.appendChild(newCard);
+};
+
+// const  = ()
+// let c = getClasses(sample_data.cal.courses);
+// let bundles = unifyClasses(c);
+// addCard(bundles["STAT 3021"]);

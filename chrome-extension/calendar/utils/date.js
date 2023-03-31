@@ -1,3 +1,6 @@
+const MONTH_NAMES = ["December", "January", "February", "March", "April", "May", "June", 
+                    "July", "August", "September", "October", "November", "December"];
+
 /**
  * Parses date string into Date object using specified format
  * @param {string} dateString
@@ -67,6 +70,8 @@ const formatDate = (date, format) => {
       pad(mins, 2),
       pad(secs, 2),
     ];
+  } else if (format == "Month dd, yyyy") {
+    return `${MONTH_NAMES[month]} ${day}, ${year}`;
   } else {
     throw new Error(
       `formatDate() was passed unrecognized format string "${format}"`
@@ -98,15 +103,28 @@ const daysOfWeekToArray = (daysOfWeekString) => {
 /**
  * Util: turn array of 7 bools into string of days of week
  * @param {Array<boolean>} daysOfWeek index 0 is Sunday, index 6 is Saturday
+ * @param {string} format "MO," or "Monday, " (encodes day names and delimiter)
  * @returns {string} format: "SU,TU,WE,FR,SA" for instance
  */
-let formatDaysOfWeek = (daysOfWeek) => {
-  let weekdayNames = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+let formatDaysOfWeek = (daysOfWeek, format) => {
+  let weekdayNames;
+  let delimiter;
+  if (format == "MO,") {
+    weekdayNames = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+    delimiter = ",";
+  } else if (format == "Monday, ") { // there's gotta be a better way than this to support different formats
+    weekdayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    delimiter = ", ";
+  } else {
+    throw new Error(
+      `formatDaysOfWeek() was passed unrecognized format string "${format}"`
+    );
+  }
   let includedDays = [];
   for (d = 0; d < 7; d++) {
     if (daysOfWeek[d]) {
       includedDays.push(weekdayNames[d]);
     }
   }
-  return includedDays.join(",");
+  return includedDays.join(delimiter);
 };
