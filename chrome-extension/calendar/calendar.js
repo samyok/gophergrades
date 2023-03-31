@@ -6,6 +6,9 @@ const buttonTemplate = `<div id="gcal_btn_group">
 <button id = "ics_button">.ics</button>
 </div>`;
 
+const loadingPageTemplate = `<div id="cover-spin"></div>`;
+
+
 /**
  * Turns template string into an actual html element
  * @param {string} html
@@ -55,9 +58,17 @@ const openCalendarTab = async (data) => {
  * Function that runs on button press
  */
 const buttonBody = async () => {
-  // console.log("Beginning scrape and download..")
-  // fileDownload(createData(await scrapeASemester()))
+  
+  const calendarDiv = document.getElementsByClassName(
+    "myu_btn-group col-lg-12"
+    )[0];
 
+  const parentDiv = document.getElementsByClassName("row")[4];
+  const loadingPage = htmlToElement(loadingPageTemplate);
+  parentDiv.insertBefore(loadingPage, calendarDiv.nextSibling);
+    
+    // console.log("Beginning scrape and download..")
+    // fileDownload(createData(await scrapeASemester()))
   let currentWeek = parseDate(
                   document
                   .querySelector(".myu_heading-nav")
@@ -69,7 +80,10 @@ const buttonBody = async () => {
   let scrape = await scrapeASemester(formatDate(currentWeek, "yyyy-mm-dd"));
   // fileDownload(dataToRecurringICS(scrape));
   console.log(dataToExportJSON(scrape));
-  openCalendarTab(dataToExportJSON(scrape));
+  // openCalendarTab(dataToExportJSON(scrape));
+
+  parentDiv.remove(loadingPage);
+
 
   // scrape = await scrapeASemester(formatDate(new Date(), "yyyy-mm-dd"))
   // console.log(scrape.coursesInfo)
