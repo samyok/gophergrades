@@ -80,9 +80,7 @@ const buttonBody = async () => {
   let scrape = await scrapeASemester(formatDate(currentWeek, "yyyy-mm-dd"));
   // fileDownload(dataToRecurringICS(scrape));
   console.log(dataToExportJSON(scrape));
-  // openCalendarTab(dataToExportJSON(scrape));
-
-  parentDiv.remove(loadingPage);
+  openCalendarTab(dataToExportJSON(scrape));
 
 
   // scrape = await scrapeASemester(formatDate(new Date(), "yyyy-mm-dd"))
