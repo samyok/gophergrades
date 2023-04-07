@@ -49,7 +49,7 @@ const htmlToElement = (html) => {
 
 const iframeTemplate = `
 <div class="gopher-grades-container">
-<iframe class="gopher-grades-result-iframe"></iframe>
+<iframe class="gopher-grades-result-iframe" referrerpolicy="unsafe-url"></iframe>
 </div>
 `;
 
