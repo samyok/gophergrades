@@ -6,8 +6,8 @@ const buttonTemplate = `<div id="gcal_btn_group">
 <button id = "ics_button">.ics</button>
 </div>`;
 
-const loadingPageTemplate = `<div id="cover-spin"></div>`;
-
+const loadingPageTemplate = `<div id="cover-spin">
+<img src='https://umn.lol/images/icon.png' width='800' height='800' /></div>`
 
 /**
  * Turns template string into an actual html element
