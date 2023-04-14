@@ -122,7 +122,7 @@ const ContributorGroup = () => {
         ))}
       </Wrap>
 
-      <Wrap justify={"center"} pb={4} maxWidth={850}>
+      <Wrap justify={"center"} pb={4}>
         {contributors.map((c) => (
           <GithubAvatar
             key={c.login}
