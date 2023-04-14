@@ -193,7 +193,7 @@ export const Footer = () => {
             "https://cla.umn.edu/undergraduate-students/cla-community/student-organizations/cla-student-board"
           }
         >
-          Data from Fall 2022 to Summer 2023 provided by CLA Student Board.
+          Funded by the CLA Student Board for 2023-2024.
         </LinkButton>
       </VStack>
     </Box>
