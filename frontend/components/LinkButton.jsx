@@ -5,7 +5,7 @@ const LinkButton = ({ children, ...props }) => (
     variant={"link"}
     as={"a"}
     fontSize={"sm"}
-    fontWeight={400}
+    fontWeight={500}
     color={"gray.700"}
     whiteSpace={"break-spaces"}
     textAlign={"center"}
