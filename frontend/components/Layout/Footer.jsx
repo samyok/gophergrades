@@ -191,9 +191,11 @@ export const Footer = () => {
           color={"gray.500"}
           fontWeight={"300"}
           target={"_blank"}
-          href={"https://gophergrades.com"}
+          href={
+            "https://cla.umn.edu/undergraduate-students/cla-community/student-organizations/cla-student-board"
+          }
         >
-          Inspired by the original Gopher Grades project
+          Data from Fall 2022 to Summer 2023 provided by CLA Student Board.
         </LinkButton>
       </VStack>
     </Box>
