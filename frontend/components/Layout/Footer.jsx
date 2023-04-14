@@ -17,6 +17,7 @@ import React, { useEffect, useState } from "react";
 import { FaGithub, FaHome, FaLinkedinIn } from "react-icons/fa";
 import LinkButton from "../LinkButton";
 import { footerOverrides } from "../../lib/config";
+import trackEvent from "../../lib/track";
 
 const getContributors = async () => {
   return fetch("/api/contributors").then((r) => r.json());
@@ -73,10 +74,9 @@ const ContributorGroup = () => {
                     href={c.linkedin}
                     target={"_blank"}
                     onClick={() => {
-                      window?.umami?.trackEvent(
-                        `button.${c.login}.linkedin.click`,
-                        { type: "footer" }
-                      );
+                      trackEvent(`button.${c.login}.linkedin.click`, {
+                        type: "footer",
+                      });
                     }}
                     as={"a"}
                     size={"sm"}
@@ -89,10 +89,9 @@ const ContributorGroup = () => {
                     href={c.website}
                     target={"_blank"}
                     onClick={() => {
-                      window?.umami?.trackEvent(
-                        `button.${c.login}.website.click`,
-                        { type: "footer" }
-                      );
+                      trackEvent(`button.${c.login}.website.click`, {
+                        type: "footer",
+                      });
                     }}
                     as={"a"}
                     size={"sm"}
@@ -105,10 +104,9 @@ const ContributorGroup = () => {
                     href={c.github}
                     target={"_blank"}
                     onClick={() => {
-                      window?.umami?.trackEvent(
-                        `button.${c.login}.github.click`,
-                        { type: "footer" }
-                      );
+                      trackEvent(`button.${c.login}.github.click`, {
+                        type: "footer",
+                      });
                     }}
                     as={"a"}
                     size={"sm"}
@@ -131,7 +129,7 @@ const ContributorGroup = () => {
             href={c.html_url}
             as={"a"}
             onClick={() => {
-              window?.umami?.trackEvent(`avatar.${c.login}.click`, {
+              trackEvent(`avatar.${c.login}.click`, {
                 type: "footer",
               });
             }}
@@ -151,7 +149,7 @@ const ContributorGroup = () => {
         as={"a"}
         target={"_blank"}
         onClick={() => {
-          window?.umami?.trackEvent(`button.github_contribute.click`, {
+          trackEvent(`button.github_contribute.click`, {
             type: "footer",
           });
         }}
