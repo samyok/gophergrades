@@ -36,6 +36,8 @@ const htmlToElement = (html) => {
  * @property {string} calendarStrings
  */
 
+let bundles = {},
+  bundleColors = {};
 /**
  * Bundles together all the meetings for each class into lil arrays, which themselves go in a dict
  * e.g. bundles 2041 lecture together with 2041 lab
@@ -59,19 +61,30 @@ chrome.storage.sync.get(["cal"], (result) => {
 
   // add cards for each class
   const classes = cal.courses;
-  const bundles = unifyClasses(classes);
+  bundles = unifyClasses(classes);
   Object.keys(bundles).forEach((courseNum) => {
     // each bundle is one course, e.g. CSCI 2021 (lecture and lab)
-    addCard(bundles[courseNum]);
+    addCard(bundles[courseNum], courseNum);
   });
 });
+
+const colorPicker = (courseNum) =>
+  colors.event
+    .map(
+      (color, index) =>
+        `<button class="color" data-color-id="${index}" style="background-color: ${color.background}"></button>`
+    )
+    .join("");
+
+let currentColor = 1;
 
 /**
  * Takes a bundle for a course, then returns a new card HTMLElement for that course
  * @param {Array<classObj>} bundle
+ * @param {string} courseNum
  * @returns {ChildNode}
  */
-const createCardElement = (bundle) => {
+const createCardElement = (bundle, courseNum) => {
   const courseName = bundle[0].courseName;
   const cardId = courseName.replace(/\s/g, "-");
   const prettyName = bundle[0].prettyName;
@@ -84,43 +97,178 @@ const createCardElement = (bundle) => {
         rrule.RRule.parseString(meeting.calendarStrings.rRule)
       );
 
-      return `<p class="event-time">${meeting.meetingType}: ${
+      return `<p class="event-time"><b style="font-weight: 500">${
+        meeting.meetingType
+      }</b>: ${
         meeting.timeRange
-      } ${rr.toText()} in <b style="font-weight: 500">${meeting.room}</b></p>`;
+      } ${rr.toText()} in <b style="font-weight: 400">${meeting.room}</b></p>`;
     })
     .join("");
+  const colorId = currentColor++ % colors.event.length;
+  const color = colors.event[colorId];
+  bundleColors[courseNum] = colorId;
 
+  // convert the html string into an actual html element
   let htmlText = `
-<div class="event card" style="--event-color: #ff887c" id="${cardId}-card">
-    <div class="title">
-        <h2 class="event-title">${courseName}: ${prettyName}</h2>
-        <div class="color-switcher-container">
-            <button class="color-switcher">
-                <div class="color current-color" style="background-color: #ff887c"></div>
-                <div class="arrow down"></div>
-            </button>
-            <div class="color-picker">
-                <div class="color" style="background-color: #ff0000"></div>
-                <div class="color" style="background-color: #ff7f00"></div>
-                <div class="color" style="background-color: #ffff00"></div>
-                <div class="color" style="background-color: #00ff00"></div>
-                <div class="color" style="background-color: #0000ff"></div>
-                <div class="color" style="background-color: #4b0082"></div>
-                <div class="color" style="background-color: #9400d3"></div>
+    <div class="event card" style="--event-color: ${
+      color.background
+    }" id="${cardId}-card">
+        <div class="title">
+            <h2 class="event-title">${courseName}: ${prettyName}</h2>
+            <div class="color-switcher-container">
+                <button class="color-switcher">
+                    <div class="color current-color"></div>
+                    <div class="arrow down"></div>
+                </button>
+                <div class="color-picker">
+                    ${colorPicker(courseNum)}
+                </div>
             </div>
         </div>
-    </div>
-    ${infoSection}
-</div>`;
-  return htmlToElement(htmlText);
+        ${infoSection}
+    </div>`;
+  const el = htmlToElement(htmlText);
+  // add event listeners to the color picker
+  el.querySelectorAll(".color").forEach((colorEl) => {
+    colorEl.addEventListener("click", (e) => {
+      const colorId = e.target.getAttribute("data-color-id") || 0;
+      const card = document.getElementById(`${cardId}-card`);
+      card.style.setProperty("--event-color", colors.event[colorId].background);
+      bundleColors[courseNum] = colorId;
+    });
+  });
+  return el;
 };
 
 /**
  *
  * @param {Object} bundle
+ * @param {string} courseNum
  */
-const addCard = (bundle) => {
+const addCard = (bundle, courseNum) => {
   const parentDiv = document.querySelector(".events");
-  const newCard = createCardElement(bundle);
+  const newCard = createCardElement(bundle, courseNum);
   parentDiv.appendChild(newCard);
 };
+
+const getCalendarToken = () => {
+  return new Promise((resolve, reject) => {
+    chrome.identity.getAuthToken({ interactive: true }, (token) => {
+      if (token) resolve(token);
+      else reject();
+    });
+  });
+};
+
+const googleApi = async (url, token, body, method = "POST") => {
+  // return {};
+  const res = await fetch(url, {
+    method: method,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  }).then((r) => r.json());
+  if (res.error) console.error(res.error);
+  return res;
+};
+
+document.querySelector("#add").addEventListener("click", async (e) => {
+  const token = await getCalendarToken();
+  console.log(bundles, bundleColors);
+  document.querySelector("#initial-screen").classList.add("hidden");
+  document.querySelector("#loading-screen").classList.remove("hidden");
+  const setLoadingMessage = (message) => {
+    document.querySelector("#loading-screen .subtitle").innerHTML = message;
+  };
+
+  setLoadingMessage("Creating calendar...");
+
+  const createdCalendar = await googleApi(
+    "https://www.googleapis.com/calendar/v3/calendars",
+    token,
+    {
+      summary: "UMN.LOL Schedule",
+    }
+  );
+
+  setLoadingMessage("Adding calendar to calendar list...");
+  console.log(createdCalendar);
+
+  // add calendar to calendarList
+  await googleApi(
+    `https://www.googleapis.com/calendar/v3/users/me/calendarList`,
+    token,
+    {
+      id: createdCalendar.id,
+      colorId: "6", // color id of the calendar, it is 6 for now -- we could let them pick from colors.calendar.
+      selected: true,
+    }
+  );
+  console.log("added calendar to calendar list");
+  setLoadingMessage("Adding events to calendar...");
+
+  // add events to calendar
+  const classes = Object.keys(bundles);
+  for (let i = 0; i < classes.length; i++) {
+    const courseNum = classes[i];
+    const bundle = bundles[courseNum];
+    const colorId = bundleColors[courseNum];
+    const color = colors.event[colorId];
+    const courseName = bundle[0].courseName;
+    const prettyName = bundle[0].prettyName;
+    const cardId = courseName.replace(/\s/g, "-");
+
+    // add in details for lecture AND lab/discussion if applicable (using the bundle)
+    const events = bundle.filter((meeting) => meeting.calendarStrings.rRule);
+
+    for (let j = 0; j < events.length; j++) {
+      setLoadingMessage(
+        `Adding classes to calendar... (${i + 1}/${classes.length})`
+      );
+      const exDate = events[j].calendarStrings.exDates.join(",");
+      const recurrences = [
+        `RRULE:${events[j].calendarStrings.rRule.replace(
+          /([0-9]{8}T[0-9]{6})([^Z])/,
+          "$1Z$2"
+        )}`,
+      ];
+      // if (exDate) {
+      //   recurrences.push(
+      //     `EXDATE;TZID=America/Chicago:${exDate.replaceAll("Z", "")}`
+      //   );
+      // }
+      const event = {
+        start: {
+          dateTime: rrToDate(events[j].calendarStrings.dtStart)
+            .toISOString()
+            .replace("Z", ""),
+          timeZone: "America/Chicago",
+        },
+        end: {
+          dateTime: rrToDate(events[j].calendarStrings.dtEnd)
+            .toISOString()
+            .replace("Z", ""),
+          timeZone: "America/Chicago",
+        },
+        summary: `${courseName}: ${prettyName}`,
+        description: `<p><b style="font-weight: 500">${events[j].meetingType}</b>: ${events[j].timeRange} in <b style="font-weight: 400">${events[j].room}</b></p>`,
+        colorId: (colorId + 1).toString(),
+        recurrence: recurrences,
+        location: events[j].room,
+      };
+
+      console.log(event);
+      // add event to calendar
+      const res = await googleApi(
+        `https://www.googleapis.com/calendar/v3/calendars/${createdCalendar.id}/events`,
+        token,
+        event
+      );
+      console.log(res);
+    }
+  }
+  setLoadingMessage("Done!");
+  location.href = "https://calendar.google.com/calendar/";
+});
