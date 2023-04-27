@@ -150,3 +150,17 @@ let formatDaysOfWeek = (daysOfWeek, format) => {
   }
   return includedDays.join(delimiter);
 };
+
+const rrToDate = (dateString) => {
+  // 20230118T143000
+  // to
+  // 2023-01-18T14:30:00
+
+  let year = dateString.slice(0, 4);
+  let month = dateString.slice(4, 6);
+  let day = dateString.slice(6, 8);
+  let hour = dateString.slice(9, 11);
+  let min = dateString.slice(11, 13);
+  let sec = dateString.slice(13, 15);
+  return new Date(Date.UTC(year, month - 1, day, hour, min, sec));
+};
