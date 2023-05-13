@@ -17,7 +17,7 @@ def fetch_unknown_prof(x:pd.DataFrame) -> pd.DataFrame:
 
     :param x: The grouping of Term, Class Name, and Section
     :type x: pd.DataFrame
-    :return: A new same sized dataframe with updated professor name, "Unknown Professor", or no change.
+    :return: A new same sized dataframe with updated professor name, "Unknown Instructor", or no change.
     :rtype: pd.DataFrame
     """
     if not x["HR_NAME"].isnull().all():
@@ -31,7 +31,7 @@ def fetch_unknown_prof(x:pd.DataFrame) -> pd.DataFrame:
     term = str(x["TERM"].iloc[0])
     section = x["CLASS_SECTION"].iloc[0]
     level=catalog_nbr[0]
-    professor="Unknown Professor"
+    professor="Unknown Instructor"
 
     link="http://classinfo.umn.edu/?term="+term+"&subject="+dept+"&json=1"
     classLink=f"http://classinfo.umn.edu/?term={term}&subject={dept}&level={level}"
@@ -81,7 +81,7 @@ def fetch_unknown_prof(x:pd.DataFrame) -> pd.DataFrame:
                 problem="Auto enroll key may be incorrect"
             f.write(classLink+"\t"+key+" "+problem+'\n')
 
-    if not x["HR_NAME"].isnull().all() and professor != "Unknown Professor":
+    if not x["HR_NAME"].isnull().all() and professor != "Unknown Instructor":
         # print(f"{dept} {catalog_nbr} section {section} taught on term {term} which is a level {catalog_nbr[0]} class and was taught by {professor}.")
         x["HR_NAME"] = professor
         return x
@@ -101,7 +101,7 @@ def format_name(x: str):
     :return: A parsed string that is formated with a First and Last name.
     :rtype: _type_
     """
-    if not x == "Unknown Professor":
+    if not x == "Unknown Instructor":
         name = HumanName(x)
         name.string_format = "{first} {last}"
         retVal = str(name)
@@ -154,7 +154,7 @@ df = df[~(df["CRSE_GRADE_OFF"] == "NR")]
 # del df["TERM_DESCR"]
 # Write class name as the proper full name that students are accustomed to.
 df["FULL_NAME"] = df["SUBJECT"] + ' ' + df["CATALOG_NBR"]
-# Replace unknown professor values with either a correct name or "Unknown Professor"
+# Replace unknown professor values with either a correct name or "Unknown Instructor"
 df["CLASS_SECTION"] = df["CLASS_SECTION"].apply(lambda x: x.zfill(3))
 df = df.groupby(["TERM","FULL_NAME","CLASS_SECTION"],group_keys=False).apply(fetch_unknown_prof)
 df["HR_NAME"] = df["HR_NAME"].apply(format_name)
