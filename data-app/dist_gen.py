@@ -14,7 +14,7 @@ from sqlalchemy import and_
     This file handles post-processing the cleaned data and feature engineering. Run this once you've
     properly cleaned and combined the old and new data. Keep in mind that you'll need to update the constants below.
     It is in this file where we associate classes with their libeds, their onestop, and their credits. Additionally,
-    we also associate professors with their RMP score should it be found. Lastly, this is also where we will utilize
+    we also associate instructors with their RMP score should it be found. Lastly, this is also where we will utilize
     the SRT data to gain more information about classes.
 """
 
@@ -28,8 +28,8 @@ TERMS = [1235 ,1233, 1229, 1225, 1223]
 
 def process_dist(x: pd.DataFrame) -> None:
     """
-    On a grouped element by FULL_NAME, TERM, and HR_NAME (individual class taught by a specific professor) it will generate
-    a distribution and associate it with the appropriate class distribution and professor. Should neither of those two exist
+    On a grouped element by FULL_NAME, TERM, and HR_NAME (individual class taught by a specific instructor) it will generate
+    a distribution and associate it with the appropriate class distribution and instructor. Should neither of those two exist
     then it will create them as well. If the department of the class doesn't exist then that will be created.
 
     :type x: pd.DataFrame
@@ -63,7 +63,7 @@ def process_dist(x: pd.DataFrame) -> None:
     # Begin Insertion
     class_dist = session.query(ClassDistribution).filter(ClassDistribution.class_name == class_name).first()
     dept = session.query(DepartmentDistribution).filter(DepartmentDistribution.dept_abbr == dept_abbr).first()
-    prof = session.query(Professor).filter(Professor.name == prof_name).first() or session.query(Professor).filter(Professor.name == "Unknown Professor").first()
+    prof = session.query(Professor).filter(Professor.name == prof_name).first() or session.query(Professor).filter(Professor.name == "Unknown Instructor").first()
     if class_dist == None:
         class_dist = ClassDistribution(class_name=class_name,class_desc=class_descr,total_students=num_students,total_grades=grade_hash,department_id=dept.id)
         session.add(class_dist)
@@ -208,7 +208,7 @@ if __name__ == "__main__":
     df = pd.read_csv("CLASS_DATA/combined_clean_data.csv",dtype={"CLASS_SECTION":str})
     print("Loaded Data!")
     print("Adding Profs")
-    # Add All Professors Including an "Unknown Professor" for non-attributed values to the Database
+    # Add All Professors Including an "Unknown Instructor" for non-attributed values to the Database
     prof_list = np.array([prof.name for prof in session.query(Professor).all()])
     data_list = df["HR_NAME"].unique()
     diff_list = np.setdiff1d(data_list,prof_list)
@@ -219,13 +219,13 @@ if __name__ == "__main__":
     else:
         print("No new professors found.")
     
-    if session.query(Professor).filter(Professor.name == "Unknown Professor").first() == None:
-        session.add(Professor(name="Unknown Professor"))
+    if session.query(Professor).filter(Professor.name == "Unknown Instructor").first() == None:
+        session.add(Professor(name="Unknown Instructor"))
         session.commit()
 
     print("Finished Prof Insertion")
 
-    print("RMP Update For Professors")
+    print("RMP Update For Instructors")
     RMP_Update()
     print("RMP Updated")
 

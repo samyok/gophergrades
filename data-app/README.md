@@ -10,7 +10,7 @@ This file's primary purpose is to cut down the information stored in a CSV to th
 | TERM           |                 The Term ID Refering to the grade term. Can be found on [Classinfo](http://classinfo.umn.edu/) |
 | SUBJECT        |                                                           The department from which this class is offered from |
 | CATALOG_NBR    |                                                               The specific course number refering to the class |
-| CLASS_SECTION  |                 The specific section for which this data is associated with, used only to traceback professors |
+| CLASS_SECTION  |                The specific section for which this data is associated with, used only to traceback instructors |
 | DESCR          |                                The default - often abbreviated - class name which is expanded in `dist_gen.py` |
 | CRSE_GRADE_OFF |                                                                                 The grade given for that class |
 | GRADE_HDCNT    |                                      The number of students that recieved the grade listed in `CRSE_GRADE_OFF` |

@@ -788,16 +788,16 @@ AEM,2011,004,DIS,Statics,C+,3,Ariel Ibarra Pino,1229,AEM 2011
 AEM,2011,004,DIS,Statics,C-,2,Ariel Ibarra Pino,1229,AEM 2011
 AEM,2011,004,DIS,Statics,F,1,Ariel Ibarra Pino,1229,AEM 2011
 AEM,2011,004,DIS,Statics,W,1,Ariel Ibarra Pino,1229,AEM 2011
-AEM,2011,005,DIS,Statics,A,1,Unknown Professor,1229,AEM 2011
-AEM,2011,005,DIS,Statics,B,4,Unknown Professor,1229,AEM 2011
-AEM,2011,005,DIS,Statics,B+,4,Unknown Professor,1229,AEM 2011
-AEM,2011,005,DIS,Statics,B-,1,Unknown Professor,1229,AEM 2011
-AEM,2011,005,DIS,Statics,C,1,Unknown Professor,1229,AEM 2011
-AEM,2011,005,DIS,Statics,C+,2,Unknown Professor,1229,AEM 2011
-AEM,2011,005,DIS,Statics,C-,5,Unknown Professor,1229,AEM 2011
-AEM,2011,005,DIS,Statics,D,3,Unknown Professor,1229,AEM 2011
-AEM,2011,005,DIS,Statics,F,2,Unknown Professor,1229,AEM 2011
-AEM,2011,005,DIS,Statics,W,5,Unknown Professor,1229,AEM 2011
+AEM,2011,005,DIS,Statics,A,1,Unknown Instructor,1229,AEM 2011
+AEM,2011,005,DIS,Statics,B,4,Unknown Instructor,1229,AEM 2011
+AEM,2011,005,DIS,Statics,B+,4,Unknown Instructor,1229,AEM 2011
+AEM,2011,005,DIS,Statics,B-,1,Unknown Instructor,1229,AEM 2011
+AEM,2011,005,DIS,Statics,C,1,Unknown Instructor,1229,AEM 2011
+AEM,2011,005,DIS,Statics,C+,2,Unknown Instructor,1229,AEM 2011
+AEM,2011,005,DIS,Statics,C-,5,Unknown Instructor,1229,AEM 2011
+AEM,2011,005,DIS,Statics,D,3,Unknown Instructor,1229,AEM 2011
+AEM,2011,005,DIS,Statics,F,2,Unknown Instructor,1229,AEM 2011
+AEM,2011,005,DIS,Statics,W,5,Unknown Instructor,1229,AEM 2011
 AEM,2012,002,DIS,Dynamics,A,3,Demoz Gebre Egziabher,1229,AEM 2012
 AEM,2012,002,DIS,Dynamics,A-,5,Demoz Gebre Egziabher,1229,AEM 2012
 AEM,2012,002,DIS,Dynamics,B+,3,Demoz Gebre Egziabher,1229,AEM 2012
@@ -837,16 +837,16 @@ AEM,2021,005,DIS,Statics & Dynamics,B+,6,Todd Hesla,1229,AEM 2021
 AEM,2021,005,DIS,Statics & Dynamics,B-,3,Todd Hesla,1229,AEM 2021
 AEM,2021,005,DIS,Statics & Dynamics,C,1,Todd Hesla,1229,AEM 2021
 AEM,2021,005,DIS,Statics & Dynamics,C+,3,Todd Hesla,1229,AEM 2021
-AEM,2021,006,DIS,Statics & Dynamics,A,5,Unknown Professor,1229,AEM 2021
-AEM,2021,006,DIS,Statics & Dynamics,A-,3,Unknown Professor,1229,AEM 2021
-AEM,2021,006,DIS,Statics & Dynamics,B,5,Unknown Professor,1229,AEM 2021
-AEM,2021,006,DIS,Statics & Dynamics,B+,2,Unknown Professor,1229,AEM 2021
-AEM,2021,006,DIS,Statics & Dynamics,B-,2,Unknown Professor,1229,AEM 2021
-AEM,2021,006,DIS,Statics & Dynamics,C,3,Unknown Professor,1229,AEM 2021
-AEM,2021,006,DIS,Statics & Dynamics,C-,1,Unknown Professor,1229,AEM 2021
-AEM,2021,006,DIS,Statics & Dynamics,D,3,Unknown Professor,1229,AEM 2021
-AEM,2021,006,DIS,Statics & Dynamics,F,2,Unknown Professor,1229,AEM 2021
-AEM,2021,006,DIS,Statics & Dynamics,W,3,Unknown Professor,1229,AEM 2021
+AEM,2021,006,DIS,Statics & Dynamics,A,5,Unknown Instructor,1229,AEM 2021
+AEM,2021,006,DIS,Statics & Dynamics,A-,3,Unknown Instructor,1229,AEM 2021
+AEM,2021,006,DIS,Statics & Dynamics,B,5,Unknown Instructor,1229,AEM 2021
+AEM,2021,006,DIS,Statics & Dynamics,B+,2,Unknown Instructor,1229,AEM 2021
+AEM,2021,006,DIS,Statics & Dynamics,B-,2,Unknown Instructor,1229,AEM 2021
+AEM,2021,006,DIS,Statics & Dynamics,C,3,Unknown Instructor,1229,AEM 2021
+AEM,2021,006,DIS,Statics & Dynamics,C-,1,Unknown Instructor,1229,AEM 2021
+AEM,2021,006,DIS,Statics & Dynamics,D,3,Unknown Instructor,1229,AEM 2021
+AEM,2021,006,DIS,Statics & Dynamics,F,2,Unknown Instructor,1229,AEM 2021
+AEM,2021,006,DIS,Statics & Dynamics,W,3,Unknown Instructor,1229,AEM 2021
 AEM,3031,002,DIS,Deform. Body Mech.,A,11,Perry Leo,1229,AEM 3031
 AEM,3031,002,DIS,Deform. Body Mech.,B,14,Perry Leo,1229,AEM 3031
 AEM,3031,002,DIS,Deform. Body Mech.,B+,5,Perry Leo,1229,AEM 3031
@@ -1588,8 +1588,8 @@ ANSC,8510,001,LEC,Grad Seminar,A,14,Andres Gomez Zapata,1229,ANSC 8510
 ANSC,8510,001,LEC,Grad Seminar,A-,2,Andres Gomez Zapata,1229,ANSC 8510
 ANSC,8510,001,LEC,Grad Seminar,B,1,Andres Gomez Zapata,1229,ANSC 8510
 ANSC,8510,001,LEC,Grad Seminar,S,3,Andres Gomez Zapata,1229,ANSC 8510
-ANSC,8777,001,IND,Thesis Credit:Mast*,NG,14,Unknown Professor,1229,ANSC 8777
-ANSC,8777,001,IND,Thesis Credit:Mast*,W,1,Unknown Professor,1229,ANSC 8777
+ANSC,8777,001,IND,Thesis Credit:Mast*,NG,14,Unknown Instructor,1229,ANSC 8777
+ANSC,8777,001,IND,Thesis Credit:Mast*,W,1,Unknown Instructor,1229,ANSC 8777
 ANTH,1001,002,LAB,Human Evolution,A,13,Gilbert Tostevin,1229,ANTH 1001
 ANTH,1001,002,LAB,Human Evolution,A-,4,Gilbert Tostevin,1229,ANTH 1001
 ANTH,1001,002,LAB,Human Evolution,B+,1,Gilbert Tostevin,1229,ANTH 1001
@@ -1804,13 +1804,13 @@ ANTH,3001,003,LAB,Intro to Archaeology,C+,1,Gilliane Monnier,1229,ANTH 3001
 ANTH,3001,003,LAB,Intro to Archaeology,C-,1,Gilliane Monnier,1229,ANTH 3001
 ANTH,3001,003,LAB,Intro to Archaeology,D,1,Gilliane Monnier,1229,ANTH 3001
 ANTH,3001,003,LAB,Intro to Archaeology,W,1,Gilliane Monnier,1229,ANTH 3001
-ANTH,3001,004,LAB,Intro to Archaeology,A,9,Unknown Professor,1229,ANTH 3001
-ANTH,3001,004,LAB,Intro to Archaeology,B,2,Unknown Professor,1229,ANTH 3001
-ANTH,3001,004,LAB,Intro to Archaeology,B+,1,Unknown Professor,1229,ANTH 3001
-ANTH,3001,004,LAB,Intro to Archaeology,B-,3,Unknown Professor,1229,ANTH 3001
-ANTH,3001,004,LAB,Intro to Archaeology,C,3,Unknown Professor,1229,ANTH 3001
-ANTH,3001,004,LAB,Intro to Archaeology,C-,1,Unknown Professor,1229,ANTH 3001
-ANTH,3001,004,LAB,Intro to Archaeology,W,1,Unknown Professor,1229,ANTH 3001
+ANTH,3001,004,LAB,Intro to Archaeology,A,9,Unknown Instructor,1229,ANTH 3001
+ANTH,3001,004,LAB,Intro to Archaeology,B,2,Unknown Instructor,1229,ANTH 3001
+ANTH,3001,004,LAB,Intro to Archaeology,B+,1,Unknown Instructor,1229,ANTH 3001
+ANTH,3001,004,LAB,Intro to Archaeology,B-,3,Unknown Instructor,1229,ANTH 3001
+ANTH,3001,004,LAB,Intro to Archaeology,C,3,Unknown Instructor,1229,ANTH 3001
+ANTH,3001,004,LAB,Intro to Archaeology,C-,1,Unknown Instructor,1229,ANTH 3001
+ANTH,3001,004,LAB,Intro to Archaeology,W,1,Unknown Instructor,1229,ANTH 3001
 ANTH,3003,001,LEC,Cultural Anth,A,3,David Lipset,1229,ANTH 3003
 ANTH,3003,001,LEC,Cultural Anth,A-,11,David Lipset,1229,ANTH 3003
 ANTH,3003,001,LEC,Cultural Anth,B,5,David Lipset,1229,ANTH 3003
@@ -1871,11 +1871,11 @@ ANTH,3036,001,LEC,The Body in Society,B+,1,David Valentine,1229,ANTH 3036
 ANTH,3036,001,LEC,The Body in Society,B-,2,David Valentine,1229,ANTH 3036
 ANTH,3036,001,LEC,The Body in Society,C+,1,David Valentine,1229,ANTH 3036
 ANTH,3036,001,LEC,The Body in Society,W,1,David Valentine,1229,ANTH 3036
-ANTH,3043,001,DIS,"Art, Aest. and Anth",A,15,Unknown Professor,1229,ANTH 3043
-ANTH,3043,001,DIS,"Art, Aest. and Anth",A-,2,Unknown Professor,1229,ANTH 3043
-ANTH,3043,001,DIS,"Art, Aest. and Anth",B,1,Unknown Professor,1229,ANTH 3043
-ANTH,3043,001,DIS,"Art, Aest. and Anth",C,1,Unknown Professor,1229,ANTH 3043
-ANTH,3043,001,DIS,"Art, Aest. and Anth",C+,1,Unknown Professor,1229,ANTH 3043
+ANTH,3043,001,DIS,"Art, Aest. and Anth",A,15,Unknown Instructor,1229,ANTH 3043
+ANTH,3043,001,DIS,"Art, Aest. and Anth",A-,2,Unknown Instructor,1229,ANTH 3043
+ANTH,3043,001,DIS,"Art, Aest. and Anth",B,1,Unknown Instructor,1229,ANTH 3043
+ANTH,3043,001,DIS,"Art, Aest. and Anth",C,1,Unknown Instructor,1229,ANTH 3043
+ANTH,3043,001,DIS,"Art, Aest. and Anth",C+,1,Unknown Instructor,1229,ANTH 3043
 ANTH,3145W,001,LEC,Urban Anthropology,A,7,Karen Ho,1229,ANTH 3145W
 ANTH,3145W,001,LEC,Urban Anthropology,A-,4,Karen Ho,1229,ANTH 3145W
 ANTH,3145W,001,LEC,Urban Anthropology,B,1,Karen Ho,1229,ANTH 3145W
@@ -4149,8 +4149,8 @@ BIOC,8008,001,DIS,Molecular Bio of Transcriptome,B+,1,Jeongsik Yong,1229,BIOC 80
 BIOC,8008,001,DIS,Molecular Bio of Transcriptome,W,1,Jeongsik Yong,1229,BIOC 8008
 BIOC,8084,001,LEC,Research & Literature Reports,S,17,Karen Evans,1229,BIOC 8084
 BIOC,8084,001,LEC,Research & Literature Reports,W,1,Karen Evans,1229,BIOC 8084
-BIOC,8444,001,IND,FTE: Doctoral,NG,60,Unknown Professor,1229,BIOC 8444
-BIOC,8444,001,IND,FTE: Doctoral,W,2,Unknown Professor,1229,BIOC 8444
+BIOC,8444,001,IND,FTE: Doctoral,NG,60,Unknown Instructor,1229,BIOC 8444
+BIOC,8444,001,IND,FTE: Doctoral,W,2,Unknown Instructor,1229,BIOC 8444
 BIOL,1001,002,LAB,Evolution & Ecology,A,6,Charlie Willis,1229,BIOL 1001
 BIOL,1001,002,LAB,Evolution & Ecology,A-,6,Charlie Willis,1229,BIOL 1001
 BIOL,1001,002,LAB,Evolution & Ecology,B,4,Charlie Willis,1229,BIOL 1001
@@ -5528,8 +5528,8 @@ BMEN,5412,001,LEC,Neuromodulation,W,1,Matthew Johnson,1229,BMEN 5412
 BMEN,5701,001,LEC,Cancer Bioengineering,A,22,Paolo Provenzano,1229,BMEN 5701
 BMEN,5701,001,LEC,Cancer Bioengineering,A-,11,Paolo Provenzano,1229,BMEN 5701
 BMEN,5701,001,LEC,Cancer Bioengineering,W,1,Paolo Provenzano,1229,BMEN 5701
-BMEN,8444,001,IND,FTE: Doctoral,NG,39,Unknown Professor,1229,BMEN 8444
-BMEN,8444,001,IND,FTE: Doctoral,W,1,Unknown Professor,1229,BMEN 8444
+BMEN,8444,001,IND,FTE: Doctoral,NG,39,Unknown Instructor,1229,BMEN 8444
+BMEN,8444,001,IND,FTE: Doctoral,W,1,Unknown Instructor,1229,BMEN 8444
 BMEN,8601,001,LEC,BMEn Seminar,S,1,Wei Shen,1229,BMEN 8601
 BMEN,8601,001,LEC,BMEn Seminar,S,52,Wei Shen,1229,BMEN 8601
 BMEN,8611,001,LEC,Professional Skills/Ethics BME,A,8,Brian Herman,1229,BMEN 8611
@@ -5747,8 +5747,8 @@ CEGE,8421,001,LEC,Structural Dynamics,B-,1,Stefano Gonella,1229,CEGE 8421
 CEGE,8421,001,LEC,Structural Dynamics,D,1,Stefano Gonella,1229,CEGE 8421
 CEGE,8490,001,LEC,Special Topics,A,11,Raphael Stern,1229,CEGE 8490
 CEGE,8490,001,LEC,Special Topics,B+,1,Raphael Stern,1229,CEGE 8490
-CEGE,8666,001,IND,Doct Pre-Thesis Cr*,NG,10,Unknown Professor,1229,CEGE 8666
-CEGE,8666,001,IND,Doct Pre-Thesis Cr*,W,1,Unknown Professor,1229,CEGE 8666
+CEGE,8666,001,IND,Doct Pre-Thesis Cr*,NG,10,Unknown Instructor,1229,CEGE 8666
+CEGE,8666,001,IND,Doct Pre-Thesis Cr*,W,1,Unknown Instructor,1229,CEGE 8666
 CFAN,1102,001,LEC,PES Seminar,A,6,Morgan Bartlett,1229,CFAN 1102
 CFAN,1102,001,LEC,PES Seminar,A-,6,Morgan Bartlett,1229,CFAN 1102
 CFAN,1102,001,LEC,PES Seminar,B,2,Morgan Bartlett,1229,CFAN 1102
@@ -6687,7 +6687,7 @@ CHMB,5815,001,LEC,International HR Mgmt,A,21,Benhong Tsai,1229,CHMB 5815
 CHMB,5815,001,LEC,International HR Mgmt,A-,4,Benhong Tsai,1229,CHMB 5815
 CHMB,5815,001,LEC,International HR Mgmt,B+,1,Benhong Tsai,1229,CHMB 5815
 CHMB,5815,001,LEC,International HR Mgmt,C-,1,Benhong Tsai,1229,CHMB 5815
-CHMB,5817,001,LEC,China's Economy,A-,2,Unknown Professor,1229,CHMB 5817
+CHMB,5817,001,LEC,China's Economy,A-,2,Unknown Instructor,1229,CHMB 5817
 CHN,1011,001,LEC,Beginning Modern Chinese I,A,14,Ling Wang,1229,CHN 1011
 CHN,1011,001,LEC,Beginning Modern Chinese I,A-,2,Ling Wang,1229,CHN 1011
 CHN,1011,001,LEC,Beginning Modern Chinese I,B+,2,Ling Wang,1229,CHN 1011
@@ -7045,8 +7045,8 @@ CI,5075,001,LEC,Soc/Hist/Cultr Fndtns Art Educ,A,13,Vanessa Hoff,1229,CI 5075
 CI,5075,001,LEC,Soc/Hist/Cultr Fndtns Art Educ,A-,3,Vanessa Hoff,1229,CI 5075
 CI,5075,001,LEC,Soc/Hist/Cultr Fndtns Art Educ,B,2,Vanessa Hoff,1229,CI 5075
 CI,5075,001,LEC,Soc/Hist/Cultr Fndtns Art Educ,B-,1,Vanessa Hoff,1229,CI 5075
-CI,5103,004,DIS,"Culture, Schools, Community II",S,25,Unknown Professor,1229,CI 5103
-CI,5103,004,DIS,"Culture, Schools, Community II",W,1,Unknown Professor,1229,CI 5103
+CI,5103,004,DIS,"Culture, Schools, Community II",S,25,Unknown Instructor,1229,CI 5103
+CI,5103,004,DIS,"Culture, Schools, Community II",W,1,Unknown Instructor,1229,CI 5103
 CI,5116,001,LEC,Action Research in Education,A,19,Susan Staats,1229,CI 5116
 CI,5116,001,LEC,Action Research in Education,B+,2,Susan Staats,1229,CI 5116
 CI,5116,001,LEC,Action Research in Education,S,1,Susan Staats,1229,CI 5116
@@ -7084,29 +7084,29 @@ CI,5301,003,DIS,Foundations-ComputerAps Bus&Ed,A,12,Jolie Kennedy,1229,CI 5301
 CI,5301,003,DIS,Foundations-ComputerAps Bus&Ed,B+,1,Jolie Kennedy,1229,CI 5301
 CI,5301,003,DIS,Foundations-ComputerAps Bus&Ed,D+,1,Jolie Kennedy,1229,CI 5301
 CI,5301,003,DIS,Foundations-ComputerAps Bus&Ed,W,1,Jolie Kennedy,1229,CI 5301
-CI,5307,002,LAB,Technology for Teaching & Lrng,A,13,Unknown Professor,1229,CI 5307
-CI,5307,002,LAB,Technology for Teaching & Lrng,A-,3,Unknown Professor,1229,CI 5307
-CI,5307,002,LAB,Technology for Teaching & Lrng,B+,2,Unknown Professor,1229,CI 5307
-CI,5307,002,LAB,Technology for Teaching & Lrng,C,2,Unknown Professor,1229,CI 5307
-CI,5307,002,LAB,Technology for Teaching & Lrng,F,2,Unknown Professor,1229,CI 5307
-CI,5307,002,LAB,Technology for Teaching & Lrng,W,3,Unknown Professor,1229,CI 5307
-CI,5307,003,LAB,Technology for Teaching & Lrng,A,7,Unknown Professor,1229,CI 5307
-CI,5307,003,LAB,Technology for Teaching & Lrng,A-,4,Unknown Professor,1229,CI 5307
-CI,5307,003,LAB,Technology for Teaching & Lrng,B,3,Unknown Professor,1229,CI 5307
-CI,5307,003,LAB,Technology for Teaching & Lrng,B+,1,Unknown Professor,1229,CI 5307
-CI,5307,003,LAB,Technology for Teaching & Lrng,B-,1,Unknown Professor,1229,CI 5307
-CI,5307,003,LAB,Technology for Teaching & Lrng,C,1,Unknown Professor,1229,CI 5307
-CI,5307,003,LAB,Technology for Teaching & Lrng,C-,1,Unknown Professor,1229,CI 5307
-CI,5307,003,LAB,Technology for Teaching & Lrng,F,1,Unknown Professor,1229,CI 5307
-CI,5307,004,LAB,Technology for Teaching & Lrng,A,14,Unknown Professor,1229,CI 5307
-CI,5307,004,LAB,Technology for Teaching & Lrng,B,1,Unknown Professor,1229,CI 5307
-CI,5307,005,LAB,Technology for Teaching & Lrng,A,8,Unknown Professor,1229,CI 5307
-CI,5307,005,LAB,Technology for Teaching & Lrng,A-,4,Unknown Professor,1229,CI 5307
-CI,5307,005,LAB,Technology for Teaching & Lrng,B,1,Unknown Professor,1229,CI 5307
-CI,5307,005,LAB,Technology for Teaching & Lrng,B+,2,Unknown Professor,1229,CI 5307
-CI,5307,005,LAB,Technology for Teaching & Lrng,B-,1,Unknown Professor,1229,CI 5307
-CI,5307,006,LAB,Technology for Teaching & Lrng,A,12,Unknown Professor,1229,CI 5307
-CI,5307,006,LAB,Technology for Teaching & Lrng,A-,2,Unknown Professor,1229,CI 5307
+CI,5307,002,LAB,Technology for Teaching & Lrng,A,13,Unknown Instructor,1229,CI 5307
+CI,5307,002,LAB,Technology for Teaching & Lrng,A-,3,Unknown Instructor,1229,CI 5307
+CI,5307,002,LAB,Technology for Teaching & Lrng,B+,2,Unknown Instructor,1229,CI 5307
+CI,5307,002,LAB,Technology for Teaching & Lrng,C,2,Unknown Instructor,1229,CI 5307
+CI,5307,002,LAB,Technology for Teaching & Lrng,F,2,Unknown Instructor,1229,CI 5307
+CI,5307,002,LAB,Technology for Teaching & Lrng,W,3,Unknown Instructor,1229,CI 5307
+CI,5307,003,LAB,Technology for Teaching & Lrng,A,7,Unknown Instructor,1229,CI 5307
+CI,5307,003,LAB,Technology for Teaching & Lrng,A-,4,Unknown Instructor,1229,CI 5307
+CI,5307,003,LAB,Technology for Teaching & Lrng,B,3,Unknown Instructor,1229,CI 5307
+CI,5307,003,LAB,Technology for Teaching & Lrng,B+,1,Unknown Instructor,1229,CI 5307
+CI,5307,003,LAB,Technology for Teaching & Lrng,B-,1,Unknown Instructor,1229,CI 5307
+CI,5307,003,LAB,Technology for Teaching & Lrng,C,1,Unknown Instructor,1229,CI 5307
+CI,5307,003,LAB,Technology for Teaching & Lrng,C-,1,Unknown Instructor,1229,CI 5307
+CI,5307,003,LAB,Technology for Teaching & Lrng,F,1,Unknown Instructor,1229,CI 5307
+CI,5307,004,LAB,Technology for Teaching & Lrng,A,14,Unknown Instructor,1229,CI 5307
+CI,5307,004,LAB,Technology for Teaching & Lrng,B,1,Unknown Instructor,1229,CI 5307
+CI,5307,005,LAB,Technology for Teaching & Lrng,A,8,Unknown Instructor,1229,CI 5307
+CI,5307,005,LAB,Technology for Teaching & Lrng,A-,4,Unknown Instructor,1229,CI 5307
+CI,5307,005,LAB,Technology for Teaching & Lrng,B,1,Unknown Instructor,1229,CI 5307
+CI,5307,005,LAB,Technology for Teaching & Lrng,B+,2,Unknown Instructor,1229,CI 5307
+CI,5307,005,LAB,Technology for Teaching & Lrng,B-,1,Unknown Instructor,1229,CI 5307
+CI,5307,006,LAB,Technology for Teaching & Lrng,A,12,Unknown Instructor,1229,CI 5307
+CI,5307,006,LAB,Technology for Teaching & Lrng,A-,2,Unknown Instructor,1229,CI 5307
 CI,5331,001,LEC,Intro to Learning Technologies,A,18,Angelica Pazurek,1229,CI 5331
 CI,5331,001,LEC,Intro to Learning Technologies,W,1,Angelica Pazurek,1229,CI 5331
 CI,5361,001,LEC,Teaching & Learning w/Internet,A,10,Jennifer Englund,1229,CI 5361
@@ -7550,17 +7550,17 @@ CLA,3002,009,DIS,Career Kickstarter,C,1,Quinn Nelson,1229,CLA 3002
 CLA,3002,009,DIS,Career Kickstarter,C+,1,Quinn Nelson,1229,CLA 3002
 CLA,3002,009,DIS,Career Kickstarter,D,1,Quinn Nelson,1229,CLA 3002
 CLA,3002,009,DIS,Career Kickstarter,S,4,Quinn Nelson,1229,CLA 3002
-CLA,3201,001,DIS,Career Planning,A,13,Unknown Professor,1229,CLA 3201
-CLA,3201,001,DIS,Career Planning,A-,5,Unknown Professor,1229,CLA 3201
-CLA,3201,001,DIS,Career Planning,B,3,Unknown Professor,1229,CLA 3201
-CLA,3201,001,DIS,Career Planning,B+,1,Unknown Professor,1229,CLA 3201
-CLA,3201,001,DIS,Career Planning,B-,1,Unknown Professor,1229,CLA 3201
-CLA,3201,001,DIS,Career Planning,C,2,Unknown Professor,1229,CLA 3201
-CLA,3201,001,DIS,Career Planning,C+,3,Unknown Professor,1229,CLA 3201
-CLA,3201,001,DIS,Career Planning,D+,1,Unknown Professor,1229,CLA 3201
-CLA,3201,001,DIS,Career Planning,F,2,Unknown Professor,1229,CLA 3201
-CLA,3201,001,DIS,Career Planning,S,2,Unknown Professor,1229,CLA 3201
-CLA,3201,001,DIS,Career Planning,W,5,Unknown Professor,1229,CLA 3201
+CLA,3201,001,DIS,Career Planning,A,13,Unknown Instructor,1229,CLA 3201
+CLA,3201,001,DIS,Career Planning,A-,5,Unknown Instructor,1229,CLA 3201
+CLA,3201,001,DIS,Career Planning,B,3,Unknown Instructor,1229,CLA 3201
+CLA,3201,001,DIS,Career Planning,B+,1,Unknown Instructor,1229,CLA 3201
+CLA,3201,001,DIS,Career Planning,B-,1,Unknown Instructor,1229,CLA 3201
+CLA,3201,001,DIS,Career Planning,C,2,Unknown Instructor,1229,CLA 3201
+CLA,3201,001,DIS,Career Planning,C+,3,Unknown Instructor,1229,CLA 3201
+CLA,3201,001,DIS,Career Planning,D+,1,Unknown Instructor,1229,CLA 3201
+CLA,3201,001,DIS,Career Planning,F,2,Unknown Instructor,1229,CLA 3201
+CLA,3201,001,DIS,Career Planning,S,2,Unknown Instructor,1229,CLA 3201
+CLA,3201,001,DIS,Career Planning,W,5,Unknown Instructor,1229,CLA 3201
 CLA,3201,002,DIS,Career Planning,A,6,Ana Eliason,1229,CLA 3201
 CLA,3201,002,DIS,Career Planning,A-,2,Ana Eliason,1229,CLA 3201
 CLA,3201,002,DIS,Career Planning,B,3,Ana Eliason,1229,CLA 3201
@@ -10110,20 +10110,20 @@ CSCI,8442,001,LEC,Comp. Geometry,A,4,Ravi Janardan,1229,CSCI 8442
 CSCI,8442,001,LEC,Comp. Geometry,A-,2,Ravi Janardan,1229,CSCI 8442
 CSCI,8442,001,LEC,Comp. Geometry,B,2,Ravi Janardan,1229,CSCI 8442
 CSCI,8442,001,LEC,Comp. Geometry,B+,3,Ravi Janardan,1229,CSCI 8442
-CSCI,8444,001,IND,FTE: Doctoral,NG,37,Unknown Professor,1229,CSCI 8444
-CSCI,8444,001,IND,FTE: Doctoral,W,2,Unknown Professor,1229,CSCI 8444
+CSCI,8444,001,IND,FTE: Doctoral,NG,37,Unknown Instructor,1229,CSCI 8444
+CSCI,8444,001,IND,FTE: Doctoral,W,2,Unknown Instructor,1229,CSCI 8444
 CSCI,8523,001,LEC,AI for Earth,A,13,Vipin Kumar,1229,CSCI 8523
 CSCI,8523,001,LEC,AI for Earth,A-,9,Vipin Kumar,1229,CSCI 8523
 CSCI,8523,001,LEC,AI for Earth,B+,1,Vipin Kumar,1229,CSCI 8523
 CSCI,8523,001,LEC,AI for Earth,C,1,Vipin Kumar,1229,CSCI 8523
-CSCI,8666,001,IND,Doct Pre-Thesis Cr*,NG,38,Unknown Professor,1229,CSCI 8666
-CSCI,8666,001,IND,Doct Pre-Thesis Cr*,W,3,Unknown Professor,1229,CSCI 8666
+CSCI,8666,001,IND,Doct Pre-Thesis Cr*,NG,38,Unknown Instructor,1229,CSCI 8666
+CSCI,8666,001,IND,Doct Pre-Thesis Cr*,W,3,Unknown Instructor,1229,CSCI 8666
 CSCI,8735,001,LEC,Advanced Database Systems,A,6,Mohamed Mokbel,1229,CSCI 8735
 CSCI,8735,001,LEC,Advanced Database Systems,B-,1,Mohamed Mokbel,1229,CSCI 8735
 CSCI,8735,001,LEC,Advanced Database Systems,C,2,Mohamed Mokbel,1229,CSCI 8735
 CSCI,8735,001,LEC,Advanced Database Systems,W,3,Mohamed Mokbel,1229,CSCI 8735
-CSCI,8888,001,IND,Thesis Credit:Doct*,NG,35,Unknown Professor,1229,CSCI 8888
-CSCI,8888,001,IND,Thesis Credit:Doct*,W,3,Unknown Professor,1229,CSCI 8888
+CSCI,8888,001,IND,Thesis Credit:Doct*,NG,35,Unknown Instructor,1229,CSCI 8888
+CSCI,8888,001,IND,Thesis Credit:Doct*,W,3,Unknown Instructor,1229,CSCI 8888
 CSCI,8970,001,LEC,CSci colloquium,S,17,Stephen McCamant,1229,CSCI 8970
 CSCI,8970,001,LEC,CSci colloquium,S,48,Stephen McCamant,1229,CSCI 8970
 CSCI,8980,002,LEC,Spec Adv Topics CS,A,11,Ali Anwar,1229,CSCI 8980
@@ -10804,9 +10804,9 @@ CVM,6923,001,LEC,Public Health & Com Practice,C+,1,Melinda Wilkins,1229,CVM 6923
 CVM,6924,001,LEC,Small Animal Medicine I,A,94,Jennifer Granick,1229,CVM 6924
 CVM,6924,001,LEC,Small Animal Medicine I,B,28,Jennifer Granick,1229,CVM 6924
 CVM,6924,001,LEC,Small Animal Medicine I,C,2,Jennifer Granick,1229,CVM 6924
-CVM,6925,001,LAB,Diagnostic Laboratory,A,102,Unknown Professor,1229,CVM 6925
-CVM,6925,001,LAB,Diagnostic Laboratory,A-,1,Unknown Professor,1229,CVM 6925
-CVM,6925,001,LAB,Diagnostic Laboratory,B-,1,Unknown Professor,1229,CVM 6925
+CVM,6925,001,LAB,Diagnostic Laboratory,A,102,Unknown Instructor,1229,CVM 6925
+CVM,6925,001,LAB,Diagnostic Laboratory,A-,1,Unknown Instructor,1229,CVM 6925
+CVM,6925,001,LAB,Diagnostic Laboratory,B-,1,Unknown Instructor,1229,CVM 6925
 CVM,6928,001,LEC,Large Animal Medicine I,A,85,Christie Ward,1229,CVM 6928
 CVM,6928,001,LEC,Large Animal Medicine I,B,36,Christie Ward,1229,CVM 6928
 CVM,6928,001,LEC,Large Animal Medicine I,C,3,Christie Ward,1229,CVM 6928
@@ -11221,19 +11221,19 @@ DTCH,1001,001,DIS,Beginning Dutch,B-,2,Jenneke Oosterhoff,1229,DTCH 1001
 DTCH,1001,001,DIS,Beginning Dutch,C,2,Jenneke Oosterhoff,1229,DTCH 1001
 DTCH,1001,001,DIS,Beginning Dutch,F,1,Jenneke Oosterhoff,1229,DTCH 1001
 DTCH,1001,001,DIS,Beginning Dutch,S,2,Jenneke Oosterhoff,1229,DTCH 1001
-ECDR,3030W,501,LEC,Intro to Latin-Amer Cultures,A,4,Unknown Professor,1229,ECDR 3030W
-ECDR,3030W,501,LEC,Intro to Latin-Amer Cultures,A-,6,Unknown Professor,1229,ECDR 3030W
-ECDR,3030W,501,LEC,Intro to Latin-Amer Cultures,B,1,Unknown Professor,1229,ECDR 3030W
-ECDR,3030W,501,LEC,Intro to Latin-Amer Cultures,B+,2,Unknown Professor,1229,ECDR 3030W
-ECDR,3030W,501,LEC,Intro to Latin-Amer Cultures,C+,1,Unknown Professor,1229,ECDR 3030W
-ECDR,4101,501,LEC,Hist & Pol Context of Ecuador,A,13,Unknown Professor,1229,ECDR 4101
-ECDR,4101,501,LEC,Hist & Pol Context of Ecuador,A-,1,Unknown Professor,1229,ECDR 4101
-ECDR,4101,501,LEC,Hist & Pol Context of Ecuador,B+,1,Unknown Professor,1229,ECDR 4101
-ECDR,4101,501,LEC,Hist & Pol Context of Ecuador,B-,1,Unknown Professor,1229,ECDR 4101
-ECDR,4101,501,LEC,Hist & Pol Context of Ecuador,D,2,Unknown Professor,1229,ECDR 4101
-ECDR,4896,501,LEC,Internship in Ecuador,A,13,Unknown Professor,1229,ECDR 4896
-ECDR,4896,501,LEC,Internship in Ecuador,B+,1,Unknown Professor,1229,ECDR 4896
-ECDR,4896,501,LEC,Internship in Ecuador,D,1,Unknown Professor,1229,ECDR 4896
+ECDR,3030W,501,LEC,Intro to Latin-Amer Cultures,A,4,Unknown Instructor,1229,ECDR 3030W
+ECDR,3030W,501,LEC,Intro to Latin-Amer Cultures,A-,6,Unknown Instructor,1229,ECDR 3030W
+ECDR,3030W,501,LEC,Intro to Latin-Amer Cultures,B,1,Unknown Instructor,1229,ECDR 3030W
+ECDR,3030W,501,LEC,Intro to Latin-Amer Cultures,B+,2,Unknown Instructor,1229,ECDR 3030W
+ECDR,3030W,501,LEC,Intro to Latin-Amer Cultures,C+,1,Unknown Instructor,1229,ECDR 3030W
+ECDR,4101,501,LEC,Hist & Pol Context of Ecuador,A,13,Unknown Instructor,1229,ECDR 4101
+ECDR,4101,501,LEC,Hist & Pol Context of Ecuador,A-,1,Unknown Instructor,1229,ECDR 4101
+ECDR,4101,501,LEC,Hist & Pol Context of Ecuador,B+,1,Unknown Instructor,1229,ECDR 4101
+ECDR,4101,501,LEC,Hist & Pol Context of Ecuador,B-,1,Unknown Instructor,1229,ECDR 4101
+ECDR,4101,501,LEC,Hist & Pol Context of Ecuador,D,2,Unknown Instructor,1229,ECDR 4101
+ECDR,4896,501,LEC,Internship in Ecuador,A,13,Unknown Instructor,1229,ECDR 4896
+ECDR,4896,501,LEC,Internship in Ecuador,B+,1,Unknown Instructor,1229,ECDR 4896
+ECDR,4896,501,LEC,Internship in Ecuador,D,1,Unknown Instructor,1229,ECDR 4896
 ECON,1101,002,DIS,Principles of Microeconomics,A,5,Fahima Aziz,1229,ECON 1101
 ECON,1101,002,DIS,Principles of Microeconomics,A-,2,Fahima Aziz,1229,ECON 1101
 ECON,1101,002,DIS,Principles of Microeconomics,B,9,Fahima Aziz,1229,ECON 1101
@@ -13989,9 +13989,9 @@ ESCI,5302,001,LEC,Isotope Geology,A,5,Xinyuan Zheng,1229,ESCI 5302
 ESCI,5302,001,LEC,Isotope Geology,B,2,Xinyuan Zheng,1229,ESCI 5302
 ESCI,5302,001,LEC,Isotope Geology,B+,2,Xinyuan Zheng,1229,ESCI 5302
 ESCI,5302,001,LEC,Isotope Geology,B-,1,Xinyuan Zheng,1229,ESCI 5302
-ESCI,8994,001,IND,Research,A,28,Unknown Professor,1229,ESCI 8994
-ESCI,8994,001,IND,Research,A-,1,Unknown Professor,1229,ESCI 8994
-ESCI,8994,001,IND,Research,S,1,Unknown Professor,1229,ESCI 8994
+ESCI,8994,001,IND,Research,A,28,Unknown Instructor,1229,ESCI 8994
+ESCI,8994,001,IND,Research,A-,1,Unknown Instructor,1229,ESCI 8994
+ESCI,8994,001,IND,Research,S,1,Unknown Instructor,1229,ESCI 8994
 ESL,3001,001,LEC,Integrated Skills Acad English,A,6,Shane Sletten,1229,ESL 3001
 ESL,3001,001,LEC,Integrated Skills Acad English,A-,2,Shane Sletten,1229,ESL 3001
 ESL,3001,001,LEC,Integrated Skills Acad English,C-,1,Shane Sletten,1229,ESL 3001
@@ -14716,85 +14716,85 @@ FNRM,5259,001,LEC,Visitor Behavior Analysis,W,5,Mae Davenport,1229,FNRM 5259
 FNRM,5413,001,LAB,Mng For Ecosys:Silvicultre Lab,A,18,Marcella Windmuller-Campione,1229,FNRM 5413
 FNRM,5413,001,LAB,Mng For Ecosys:Silvicultre Lab,A-,1,Marcella Windmuller-Campione,1229,FNRM 5413
 FNRM,5413,001,LAB,Mng For Ecosys:Silvicultre Lab,B,1,Marcella Windmuller-Campione,1229,FNRM 5413
-FOST,1201,501,LEC,Study Abroad,A,99,Unknown Professor,1229,FOST 1201
-FOST,1201,501,LEC,Study Abroad,A-,48,Unknown Professor,1229,FOST 1201
-FOST,1201,501,LEC,Study Abroad,B,7,Unknown Professor,1229,FOST 1201
-FOST,1201,501,LEC,Study Abroad,B+,19,Unknown Professor,1229,FOST 1201
-FOST,1201,501,LEC,Study Abroad,C,3,Unknown Professor,1229,FOST 1201
-FOST,1201,501,LEC,Study Abroad,C+,1,Unknown Professor,1229,FOST 1201
-FOST,1201,501,LEC,Study Abroad,D+,1,Unknown Professor,1229,FOST 1201
-FOST,1201,501,LEC,Study Abroad,F,1,Unknown Professor,1229,FOST 1201
-FOST,1201,501,LEC,Study Abroad,S,1,Unknown Professor,1229,FOST 1201
-FOST,1201,501,LEC,Study Abroad,W,2,Unknown Professor,1229,FOST 1201
-FOST,3201,501,LEC,Study Abroad,A,176,Unknown Professor,1229,FOST 3201
-FOST,3201,501,LEC,Study Abroad,A-,75,Unknown Professor,1229,FOST 3201
-FOST,3201,501,LEC,Study Abroad,B,15,Unknown Professor,1229,FOST 3201
-FOST,3201,501,LEC,Study Abroad,B+,34,Unknown Professor,1229,FOST 3201
-FOST,3201,501,LEC,Study Abroad,B-,4,Unknown Professor,1229,FOST 3201
-FOST,3201,501,LEC,Study Abroad,C,2,Unknown Professor,1229,FOST 3201
-FOST,3201,501,LEC,Study Abroad,C+,1,Unknown Professor,1229,FOST 3201
-FOST,3201,501,LEC,Study Abroad,D,1,Unknown Professor,1229,FOST 3201
-FOST,3201,501,LEC,Study Abroad,D+,1,Unknown Professor,1229,FOST 3201
-FOST,3201,501,LEC,Study Abroad,F,1,Unknown Professor,1229,FOST 3201
-FOST,3201,501,LEC,Study Abroad,W,2,Unknown Professor,1229,FOST 3201
-FOST,3202,501,LEC,Study Abroad,A,183,Unknown Professor,1229,FOST 3202
-FOST,3202,501,LEC,Study Abroad,A-,63,Unknown Professor,1229,FOST 3202
-FOST,3202,501,LEC,Study Abroad,B,12,Unknown Professor,1229,FOST 3202
-FOST,3202,501,LEC,Study Abroad,B+,30,Unknown Professor,1229,FOST 3202
-FOST,3202,501,LEC,Study Abroad,B-,7,Unknown Professor,1229,FOST 3202
-FOST,3202,501,LEC,Study Abroad,C,4,Unknown Professor,1229,FOST 3202
-FOST,3202,501,LEC,Study Abroad,C+,2,Unknown Professor,1229,FOST 3202
-FOST,3202,501,LEC,Study Abroad,D+,1,Unknown Professor,1229,FOST 3202
-FOST,3202,501,LEC,Study Abroad,F,1,Unknown Professor,1229,FOST 3202
-FOST,3202,501,LEC,Study Abroad,W,2,Unknown Professor,1229,FOST 3202
-FOST,3203,501,LEC,Study Abroad,A,177,Unknown Professor,1229,FOST 3203
-FOST,3203,501,LEC,Study Abroad,A-,59,Unknown Professor,1229,FOST 3203
-FOST,3203,501,LEC,Study Abroad,B,16,Unknown Professor,1229,FOST 3203
-FOST,3203,501,LEC,Study Abroad,B+,30,Unknown Professor,1229,FOST 3203
-FOST,3203,501,LEC,Study Abroad,B-,3,Unknown Professor,1229,FOST 3203
-FOST,3203,501,LEC,Study Abroad,C,1,Unknown Professor,1229,FOST 3203
-FOST,3203,501,LEC,Study Abroad,C+,3,Unknown Professor,1229,FOST 3203
-FOST,3203,501,LEC,Study Abroad,C-,1,Unknown Professor,1229,FOST 3203
-FOST,3203,501,LEC,Study Abroad,D+,1,Unknown Professor,1229,FOST 3203
-FOST,3203,501,LEC,Study Abroad,S,1,Unknown Professor,1229,FOST 3203
-FOST,3203,501,LEC,Study Abroad,W,2,Unknown Professor,1229,FOST 3203
-FOST,3204,501,LEC,Study Abroad,A,147,Unknown Professor,1229,FOST 3204
-FOST,3204,501,LEC,Study Abroad,A-,51,Unknown Professor,1229,FOST 3204
-FOST,3204,501,LEC,Study Abroad,B,9,Unknown Professor,1229,FOST 3204
-FOST,3204,501,LEC,Study Abroad,B+,22,Unknown Professor,1229,FOST 3204
-FOST,3204,501,LEC,Study Abroad,B-,5,Unknown Professor,1229,FOST 3204
-FOST,3204,501,LEC,Study Abroad,C,2,Unknown Professor,1229,FOST 3204
-FOST,3204,501,LEC,Study Abroad,C+,2,Unknown Professor,1229,FOST 3204
-FOST,3204,501,LEC,Study Abroad,C-,1,Unknown Professor,1229,FOST 3204
-FOST,3204,501,LEC,Study Abroad,D+,1,Unknown Professor,1229,FOST 3204
-FOST,3204,501,LEC,Study Abroad,F,3,Unknown Professor,1229,FOST 3204
-FOST,3204,501,LEC,Study Abroad,S,2,Unknown Professor,1229,FOST 3204
-FOST,3204,501,LEC,Study Abroad,W,1,Unknown Professor,1229,FOST 3204
-FOST,3205,501,LEC,Study Abroad,A,29,Unknown Professor,1229,FOST 3205
-FOST,3205,501,LEC,Study Abroad,A-,11,Unknown Professor,1229,FOST 3205
-FOST,3205,501,LEC,Study Abroad,B,2,Unknown Professor,1229,FOST 3205
-FOST,3205,501,LEC,Study Abroad,B+,4,Unknown Professor,1229,FOST 3205
-FOST,3205,501,LEC,Study Abroad,B-,1,Unknown Professor,1229,FOST 3205
-FOST,3205,501,LEC,Study Abroad,D,1,Unknown Professor,1229,FOST 3205
-FOST,3205,501,LEC,Study Abroad,F,3,Unknown Professor,1229,FOST 3205
-FOST,3205,501,LEC,Study Abroad,S,1,Unknown Professor,1229,FOST 3205
-FOST,3205,501,LEC,Study Abroad,W,2,Unknown Professor,1229,FOST 3205
-FOST,3500,501,LEC,Study Abroad,A,7,Unknown Professor,1229,FOST 3500
-FOST,3500,501,LEC,Study Abroad,A-,1,Unknown Professor,1229,FOST 3500
-FOST,3500,501,LEC,Study Abroad,B,1,Unknown Professor,1229,FOST 3500
-FOST,3500,501,LEC,Study Abroad,F,1,Unknown Professor,1229,FOST 3500
-FOST,3530,501,LEC,Study Abroad,A,4,Unknown Professor,1229,FOST 3530
-FOST,3530,501,LEC,Study Abroad,A-,1,Unknown Professor,1229,FOST 3530
-FOST,3530,501,LEC,Study Abroad,B,2,Unknown Professor,1229,FOST 3530
-FOST,3530,501,LEC,Study Abroad,B+,4,Unknown Professor,1229,FOST 3530
-FOST,3530,501,LEC,Study Abroad,C+,1,Unknown Professor,1229,FOST 3530
-FOST,3530,501,LEC,Study Abroad,D,1,Unknown Professor,1229,FOST 3530
-FOST,3530,501,LEC,Study Abroad,S,1,Unknown Professor,1229,FOST 3530
-FOST,3590,501,LEC,Study Abroad,A,6,Unknown Professor,1229,FOST 3590
-FOST,3590,501,LEC,Study Abroad,A-,1,Unknown Professor,1229,FOST 3590
-FOST,3590,501,LEC,Study Abroad,B+,1,Unknown Professor,1229,FOST 3590
-FOST,3590,501,LEC,Study Abroad,C+,1,Unknown Professor,1229,FOST 3590
-FOST,3590,501,LEC,Study Abroad,F,1,Unknown Professor,1229,FOST 3590
+FOST,1201,501,LEC,Study Abroad,A,99,Unknown Instructor,1229,FOST 1201
+FOST,1201,501,LEC,Study Abroad,A-,48,Unknown Instructor,1229,FOST 1201
+FOST,1201,501,LEC,Study Abroad,B,7,Unknown Instructor,1229,FOST 1201
+FOST,1201,501,LEC,Study Abroad,B+,19,Unknown Instructor,1229,FOST 1201
+FOST,1201,501,LEC,Study Abroad,C,3,Unknown Instructor,1229,FOST 1201
+FOST,1201,501,LEC,Study Abroad,C+,1,Unknown Instructor,1229,FOST 1201
+FOST,1201,501,LEC,Study Abroad,D+,1,Unknown Instructor,1229,FOST 1201
+FOST,1201,501,LEC,Study Abroad,F,1,Unknown Instructor,1229,FOST 1201
+FOST,1201,501,LEC,Study Abroad,S,1,Unknown Instructor,1229,FOST 1201
+FOST,1201,501,LEC,Study Abroad,W,2,Unknown Instructor,1229,FOST 1201
+FOST,3201,501,LEC,Study Abroad,A,176,Unknown Instructor,1229,FOST 3201
+FOST,3201,501,LEC,Study Abroad,A-,75,Unknown Instructor,1229,FOST 3201
+FOST,3201,501,LEC,Study Abroad,B,15,Unknown Instructor,1229,FOST 3201
+FOST,3201,501,LEC,Study Abroad,B+,34,Unknown Instructor,1229,FOST 3201
+FOST,3201,501,LEC,Study Abroad,B-,4,Unknown Instructor,1229,FOST 3201
+FOST,3201,501,LEC,Study Abroad,C,2,Unknown Instructor,1229,FOST 3201
+FOST,3201,501,LEC,Study Abroad,C+,1,Unknown Instructor,1229,FOST 3201
+FOST,3201,501,LEC,Study Abroad,D,1,Unknown Instructor,1229,FOST 3201
+FOST,3201,501,LEC,Study Abroad,D+,1,Unknown Instructor,1229,FOST 3201
+FOST,3201,501,LEC,Study Abroad,F,1,Unknown Instructor,1229,FOST 3201
+FOST,3201,501,LEC,Study Abroad,W,2,Unknown Instructor,1229,FOST 3201
+FOST,3202,501,LEC,Study Abroad,A,183,Unknown Instructor,1229,FOST 3202
+FOST,3202,501,LEC,Study Abroad,A-,63,Unknown Instructor,1229,FOST 3202
+FOST,3202,501,LEC,Study Abroad,B,12,Unknown Instructor,1229,FOST 3202
+FOST,3202,501,LEC,Study Abroad,B+,30,Unknown Instructor,1229,FOST 3202
+FOST,3202,501,LEC,Study Abroad,B-,7,Unknown Instructor,1229,FOST 3202
+FOST,3202,501,LEC,Study Abroad,C,4,Unknown Instructor,1229,FOST 3202
+FOST,3202,501,LEC,Study Abroad,C+,2,Unknown Instructor,1229,FOST 3202
+FOST,3202,501,LEC,Study Abroad,D+,1,Unknown Instructor,1229,FOST 3202
+FOST,3202,501,LEC,Study Abroad,F,1,Unknown Instructor,1229,FOST 3202
+FOST,3202,501,LEC,Study Abroad,W,2,Unknown Instructor,1229,FOST 3202
+FOST,3203,501,LEC,Study Abroad,A,177,Unknown Instructor,1229,FOST 3203
+FOST,3203,501,LEC,Study Abroad,A-,59,Unknown Instructor,1229,FOST 3203
+FOST,3203,501,LEC,Study Abroad,B,16,Unknown Instructor,1229,FOST 3203
+FOST,3203,501,LEC,Study Abroad,B+,30,Unknown Instructor,1229,FOST 3203
+FOST,3203,501,LEC,Study Abroad,B-,3,Unknown Instructor,1229,FOST 3203
+FOST,3203,501,LEC,Study Abroad,C,1,Unknown Instructor,1229,FOST 3203
+FOST,3203,501,LEC,Study Abroad,C+,3,Unknown Instructor,1229,FOST 3203
+FOST,3203,501,LEC,Study Abroad,C-,1,Unknown Instructor,1229,FOST 3203
+FOST,3203,501,LEC,Study Abroad,D+,1,Unknown Instructor,1229,FOST 3203
+FOST,3203,501,LEC,Study Abroad,S,1,Unknown Instructor,1229,FOST 3203
+FOST,3203,501,LEC,Study Abroad,W,2,Unknown Instructor,1229,FOST 3203
+FOST,3204,501,LEC,Study Abroad,A,147,Unknown Instructor,1229,FOST 3204
+FOST,3204,501,LEC,Study Abroad,A-,51,Unknown Instructor,1229,FOST 3204
+FOST,3204,501,LEC,Study Abroad,B,9,Unknown Instructor,1229,FOST 3204
+FOST,3204,501,LEC,Study Abroad,B+,22,Unknown Instructor,1229,FOST 3204
+FOST,3204,501,LEC,Study Abroad,B-,5,Unknown Instructor,1229,FOST 3204
+FOST,3204,501,LEC,Study Abroad,C,2,Unknown Instructor,1229,FOST 3204
+FOST,3204,501,LEC,Study Abroad,C+,2,Unknown Instructor,1229,FOST 3204
+FOST,3204,501,LEC,Study Abroad,C-,1,Unknown Instructor,1229,FOST 3204
+FOST,3204,501,LEC,Study Abroad,D+,1,Unknown Instructor,1229,FOST 3204
+FOST,3204,501,LEC,Study Abroad,F,3,Unknown Instructor,1229,FOST 3204
+FOST,3204,501,LEC,Study Abroad,S,2,Unknown Instructor,1229,FOST 3204
+FOST,3204,501,LEC,Study Abroad,W,1,Unknown Instructor,1229,FOST 3204
+FOST,3205,501,LEC,Study Abroad,A,29,Unknown Instructor,1229,FOST 3205
+FOST,3205,501,LEC,Study Abroad,A-,11,Unknown Instructor,1229,FOST 3205
+FOST,3205,501,LEC,Study Abroad,B,2,Unknown Instructor,1229,FOST 3205
+FOST,3205,501,LEC,Study Abroad,B+,4,Unknown Instructor,1229,FOST 3205
+FOST,3205,501,LEC,Study Abroad,B-,1,Unknown Instructor,1229,FOST 3205
+FOST,3205,501,LEC,Study Abroad,D,1,Unknown Instructor,1229,FOST 3205
+FOST,3205,501,LEC,Study Abroad,F,3,Unknown Instructor,1229,FOST 3205
+FOST,3205,501,LEC,Study Abroad,S,1,Unknown Instructor,1229,FOST 3205
+FOST,3205,501,LEC,Study Abroad,W,2,Unknown Instructor,1229,FOST 3205
+FOST,3500,501,LEC,Study Abroad,A,7,Unknown Instructor,1229,FOST 3500
+FOST,3500,501,LEC,Study Abroad,A-,1,Unknown Instructor,1229,FOST 3500
+FOST,3500,501,LEC,Study Abroad,B,1,Unknown Instructor,1229,FOST 3500
+FOST,3500,501,LEC,Study Abroad,F,1,Unknown Instructor,1229,FOST 3500
+FOST,3530,501,LEC,Study Abroad,A,4,Unknown Instructor,1229,FOST 3530
+FOST,3530,501,LEC,Study Abroad,A-,1,Unknown Instructor,1229,FOST 3530
+FOST,3530,501,LEC,Study Abroad,B,2,Unknown Instructor,1229,FOST 3530
+FOST,3530,501,LEC,Study Abroad,B+,4,Unknown Instructor,1229,FOST 3530
+FOST,3530,501,LEC,Study Abroad,C+,1,Unknown Instructor,1229,FOST 3530
+FOST,3530,501,LEC,Study Abroad,D,1,Unknown Instructor,1229,FOST 3530
+FOST,3530,501,LEC,Study Abroad,S,1,Unknown Instructor,1229,FOST 3530
+FOST,3590,501,LEC,Study Abroad,A,6,Unknown Instructor,1229,FOST 3590
+FOST,3590,501,LEC,Study Abroad,A-,1,Unknown Instructor,1229,FOST 3590
+FOST,3590,501,LEC,Study Abroad,B+,1,Unknown Instructor,1229,FOST 3590
+FOST,3590,501,LEC,Study Abroad,C+,1,Unknown Instructor,1229,FOST 3590
+FOST,3590,501,LEC,Study Abroad,F,1,Unknown Instructor,1229,FOST 3590
 FREN,1001,001,DIS,Beginning French I,A,3,Daria Belchik,1229,FREN 1001
 FREN,1001,001,DIS,Beginning French I,A-,6,Daria Belchik,1229,FREN 1001
 FREN,1001,001,DIS,Beginning French I,B,1,Daria Belchik,1229,FREN 1001
@@ -15972,12 +15972,12 @@ GEOG,1301W,004,DIS,Our Globalizing World,A,23,Taiza Troutman,1229,GEOG 1301W
 GEOG,1301W,004,DIS,Our Globalizing World,A-,4,Taiza Troutman,1229,GEOG 1301W
 GEOG,1301W,004,DIS,Our Globalizing World,B+,1,Taiza Troutman,1229,GEOG 1301W
 GEOG,1301W,004,DIS,Our Globalizing World,F,1,Taiza Troutman,1229,GEOG 1301W
-GEOG,1301W,005,DIS,Our Globalizing World,A,21,Unknown Professor,1229,GEOG 1301W
-GEOG,1301W,005,DIS,Our Globalizing World,A-,1,Unknown Professor,1229,GEOG 1301W
-GEOG,1301W,005,DIS,Our Globalizing World,B,1,Unknown Professor,1229,GEOG 1301W
-GEOG,1301W,005,DIS,Our Globalizing World,B+,2,Unknown Professor,1229,GEOG 1301W
-GEOG,1301W,005,DIS,Our Globalizing World,B-,1,Unknown Professor,1229,GEOG 1301W
-GEOG,1301W,005,DIS,Our Globalizing World,W,1,Unknown Professor,1229,GEOG 1301W
+GEOG,1301W,005,DIS,Our Globalizing World,A,21,Unknown Instructor,1229,GEOG 1301W
+GEOG,1301W,005,DIS,Our Globalizing World,A-,1,Unknown Instructor,1229,GEOG 1301W
+GEOG,1301W,005,DIS,Our Globalizing World,B,1,Unknown Instructor,1229,GEOG 1301W
+GEOG,1301W,005,DIS,Our Globalizing World,B+,2,Unknown Instructor,1229,GEOG 1301W
+GEOG,1301W,005,DIS,Our Globalizing World,B-,1,Unknown Instructor,1229,GEOG 1301W
+GEOG,1301W,005,DIS,Our Globalizing World,W,1,Unknown Instructor,1229,GEOG 1301W
 GEOG,1372,001,LEC,Global Cities,A,61,Anya Kaplan-Seem,1229,GEOG 1372
 GEOG,1372,001,LEC,Global Cities,A-,5,Anya Kaplan-Seem,1229,GEOG 1372
 GEOG,1372,001,LEC,Global Cities,B,1,Anya Kaplan-Seem,1229,GEOG 1372
@@ -16007,10 +16007,10 @@ GEOG,1403,004,LAB,Biogeography,B+,1,Daniel Griffin,1229,GEOG 1403
 GEOG,1403,004,LAB,Biogeography,B-,2,Daniel Griffin,1229,GEOG 1403
 GEOG,1403,004,LAB,Biogeography,C+,1,Daniel Griffin,1229,GEOG 1403
 GEOG,1403,004,LAB,Biogeography,W,1,Daniel Griffin,1229,GEOG 1403
-GEOG,1403,005,LAB,Biogeography,A,15,Unknown Professor,1229,GEOG 1403
-GEOG,1403,005,LAB,Biogeography,A-,6,Unknown Professor,1229,GEOG 1403
-GEOG,1403,005,LAB,Biogeography,B,1,Unknown Professor,1229,GEOG 1403
-GEOG,1403,005,LAB,Biogeography,C,1,Unknown Professor,1229,GEOG 1403
+GEOG,1403,005,LAB,Biogeography,A,15,Unknown Instructor,1229,GEOG 1403
+GEOG,1403,005,LAB,Biogeography,A-,6,Unknown Instructor,1229,GEOG 1403
+GEOG,1403,005,LAB,Biogeography,B,1,Unknown Instructor,1229,GEOG 1403
+GEOG,1403,005,LAB,Biogeography,C,1,Unknown Instructor,1229,GEOG 1403
 GEOG,1403,006,LAB,Biogeography,A,14,Daniel Griffin,1229,GEOG 1403
 GEOG,1403,006,LAB,Biogeography,A-,3,Daniel Griffin,1229,GEOG 1403
 GEOG,1403,006,LAB,Biogeography,B,1,Daniel Griffin,1229,GEOG 1403
@@ -16018,10 +16018,10 @@ GEOG,1403,006,LAB,Biogeography,B+,1,Daniel Griffin,1229,GEOG 1403
 GEOG,1403,006,LAB,Biogeography,C,1,Daniel Griffin,1229,GEOG 1403
 GEOG,1403,006,LAB,Biogeography,C-,1,Daniel Griffin,1229,GEOG 1403
 GEOG,1403,006,LAB,Biogeography,S,1,Daniel Griffin,1229,GEOG 1403
-GEOG,1403,007,LAB,Biogeography,A,20,Unknown Professor,1229,GEOG 1403
-GEOG,1403,007,LAB,Biogeography,A-,2,Unknown Professor,1229,GEOG 1403
-GEOG,1403,007,LAB,Biogeography,S,1,Unknown Professor,1229,GEOG 1403
-GEOG,1403,007,LAB,Biogeography,W,1,Unknown Professor,1229,GEOG 1403
+GEOG,1403,007,LAB,Biogeography,A,20,Unknown Instructor,1229,GEOG 1403
+GEOG,1403,007,LAB,Biogeography,A-,2,Unknown Instructor,1229,GEOG 1403
+GEOG,1403,007,LAB,Biogeography,S,1,Unknown Instructor,1229,GEOG 1403
+GEOG,1403,007,LAB,Biogeography,W,1,Unknown Instructor,1229,GEOG 1403
 GEOG,1403,008,LAB,Biogeography,A,12,Daniel Griffin,1229,GEOG 1403
 GEOG,1403,008,LAB,Biogeography,A-,5,Daniel Griffin,1229,GEOG 1403
 GEOG,1403,008,LAB,Biogeography,B+,2,Daniel Griffin,1229,GEOG 1403
@@ -16029,11 +16029,11 @@ GEOG,1403,008,LAB,Biogeography,C+,1,Daniel Griffin,1229,GEOG 1403
 GEOG,1403,008,LAB,Biogeography,D,1,Daniel Griffin,1229,GEOG 1403
 GEOG,1403,008,LAB,Biogeography,D+,1,Daniel Griffin,1229,GEOG 1403
 GEOG,1403,008,LAB,Biogeography,F,2,Daniel Griffin,1229,GEOG 1403
-GEOG,1403,009,LAB,Biogeography,A,17,Unknown Professor,1229,GEOG 1403
-GEOG,1403,009,LAB,Biogeography,A-,1,Unknown Professor,1229,GEOG 1403
-GEOG,1403,009,LAB,Biogeography,C,1,Unknown Professor,1229,GEOG 1403
-GEOG,1403,009,LAB,Biogeography,S,2,Unknown Professor,1229,GEOG 1403
-GEOG,1403,009,LAB,Biogeography,W,1,Unknown Professor,1229,GEOG 1403
+GEOG,1403,009,LAB,Biogeography,A,17,Unknown Instructor,1229,GEOG 1403
+GEOG,1403,009,LAB,Biogeography,A-,1,Unknown Instructor,1229,GEOG 1403
+GEOG,1403,009,LAB,Biogeography,C,1,Unknown Instructor,1229,GEOG 1403
+GEOG,1403,009,LAB,Biogeography,S,2,Unknown Instructor,1229,GEOG 1403
+GEOG,1403,009,LAB,Biogeography,W,1,Unknown Instructor,1229,GEOG 1403
 GEOG,1403,010,LAB,Biogeography,A,15,Daniel Griffin,1229,GEOG 1403
 GEOG,1403,010,LAB,Biogeography,A-,3,Daniel Griffin,1229,GEOG 1403
 GEOG,1403,010,LAB,Biogeography,B,1,Daniel Griffin,1229,GEOG 1403
@@ -16122,11 +16122,11 @@ GEOG,3511,003,LAB,Principles of Cartography,B+,3,Erik Sauer,1229,GEOG 3511
 GEOG,3511,003,LAB,Principles of Cartography,C+,1,Erik Sauer,1229,GEOG 3511
 GEOG,3511,003,LAB,Principles of Cartography,F,2,Erik Sauer,1229,GEOG 3511
 GEOG,3511,003,LAB,Principles of Cartography,W,1,Erik Sauer,1229,GEOG 3511
-GEOG,3531,002,LAB,Spatial Analysis,A,5,Unknown Professor,1229,GEOG 3531
-GEOG,3531,002,LAB,Spatial Analysis,A-,3,Unknown Professor,1229,GEOG 3531
-GEOG,3531,002,LAB,Spatial Analysis,B,1,Unknown Professor,1229,GEOG 3531
-GEOG,3531,002,LAB,Spatial Analysis,B+,6,Unknown Professor,1229,GEOG 3531
-GEOG,3531,002,LAB,Spatial Analysis,W,1,Unknown Professor,1229,GEOG 3531
+GEOG,3531,002,LAB,Spatial Analysis,A,5,Unknown Instructor,1229,GEOG 3531
+GEOG,3531,002,LAB,Spatial Analysis,A-,3,Unknown Instructor,1229,GEOG 3531
+GEOG,3531,002,LAB,Spatial Analysis,B,1,Unknown Instructor,1229,GEOG 3531
+GEOG,3531,002,LAB,Spatial Analysis,B+,6,Unknown Instructor,1229,GEOG 3531
+GEOG,3531,002,LAB,Spatial Analysis,W,1,Unknown Instructor,1229,GEOG 3531
 GEOG,3561,002,LAB,Principles of GIS,A,10,Sayed Hossaini,1229,GEOG 3561
 GEOG,3561,002,LAB,Principles of GIS,A-,5,Sayed Hossaini,1229,GEOG 3561
 GEOG,3561,002,LAB,Principles of GIS,B,1,Sayed Hossaini,1229,GEOG 3561
@@ -17474,7 +17474,7 @@ IBUS,3092,003,DIS,Understanding Int'l Business,A-,7,Michael Nolan,1229,IBUS 3092
 IBUS,3092,003,DIS,Understanding Int'l Business,B,5,Michael Nolan,1229,IBUS 3092
 IBUS,3092,003,DIS,Understanding Int'l Business,B+,6,Michael Nolan,1229,IBUS 3092
 IBUS,3092,003,DIS,Understanding Int'l Business,W,1,Michael Nolan,1229,IBUS 3092
-IBUS,3500,001,LEC,Undergraduate Exchange,W,1,Unknown Professor,1229,IBUS 3500
+IBUS,3500,001,LEC,Undergraduate Exchange,W,1,Unknown Instructor,1229,IBUS 3500
 IBUS,4125,001,LEC,Global Banking,A,17,Susanna Gibbons,1229,IBUS 4125
 IBUS,4125,001,LEC,Global Banking,A-,12,Susanna Gibbons,1229,IBUS 4125
 IBUS,4125,001,LEC,Global Banking,B+,1,Susanna Gibbons,1229,IBUS 4125
@@ -19976,16 +19976,16 @@ LING,5205,001,LEC,Semantics,B-,2,Brian Reese,1229,LING 5205
 LING,5205,001,LEC,Semantics,C+,2,Brian Reese,1229,LING 5205
 LING,5205,001,LEC,Semantics,F,2,Brian Reese,1229,LING 5205
 LING,5205,001,LEC,Semantics,W,1,Brian Reese,1229,LING 5205
-LNDN,3217W,501,LEC,Writing the City: London,A,13,Unknown Professor,1229,LNDN 3217W
-LNDN,3217W,501,LEC,Writing the City: London,A-,6,Unknown Professor,1229,LNDN 3217W
-LNDN,3217W,501,LEC,Writing the City: London,C-,1,Unknown Professor,1229,LNDN 3217W
-LNDN,3239,501,LEC,Theatre in the City,A,16,Unknown Professor,1229,LNDN 3239
-LNDN,3239,501,LEC,Theatre in the City,A-,3,Unknown Professor,1229,LNDN 3239
-LNDN,3239,501,LEC,Theatre in the City,B+,2,Unknown Professor,1229,LNDN 3239
-LNDN,3375,501,LEC,Global Internship London,A,11,Unknown Professor,1229,LNDN 3375
-LNDN,3375,501,LEC,Global Internship London,A-,11,Unknown Professor,1229,LNDN 3375
-LNDN,3531,501,LEC,Advertising & Mktg in Britain,A,4,Unknown Professor,1229,LNDN 3531
-LNDN,3531,501,LEC,Advertising & Mktg in Britain,A-,6,Unknown Professor,1229,LNDN 3531
+LNDN,3217W,501,LEC,Writing the City: London,A,13,Unknown Instructor,1229,LNDN 3217W
+LNDN,3217W,501,LEC,Writing the City: London,A-,6,Unknown Instructor,1229,LNDN 3217W
+LNDN,3217W,501,LEC,Writing the City: London,C-,1,Unknown Instructor,1229,LNDN 3217W
+LNDN,3239,501,LEC,Theatre in the City,A,16,Unknown Instructor,1229,LNDN 3239
+LNDN,3239,501,LEC,Theatre in the City,A-,3,Unknown Instructor,1229,LNDN 3239
+LNDN,3239,501,LEC,Theatre in the City,B+,2,Unknown Instructor,1229,LNDN 3239
+LNDN,3375,501,LEC,Global Internship London,A,11,Unknown Instructor,1229,LNDN 3375
+LNDN,3375,501,LEC,Global Internship London,A-,11,Unknown Instructor,1229,LNDN 3375
+LNDN,3531,501,LEC,Advertising & Mktg in Britain,A,4,Unknown Instructor,1229,LNDN 3531
+LNDN,3531,501,LEC,Advertising & Mktg in Britain,A-,6,Unknown Instructor,1229,LNDN 3531
 MABA,6141,090,LEC,"Ethics, Data Priv, and Gov",A,4,Jeffrey Kaufmann,1229,MABA 6141
 MABA,6141,090,LEC,"Ethics, Data Priv, and Gov",A-,5,Jeffrey Kaufmann,1229,MABA 6141
 MABA,6141,090,LEC,"Ethics, Data Priv, and Gov",B,2,Jeffrey Kaufmann,1229,MABA 6141
@@ -20085,10 +20085,10 @@ MATH,1042,001,LEC,Math of Design,B-,3,Mark Kayser,1229,MATH 1042
 MATH,1042,001,LEC,Math of Design,C,1,Mark Kayser,1229,MATH 1042
 MATH,1042,001,LEC,Math of Design,S,1,Mark Kayser,1229,MATH 1042
 MATH,1042,001,LEC,Math of Design,W,1,Mark Kayser,1229,MATH 1042
-MATH,1049,001,LEC,Intermediate Algebra Skills,S,12,Unknown Professor,1229,MATH 1049
-MATH,1049,001,LEC,Intermediate Algebra Skills,W,1,Unknown Professor,1229,MATH 1049
-MATH,1049,002,LEC,Intermediate Algebra Skills,N,1,Unknown Professor,1229,MATH 1049
-MATH,1049,002,LEC,Intermediate Algebra Skills,S,19,Unknown Professor,1229,MATH 1049
+MATH,1049,001,LEC,Intermediate Algebra Skills,S,12,Unknown Instructor,1229,MATH 1049
+MATH,1049,001,LEC,Intermediate Algebra Skills,W,1,Unknown Instructor,1229,MATH 1049
+MATH,1049,002,LEC,Intermediate Algebra Skills,N,1,Unknown Instructor,1229,MATH 1049
+MATH,1049,002,LEC,Intermediate Algebra Skills,S,19,Unknown Instructor,1229,MATH 1049
 MATH,1051,001,LEC,Precalculus I,A,14,Robert Angarone,1229,MATH 1051
 MATH,1051,001,LEC,Precalculus I,A-,6,Robert Angarone,1229,MATH 1051
 MATH,1051,001,LEC,Precalculus I,B,8,Robert Angarone,1229,MATH 1051
@@ -20240,15 +20240,15 @@ MATH,1142,026,DIS,Short Calculus,B-,1,Mikal Nelson,1229,MATH 1142
 MATH,1142,026,DIS,Short Calculus,C,4,Mikal Nelson,1229,MATH 1142
 MATH,1142,026,DIS,Short Calculus,C+,2,Mikal Nelson,1229,MATH 1142
 MATH,1142,026,DIS,Short Calculus,W,1,Mikal Nelson,1229,MATH 1142
-MATH,1149,001,LEC,College Algebra Skills,N,2,Unknown Professor,1229,MATH 1149
-MATH,1149,001,LEC,College Algebra Skills,S,19,Unknown Professor,1229,MATH 1149
-MATH,1149,002,LEC,College Algebra Skills,N,2,Unknown Professor,1229,MATH 1149
-MATH,1149,002,LEC,College Algebra Skills,S,22,Unknown Professor,1229,MATH 1149
-MATH,1149,003,LEC,College Algebra Skills,N,2,Unknown Professor,1229,MATH 1149
-MATH,1149,003,LEC,College Algebra Skills,S,17,Unknown Professor,1229,MATH 1149
-MATH,1149,003,LEC,College Algebra Skills,W,2,Unknown Professor,1229,MATH 1149
-MATH,1149,004,LEC,College Algebra Skills,N,1,Unknown Professor,1229,MATH 1149
-MATH,1149,004,LEC,College Algebra Skills,S,16,Unknown Professor,1229,MATH 1149
+MATH,1149,001,LEC,College Algebra Skills,N,2,Unknown Instructor,1229,MATH 1149
+MATH,1149,001,LEC,College Algebra Skills,S,19,Unknown Instructor,1229,MATH 1149
+MATH,1149,002,LEC,College Algebra Skills,N,2,Unknown Instructor,1229,MATH 1149
+MATH,1149,002,LEC,College Algebra Skills,S,22,Unknown Instructor,1229,MATH 1149
+MATH,1149,003,LEC,College Algebra Skills,N,2,Unknown Instructor,1229,MATH 1149
+MATH,1149,003,LEC,College Algebra Skills,S,17,Unknown Instructor,1229,MATH 1149
+MATH,1149,003,LEC,College Algebra Skills,W,2,Unknown Instructor,1229,MATH 1149
+MATH,1149,004,LEC,College Algebra Skills,N,1,Unknown Instructor,1229,MATH 1149
+MATH,1149,004,LEC,College Algebra Skills,S,16,Unknown Instructor,1229,MATH 1149
 MATH,1151,001,LEC,Precalculus II,A,4,Shelley Kandola,1229,MATH 1151
 MATH,1151,001,LEC,Precalculus II,A-,11,Shelley Kandola,1229,MATH 1151
 MATH,1151,001,LEC,Precalculus II,B,6,Shelley Kandola,1229,MATH 1151
@@ -20371,18 +20371,18 @@ MATH,1241,016,DIS,Calc & Dyn  Sys in Biology,C+,2,Duane Nykamp,1229,MATH 1241
 MATH,1241,016,DIS,Calc & Dyn  Sys in Biology,C-,3,Duane Nykamp,1229,MATH 1241
 MATH,1241,016,DIS,Calc & Dyn  Sys in Biology,D,1,Duane Nykamp,1229,MATH 1241
 MATH,1241,016,DIS,Calc & Dyn  Sys in Biology,W,1,Duane Nykamp,1229,MATH 1241
-MATH,1269,002,LEC,Precalculus Skills,N,1,Unknown Professor,1229,MATH 1269
-MATH,1269,002,LEC,Precalculus Skills,S,16,Unknown Professor,1229,MATH 1269
-MATH,1269,002,LEC,Precalculus Skills,W,1,Unknown Professor,1229,MATH 1269
-MATH,1269,003,LEC,Precalculus Skills,N,3,Unknown Professor,1229,MATH 1269
-MATH,1269,003,LEC,Precalculus Skills,S,15,Unknown Professor,1229,MATH 1269
-MATH,1269,004,LEC,Precalculus Skills,N,2,Unknown Professor,1229,MATH 1269
-MATH,1269,004,LEC,Precalculus Skills,S,11,Unknown Professor,1229,MATH 1269
-MATH,1269,004,LEC,Precalculus Skills,W,1,Unknown Professor,1229,MATH 1269
-MATH,1269,005,LEC,Precalculus Skills,S,19,Unknown Professor,1229,MATH 1269
-MATH,1269,005,LEC,Precalculus Skills,W,2,Unknown Professor,1229,MATH 1269
-MATH,1269,006,LEC,Precalculus Skills,N,2,Unknown Professor,1229,MATH 1269
-MATH,1269,006,LEC,Precalculus Skills,S,12,Unknown Professor,1229,MATH 1269
+MATH,1269,002,LEC,Precalculus Skills,N,1,Unknown Instructor,1229,MATH 1269
+MATH,1269,002,LEC,Precalculus Skills,S,16,Unknown Instructor,1229,MATH 1269
+MATH,1269,002,LEC,Precalculus Skills,W,1,Unknown Instructor,1229,MATH 1269
+MATH,1269,003,LEC,Precalculus Skills,N,3,Unknown Instructor,1229,MATH 1269
+MATH,1269,003,LEC,Precalculus Skills,S,15,Unknown Instructor,1229,MATH 1269
+MATH,1269,004,LEC,Precalculus Skills,N,2,Unknown Instructor,1229,MATH 1269
+MATH,1269,004,LEC,Precalculus Skills,S,11,Unknown Instructor,1229,MATH 1269
+MATH,1269,004,LEC,Precalculus Skills,W,1,Unknown Instructor,1229,MATH 1269
+MATH,1269,005,LEC,Precalculus Skills,S,19,Unknown Instructor,1229,MATH 1269
+MATH,1269,005,LEC,Precalculus Skills,W,2,Unknown Instructor,1229,MATH 1269
+MATH,1269,006,LEC,Precalculus Skills,N,2,Unknown Instructor,1229,MATH 1269
+MATH,1269,006,LEC,Precalculus Skills,S,12,Unknown Instructor,1229,MATH 1269
 MATH,1271,001,LEC,Calculus I,A,7,Diyi Liu,1229,MATH 1271
 MATH,1271,001,LEC,Calculus I,A-,4,Diyi Liu,1229,MATH 1271
 MATH,1271,001,LEC,Calculus I,B,3,Diyi Liu,1229,MATH 1271
@@ -22565,8 +22565,8 @@ ME,8363,001,LEC,Reacting Flows,A-,3,Suo Yang,1229,ME 8363
 ME,8363,001,LEC,Reacting Flows,B,1,Suo Yang,1229,ME 8363
 ME,8363,001,LEC,Reacting Flows,B+,1,Suo Yang,1229,ME 8363
 ME,8363,001,LEC,Reacting Flows,B-,1,Suo Yang,1229,ME 8363
-ME,8666,001,IND,Doct Pre-Thesis Cr,NG,17,Unknown Professor,1229,ME 8666
-ME,8666,001,IND,Doct Pre-Thesis Cr,W,1,Unknown Professor,1229,ME 8666
+ME,8666,001,IND,Doct Pre-Thesis Cr,NG,17,Unknown Instructor,1229,ME 8666
+ME,8666,001,IND,Doct Pre-Thesis Cr,W,1,Unknown Instructor,1229,ME 8666
 ME,8773,001,LEC,Graduate Seminar,N,2,Xiaojia Wang,1229,ME 8773
 ME,8773,001,LEC,Graduate Seminar,S,38,Xiaojia Wang,1229,ME 8773
 ME,8774,001,LEC,Graduate Seminar,N,3,Xiaojia Wang,1229,ME 8774
@@ -23860,16 +23860,16 @@ MUS,5611,001,LEC,Music Research,C-,1,Painter,1229,MUS 5611
 MUS,5993,001,IND,Directed Studies,A,2,Rachel Hest,1229,MUS 5993
 MUS,5993,001,IND,Directed Studies,A-,3,Rachel Hest,1229,MUS 5993
 MUS,5993,001,IND,Directed Studies,B+,2,Rachel Hest,1229,MUS 5993
-MUS,8994,001,IND,Directed Research,A,8,Unknown Professor,1229,MUS 8994
-MUS,8999,001,DIS,Doctoral Recital,A,13,Unknown Professor,1229,MUS 8999
+MUS,8994,001,IND,Directed Research,A,8,Unknown Instructor,1229,MUS 8994
+MUS,8999,001,DIS,Doctoral Recital,A,13,Unknown Instructor,1229,MUS 8999
 MUSA,8324,001,LAB,Accompanying/Coaching: Maj.,A,9,Timothy Lovelace,1229,MUSA 8324
 MUSA,8324,001,LAB,Accompanying/Coaching: Maj.,A-,1,Timothy Lovelace,1229,MUSA 8324
 NAV,1101,001,LEC,Intro to Naval Sci,A,5,Blake Tornga,1229,NAV 1101
 NAV,1101,001,LEC,Intro to Naval Sci,A-,3,Blake Tornga,1229,NAV 1101
 NAV,1101,001,LEC,Intro to Naval Sci,B,4,Blake Tornga,1229,NAV 1101
 NAV,1101,001,LEC,Intro to Naval Sci,B+,1,Blake Tornga,1229,NAV 1101
-NEUR,7510,003,ROT,Neurology Externship,N,1,Unknown Professor,1229,NEUR 7510
-NEUR,7510,003,ROT,Neurology Externship,P,15,Unknown Professor,1229,NEUR 7510
+NEUR,7510,003,ROT,Neurology Externship,N,1,Unknown Instructor,1229,NEUR 7510
+NEUR,7510,003,ROT,Neurology Externship,P,15,Unknown Instructor,1229,NEUR 7510
 NOR,1001,001,DIS,Beginning Norwegian,A,4,Kyle Korynta,1229,NOR 1001
 NOR,1001,001,DIS,Beginning Norwegian,A-,2,Kyle Korynta,1229,NOR 1001
 NOR,1001,001,DIS,Beginning Norwegian,B,2,Kyle Korynta,1229,NOR 1001
@@ -23888,8 +23888,8 @@ NOR,1003,001,DIS,Intermediate Norwegian,A-,2,Kyle Korynta,1229,NOR 1003
 NOR,1003,001,DIS,Intermediate Norwegian,B,2,Kyle Korynta,1229,NOR 1003
 NOR,1003,001,DIS,Intermediate Norwegian,B-,4,Kyle Korynta,1229,NOR 1003
 NOR,1003,001,DIS,Intermediate Norwegian,C+,2,Kyle Korynta,1229,NOR 1003
-NR,8444,001,IND,FTE: Doctoral,NG,11,Unknown Professor,1229,NR 8444
-NR,8444,001,IND,FTE: Doctoral,W,1,Unknown Professor,1229,NR 8444
+NR,8444,001,IND,FTE: Doctoral,NG,11,Unknown Instructor,1229,NR 8444
+NR,8444,001,IND,FTE: Doctoral,W,1,Unknown Instructor,1229,NR 8444
 NSC,5461,001,LEC,Cell Molec Nsci,A,9,Eric Newman,1229,NSC 5461
 NSC,5461,001,LEC,Cell Molec Nsci,A-,9,Eric Newman,1229,NSC 5461
 NSC,5461,001,LEC,Cell Molec Nsci,B-,1,Eric Newman,1229,NSC 5461
@@ -24183,11 +24183,11 @@ NURS,4777W,001,LEC,Senior Proj in the Nurs Major,A-,4,Donna Eull,1229,NURS 4777W
 NURS,4777W,001,LEC,Senior Proj in the Nurs Major,B+,1,Donna Eull,1229,NURS 4777W
 NURS,4777W,002,LEC,Senior Proj in the Nurs Major,A,30,Mary Whipple,1229,NURS 4777W
 NURS,4777W,002,LEC,Senior Proj in the Nurs Major,A-,1,Mary Whipple,1229,NURS 4777W
-NURS,5029,002,LAB,Intro to Nurs Interventions,A,20,Unknown Professor,1229,NURS 5029
-NURS,5029,002,LAB,Intro to Nurs Interventions,A-,1,Unknown Professor,1229,NURS 5029
-NURS,5029,002,LAB,Intro to Nurs Interventions,W,1,Unknown Professor,1229,NURS 5029
-NURS,5029,003,LAB,Intro to Nurs Interventions,A,21,Unknown Professor,1229,NURS 5029
-NURS,5029,003,LAB,Intro to Nurs Interventions,A-,1,Unknown Professor,1229,NURS 5029
+NURS,5029,002,LAB,Intro to Nurs Interventions,A,20,Unknown Instructor,1229,NURS 5029
+NURS,5029,002,LAB,Intro to Nurs Interventions,A-,1,Unknown Instructor,1229,NURS 5029
+NURS,5029,002,LAB,Intro to Nurs Interventions,W,1,Unknown Instructor,1229,NURS 5029
+NURS,5029,003,LAB,Intro to Nurs Interventions,A,21,Unknown Instructor,1229,NURS 5029
+NURS,5029,003,LAB,Intro to Nurs Interventions,A-,1,Unknown Instructor,1229,NURS 5029
 NURS,5030,001,LEC,FoundationConcepProfessNursing,A,45,Erica Schorr,1229,NURS 5030
 NURS,5030,001,LEC,FoundationConcepProfessNursing,A-,17,Erica Schorr,1229,NURS 5030
 NURS,5030,001,LEC,FoundationConcepProfessNursing,W,1,Erica Schorr,1229,NURS 5030
@@ -24681,8 +24681,8 @@ OLPD,8502,001,LEC,Advanced Evaluation Theory,B+,1,John LaVelle,1229,OLPD 8502
 OLPD,8502,001,LEC,Advanced Evaluation Theory,D,1,John LaVelle,1229,OLPD 8502
 OLPD,8703,001,DIS,Public Policy in Higher Educ,A,12,Karen Miksch,1229,OLPD 8703
 OLPD,8703,001,DIS,Public Policy in Higher Educ,A-,1,Karen Miksch,1229,OLPD 8703
-OLPD,8888,001,IND,Thesis Credit:Doct*,NG,46,Unknown Professor,1229,OLPD 8888
-OLPD,8888,001,IND,Thesis Credit:Doct*,W,2,Unknown Professor,1229,OLPD 8888
+OLPD,8888,001,IND,Thesis Credit:Doct*,NG,46,Unknown Instructor,1229,OLPD 8888
+OLPD,8888,001,IND,Thesis Credit:Doct*,W,2,Unknown Instructor,1229,OLPD 8888
 OT,1003,001,LEC,Intro:Occup Therap,A,28,Cindy Jacobs,1229,OT 1003
 OT,1003,001,LEC,Intro:Occup Therap,A-,2,Cindy Jacobs,1229,OT 1003
 OT,1003,001,LEC,Intro:Occup Therap,B,2,Cindy Jacobs,1229,OT 1003
@@ -25675,11 +25675,11 @@ PHAR,6710,002,LAB,Pharm Care Skills Lab I,N,1,Katie Oja,1229,PHAR 6710
 PHAR,6710,002,LAB,Pharm Care Skills Lab I,S,29,Katie Oja,1229,PHAR 6710
 PHAR,6710,003,LAB,Pharm Care Skills Lab I,S,29,Katie Oja,1229,PHAR 6710
 PHAR,6710,003,LAB,Pharm Care Skills Lab I,W,1,Katie Oja,1229,PHAR 6710
-PHAR,6730,001,DIS,Career & Prof Foundations II,A,78,Unknown Professor,1229,PHAR 6730
-PHAR,6730,001,DIS,Career & Prof Foundations II,A-,6,Unknown Professor,1229,PHAR 6730
-PHAR,6730,001,DIS,Career & Prof Foundations II,B,1,Unknown Professor,1229,PHAR 6730
-PHAR,6730,001,DIS,Career & Prof Foundations II,B+,3,Unknown Professor,1229,PHAR 6730
-PHAR,6730,001,DIS,Career & Prof Foundations II,F,1,Unknown Professor,1229,PHAR 6730
+PHAR,6730,001,DIS,Career & Prof Foundations II,A,78,Unknown Instructor,1229,PHAR 6730
+PHAR,6730,001,DIS,Career & Prof Foundations II,A-,6,Unknown Instructor,1229,PHAR 6730
+PHAR,6730,001,DIS,Career & Prof Foundations II,B,1,Unknown Instructor,1229,PHAR 6730
+PHAR,6730,001,DIS,Career & Prof Foundations II,B+,3,Unknown Instructor,1229,PHAR 6730
+PHAR,6730,001,DIS,Career & Prof Foundations II,F,1,Unknown Instructor,1229,PHAR 6730
 PHAR,6732,001,LEC,Med Chem and Pharmacology,A,36,Beshay Zordoky,1229,PHAR 6732
 PHAR,6732,001,LEC,Med Chem and Pharmacology,A-,20,Beshay Zordoky,1229,PHAR 6732
 PHAR,6732,001,LEC,Med Chem and Pharmacology,B,14,Beshay Zordoky,1229,PHAR 6732
@@ -25717,9 +25717,9 @@ PHAR,6738,001,LEC,Pharmacokinetics,D,1,William Elmquist,1229,PHAR 6738
 PHAR,6738,001,LEC,Pharmacokinetics,F,1,William Elmquist,1229,PHAR 6738
 PHAR,6740,004,LAB,Pharm Care Skills Lab III,N,2,Jared Van Hooser,1229,PHAR 6740
 PHAR,6740,004,LAB,Pharm Care Skills Lab III,S,26,Jared Van Hooser,1229,PHAR 6740
-PHAR,6760,001,DIS,Career & Prof Foundations IV,A,82,Unknown Professor,1229,PHAR 6760
-PHAR,6760,001,DIS,Career & Prof Foundations IV,A-,4,Unknown Professor,1229,PHAR 6760
-PHAR,6760,001,DIS,Career & Prof Foundations IV,B+,1,Unknown Professor,1229,PHAR 6760
+PHAR,6760,001,DIS,Career & Prof Foundations IV,A,82,Unknown Instructor,1229,PHAR 6760
+PHAR,6760,001,DIS,Career & Prof Foundations IV,A-,4,Unknown Instructor,1229,PHAR 6760
+PHAR,6760,001,DIS,Career & Prof Foundations IV,B+,1,Unknown Instructor,1229,PHAR 6760
 PHAR,6762,001,LEC,Med Chem & Neuropharmacology,A,36,Elizabeth Ambrose,1229,PHAR 6762
 PHAR,6762,001,LEC,Med Chem & Neuropharmacology,A-,26,Elizabeth Ambrose,1229,PHAR 6762
 PHAR,6762,001,LEC,Med Chem & Neuropharmacology,B,8,Elizabeth Ambrose,1229,PHAR 6762
@@ -25758,8 +25758,8 @@ PHAR,6961,001,LEC,Women's Health,A,34,Sarah Westberg,1229,PHAR 6961
 PHAR,6961,001,LEC,Women's Health,A-,3,Sarah Westberg,1229,PHAR 6961
 PHAR,7310,001,DIS,Intro Community Hlth & Engmnt,S,84,Meg Little,1229,PHAR 7310
 PHAR,7310,001,DIS,Intro Community Hlth & Engmnt,W,1,Meg Little,1229,PHAR 7310
-PHAR,7351,001,ROT,IPPE 1 - Community,S,84,Unknown Professor,1229,PHAR 7351
-PHAR,7351,001,ROT,IPPE 1 - Community,W,1,Unknown Professor,1229,PHAR 7351
+PHAR,7351,001,ROT,IPPE 1 - Community,S,84,Unknown Instructor,1229,PHAR 7351
+PHAR,7351,001,ROT,IPPE 1 - Community,W,1,Unknown Instructor,1229,PHAR 7351
 PHAR,7514,001,ROT,Advanced Practice Experience 4,N,1,Jeannine Conway,1229,PHAR 7514
 PHAR,7514,001,ROT,Advanced Practice Experience 4,S,100,Jeannine Conway,1229,PHAR 7514
 PHCL,2001,001,LEC,Basics of Pharmacology,A,14,Gregory Connell,1229,PHCL 2001
@@ -29322,10 +29322,10 @@ PUBH,8432,001,LEC,Probability Models for Biostat,B+,2,Sandra Safo,1229,PUBH 8432
 PUBH,8485,001,LEC,Methods for Causal Inference,A,8,David Vock,1229,PUBH 8485
 PUBH,8485,001,LEC,Methods for Causal Inference,A-,2,David Vock,1229,PUBH 8485
 PUBH,8485,001,LEC,Methods for Causal Inference,W,1,David Vock,1229,PUBH 8485
-PUBH,8666,001,IND,Doct Pre-Thesis Cr,NG,11,Unknown Professor,1229,PUBH 8666
-PUBH,8666,001,IND,Doct Pre-Thesis Cr,W,3,Unknown Professor,1229,PUBH 8666
-PUBH,8666,003,IND,Doct Pre-Thesis Cr,NG,14,Unknown Professor,1229,PUBH 8666
-PUBH,8666,003,IND,Doct Pre-Thesis Cr,W,3,Unknown Professor,1229,PUBH 8666
+PUBH,8666,001,IND,Doct Pre-Thesis Cr,NG,11,Unknown Instructor,1229,PUBH 8666
+PUBH,8666,001,IND,Doct Pre-Thesis Cr,W,3,Unknown Instructor,1229,PUBH 8666
+PUBH,8666,003,IND,Doct Pre-Thesis Cr,NG,14,Unknown Instructor,1229,PUBH 8666
+PUBH,8666,003,IND,Doct Pre-Thesis Cr,W,3,Unknown Instructor,1229,PUBH 8666
 RELS,1002,001,LEC,Introduction to Religion,A,4,Jeanne Kilde,1229,RELS 1002
 RELS,1002,001,LEC,Introduction to Religion,A-,4,Jeanne Kilde,1229,RELS 1002
 RELS,1002,001,LEC,Introduction to Religion,B,10,Jeanne Kilde,1229,RELS 1002
@@ -29694,26 +29694,26 @@ SENG,5707,001,LEC,Data Modeling,B,1,Allan Tokuda,1229,SENG 5707
 SENG,5707,001,LEC,Data Modeling,B+,2,Allan Tokuda,1229,SENG 5707
 SENG,5801,001,LEC,Software Engr 1,A,9,Mats Heimdahl,1229,SENG 5801
 SENG,5801,001,LEC,Software Engr 1,A-,3,Mats Heimdahl,1229,SENG 5801
-SFS,2060,501,LEC,Swahili Lang & E African Comm.,A,3,Unknown Professor,1229,SFS 2060
-SFS,2060,501,LEC,Swahili Lang & E African Comm.,A-,3,Unknown Professor,1229,SFS 2060
-SFS,2060,501,LEC,Swahili Lang & E African Comm.,B+,1,Unknown Professor,1229,SFS 2060
-SFS,2060,501,LEC,Swahili Lang & E African Comm.,B-,2,Unknown Professor,1229,SFS 2060
-SFS,2060,501,LEC,Swahili Lang & E African Comm.,C-,1,Unknown Professor,1229,SFS 2060
-SFS,3020,501,LEC,Env Policy & Socioecon Values,A,8,Unknown Professor,1229,SFS 3020
-SFS,3020,501,LEC,Env Policy & Socioecon Values,A-,7,Unknown Professor,1229,SFS 3020
-SFS,3020,501,LEC,Env Policy & Socioecon Values,B,3,Unknown Professor,1229,SFS 3020
-SFS,3020,501,LEC,Env Policy & Socioecon Values,B+,1,Unknown Professor,1229,SFS 3020
-SFS,3020,501,LEC,Env Policy & Socioecon Values,B-,1,Unknown Professor,1229,SFS 3020
-SFS,3720,501,LEC,Wildlife Ecology,A,2,Unknown Professor,1229,SFS 3720
-SFS,3720,501,LEC,Wildlife Ecology,A-,5,Unknown Professor,1229,SFS 3720
-SFS,3720,501,LEC,Wildlife Ecology,B-,3,Unknown Professor,1229,SFS 3720
-SFS,3740,501,LEC,Principles of Resource Mgmt,A,4,Unknown Professor,1229,SFS 3740
-SFS,3740,501,LEC,Principles of Resource Mgmt,A-,9,Unknown Professor,1229,SFS 3740
-SFS,3740,501,LEC,Principles of Resource Mgmt,C+,1,Unknown Professor,1229,SFS 3740
-SFS,4910W,501,LEC,Directed Research,A,20,Unknown Professor,1229,SFS 4910W
-SFS,4910W,501,LEC,Directed Research,A-,23,Unknown Professor,1229,SFS 4910W
-SFS,4910W,501,LEC,Directed Research,B+,3,Unknown Professor,1229,SFS 4910W
-SFS,4910W,501,LEC,Directed Research,C+,1,Unknown Professor,1229,SFS 4910W
+SFS,2060,501,LEC,Swahili Lang & E African Comm.,A,3,Unknown Instructor,1229,SFS 2060
+SFS,2060,501,LEC,Swahili Lang & E African Comm.,A-,3,Unknown Instructor,1229,SFS 2060
+SFS,2060,501,LEC,Swahili Lang & E African Comm.,B+,1,Unknown Instructor,1229,SFS 2060
+SFS,2060,501,LEC,Swahili Lang & E African Comm.,B-,2,Unknown Instructor,1229,SFS 2060
+SFS,2060,501,LEC,Swahili Lang & E African Comm.,C-,1,Unknown Instructor,1229,SFS 2060
+SFS,3020,501,LEC,Env Policy & Socioecon Values,A,8,Unknown Instructor,1229,SFS 3020
+SFS,3020,501,LEC,Env Policy & Socioecon Values,A-,7,Unknown Instructor,1229,SFS 3020
+SFS,3020,501,LEC,Env Policy & Socioecon Values,B,3,Unknown Instructor,1229,SFS 3020
+SFS,3020,501,LEC,Env Policy & Socioecon Values,B+,1,Unknown Instructor,1229,SFS 3020
+SFS,3020,501,LEC,Env Policy & Socioecon Values,B-,1,Unknown Instructor,1229,SFS 3020
+SFS,3720,501,LEC,Wildlife Ecology,A,2,Unknown Instructor,1229,SFS 3720
+SFS,3720,501,LEC,Wildlife Ecology,A-,5,Unknown Instructor,1229,SFS 3720
+SFS,3720,501,LEC,Wildlife Ecology,B-,3,Unknown Instructor,1229,SFS 3720
+SFS,3740,501,LEC,Principles of Resource Mgmt,A,4,Unknown Instructor,1229,SFS 3740
+SFS,3740,501,LEC,Principles of Resource Mgmt,A-,9,Unknown Instructor,1229,SFS 3740
+SFS,3740,501,LEC,Principles of Resource Mgmt,C+,1,Unknown Instructor,1229,SFS 3740
+SFS,4910W,501,LEC,Directed Research,A,20,Unknown Instructor,1229,SFS 4910W
+SFS,4910W,501,LEC,Directed Research,A-,23,Unknown Instructor,1229,SFS 4910W
+SFS,4910W,501,LEC,Directed Research,B+,3,Unknown Instructor,1229,SFS 4910W
+SFS,4910W,501,LEC,Directed Research,C+,1,Unknown Instructor,1229,SFS 4910W
 SLHS,1301W,002,LAB,Physics and Biology of Voice,A,2,Eugene Wong,1229,SLHS 1301W
 SLHS,1301W,002,LAB,Physics and Biology of Voice,A-,1,Eugene Wong,1229,SLHS 1301W
 SLHS,1301W,002,LAB,Physics and Biology of Voice,B,1,Eugene Wong,1229,SLHS 1301W
@@ -29946,151 +29946,151 @@ SMLI,3227,001,LEC,Intermediate Somali I,A-,4,Khadar Jama,1229,SMLI 3227
 SMLI,3227,001,LEC,Intermediate Somali I,B+,2,Khadar Jama,1229,SMLI 3227
 SMLI,3227,001,LEC,Intermediate Somali I,B-,1,Khadar Jama,1229,SMLI 3227
 SMLI,3227,001,LEC,Intermediate Somali I,C-,1,Khadar Jama,1229,SMLI 3227
-SNGL,4101,501,LEC,Hist & Pol Context of Senegal,A,4,Unknown Professor,1229,SNGL 4101
-SNGL,4101,501,LEC,Hist & Pol Context of Senegal,A-,7,Unknown Professor,1229,SNGL 4101
-SNGL,4896,501,LEC,Internship in Senegal,A,3,Unknown Professor,1229,SNGL 4896
-SNGL,4896,501,LEC,Internship in Senegal,A-,5,Unknown Professor,1229,SNGL 4896
-SNGL,4896,501,LEC,Internship in Senegal,B+,3,Unknown Professor,1229,SNGL 4896
-SOC,1001,002,DIS,Introduction to Sociology,A,19,Unknown Professor,1229,SOC 1001
-SOC,1001,002,DIS,Introduction to Sociology,A-,3,Unknown Professor,1229,SOC 1001
-SOC,1001,002,DIS,Introduction to Sociology,B+,3,Unknown Professor,1229,SOC 1001
-SOC,1001,002,DIS,Introduction to Sociology,B-,2,Unknown Professor,1229,SOC 1001
-SOC,1001,002,DIS,Introduction to Sociology,C+,1,Unknown Professor,1229,SOC 1001
-SOC,1001,002,DIS,Introduction to Sociology,F,2,Unknown Professor,1229,SOC 1001
-SOC,1001,003,DIS,Introduction to Sociology,A,18,Unknown Professor,1229,SOC 1001
-SOC,1001,003,DIS,Introduction to Sociology,A-,2,Unknown Professor,1229,SOC 1001
-SOC,1001,003,DIS,Introduction to Sociology,B,3,Unknown Professor,1229,SOC 1001
-SOC,1001,003,DIS,Introduction to Sociology,B+,2,Unknown Professor,1229,SOC 1001
-SOC,1001,003,DIS,Introduction to Sociology,C+,2,Unknown Professor,1229,SOC 1001
-SOC,1001,003,DIS,Introduction to Sociology,F,3,Unknown Professor,1229,SOC 1001
-SOC,1001,004,DIS,Introduction to Sociology,A,17,Unknown Professor,1229,SOC 1001
-SOC,1001,004,DIS,Introduction to Sociology,A-,2,Unknown Professor,1229,SOC 1001
-SOC,1001,004,DIS,Introduction to Sociology,B,5,Unknown Professor,1229,SOC 1001
-SOC,1001,004,DIS,Introduction to Sociology,B+,2,Unknown Professor,1229,SOC 1001
-SOC,1001,004,DIS,Introduction to Sociology,B-,1,Unknown Professor,1229,SOC 1001
-SOC,1001,004,DIS,Introduction to Sociology,C+,1,Unknown Professor,1229,SOC 1001
-SOC,1001,004,DIS,Introduction to Sociology,F,2,Unknown Professor,1229,SOC 1001
-SOC,1001,005,DIS,Introduction to Sociology,A,14,Unknown Professor,1229,SOC 1001
-SOC,1001,005,DIS,Introduction to Sociology,A-,1,Unknown Professor,1229,SOC 1001
-SOC,1001,005,DIS,Introduction to Sociology,B,3,Unknown Professor,1229,SOC 1001
-SOC,1001,005,DIS,Introduction to Sociology,B+,3,Unknown Professor,1229,SOC 1001
-SOC,1001,005,DIS,Introduction to Sociology,B-,2,Unknown Professor,1229,SOC 1001
-SOC,1001,005,DIS,Introduction to Sociology,C,2,Unknown Professor,1229,SOC 1001
-SOC,1001,005,DIS,Introduction to Sociology,C+,2,Unknown Professor,1229,SOC 1001
-SOC,1001,005,DIS,Introduction to Sociology,D,1,Unknown Professor,1229,SOC 1001
-SOC,1001,005,DIS,Introduction to Sociology,F,2,Unknown Professor,1229,SOC 1001
-SOC,1001,006,DIS,Introduction to Sociology,A,16,Unknown Professor,1229,SOC 1001
-SOC,1001,006,DIS,Introduction to Sociology,A-,3,Unknown Professor,1229,SOC 1001
-SOC,1001,006,DIS,Introduction to Sociology,B,1,Unknown Professor,1229,SOC 1001
-SOC,1001,006,DIS,Introduction to Sociology,B+,3,Unknown Professor,1229,SOC 1001
-SOC,1001,006,DIS,Introduction to Sociology,B-,1,Unknown Professor,1229,SOC 1001
-SOC,1001,006,DIS,Introduction to Sociology,C,3,Unknown Professor,1229,SOC 1001
-SOC,1001,006,DIS,Introduction to Sociology,C+,1,Unknown Professor,1229,SOC 1001
-SOC,1001,006,DIS,Introduction to Sociology,D+,1,Unknown Professor,1229,SOC 1001
-SOC,1001,006,DIS,Introduction to Sociology,F,1,Unknown Professor,1229,SOC 1001
-SOC,1001,007,DIS,Introduction to Sociology,A,18,Unknown Professor,1229,SOC 1001
-SOC,1001,007,DIS,Introduction to Sociology,A-,3,Unknown Professor,1229,SOC 1001
-SOC,1001,007,DIS,Introduction to Sociology,B,2,Unknown Professor,1229,SOC 1001
-SOC,1001,007,DIS,Introduction to Sociology,B-,1,Unknown Professor,1229,SOC 1001
-SOC,1001,007,DIS,Introduction to Sociology,C,1,Unknown Professor,1229,SOC 1001
-SOC,1001,007,DIS,Introduction to Sociology,D,2,Unknown Professor,1229,SOC 1001
-SOC,1001,007,DIS,Introduction to Sociology,F,3,Unknown Professor,1229,SOC 1001
-SOC,1001,008,DIS,Introduction to Sociology,A,19,Unknown Professor,1229,SOC 1001
-SOC,1001,008,DIS,Introduction to Sociology,A-,3,Unknown Professor,1229,SOC 1001
-SOC,1001,008,DIS,Introduction to Sociology,B+,1,Unknown Professor,1229,SOC 1001
-SOC,1001,008,DIS,Introduction to Sociology,C,1,Unknown Professor,1229,SOC 1001
-SOC,1001,008,DIS,Introduction to Sociology,C+,2,Unknown Professor,1229,SOC 1001
-SOC,1001,008,DIS,Introduction to Sociology,F,3,Unknown Professor,1229,SOC 1001
-SOC,1001,009,DIS,Introduction to Sociology,A,25,Unknown Professor,1229,SOC 1001
-SOC,1001,009,DIS,Introduction to Sociology,A-,2,Unknown Professor,1229,SOC 1001
-SOC,1001,009,DIS,Introduction to Sociology,B,1,Unknown Professor,1229,SOC 1001
-SOC,1001,009,DIS,Introduction to Sociology,B+,2,Unknown Professor,1229,SOC 1001
-SOC,1001,016,DIS,Introduction to Sociology,A,15,Unknown Professor,1229,SOC 1001
-SOC,1001,016,DIS,Introduction to Sociology,A-,3,Unknown Professor,1229,SOC 1001
-SOC,1001,016,DIS,Introduction to Sociology,B,4,Unknown Professor,1229,SOC 1001
-SOC,1001,016,DIS,Introduction to Sociology,B+,1,Unknown Professor,1229,SOC 1001
-SOC,1001,016,DIS,Introduction to Sociology,B-,2,Unknown Professor,1229,SOC 1001
-SOC,1001,016,DIS,Introduction to Sociology,C,2,Unknown Professor,1229,SOC 1001
-SOC,1001,016,DIS,Introduction to Sociology,C+,2,Unknown Professor,1229,SOC 1001
-SOC,1001,016,DIS,Introduction to Sociology,C-,1,Unknown Professor,1229,SOC 1001
-SOC,1001,017,DIS,Introduction to Sociology,A,21,Unknown Professor,1229,SOC 1001
-SOC,1001,017,DIS,Introduction to Sociology,A-,4,Unknown Professor,1229,SOC 1001
-SOC,1001,017,DIS,Introduction to Sociology,B,3,Unknown Professor,1229,SOC 1001
-SOC,1001,017,DIS,Introduction to Sociology,B+,2,Unknown Professor,1229,SOC 1001
-SOC,1001,018,DIS,Introduction to Sociology,A,17,Unknown Professor,1229,SOC 1001
-SOC,1001,018,DIS,Introduction to Sociology,A-,1,Unknown Professor,1229,SOC 1001
-SOC,1001,018,DIS,Introduction to Sociology,B,5,Unknown Professor,1229,SOC 1001
-SOC,1001,018,DIS,Introduction to Sociology,B+,1,Unknown Professor,1229,SOC 1001
-SOC,1001,018,DIS,Introduction to Sociology,B-,2,Unknown Professor,1229,SOC 1001
-SOC,1001,018,DIS,Introduction to Sociology,C,3,Unknown Professor,1229,SOC 1001
-SOC,1001,018,DIS,Introduction to Sociology,D,1,Unknown Professor,1229,SOC 1001
-SOC,1001,019,DIS,Introduction to Sociology,A,17,Unknown Professor,1229,SOC 1001
-SOC,1001,019,DIS,Introduction to Sociology,A-,3,Unknown Professor,1229,SOC 1001
-SOC,1001,019,DIS,Introduction to Sociology,B,1,Unknown Professor,1229,SOC 1001
-SOC,1001,019,DIS,Introduction to Sociology,B+,2,Unknown Professor,1229,SOC 1001
-SOC,1001,019,DIS,Introduction to Sociology,B-,1,Unknown Professor,1229,SOC 1001
-SOC,1001,019,DIS,Introduction to Sociology,D,4,Unknown Professor,1229,SOC 1001
-SOC,1001,019,DIS,Introduction to Sociology,W,2,Unknown Professor,1229,SOC 1001
-SOC,1001,020,DIS,Introduction to Sociology,A,19,Unknown Professor,1229,SOC 1001
-SOC,1001,020,DIS,Introduction to Sociology,A-,2,Unknown Professor,1229,SOC 1001
-SOC,1001,020,DIS,Introduction to Sociology,B,1,Unknown Professor,1229,SOC 1001
-SOC,1001,020,DIS,Introduction to Sociology,B+,3,Unknown Professor,1229,SOC 1001
-SOC,1001,020,DIS,Introduction to Sociology,C,1,Unknown Professor,1229,SOC 1001
-SOC,1001,020,DIS,Introduction to Sociology,C+,1,Unknown Professor,1229,SOC 1001
-SOC,1001,020,DIS,Introduction to Sociology,C-,1,Unknown Professor,1229,SOC 1001
-SOC,1001,020,DIS,Introduction to Sociology,D+,1,Unknown Professor,1229,SOC 1001
-SOC,1001,020,DIS,Introduction to Sociology,W,1,Unknown Professor,1229,SOC 1001
-SOC,1001,021,DIS,Introduction to Sociology,A,19,Unknown Professor,1229,SOC 1001
-SOC,1001,021,DIS,Introduction to Sociology,A-,3,Unknown Professor,1229,SOC 1001
-SOC,1001,021,DIS,Introduction to Sociology,B+,4,Unknown Professor,1229,SOC 1001
-SOC,1001,021,DIS,Introduction to Sociology,B-,2,Unknown Professor,1229,SOC 1001
-SOC,1001,021,DIS,Introduction to Sociology,D,1,Unknown Professor,1229,SOC 1001
-SOC,1001,021,DIS,Introduction to Sociology,S,1,Unknown Professor,1229,SOC 1001
-SOC,1001,022,DIS,Introduction to Sociology,A,18,Unknown Professor,1229,SOC 1001
-SOC,1001,022,DIS,Introduction to Sociology,A-,5,Unknown Professor,1229,SOC 1001
-SOC,1001,022,DIS,Introduction to Sociology,B,2,Unknown Professor,1229,SOC 1001
-SOC,1001,022,DIS,Introduction to Sociology,B+,3,Unknown Professor,1229,SOC 1001
-SOC,1001,022,DIS,Introduction to Sociology,C+,1,Unknown Professor,1229,SOC 1001
-SOC,1001,023,DIS,Introduction to Sociology,A,13,Unknown Professor,1229,SOC 1001
-SOC,1001,023,DIS,Introduction to Sociology,A-,5,Unknown Professor,1229,SOC 1001
-SOC,1001,023,DIS,Introduction to Sociology,B,2,Unknown Professor,1229,SOC 1001
-SOC,1001,023,DIS,Introduction to Sociology,B+,5,Unknown Professor,1229,SOC 1001
-SOC,1001,023,DIS,Introduction to Sociology,B-,1,Unknown Professor,1229,SOC 1001
-SOC,1001,023,DIS,Introduction to Sociology,D+,1,Unknown Professor,1229,SOC 1001
-SOC,1001,023,DIS,Introduction to Sociology,W,2,Unknown Professor,1229,SOC 1001
-SOC,1001,031,DIS,Introduction to Sociology,A,25,Unknown Professor,1229,SOC 1001
-SOC,1001,031,DIS,Introduction to Sociology,A-,2,Unknown Professor,1229,SOC 1001
-SOC,1001,031,DIS,Introduction to Sociology,B,2,Unknown Professor,1229,SOC 1001
-SOC,1001,031,DIS,Introduction to Sociology,D,1,Unknown Professor,1229,SOC 1001
-SOC,1001,032,DIS,Introduction to Sociology,A,18,Unknown Professor,1229,SOC 1001
-SOC,1001,032,DIS,Introduction to Sociology,A-,1,Unknown Professor,1229,SOC 1001
-SOC,1001,032,DIS,Introduction to Sociology,B,2,Unknown Professor,1229,SOC 1001
-SOC,1001,032,DIS,Introduction to Sociology,B+,3,Unknown Professor,1229,SOC 1001
-SOC,1001,032,DIS,Introduction to Sociology,C,1,Unknown Professor,1229,SOC 1001
-SOC,1001,032,DIS,Introduction to Sociology,C-,1,Unknown Professor,1229,SOC 1001
-SOC,1001,032,DIS,Introduction to Sociology,F,1,Unknown Professor,1229,SOC 1001
-SOC,1001,032,DIS,Introduction to Sociology,W,1,Unknown Professor,1229,SOC 1001
-SOC,1001,033,DIS,Introduction to Sociology,A,20,Unknown Professor,1229,SOC 1001
-SOC,1001,033,DIS,Introduction to Sociology,A-,1,Unknown Professor,1229,SOC 1001
-SOC,1001,033,DIS,Introduction to Sociology,B,2,Unknown Professor,1229,SOC 1001
-SOC,1001,033,DIS,Introduction to Sociology,B+,1,Unknown Professor,1229,SOC 1001
-SOC,1001,033,DIS,Introduction to Sociology,C+,1,Unknown Professor,1229,SOC 1001
-SOC,1001,033,DIS,Introduction to Sociology,F,1,Unknown Professor,1229,SOC 1001
-SOC,1001,033,DIS,Introduction to Sociology,W,2,Unknown Professor,1229,SOC 1001
-SOC,1001,034,DIS,Introduction to Sociology,A,21,Unknown Professor,1229,SOC 1001
-SOC,1001,034,DIS,Introduction to Sociology,A-,5,Unknown Professor,1229,SOC 1001
-SOC,1001,034,DIS,Introduction to Sociology,B+,2,Unknown Professor,1229,SOC 1001
-SOC,1001,034,DIS,Introduction to Sociology,B-,1,Unknown Professor,1229,SOC 1001
-SOC,1001,034,DIS,Introduction to Sociology,F,1,Unknown Professor,1229,SOC 1001
-SOC,1001,034,DIS,Introduction to Sociology,S,1,Unknown Professor,1229,SOC 1001
-SOC,1001,035,DIS,Introduction to Sociology,A,20,Unknown Professor,1229,SOC 1001
-SOC,1001,035,DIS,Introduction to Sociology,A-,2,Unknown Professor,1229,SOC 1001
-SOC,1001,035,DIS,Introduction to Sociology,B,2,Unknown Professor,1229,SOC 1001
-SOC,1001,035,DIS,Introduction to Sociology,B+,2,Unknown Professor,1229,SOC 1001
-SOC,1001,035,DIS,Introduction to Sociology,C+,1,Unknown Professor,1229,SOC 1001
-SOC,1001,035,DIS,Introduction to Sociology,D,1,Unknown Professor,1229,SOC 1001
-SOC,1001,035,DIS,Introduction to Sociology,D+,1,Unknown Professor,1229,SOC 1001
-SOC,1001,035,DIS,Introduction to Sociology,F,1,Unknown Professor,1229,SOC 1001
+SNGL,4101,501,LEC,Hist & Pol Context of Senegal,A,4,Unknown Instructor,1229,SNGL 4101
+SNGL,4101,501,LEC,Hist & Pol Context of Senegal,A-,7,Unknown Instructor,1229,SNGL 4101
+SNGL,4896,501,LEC,Internship in Senegal,A,3,Unknown Instructor,1229,SNGL 4896
+SNGL,4896,501,LEC,Internship in Senegal,A-,5,Unknown Instructor,1229,SNGL 4896
+SNGL,4896,501,LEC,Internship in Senegal,B+,3,Unknown Instructor,1229,SNGL 4896
+SOC,1001,002,DIS,Introduction to Sociology,A,19,Unknown Instructor,1229,SOC 1001
+SOC,1001,002,DIS,Introduction to Sociology,A-,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,002,DIS,Introduction to Sociology,B+,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,002,DIS,Introduction to Sociology,B-,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,002,DIS,Introduction to Sociology,C+,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,002,DIS,Introduction to Sociology,F,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,003,DIS,Introduction to Sociology,A,18,Unknown Instructor,1229,SOC 1001
+SOC,1001,003,DIS,Introduction to Sociology,A-,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,003,DIS,Introduction to Sociology,B,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,003,DIS,Introduction to Sociology,B+,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,003,DIS,Introduction to Sociology,C+,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,003,DIS,Introduction to Sociology,F,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,004,DIS,Introduction to Sociology,A,17,Unknown Instructor,1229,SOC 1001
+SOC,1001,004,DIS,Introduction to Sociology,A-,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,004,DIS,Introduction to Sociology,B,5,Unknown Instructor,1229,SOC 1001
+SOC,1001,004,DIS,Introduction to Sociology,B+,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,004,DIS,Introduction to Sociology,B-,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,004,DIS,Introduction to Sociology,C+,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,004,DIS,Introduction to Sociology,F,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,005,DIS,Introduction to Sociology,A,14,Unknown Instructor,1229,SOC 1001
+SOC,1001,005,DIS,Introduction to Sociology,A-,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,005,DIS,Introduction to Sociology,B,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,005,DIS,Introduction to Sociology,B+,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,005,DIS,Introduction to Sociology,B-,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,005,DIS,Introduction to Sociology,C,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,005,DIS,Introduction to Sociology,C+,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,005,DIS,Introduction to Sociology,D,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,005,DIS,Introduction to Sociology,F,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,006,DIS,Introduction to Sociology,A,16,Unknown Instructor,1229,SOC 1001
+SOC,1001,006,DIS,Introduction to Sociology,A-,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,006,DIS,Introduction to Sociology,B,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,006,DIS,Introduction to Sociology,B+,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,006,DIS,Introduction to Sociology,B-,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,006,DIS,Introduction to Sociology,C,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,006,DIS,Introduction to Sociology,C+,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,006,DIS,Introduction to Sociology,D+,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,006,DIS,Introduction to Sociology,F,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,007,DIS,Introduction to Sociology,A,18,Unknown Instructor,1229,SOC 1001
+SOC,1001,007,DIS,Introduction to Sociology,A-,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,007,DIS,Introduction to Sociology,B,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,007,DIS,Introduction to Sociology,B-,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,007,DIS,Introduction to Sociology,C,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,007,DIS,Introduction to Sociology,D,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,007,DIS,Introduction to Sociology,F,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,008,DIS,Introduction to Sociology,A,19,Unknown Instructor,1229,SOC 1001
+SOC,1001,008,DIS,Introduction to Sociology,A-,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,008,DIS,Introduction to Sociology,B+,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,008,DIS,Introduction to Sociology,C,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,008,DIS,Introduction to Sociology,C+,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,008,DIS,Introduction to Sociology,F,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,009,DIS,Introduction to Sociology,A,25,Unknown Instructor,1229,SOC 1001
+SOC,1001,009,DIS,Introduction to Sociology,A-,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,009,DIS,Introduction to Sociology,B,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,009,DIS,Introduction to Sociology,B+,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,016,DIS,Introduction to Sociology,A,15,Unknown Instructor,1229,SOC 1001
+SOC,1001,016,DIS,Introduction to Sociology,A-,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,016,DIS,Introduction to Sociology,B,4,Unknown Instructor,1229,SOC 1001
+SOC,1001,016,DIS,Introduction to Sociology,B+,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,016,DIS,Introduction to Sociology,B-,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,016,DIS,Introduction to Sociology,C,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,016,DIS,Introduction to Sociology,C+,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,016,DIS,Introduction to Sociology,C-,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,017,DIS,Introduction to Sociology,A,21,Unknown Instructor,1229,SOC 1001
+SOC,1001,017,DIS,Introduction to Sociology,A-,4,Unknown Instructor,1229,SOC 1001
+SOC,1001,017,DIS,Introduction to Sociology,B,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,017,DIS,Introduction to Sociology,B+,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,018,DIS,Introduction to Sociology,A,17,Unknown Instructor,1229,SOC 1001
+SOC,1001,018,DIS,Introduction to Sociology,A-,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,018,DIS,Introduction to Sociology,B,5,Unknown Instructor,1229,SOC 1001
+SOC,1001,018,DIS,Introduction to Sociology,B+,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,018,DIS,Introduction to Sociology,B-,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,018,DIS,Introduction to Sociology,C,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,018,DIS,Introduction to Sociology,D,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,019,DIS,Introduction to Sociology,A,17,Unknown Instructor,1229,SOC 1001
+SOC,1001,019,DIS,Introduction to Sociology,A-,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,019,DIS,Introduction to Sociology,B,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,019,DIS,Introduction to Sociology,B+,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,019,DIS,Introduction to Sociology,B-,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,019,DIS,Introduction to Sociology,D,4,Unknown Instructor,1229,SOC 1001
+SOC,1001,019,DIS,Introduction to Sociology,W,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,020,DIS,Introduction to Sociology,A,19,Unknown Instructor,1229,SOC 1001
+SOC,1001,020,DIS,Introduction to Sociology,A-,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,020,DIS,Introduction to Sociology,B,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,020,DIS,Introduction to Sociology,B+,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,020,DIS,Introduction to Sociology,C,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,020,DIS,Introduction to Sociology,C+,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,020,DIS,Introduction to Sociology,C-,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,020,DIS,Introduction to Sociology,D+,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,020,DIS,Introduction to Sociology,W,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,021,DIS,Introduction to Sociology,A,19,Unknown Instructor,1229,SOC 1001
+SOC,1001,021,DIS,Introduction to Sociology,A-,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,021,DIS,Introduction to Sociology,B+,4,Unknown Instructor,1229,SOC 1001
+SOC,1001,021,DIS,Introduction to Sociology,B-,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,021,DIS,Introduction to Sociology,D,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,021,DIS,Introduction to Sociology,S,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,022,DIS,Introduction to Sociology,A,18,Unknown Instructor,1229,SOC 1001
+SOC,1001,022,DIS,Introduction to Sociology,A-,5,Unknown Instructor,1229,SOC 1001
+SOC,1001,022,DIS,Introduction to Sociology,B,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,022,DIS,Introduction to Sociology,B+,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,022,DIS,Introduction to Sociology,C+,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,023,DIS,Introduction to Sociology,A,13,Unknown Instructor,1229,SOC 1001
+SOC,1001,023,DIS,Introduction to Sociology,A-,5,Unknown Instructor,1229,SOC 1001
+SOC,1001,023,DIS,Introduction to Sociology,B,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,023,DIS,Introduction to Sociology,B+,5,Unknown Instructor,1229,SOC 1001
+SOC,1001,023,DIS,Introduction to Sociology,B-,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,023,DIS,Introduction to Sociology,D+,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,023,DIS,Introduction to Sociology,W,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,031,DIS,Introduction to Sociology,A,25,Unknown Instructor,1229,SOC 1001
+SOC,1001,031,DIS,Introduction to Sociology,A-,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,031,DIS,Introduction to Sociology,B,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,031,DIS,Introduction to Sociology,D,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,032,DIS,Introduction to Sociology,A,18,Unknown Instructor,1229,SOC 1001
+SOC,1001,032,DIS,Introduction to Sociology,A-,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,032,DIS,Introduction to Sociology,B,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,032,DIS,Introduction to Sociology,B+,3,Unknown Instructor,1229,SOC 1001
+SOC,1001,032,DIS,Introduction to Sociology,C,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,032,DIS,Introduction to Sociology,C-,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,032,DIS,Introduction to Sociology,F,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,032,DIS,Introduction to Sociology,W,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,033,DIS,Introduction to Sociology,A,20,Unknown Instructor,1229,SOC 1001
+SOC,1001,033,DIS,Introduction to Sociology,A-,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,033,DIS,Introduction to Sociology,B,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,033,DIS,Introduction to Sociology,B+,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,033,DIS,Introduction to Sociology,C+,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,033,DIS,Introduction to Sociology,F,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,033,DIS,Introduction to Sociology,W,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,034,DIS,Introduction to Sociology,A,21,Unknown Instructor,1229,SOC 1001
+SOC,1001,034,DIS,Introduction to Sociology,A-,5,Unknown Instructor,1229,SOC 1001
+SOC,1001,034,DIS,Introduction to Sociology,B+,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,034,DIS,Introduction to Sociology,B-,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,034,DIS,Introduction to Sociology,F,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,034,DIS,Introduction to Sociology,S,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,035,DIS,Introduction to Sociology,A,20,Unknown Instructor,1229,SOC 1001
+SOC,1001,035,DIS,Introduction to Sociology,A-,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,035,DIS,Introduction to Sociology,B,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,035,DIS,Introduction to Sociology,B+,2,Unknown Instructor,1229,SOC 1001
+SOC,1001,035,DIS,Introduction to Sociology,C+,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,035,DIS,Introduction to Sociology,D,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,035,DIS,Introduction to Sociology,D+,1,Unknown Instructor,1229,SOC 1001
+SOC,1001,035,DIS,Introduction to Sociology,F,1,Unknown Instructor,1229,SOC 1001
 SOC,1101,001,LEC,"Law, Crime, & Punishment",A,119,Gabrielle Ferrales,1229,SOC 1101
 SOC,1101,001,LEC,"Law, Crime, & Punishment",A-,9,Gabrielle Ferrales,1229,SOC 1101
 SOC,1101,001,LEC,"Law, Crime, & Punishment",B,2,Gabrielle Ferrales,1229,SOC 1101
@@ -30216,96 +30216,96 @@ SOC,3701,301,LEC,Social Theory,B+,2,Jean Maier,1229,SOC 3701
 SOC,3701,301,LEC,Social Theory,C,4,Jean Maier,1229,SOC 3701
 SOC,3701,301,LEC,Social Theory,F,4,Jean Maier,1229,SOC 3701
 SOC,3701,301,LEC,Social Theory,W,3,Jean Maier,1229,SOC 3701
-SOC,3801,002,LAB,Sociological Research Methods,A,6,Unknown Professor,1229,SOC 3801
-SOC,3801,002,LAB,Sociological Research Methods,A-,3,Unknown Professor,1229,SOC 3801
-SOC,3801,002,LAB,Sociological Research Methods,B,2,Unknown Professor,1229,SOC 3801
-SOC,3801,002,LAB,Sociological Research Methods,B+,3,Unknown Professor,1229,SOC 3801
-SOC,3801,002,LAB,Sociological Research Methods,B-,1,Unknown Professor,1229,SOC 3801
-SOC,3801,002,LAB,Sociological Research Methods,C,1,Unknown Professor,1229,SOC 3801
-SOC,3801,002,LAB,Sociological Research Methods,D,1,Unknown Professor,1229,SOC 3801
-SOC,3801,002,LAB,Sociological Research Methods,W,1,Unknown Professor,1229,SOC 3801
-SOC,3801,003,LAB,Sociological Research Methods,A,8,Unknown Professor,1229,SOC 3801
-SOC,3801,003,LAB,Sociological Research Methods,A-,3,Unknown Professor,1229,SOC 3801
-SOC,3801,003,LAB,Sociological Research Methods,B,2,Unknown Professor,1229,SOC 3801
-SOC,3801,003,LAB,Sociological Research Methods,B+,5,Unknown Professor,1229,SOC 3801
-SOC,3801,003,LAB,Sociological Research Methods,B-,2,Unknown Professor,1229,SOC 3801
-SOC,3801,003,LAB,Sociological Research Methods,C,1,Unknown Professor,1229,SOC 3801
-SOC,3801,003,LAB,Sociological Research Methods,C-,1,Unknown Professor,1229,SOC 3801
-SOC,3801,003,LAB,Sociological Research Methods,D,2,Unknown Professor,1229,SOC 3801
-SOC,3801,003,LAB,Sociological Research Methods,F,2,Unknown Professor,1229,SOC 3801
-SOC,3801,010,LAB,Sociological Research Methods,A,24,Unknown Professor,1229,SOC 3801
-SOC,3801,010,LAB,Sociological Research Methods,B,2,Unknown Professor,1229,SOC 3801
-SOC,3801,010,LAB,Sociological Research Methods,B+,1,Unknown Professor,1229,SOC 3801
-SOC,3801,010,LAB,Sociological Research Methods,F,1,Unknown Professor,1229,SOC 3801
-SOC,3801,010,LAB,Sociological Research Methods,W,2,Unknown Professor,1229,SOC 3801
-SOC,3801,011,LAB,Sociological Research Methods,A,22,Unknown Professor,1229,SOC 3801
-SOC,3801,011,LAB,Sociological Research Methods,A-,2,Unknown Professor,1229,SOC 3801
-SOC,3801,011,LAB,Sociological Research Methods,B,3,Unknown Professor,1229,SOC 3801
-SOC,3801,011,LAB,Sociological Research Methods,C+,1,Unknown Professor,1229,SOC 3801
-SOC,3801,011,LAB,Sociological Research Methods,F,1,Unknown Professor,1229,SOC 3801
-SOC,3801,011,LAB,Sociological Research Methods,W,1,Unknown Professor,1229,SOC 3801
-SOC,3801,012,LAB,Sociological Research Methods,A,20,Unknown Professor,1229,SOC 3801
-SOC,3801,012,LAB,Sociological Research Methods,A-,1,Unknown Professor,1229,SOC 3801
-SOC,3801,012,LAB,Sociological Research Methods,B,4,Unknown Professor,1229,SOC 3801
-SOC,3801,012,LAB,Sociological Research Methods,B+,1,Unknown Professor,1229,SOC 3801
-SOC,3801,012,LAB,Sociological Research Methods,B-,1,Unknown Professor,1229,SOC 3801
-SOC,3801,012,LAB,Sociological Research Methods,C+,1,Unknown Professor,1229,SOC 3801
-SOC,3801,012,LAB,Sociological Research Methods,C-,1,Unknown Professor,1229,SOC 3801
-SOC,3801,012,LAB,Sociological Research Methods,F,1,Unknown Professor,1229,SOC 3801
-SOC,3801,013,LAB,Sociological Research Methods,A,18,Unknown Professor,1229,SOC 3801
-SOC,3801,013,LAB,Sociological Research Methods,A-,2,Unknown Professor,1229,SOC 3801
-SOC,3801,013,LAB,Sociological Research Methods,B,1,Unknown Professor,1229,SOC 3801
-SOC,3801,013,LAB,Sociological Research Methods,B+,1,Unknown Professor,1229,SOC 3801
-SOC,3801,013,LAB,Sociological Research Methods,B-,1,Unknown Professor,1229,SOC 3801
-SOC,3801,013,LAB,Sociological Research Methods,C-,1,Unknown Professor,1229,SOC 3801
-SOC,3801,013,LAB,Sociological Research Methods,F,3,Unknown Professor,1229,SOC 3801
-SOC,3801,013,LAB,Sociological Research Methods,W,3,Unknown Professor,1229,SOC 3801
-SOC,3811,002,LAB,Social Statistics,A,11,Unknown Professor,1229,SOC 3811
-SOC,3811,002,LAB,Social Statistics,A-,2,Unknown Professor,1229,SOC 3811
-SOC,3811,002,LAB,Social Statistics,B,1,Unknown Professor,1229,SOC 3811
-SOC,3811,002,LAB,Social Statistics,B+,3,Unknown Professor,1229,SOC 3811
-SOC,3811,002,LAB,Social Statistics,B-,2,Unknown Professor,1229,SOC 3811
-SOC,3811,002,LAB,Social Statistics,C+,1,Unknown Professor,1229,SOC 3811
-SOC,3811,002,LAB,Social Statistics,D,1,Unknown Professor,1229,SOC 3811
-SOC,3811,002,LAB,Social Statistics,F,2,Unknown Professor,1229,SOC 3811
-SOC,3811,002,LAB,Social Statistics,W,1,Unknown Professor,1229,SOC 3811
-SOC,3811,003,LAB,Social Statistics,A,9,Unknown Professor,1229,SOC 3811
-SOC,3811,003,LAB,Social Statistics,A-,2,Unknown Professor,1229,SOC 3811
-SOC,3811,003,LAB,Social Statistics,B,1,Unknown Professor,1229,SOC 3811
-SOC,3811,003,LAB,Social Statistics,B+,2,Unknown Professor,1229,SOC 3811
-SOC,3811,003,LAB,Social Statistics,B-,1,Unknown Professor,1229,SOC 3811
-SOC,3811,003,LAB,Social Statistics,C+,3,Unknown Professor,1229,SOC 3811
-SOC,3811,003,LAB,Social Statistics,D,1,Unknown Professor,1229,SOC 3811
-SOC,3811,003,LAB,Social Statistics,F,1,Unknown Professor,1229,SOC 3811
-SOC,3811,003,LAB,Social Statistics,S,1,Unknown Professor,1229,SOC 3811
-SOC,3811,003,LAB,Social Statistics,W,3,Unknown Professor,1229,SOC 3811
-SOC,3811,004,LAB,Social Statistics,A,12,Unknown Professor,1229,SOC 3811
-SOC,3811,004,LAB,Social Statistics,A-,4,Unknown Professor,1229,SOC 3811
-SOC,3811,004,LAB,Social Statistics,B,1,Unknown Professor,1229,SOC 3811
-SOC,3811,004,LAB,Social Statistics,B+,2,Unknown Professor,1229,SOC 3811
-SOC,3811,004,LAB,Social Statistics,B-,2,Unknown Professor,1229,SOC 3811
-SOC,3811,004,LAB,Social Statistics,C+,1,Unknown Professor,1229,SOC 3811
-SOC,3811,004,LAB,Social Statistics,D,1,Unknown Professor,1229,SOC 3811
-SOC,3811,004,LAB,Social Statistics,S,1,Unknown Professor,1229,SOC 3811
-SOC,3811,005,LAB,Social Statistics,A,11,Unknown Professor,1229,SOC 3811
-SOC,3811,005,LAB,Social Statistics,A-,1,Unknown Professor,1229,SOC 3811
-SOC,3811,005,LAB,Social Statistics,B,1,Unknown Professor,1229,SOC 3811
-SOC,3811,005,LAB,Social Statistics,B+,6,Unknown Professor,1229,SOC 3811
-SOC,3811,005,LAB,Social Statistics,B-,1,Unknown Professor,1229,SOC 3811
-SOC,3811,005,LAB,Social Statistics,C+,2,Unknown Professor,1229,SOC 3811
-SOC,3811,005,LAB,Social Statistics,D+,1,Unknown Professor,1229,SOC 3811
-SOC,3811,006,LAB,Social Statistics,A,8,Unknown Professor,1229,SOC 3811
-SOC,3811,006,LAB,Social Statistics,A-,1,Unknown Professor,1229,SOC 3811
-SOC,3811,006,LAB,Social Statistics,B,3,Unknown Professor,1229,SOC 3811
-SOC,3811,006,LAB,Social Statistics,B+,7,Unknown Professor,1229,SOC 3811
-SOC,3811,006,LAB,Social Statistics,B-,2,Unknown Professor,1229,SOC 3811
-SOC,3811,006,LAB,Social Statistics,C+,2,Unknown Professor,1229,SOC 3811
-SOC,3811,007,LAB,Social Statistics,A,14,Unknown Professor,1229,SOC 3811
-SOC,3811,007,LAB,Social Statistics,A-,2,Unknown Professor,1229,SOC 3811
-SOC,3811,007,LAB,Social Statistics,B,3,Unknown Professor,1229,SOC 3811
-SOC,3811,007,LAB,Social Statistics,B+,2,Unknown Professor,1229,SOC 3811
-SOC,3811,007,LAB,Social Statistics,B-,1,Unknown Professor,1229,SOC 3811
-SOC,3811,007,LAB,Social Statistics,C+,1,Unknown Professor,1229,SOC 3811
+SOC,3801,002,LAB,Sociological Research Methods,A,6,Unknown Instructor,1229,SOC 3801
+SOC,3801,002,LAB,Sociological Research Methods,A-,3,Unknown Instructor,1229,SOC 3801
+SOC,3801,002,LAB,Sociological Research Methods,B,2,Unknown Instructor,1229,SOC 3801
+SOC,3801,002,LAB,Sociological Research Methods,B+,3,Unknown Instructor,1229,SOC 3801
+SOC,3801,002,LAB,Sociological Research Methods,B-,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,002,LAB,Sociological Research Methods,C,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,002,LAB,Sociological Research Methods,D,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,002,LAB,Sociological Research Methods,W,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,003,LAB,Sociological Research Methods,A,8,Unknown Instructor,1229,SOC 3801
+SOC,3801,003,LAB,Sociological Research Methods,A-,3,Unknown Instructor,1229,SOC 3801
+SOC,3801,003,LAB,Sociological Research Methods,B,2,Unknown Instructor,1229,SOC 3801
+SOC,3801,003,LAB,Sociological Research Methods,B+,5,Unknown Instructor,1229,SOC 3801
+SOC,3801,003,LAB,Sociological Research Methods,B-,2,Unknown Instructor,1229,SOC 3801
+SOC,3801,003,LAB,Sociological Research Methods,C,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,003,LAB,Sociological Research Methods,C-,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,003,LAB,Sociological Research Methods,D,2,Unknown Instructor,1229,SOC 3801
+SOC,3801,003,LAB,Sociological Research Methods,F,2,Unknown Instructor,1229,SOC 3801
+SOC,3801,010,LAB,Sociological Research Methods,A,24,Unknown Instructor,1229,SOC 3801
+SOC,3801,010,LAB,Sociological Research Methods,B,2,Unknown Instructor,1229,SOC 3801
+SOC,3801,010,LAB,Sociological Research Methods,B+,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,010,LAB,Sociological Research Methods,F,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,010,LAB,Sociological Research Methods,W,2,Unknown Instructor,1229,SOC 3801
+SOC,3801,011,LAB,Sociological Research Methods,A,22,Unknown Instructor,1229,SOC 3801
+SOC,3801,011,LAB,Sociological Research Methods,A-,2,Unknown Instructor,1229,SOC 3801
+SOC,3801,011,LAB,Sociological Research Methods,B,3,Unknown Instructor,1229,SOC 3801
+SOC,3801,011,LAB,Sociological Research Methods,C+,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,011,LAB,Sociological Research Methods,F,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,011,LAB,Sociological Research Methods,W,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,012,LAB,Sociological Research Methods,A,20,Unknown Instructor,1229,SOC 3801
+SOC,3801,012,LAB,Sociological Research Methods,A-,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,012,LAB,Sociological Research Methods,B,4,Unknown Instructor,1229,SOC 3801
+SOC,3801,012,LAB,Sociological Research Methods,B+,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,012,LAB,Sociological Research Methods,B-,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,012,LAB,Sociological Research Methods,C+,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,012,LAB,Sociological Research Methods,C-,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,012,LAB,Sociological Research Methods,F,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,013,LAB,Sociological Research Methods,A,18,Unknown Instructor,1229,SOC 3801
+SOC,3801,013,LAB,Sociological Research Methods,A-,2,Unknown Instructor,1229,SOC 3801
+SOC,3801,013,LAB,Sociological Research Methods,B,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,013,LAB,Sociological Research Methods,B+,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,013,LAB,Sociological Research Methods,B-,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,013,LAB,Sociological Research Methods,C-,1,Unknown Instructor,1229,SOC 3801
+SOC,3801,013,LAB,Sociological Research Methods,F,3,Unknown Instructor,1229,SOC 3801
+SOC,3801,013,LAB,Sociological Research Methods,W,3,Unknown Instructor,1229,SOC 3801
+SOC,3811,002,LAB,Social Statistics,A,11,Unknown Instructor,1229,SOC 3811
+SOC,3811,002,LAB,Social Statistics,A-,2,Unknown Instructor,1229,SOC 3811
+SOC,3811,002,LAB,Social Statistics,B,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,002,LAB,Social Statistics,B+,3,Unknown Instructor,1229,SOC 3811
+SOC,3811,002,LAB,Social Statistics,B-,2,Unknown Instructor,1229,SOC 3811
+SOC,3811,002,LAB,Social Statistics,C+,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,002,LAB,Social Statistics,D,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,002,LAB,Social Statistics,F,2,Unknown Instructor,1229,SOC 3811
+SOC,3811,002,LAB,Social Statistics,W,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,003,LAB,Social Statistics,A,9,Unknown Instructor,1229,SOC 3811
+SOC,3811,003,LAB,Social Statistics,A-,2,Unknown Instructor,1229,SOC 3811
+SOC,3811,003,LAB,Social Statistics,B,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,003,LAB,Social Statistics,B+,2,Unknown Instructor,1229,SOC 3811
+SOC,3811,003,LAB,Social Statistics,B-,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,003,LAB,Social Statistics,C+,3,Unknown Instructor,1229,SOC 3811
+SOC,3811,003,LAB,Social Statistics,D,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,003,LAB,Social Statistics,F,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,003,LAB,Social Statistics,S,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,003,LAB,Social Statistics,W,3,Unknown Instructor,1229,SOC 3811
+SOC,3811,004,LAB,Social Statistics,A,12,Unknown Instructor,1229,SOC 3811
+SOC,3811,004,LAB,Social Statistics,A-,4,Unknown Instructor,1229,SOC 3811
+SOC,3811,004,LAB,Social Statistics,B,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,004,LAB,Social Statistics,B+,2,Unknown Instructor,1229,SOC 3811
+SOC,3811,004,LAB,Social Statistics,B-,2,Unknown Instructor,1229,SOC 3811
+SOC,3811,004,LAB,Social Statistics,C+,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,004,LAB,Social Statistics,D,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,004,LAB,Social Statistics,S,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,005,LAB,Social Statistics,A,11,Unknown Instructor,1229,SOC 3811
+SOC,3811,005,LAB,Social Statistics,A-,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,005,LAB,Social Statistics,B,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,005,LAB,Social Statistics,B+,6,Unknown Instructor,1229,SOC 3811
+SOC,3811,005,LAB,Social Statistics,B-,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,005,LAB,Social Statistics,C+,2,Unknown Instructor,1229,SOC 3811
+SOC,3811,005,LAB,Social Statistics,D+,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,006,LAB,Social Statistics,A,8,Unknown Instructor,1229,SOC 3811
+SOC,3811,006,LAB,Social Statistics,A-,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,006,LAB,Social Statistics,B,3,Unknown Instructor,1229,SOC 3811
+SOC,3811,006,LAB,Social Statistics,B+,7,Unknown Instructor,1229,SOC 3811
+SOC,3811,006,LAB,Social Statistics,B-,2,Unknown Instructor,1229,SOC 3811
+SOC,3811,006,LAB,Social Statistics,C+,2,Unknown Instructor,1229,SOC 3811
+SOC,3811,007,LAB,Social Statistics,A,14,Unknown Instructor,1229,SOC 3811
+SOC,3811,007,LAB,Social Statistics,A-,2,Unknown Instructor,1229,SOC 3811
+SOC,3811,007,LAB,Social Statistics,B,3,Unknown Instructor,1229,SOC 3811
+SOC,3811,007,LAB,Social Statistics,B+,2,Unknown Instructor,1229,SOC 3811
+SOC,3811,007,LAB,Social Statistics,B-,1,Unknown Instructor,1229,SOC 3811
+SOC,3811,007,LAB,Social Statistics,C+,1,Unknown Instructor,1229,SOC 3811
 SOC,4101W,001,LEC,Sociology of Law,A,32,Gabrielle Ferrales,1229,SOC 4101W
 SOC,4101W,001,LEC,Sociology of Law,A-,7,Gabrielle Ferrales,1229,SOC 4101W
 SOC,4101W,001,LEC,Sociology of Law,B,4,Gabrielle Ferrales,1229,SOC 4101W
@@ -30469,147 +30469,147 @@ SPAN,1002,001,DIS,Beginning Spanish,B,4,Stephanie Anderson,1229,SPAN 1002
 SPAN,1002,001,DIS,Beginning Spanish,B-,1,Stephanie Anderson,1229,SPAN 1002
 SPAN,1002,001,DIS,Beginning Spanish,C,1,Stephanie Anderson,1229,SPAN 1002
 SPAN,1002,001,DIS,Beginning Spanish,S,1,Stephanie Anderson,1229,SPAN 1002
-SPAN,1003,001,DIS,Intermediate Spanish,A,4,Unknown Professor,1229,SPAN 1003
-SPAN,1003,001,DIS,Intermediate Spanish,A-,5,Unknown Professor,1229,SPAN 1003
-SPAN,1003,001,DIS,Intermediate Spanish,B,4,Unknown Professor,1229,SPAN 1003
-SPAN,1003,001,DIS,Intermediate Spanish,B+,7,Unknown Professor,1229,SPAN 1003
-SPAN,1003,001,DIS,Intermediate Spanish,C,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,001,DIS,Intermediate Spanish,D,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,001,DIS,Intermediate Spanish,S,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,001,DIS,Intermediate Spanish,W,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,002,DIS,Intermediate Spanish,A,10,Unknown Professor,1229,SPAN 1003
-SPAN,1003,002,DIS,Intermediate Spanish,A-,5,Unknown Professor,1229,SPAN 1003
-SPAN,1003,002,DIS,Intermediate Spanish,B,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,002,DIS,Intermediate Spanish,B+,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,002,DIS,Intermediate Spanish,B-,3,Unknown Professor,1229,SPAN 1003
-SPAN,1003,002,DIS,Intermediate Spanish,W,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,003,DIS,Intermediate Spanish,A,11,Unknown Professor,1229,SPAN 1003
-SPAN,1003,003,DIS,Intermediate Spanish,A-,5,Unknown Professor,1229,SPAN 1003
-SPAN,1003,003,DIS,Intermediate Spanish,B,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,003,DIS,Intermediate Spanish,B+,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,003,DIS,Intermediate Spanish,B-,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,003,DIS,Intermediate Spanish,C+,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,003,DIS,Intermediate Spanish,F,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,003,DIS,Intermediate Spanish,N,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,003,DIS,Intermediate Spanish,S,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,004,DIS,Intermediate Spanish,A,9,Unknown Professor,1229,SPAN 1003
-SPAN,1003,004,DIS,Intermediate Spanish,A-,4,Unknown Professor,1229,SPAN 1003
-SPAN,1003,004,DIS,Intermediate Spanish,B,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,004,DIS,Intermediate Spanish,B+,4,Unknown Professor,1229,SPAN 1003
-SPAN,1003,004,DIS,Intermediate Spanish,B-,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,004,DIS,Intermediate Spanish,C+,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,004,DIS,Intermediate Spanish,S,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,005,DIS,Intermediate Spanish,A,10,Unknown Professor,1229,SPAN 1003
-SPAN,1003,005,DIS,Intermediate Spanish,A-,5,Unknown Professor,1229,SPAN 1003
-SPAN,1003,005,DIS,Intermediate Spanish,B,5,Unknown Professor,1229,SPAN 1003
-SPAN,1003,005,DIS,Intermediate Spanish,B+,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,005,DIS,Intermediate Spanish,C+,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,005,DIS,Intermediate Spanish,N,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,005,DIS,Intermediate Spanish,S,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,006,DIS,Intermediate Spanish,A,4,Unknown Professor,1229,SPAN 1003
-SPAN,1003,006,DIS,Intermediate Spanish,A-,5,Unknown Professor,1229,SPAN 1003
-SPAN,1003,006,DIS,Intermediate Spanish,B,5,Unknown Professor,1229,SPAN 1003
-SPAN,1003,006,DIS,Intermediate Spanish,B+,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,006,DIS,Intermediate Spanish,B-,3,Unknown Professor,1229,SPAN 1003
-SPAN,1003,006,DIS,Intermediate Spanish,C+,3,Unknown Professor,1229,SPAN 1003
-SPAN,1003,006,DIS,Intermediate Spanish,F,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,006,DIS,Intermediate Spanish,S,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,007,DIS,Intermediate Spanish,A,7,Unknown Professor,1229,SPAN 1003
-SPAN,1003,007,DIS,Intermediate Spanish,A-,3,Unknown Professor,1229,SPAN 1003
-SPAN,1003,007,DIS,Intermediate Spanish,B,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,007,DIS,Intermediate Spanish,B+,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,007,DIS,Intermediate Spanish,B-,3,Unknown Professor,1229,SPAN 1003
-SPAN,1003,007,DIS,Intermediate Spanish,C,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,007,DIS,Intermediate Spanish,C+,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,007,DIS,Intermediate Spanish,F,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,007,DIS,Intermediate Spanish,S,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,007,DIS,Intermediate Spanish,W,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,008,DIS,Intermediate Spanish,A,7,Unknown Professor,1229,SPAN 1003
-SPAN,1003,008,DIS,Intermediate Spanish,A-,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,008,DIS,Intermediate Spanish,B,4,Unknown Professor,1229,SPAN 1003
-SPAN,1003,008,DIS,Intermediate Spanish,B+,5,Unknown Professor,1229,SPAN 1003
-SPAN,1003,008,DIS,Intermediate Spanish,B-,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,008,DIS,Intermediate Spanish,C,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,008,DIS,Intermediate Spanish,C-,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,008,DIS,Intermediate Spanish,S,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,009,DIS,Intermediate Spanish,A,5,Unknown Professor,1229,SPAN 1003
-SPAN,1003,009,DIS,Intermediate Spanish,A-,7,Unknown Professor,1229,SPAN 1003
-SPAN,1003,009,DIS,Intermediate Spanish,B,6,Unknown Professor,1229,SPAN 1003
-SPAN,1003,009,DIS,Intermediate Spanish,B+,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,009,DIS,Intermediate Spanish,B-,4,Unknown Professor,1229,SPAN 1003
-SPAN,1003,009,DIS,Intermediate Spanish,C,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,009,DIS,Intermediate Spanish,S,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,010,DIS,Intermediate Spanish,A-,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,010,DIS,Intermediate Spanish,B,3,Unknown Professor,1229,SPAN 1003
-SPAN,1003,010,DIS,Intermediate Spanish,B+,4,Unknown Professor,1229,SPAN 1003
-SPAN,1003,010,DIS,Intermediate Spanish,B-,5,Unknown Professor,1229,SPAN 1003
-SPAN,1003,010,DIS,Intermediate Spanish,C,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,010,DIS,Intermediate Spanish,C+,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,010,DIS,Intermediate Spanish,C-,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,010,DIS,Intermediate Spanish,D+,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,010,DIS,Intermediate Spanish,F,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,010,DIS,Intermediate Spanish,S,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,010,DIS,Intermediate Spanish,W,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,011,DIS,Intermediate Spanish,A,8,Unknown Professor,1229,SPAN 1003
-SPAN,1003,011,DIS,Intermediate Spanish,A-,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,011,DIS,Intermediate Spanish,B,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,011,DIS,Intermediate Spanish,B+,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,011,DIS,Intermediate Spanish,B-,4,Unknown Professor,1229,SPAN 1003
-SPAN,1003,011,DIS,Intermediate Spanish,C,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,011,DIS,Intermediate Spanish,F,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,011,DIS,Intermediate Spanish,S,3,Unknown Professor,1229,SPAN 1003
-SPAN,1003,011,DIS,Intermediate Spanish,W,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,012,DIS,Intermediate Spanish,A,10,Unknown Professor,1229,SPAN 1003
-SPAN,1003,012,DIS,Intermediate Spanish,A-,3,Unknown Professor,1229,SPAN 1003
-SPAN,1003,012,DIS,Intermediate Spanish,B,5,Unknown Professor,1229,SPAN 1003
-SPAN,1003,012,DIS,Intermediate Spanish,B+,3,Unknown Professor,1229,SPAN 1003
-SPAN,1003,012,DIS,Intermediate Spanish,B-,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,012,DIS,Intermediate Spanish,D,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,012,DIS,Intermediate Spanish,W,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,013,DIS,Intermediate Spanish,A,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,013,DIS,Intermediate Spanish,A-,3,Unknown Professor,1229,SPAN 1003
-SPAN,1003,013,DIS,Intermediate Spanish,B,6,Unknown Professor,1229,SPAN 1003
-SPAN,1003,013,DIS,Intermediate Spanish,B+,5,Unknown Professor,1229,SPAN 1003
-SPAN,1003,013,DIS,Intermediate Spanish,B-,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,013,DIS,Intermediate Spanish,C+,3,Unknown Professor,1229,SPAN 1003
-SPAN,1003,013,DIS,Intermediate Spanish,D,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,013,DIS,Intermediate Spanish,D+,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,013,DIS,Intermediate Spanish,S,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,014,DIS,Intermediate Spanish,A,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,014,DIS,Intermediate Spanish,A-,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,014,DIS,Intermediate Spanish,B,5,Unknown Professor,1229,SPAN 1003
-SPAN,1003,014,DIS,Intermediate Spanish,B+,5,Unknown Professor,1229,SPAN 1003
-SPAN,1003,014,DIS,Intermediate Spanish,B-,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,014,DIS,Intermediate Spanish,C+,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,014,DIS,Intermediate Spanish,C-,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,014,DIS,Intermediate Spanish,D+,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,014,DIS,Intermediate Spanish,W,4,Unknown Professor,1229,SPAN 1003
-SPAN,1003,015,DIS,Intermediate Spanish,A,3,Unknown Professor,1229,SPAN 1003
-SPAN,1003,015,DIS,Intermediate Spanish,A-,5,Unknown Professor,1229,SPAN 1003
-SPAN,1003,015,DIS,Intermediate Spanish,B,3,Unknown Professor,1229,SPAN 1003
-SPAN,1003,015,DIS,Intermediate Spanish,B+,6,Unknown Professor,1229,SPAN 1003
-SPAN,1003,015,DIS,Intermediate Spanish,B-,3,Unknown Professor,1229,SPAN 1003
-SPAN,1003,015,DIS,Intermediate Spanish,C,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,015,DIS,Intermediate Spanish,C+,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,015,DIS,Intermediate Spanish,C-,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,015,DIS,Intermediate Spanish,F,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,015,DIS,Intermediate Spanish,S,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,016,DIS,Intermediate Spanish,A-,3,Unknown Professor,1229,SPAN 1003
-SPAN,1003,016,DIS,Intermediate Spanish,B,5,Unknown Professor,1229,SPAN 1003
-SPAN,1003,016,DIS,Intermediate Spanish,B+,5,Unknown Professor,1229,SPAN 1003
-SPAN,1003,016,DIS,Intermediate Spanish,B-,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,016,DIS,Intermediate Spanish,C,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,016,DIS,Intermediate Spanish,C+,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,016,DIS,Intermediate Spanish,C-,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,016,DIS,Intermediate Spanish,W,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,017,DIS,Intermediate Spanish,A,9,Unknown Professor,1229,SPAN 1003
-SPAN,1003,017,DIS,Intermediate Spanish,A-,7,Unknown Professor,1229,SPAN 1003
-SPAN,1003,017,DIS,Intermediate Spanish,B,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,017,DIS,Intermediate Spanish,B+,2,Unknown Professor,1229,SPAN 1003
-SPAN,1003,017,DIS,Intermediate Spanish,B-,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,017,DIS,Intermediate Spanish,C,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,017,DIS,Intermediate Spanish,F,1,Unknown Professor,1229,SPAN 1003
-SPAN,1003,017,DIS,Intermediate Spanish,W,1,Unknown Professor,1229,SPAN 1003
+SPAN,1003,001,DIS,Intermediate Spanish,A,4,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,001,DIS,Intermediate Spanish,A-,5,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,001,DIS,Intermediate Spanish,B,4,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,001,DIS,Intermediate Spanish,B+,7,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,001,DIS,Intermediate Spanish,C,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,001,DIS,Intermediate Spanish,D,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,001,DIS,Intermediate Spanish,S,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,001,DIS,Intermediate Spanish,W,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,002,DIS,Intermediate Spanish,A,10,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,002,DIS,Intermediate Spanish,A-,5,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,002,DIS,Intermediate Spanish,B,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,002,DIS,Intermediate Spanish,B+,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,002,DIS,Intermediate Spanish,B-,3,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,002,DIS,Intermediate Spanish,W,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,003,DIS,Intermediate Spanish,A,11,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,003,DIS,Intermediate Spanish,A-,5,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,003,DIS,Intermediate Spanish,B,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,003,DIS,Intermediate Spanish,B+,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,003,DIS,Intermediate Spanish,B-,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,003,DIS,Intermediate Spanish,C+,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,003,DIS,Intermediate Spanish,F,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,003,DIS,Intermediate Spanish,N,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,003,DIS,Intermediate Spanish,S,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,004,DIS,Intermediate Spanish,A,9,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,004,DIS,Intermediate Spanish,A-,4,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,004,DIS,Intermediate Spanish,B,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,004,DIS,Intermediate Spanish,B+,4,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,004,DIS,Intermediate Spanish,B-,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,004,DIS,Intermediate Spanish,C+,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,004,DIS,Intermediate Spanish,S,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,005,DIS,Intermediate Spanish,A,10,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,005,DIS,Intermediate Spanish,A-,5,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,005,DIS,Intermediate Spanish,B,5,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,005,DIS,Intermediate Spanish,B+,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,005,DIS,Intermediate Spanish,C+,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,005,DIS,Intermediate Spanish,N,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,005,DIS,Intermediate Spanish,S,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,006,DIS,Intermediate Spanish,A,4,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,006,DIS,Intermediate Spanish,A-,5,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,006,DIS,Intermediate Spanish,B,5,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,006,DIS,Intermediate Spanish,B+,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,006,DIS,Intermediate Spanish,B-,3,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,006,DIS,Intermediate Spanish,C+,3,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,006,DIS,Intermediate Spanish,F,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,006,DIS,Intermediate Spanish,S,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,007,DIS,Intermediate Spanish,A,7,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,007,DIS,Intermediate Spanish,A-,3,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,007,DIS,Intermediate Spanish,B,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,007,DIS,Intermediate Spanish,B+,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,007,DIS,Intermediate Spanish,B-,3,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,007,DIS,Intermediate Spanish,C,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,007,DIS,Intermediate Spanish,C+,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,007,DIS,Intermediate Spanish,F,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,007,DIS,Intermediate Spanish,S,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,007,DIS,Intermediate Spanish,W,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,008,DIS,Intermediate Spanish,A,7,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,008,DIS,Intermediate Spanish,A-,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,008,DIS,Intermediate Spanish,B,4,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,008,DIS,Intermediate Spanish,B+,5,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,008,DIS,Intermediate Spanish,B-,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,008,DIS,Intermediate Spanish,C,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,008,DIS,Intermediate Spanish,C-,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,008,DIS,Intermediate Spanish,S,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,009,DIS,Intermediate Spanish,A,5,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,009,DIS,Intermediate Spanish,A-,7,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,009,DIS,Intermediate Spanish,B,6,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,009,DIS,Intermediate Spanish,B+,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,009,DIS,Intermediate Spanish,B-,4,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,009,DIS,Intermediate Spanish,C,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,009,DIS,Intermediate Spanish,S,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,010,DIS,Intermediate Spanish,A-,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,010,DIS,Intermediate Spanish,B,3,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,010,DIS,Intermediate Spanish,B+,4,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,010,DIS,Intermediate Spanish,B-,5,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,010,DIS,Intermediate Spanish,C,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,010,DIS,Intermediate Spanish,C+,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,010,DIS,Intermediate Spanish,C-,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,010,DIS,Intermediate Spanish,D+,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,010,DIS,Intermediate Spanish,F,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,010,DIS,Intermediate Spanish,S,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,010,DIS,Intermediate Spanish,W,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,011,DIS,Intermediate Spanish,A,8,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,011,DIS,Intermediate Spanish,A-,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,011,DIS,Intermediate Spanish,B,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,011,DIS,Intermediate Spanish,B+,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,011,DIS,Intermediate Spanish,B-,4,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,011,DIS,Intermediate Spanish,C,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,011,DIS,Intermediate Spanish,F,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,011,DIS,Intermediate Spanish,S,3,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,011,DIS,Intermediate Spanish,W,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,012,DIS,Intermediate Spanish,A,10,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,012,DIS,Intermediate Spanish,A-,3,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,012,DIS,Intermediate Spanish,B,5,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,012,DIS,Intermediate Spanish,B+,3,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,012,DIS,Intermediate Spanish,B-,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,012,DIS,Intermediate Spanish,D,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,012,DIS,Intermediate Spanish,W,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,013,DIS,Intermediate Spanish,A,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,013,DIS,Intermediate Spanish,A-,3,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,013,DIS,Intermediate Spanish,B,6,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,013,DIS,Intermediate Spanish,B+,5,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,013,DIS,Intermediate Spanish,B-,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,013,DIS,Intermediate Spanish,C+,3,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,013,DIS,Intermediate Spanish,D,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,013,DIS,Intermediate Spanish,D+,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,013,DIS,Intermediate Spanish,S,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,014,DIS,Intermediate Spanish,A,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,014,DIS,Intermediate Spanish,A-,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,014,DIS,Intermediate Spanish,B,5,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,014,DIS,Intermediate Spanish,B+,5,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,014,DIS,Intermediate Spanish,B-,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,014,DIS,Intermediate Spanish,C+,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,014,DIS,Intermediate Spanish,C-,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,014,DIS,Intermediate Spanish,D+,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,014,DIS,Intermediate Spanish,W,4,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,015,DIS,Intermediate Spanish,A,3,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,015,DIS,Intermediate Spanish,A-,5,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,015,DIS,Intermediate Spanish,B,3,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,015,DIS,Intermediate Spanish,B+,6,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,015,DIS,Intermediate Spanish,B-,3,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,015,DIS,Intermediate Spanish,C,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,015,DIS,Intermediate Spanish,C+,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,015,DIS,Intermediate Spanish,C-,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,015,DIS,Intermediate Spanish,F,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,015,DIS,Intermediate Spanish,S,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,016,DIS,Intermediate Spanish,A-,3,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,016,DIS,Intermediate Spanish,B,5,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,016,DIS,Intermediate Spanish,B+,5,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,016,DIS,Intermediate Spanish,B-,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,016,DIS,Intermediate Spanish,C,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,016,DIS,Intermediate Spanish,C+,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,016,DIS,Intermediate Spanish,C-,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,016,DIS,Intermediate Spanish,W,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,017,DIS,Intermediate Spanish,A,9,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,017,DIS,Intermediate Spanish,A-,7,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,017,DIS,Intermediate Spanish,B,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,017,DIS,Intermediate Spanish,B+,2,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,017,DIS,Intermediate Spanish,B-,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,017,DIS,Intermediate Spanish,C,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,017,DIS,Intermediate Spanish,F,1,Unknown Instructor,1229,SPAN 1003
+SPAN,1003,017,DIS,Intermediate Spanish,W,1,Unknown Instructor,1229,SPAN 1003
 SPAN,1003,018,DIS,Intermediate Spanish,A,2,Yoko Hama,1229,SPAN 1003
 SPAN,1003,018,DIS,Intermediate Spanish,A-,7,Yoko Hama,1229,SPAN 1003
 SPAN,1003,018,DIS,Intermediate Spanish,B,4,Yoko Hama,1229,SPAN 1003
@@ -31834,8 +31834,8 @@ TH,3330,001,LAB,Physical Approaches to Acting,B+,1,Luverne Seifert,1229,TH 3330
 TH,3330,001,LAB,Physical Approaches to Acting,B-,1,Luverne Seifert,1229,TH 3330
 TH,3330,001,LAB,Physical Approaches to Acting,C-,1,Luverne Seifert,1229,TH 3330
 TH,3330,001,LAB,Physical Approaches to Acting,D+,2,Luverne Seifert,1229,TH 3330
-TH,3392,501,LAB,BFA Voice and Speech V,A,7,Unknown Professor,1229,TH 3392
-TH,3392,501,LAB,BFA Voice and Speech V,A-,8,Unknown Professor,1229,TH 3392
+TH,3392,501,LAB,BFA Voice and Speech V,A,7,Unknown Instructor,1229,TH 3392
+TH,3392,501,LAB,BFA Voice and Speech V,A-,8,Unknown Instructor,1229,TH 3392
 TH,3571,001,LEC,Intro to Technology,A,15,Bill Healey,1229,TH 3571
 TH,3571,001,LEC,Intro to Technology,A-,1,Bill Healey,1229,TH 3571
 TH,3571,001,LEC,Intro to Technology,B,2,Bill Healey,1229,TH 3571
@@ -31878,14 +31878,14 @@ TH,5179W,001,LEC,Text and Performance,B+,2,Lisa Channer,1229,TH 5179W
 TH,5179W,001,LEC,Text and Performance,C,2,Lisa Channer,1229,TH 5179W
 TH,5179W,001,LEC,Text and Performance,C+,1,Lisa Channer,1229,TH 5179W
 TH,5179W,001,LEC,Text and Performance,C-,1,Lisa Channer,1229,TH 5179W
-TLDO,3105W,501,LEC,Cultural Heritage of Spain,A,6,Unknown Professor,1229,TLDO 3105W
-TLDO,3105W,501,LEC,Cultural Heritage of Spain,A-,3,Unknown Professor,1229,TLDO 3105W
-TLDO,3105W,501,LEC,Cultural Heritage of Spain,B+,1,Unknown Professor,1229,TLDO 3105W
-TLDO,3105W,501,LEC,Cultural Heritage of Spain,C+,1,Unknown Professor,1229,TLDO 3105W
-TLDO,3233,501,LEC,"Christian, Muslim, Jewish Art",A,5,Unknown Professor,1229,TLDO 3233
-TLDO,3233,501,LEC,"Christian, Muslim, Jewish Art",A-,3,Unknown Professor,1229,TLDO 3233
-TLDO,3233,501,LEC,"Christian, Muslim, Jewish Art",B,1,Unknown Professor,1229,TLDO 3233
-TLDO,3233,501,LEC,"Christian, Muslim, Jewish Art",B+,2,Unknown Professor,1229,TLDO 3233
+TLDO,3105W,501,LEC,Cultural Heritage of Spain,A,6,Unknown Instructor,1229,TLDO 3105W
+TLDO,3105W,501,LEC,Cultural Heritage of Spain,A-,3,Unknown Instructor,1229,TLDO 3105W
+TLDO,3105W,501,LEC,Cultural Heritage of Spain,B+,1,Unknown Instructor,1229,TLDO 3105W
+TLDO,3105W,501,LEC,Cultural Heritage of Spain,C+,1,Unknown Instructor,1229,TLDO 3105W
+TLDO,3233,501,LEC,"Christian, Muslim, Jewish Art",A,5,Unknown Instructor,1229,TLDO 3233
+TLDO,3233,501,LEC,"Christian, Muslim, Jewish Art",A-,3,Unknown Instructor,1229,TLDO 3233
+TLDO,3233,501,LEC,"Christian, Muslim, Jewish Art",B,1,Unknown Instructor,1229,TLDO 3233
+TLDO,3233,501,LEC,"Christian, Muslim, Jewish Art",B+,2,Unknown Instructor,1229,TLDO 3233
 URBS,1001W,001,LEC,Introduction to Urban Studies,A,28,Julie Santella,1229,URBS 1001W
 URBS,1001W,001,LEC,Introduction to Urban Studies,A-,5,Julie Santella,1229,URBS 1001W
 URBS,1001W,001,LEC,Introduction to Urban Studies,B,1,Julie Santella,1229,URBS 1001W
@@ -31971,12 +31971,12 @@ VMBA,5701,001,LEC,Data Anl & Dec,A-,13,Soumya Sen,1229,VMBA 5701
 VMBA,5701,001,LEC,Data Anl & Dec,B,2,Soumya Sen,1229,VMBA 5701
 VMBA,5701,001,LEC,Data Anl & Dec,B+,5,Soumya Sen,1229,VMBA 5701
 VMBA,5701,001,LEC,Data Anl & Dec,B-,2,Soumya Sen,1229,VMBA 5701
-VMBA,5702,001,LEC,Fin Mgmt,A,17,Unknown Professor,1229,VMBA 5702
-VMBA,5702,001,LEC,Fin Mgmt,A-,7,Unknown Professor,1229,VMBA 5702
-VMBA,5702,001,LEC,Fin Mgmt,B,1,Unknown Professor,1229,VMBA 5702
-VMBA,5702,001,LEC,Fin Mgmt,B+,6,Unknown Professor,1229,VMBA 5702
-VMBA,5702,001,LEC,Fin Mgmt,B-,2,Unknown Professor,1229,VMBA 5702
-VMBA,5702,001,LEC,Fin Mgmt,C+,3,Unknown Professor,1229,VMBA 5702
+VMBA,5702,001,LEC,Fin Mgmt,A,17,Unknown Instructor,1229,VMBA 5702
+VMBA,5702,001,LEC,Fin Mgmt,A-,7,Unknown Instructor,1229,VMBA 5702
+VMBA,5702,001,LEC,Fin Mgmt,B,1,Unknown Instructor,1229,VMBA 5702
+VMBA,5702,001,LEC,Fin Mgmt,B+,6,Unknown Instructor,1229,VMBA 5702
+VMBA,5702,001,LEC,Fin Mgmt,B-,2,Unknown Instructor,1229,VMBA 5702
+VMBA,5702,001,LEC,Fin Mgmt,C+,3,Unknown Instructor,1229,VMBA 5702
 VMED,5180,001,LEC,Ecology of Infectious Disease,A,10,Tiffany Wolf,1229,VMED 5180
 VMED,5180,001,LEC,Ecology of Infectious Disease,A-,3,Tiffany Wolf,1229,VMED 5180
 VMED,5180,001,LEC,Ecology of Infectious Disease,B,1,Tiffany Wolf,1229,VMED 5180
