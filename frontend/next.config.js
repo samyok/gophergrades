@@ -6,7 +6,7 @@ const nextConfig = {
     return [
       {
         source: "/stats/:match*",
-        destination: "https://analytics.umami.is/:match*",
+        destination: "https://dash.umn.lol/:match*",
       },
     ];
   },
