@@ -22,7 +22,7 @@ from sqlalchemy import and_
 CACHED_REQ={}
 CACHED_LINK=""
 # TERMS should hold the value of the next 2 terms, current term, and past 2 term in decreasing order.
-TERMS = [1235 ,1233, 1229, 1225, 1223]
+TERMS = [1239, 1235 ,1233, 1229, 1225]
 # Runs the generate function to fetch data from API
 # TODO: Potential switch to GraphQL API?
 

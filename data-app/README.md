@@ -17,7 +17,7 @@ This file's primary purpose is to cut down the information stored in a CSV to th
 | HR_NAME        |      The instructor name for that set of grades, keep in mind this is not always the professor and may be a TA |
 | FULL_NAME      | This should be data engineered by the file by concatinating the values of `SUBJECT` and `CATALOG_NBR` together |
 
-When you have these, and only these column names you can combine it with old data using [`pandas.concat()`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.concat.html).
+When you have these, and only these column names you can combine it with old data using [`pandas.concat()`](https://pandas.pydata.oprg/pandas-docs/stable/reference/api/pandas.concat.html).
 
 ## getRMP.py
 This files primary purpose is to fetch RateMyProfessor, henceafter refered to as RMP, information from their api and provide the function `getRMP(name)` to help query for information regarding a professor. This is often inaccurate as many professors are not listed on RMP or are listed under an alternate or misspelled name. Most of these issues are beyond the scope of any cleaning algorithm and we request that people who notice a mismatch submit a correction to RMP.
