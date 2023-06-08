@@ -19,7 +19,7 @@ from sqlalchemy import and_
 """
 
 # Worry not about the CACHED variables, this is simply to help store previous requests in order to prevent redundant calls to an API
-CACHED_REQ={}
+CACHED_REQ={} 
 CACHED_LINK=""
 # TERMS should hold the value of the next 2 terms, current term, and past 2 term in decreasing order.
 TERMS = [1239, 1235 ,1233, 1229, 1225]
