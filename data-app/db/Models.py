@@ -67,6 +67,7 @@ class Professor(Base):
     RMP_score = Column(Float,nullable=True)
     RMP_diff = Column(Float,nullable=True)
     RMP_link = Column(VARCHAR(512),nullable=True)
+    x500 = Column(VARCHAR(16),nullable=True)
 
     dists = relationship('Distribution',backref="prof")
 
@@ -86,17 +87,11 @@ class ClassDistribution(Base):
     total_grades = Column(JSON,nullable=False)
     # ASR VALS
     onestop = Column(VARCHAR(512),nullable=True)
+    onestop_desc = Column(VARCHAR(2048),nullable=True)
     cred_min = Column(SmallInteger,nullable=True)
     cred_max = Column(SmallInteger,nullable=True)
-    # SRT VALS
-    deep_und = Column(Float,nullable=True)
-    stim_int = Column(Float,nullable=True)
-    tech_eff = Column(Float,nullable=True)
-    acc_sup = Column(Float,nullable=True)
-    effort = Column(Float,nullable=True)
-    grad_stand = Column(Float,nullable=True)
-    recommend = Column(Float,nullable=True)
-    responses = Column(Integer,nullable=True)
+    # SRT VALS: Deep Understanding, Stimulated Interest, Technical Effectiveness, Activities Supported Learning, Effort Reasonable, Grading Standards, Recommend, Number Responses
+    srt_vals = Column(JSON,nullable=True)
 
     department_id = Column(Integer, ForeignKey('departmentdistribution.id',ondelete="CASCADE"))
     dists = relationship('Distribution',backref="classdist")
