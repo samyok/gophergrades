@@ -11,6 +11,7 @@ requests = "*"
 nameparser = "*"
 scipy = "*"
 alembic = "*"
+ratemyprofessorapi = "*"
 
 [dev-packages]
 

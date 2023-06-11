@@ -1,6 +1,8 @@
 import pandas as pd
 from numpy import NaN
 from scipy.interpolate import interp1d
+from db.Models import ClassDistribution
+
 
 # THIS FILE IS INCREDIBLY INEFFICIENT, NORMALIZE NEEDS TO BE OPTIMIZED SOMEHOW
 
@@ -61,6 +63,19 @@ def srt_frame() -> pd.DataFrame:
     ret_df[['DEEP_UND','STIM_INT','TECH_EFF','ACC_SUP','EFFORT','GRAD_STAND','RECC']] = ret_df[['DEEP_UND','STIM_INT','TECH_EFF','ACC_SUP','EFFORT','GRAD_STAND','RECC']].apply(interpolator)
     return ret_df
 
+def srt_updating(row,session):
+    class_dist = session.query(ClassDistribution).filter(ClassDistribution.class_name == row["FULL_NAME"]).first()
+    if class_dist:
+        class_dist.deep_und = row["DEEP_UND"]
+        class_dist.stim_int = row["STIM_INT"]
+        class_dist.tech_eff = row["TECH_EFF"]
+        class_dist.acc_sup = row["ACC_SUP"]
+        class_dist.effort = row["EFFORT"]
+        class_dist.grad_stand = row["GRAD_STAND"]
+        class_dist.recommend = row["RECC"]
+        class_dist.responses = row["RESP"]
+        session.commit()
+        # print(f"Updated {row['FULL_NAME']} with SRT Data.")
 
 if __name__ == "__main__":
     df = srt_frame()
