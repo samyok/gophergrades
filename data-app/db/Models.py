@@ -23,7 +23,7 @@ class Libed(Base):
     __tablename__ = "libed"
     id = Column(Integer,primary_key=True)
     name = Column(VARCHAR(128),nullable=False,unique=True)
-    class_dists = relationship('ClassDistribution',secondary=libedAssociationTable,back_populates="libeds")
+    class_dists = relationship('ClassDistribution',secondary=libedAssociationTable,back_populates="libeds",lazy='selectin')
     def __str__(self) -> str:
         retVal = f"Libed: {self.name}"
         for class_dist in self.class_dists:
@@ -95,7 +95,7 @@ class ClassDistribution(Base):
 
     department_id = Column(Integer, ForeignKey('departmentdistribution.id',ondelete="CASCADE"))
     dists = relationship('Distribution',backref="classdist")
-    libeds = relationship('Libed',secondary=libedAssociationTable,back_populates="class_dists")
+    libeds = relationship('Libed',secondary=libedAssociationTable,back_populates="class_dists",lazy='selectin')
 
     def __str__(self) -> str:
         return f"{self.class_name}: {self.total_grades}"
