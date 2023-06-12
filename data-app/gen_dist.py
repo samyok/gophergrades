@@ -93,11 +93,11 @@ def process_dept(dept_abbr:str):
 
 def gen_terms(term_init:int) -> list:
     if term_init % 10 == 3:
-        return [term_init+6,term_init+2,term_init,term_init-4,term_init-8]
+        return [term_init-8, term_init-4, term_init, term_init+2, term_init+6]
     elif term_init % 10 == 5:
-        return [term_init+8,term_init+4,term_init,term_init-2,term_init-6]
+        return [term_init-6,term_init-2,term_init,term_init+4,term_init+8]
     elif term_init % 10 == 9:
-        return [term_init+6,term_init+4,term_init,term_init-4,term_init-6]
+        return [term_init-6,term_init-4,term_init,term_init+4,term_init+6]
 
 
 # Add all libeds as defined in libed_mapping. This is a constant addition as there are a finite amount of libed requirements.
