@@ -127,8 +127,7 @@ if __name__ == "__main__":
     print("Finished Prof Insertion")
 
     print("RMP Update For Professors")
-    getProfData()
-    RMP_Update(session)
+    RMP_Update_Multiprocess()
     print("RMP Updated")
 
     print("Adding Departments")
