@@ -109,28 +109,6 @@ def format_name(x: str):
         retVal = x
     return retVal
 
-def term_desc_to_val(x:pd.DataFrame):
-    """
-    This function is technically feature engineering. New data from the university might not have
-    term ids and only a term description. The purpose of this function is to add that to the dataframe grouped by
-    Term Description.
-
-    :param x: The dataframe grouped by term description
-    :type x: _type_
-    :return: The new dataframe with a series of data all containing the proper term mapping.
-    :rtype: _type_
-    """
-    mapping = {
-        "Fall 2020": 1209,
-        "Spr 2021" : 1213,
-        "Sum 2021" : 1215,
-        "Fall 2021" : 1219,
-        "Spr 2022" : 1223,
-        "Sum 2022" : 1225
-    }
-    x["TERM"] = mapping[x["TERM_DESCR"].iloc[0]]
-    return x
-
 
 """
 WARNING:

@@ -1,3 +1,4 @@
+import argparse
 import pandas as pd
 import numpy as np
 from collections import Counter
@@ -26,6 +27,7 @@ def process_dist(x: pd.DataFrame) -> None:
 
     :type x: pd.DataFrame
     """
+    session = Session()
     prof_name = x["HR_NAME"].iloc[0]
     class_name = x["FULL_NAME"].iloc[0]
     dept_abbr = x["SUBJECT"].iloc[0]
@@ -78,17 +80,23 @@ def process_dist(x: pd.DataFrame) -> None:
         session.add(term_dist)
         session.commit()
         # print(f"Added Distribution for {prof.name}'s {class_dist.class_name} for {term_to_name(term)} with {term_dist.students} students.")
+
+    session.close()
     
 def process_prof(prof_name:str):
+    session = Session()
     professor = Professor(name=prof_name)
     session.add(professor)
     session.commit()
+    session.close()
     # print(f"Added New Professor {professor.name}.")
 
 def process_dept(dept_abbr:str):
+    session = Session()
     dept = DepartmentDistribution(dept_abbr=dept_abbr,dept_name=dept_mapping.get(dept_abbr,"Unknown Department"))
     session.add(dept)
     session.commit()
+    session.close()
     # print(f"Created New Department: {dept.dept_abbr} : {dept.dept_name}")
 
 def gen_terms(term_init:int) -> list:
@@ -101,11 +109,22 @@ def gen_terms(term_init:int) -> list:
 
 
 # Add all libeds as defined in libed_mapping. This is a constant addition as there are a finite amount of libed requirements.
+session = Session()
 if len(session.query(Libed).all()) == 0:
     session.add_all([Libed(name=libed) for libed in libed_mapping.values()])
     session.commit()
+session.close()
+
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Run Data Generation!')
+    parser.add_argument('-dr','--disableRMP', dest='DisableRMP', action='store_true', help='Disables RMP Search.')
+    parser.add_argument('-ds','--disableSRT', dest='DisableSRT', action='store_true', help='Disables SRT Updating for Class Distributions.')
+    parser.add_argument('-da','--disableASR', dest='DisableASR', action='store_true', help='Disables ASR Updating for Class Libeds, Titles, and Onestop Links.')
+    parser.add_argument('-dc','--disableCINFO', dest='DisableCINFO', action='store_true', help='Disables Courseinfo updating for titles and Onestop Descriptions')
+
+    args = parser.parse_args()
+    
     df = pd.read_csv("CLASS_DATA/SPR2023_cleaned_data.csv",dtype={"CLASS_SECTION":str})
     print("Loaded Data!")
     print("Adding Profs")
@@ -126,10 +145,6 @@ if __name__ == "__main__":
 
     print("Finished Prof Insertion")
 
-    print("RMP Update For Professors")
-    RMP_Update_Multiprocess()
-    print("RMP Updated")
-
     print("Adding Departments")
     dept_list = np.array([dept.dept_abbr for dept in session.query(DepartmentDistribution).all()])
     diff_list = np.setdiff1d(df["SUBJECT"].unique(),dept_list)
@@ -143,22 +158,32 @@ if __name__ == "__main__":
     new_additions.groupby(["TERM","HR_NAME","FULL_NAME"],group_keys=False).apply(process_dist)
     print("Finished Generating Distributions")
 
-    print("Beginning SRT Updating")
-    srt_frame().apply(srt_updating,args=(session,),axis=1)
-    print("Finished SRT Updating")
-
-    print("Inserting Libed Search")
     # For each term, search every department's classes and insert information regarding credits, libeds, onestop link, etc
     # IF the class distribution has not already been modified.
-    highest_term = max(new_additions["TERM"].unique())
+    highest_term = max(new_additions["TERM"].unique(), default=1233) 
     # Worry not about the CACHED variables, this is simply to help store previous requests in order to prevent redundant calls to an API
     # TERMS should hold the value of the next 2 terms, current term, and past 2 term in decreasing order.
     TERMS = gen_terms(highest_term)
-    for term in TERMS:
-        dept_dists = session.query(DepartmentDistribution).all()
-        fetch_multiprocess(dept_dists,term)
-    print("Finished Libed Search")
 
-    print("Beginning Title Search")
-    fetch_better_titles_multi(session.query(DepartmentDistribution).all(),highest_term)
-    print("Finished Title Search")
+    if not args.DisableRMP:
+        print("RMP Update For Professors")
+        RMP_Update_Multiprocess()
+        print("RMP Updated")
+
+    if not args.DisableSRT:
+        print("Beginning SRT Updating")
+        srt_frame().apply(srt_updating,args=(session,),axis=1)
+        print("Finished SRT Updating")
+
+    if not args.DisableASR:
+        print("Inserting Libed Search")
+        for term in TERMS:
+            dept_dists = session.query(DepartmentDistribution).all()
+            fetch_multiprocess(dept_dists,term)
+        print("Finished Libed Search")
+
+    if not args.DisableCINFO:
+        print("Beginning Title Search")
+        for term in new_additions["TERM"].unique():
+            fetch_better_titles_multi(session.query(DepartmentDistribution).all(),term)
+        print("Finished Title Search")
