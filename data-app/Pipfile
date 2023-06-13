@@ -13,7 +13,6 @@ scipy = "*"
 alembic = "*"
 ratemyprofessorapi = "*"
 aiohttp = "*"
-aiosqlite = "*"
 
 [dev-packages]
 

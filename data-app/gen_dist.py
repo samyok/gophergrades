@@ -147,12 +147,6 @@ if __name__ == "__main__":
     srt_frame().apply(srt_updating,args=(session,),axis=1)
     print("Finished SRT Updating")
 
-    print("Beginning Title Search")
-    class_dists = session.query(ClassDistribution).order_by(ClassDistribution.class_name).all()
-    for class_dist in class_dists:
-        fetch_better_course_info(class_dist,session)
-    print("Finished Title Search")
-
     print("Inserting Libed Search")
     # For each term, search every department's classes and insert information regarding credits, libeds, onestop link, etc
     # IF the class distribution has not already been modified.
@@ -162,6 +156,9 @@ if __name__ == "__main__":
     TERMS = gen_terms(highest_term)
     for term in TERMS:
         dept_dists = session.query(DepartmentDistribution).all()
-        for dept_dist in dept_dists:
-            fetch_asr(dept_dist, term, session)
+        fetch_multiprocess(dept_dists,term)
     print("Finished Libed Search")
+
+    print("Beginning Title Search")
+    fetch_better_titles_multi(session.query(DepartmentDistribution).all(),highest_term)
+    print("Finished Title Search")
