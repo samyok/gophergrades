@@ -1,7 +1,7 @@
 import requests
 import json
 import html as h
-from db.Models import session, DepartmentDistribution, ClassDistribution
+from db.Models import Session, DepartmentDistribution, ClassDistribution
 from mapping.mappings import term_to_name
 from multiprocessing import Pool
 
@@ -39,6 +39,7 @@ def fetch_better_course_info(dept_obj, term):
         if (len(valid_keys) > 0):
             # print(f"Found {dept_class.class_name}")
             for key in valid_keys:
+                session = Session()
                 class_dist = session.query(ClassDistribution).get(dept_class.id)
                 if "Class Title" in CACHED_REQ[key]:
                     class_dist.class_desc = h.unescape(CACHED_REQ[key]["Class Title"])
@@ -47,6 +48,7 @@ def fetch_better_course_info(dept_obj, term):
                     session.commit()
                 else:
                     print(f"Did not update {class_dist.class_name} because a title was not found in the JSON")
+                session.close()
         else:
             print(f"Did not find {dept_class.class_name} in {term_to_name(term)}")
         
@@ -55,7 +57,9 @@ def fetch_better_titles_multi(dept_dists,term):
         p.starmap(fetch_better_course_info,[(dept_dist,term) for dept_dist in dept_dists])
 
 if __name__ == "__main__":
+    session = Session()
     dept_dists = session.query(DepartmentDistribution).order_by(DepartmentDistribution.dept_abbr).all()
+    session.close()
     fetch_better_titles_multi(dept_dists,1223)
         
 

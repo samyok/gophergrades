@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, SmallInteger, ForeignKey, VARCHAR, JSON, Float, Table, create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, Session
+from sqlalchemy.orm import relationship, sessionmaker
 from mapping.mappings import term_to_name
 
 """
@@ -123,4 +123,4 @@ engine = create_engine("sqlite:///../ProcessedData.db",echo=False,future=True)
 if __name__ == "__main__":
     Base.metadata.drop_all(engine)
 Base.metadata.create_all(engine)
-session = Session(engine)
+Session = sessionmaker(bind=engine)

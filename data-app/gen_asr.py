@@ -1,5 +1,5 @@
 import requests
-from db.Models import DepartmentDistribution, ClassDistribution, Libed, session
+from db.Models import DepartmentDistribution, ClassDistribution, Libed, Session
 from mapping.mappings import libed_mapping
 
 from multiprocessing import Pool
@@ -32,6 +32,7 @@ def fetch_traditional(dept_dist:DepartmentDistribution,term:int) -> None:
     for course in req["courses"]:
         subj = course["subject"]["subject_id"]
         nbr = course["catalog_number"]
+        session = Session()
         class_dist = session.query(ClassDistribution).filter(ClassDistribution.class_name == f"{subj} {nbr}").first()
         if class_dist:
             class_dist.class_desc = course["title"]
@@ -44,6 +45,7 @@ def fetch_traditional(dept_dist:DepartmentDistribution,term:int) -> None:
                     libed_dist.class_dists.append(class_dist)
             print(f"Updated {class_dist.class_name} ({class_dist.onestop}) : [{class_dist.cred_min} - {class_dist.cred_max}] credits : Libeds: ({class_dist.libeds})")
         session.commit()
+        session.close()
 
 
 def fetch_multiprocess(dept_dists:DepartmentDistribution,term:int) -> None:
@@ -54,9 +56,11 @@ def fetch_multiprocess(dept_dists:DepartmentDistribution,term:int) -> None:
 
 if __name__ == "__main__":
     TERMS = [1225, 1229, 1233, 1235, 1239]
+    session = Session()
+    dists = session.query(DepartmentDistribution).all()
+    session.close()
     start = time()
     for term in TERMS:
-        dists = session.query(DepartmentDistribution).all()
         fetch_multiprocess(dists,term)
     end = time()
     print(f"Time Elapsed: {end-start}")
