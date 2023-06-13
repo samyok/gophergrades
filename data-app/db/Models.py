@@ -111,7 +111,7 @@ class DepartmentDistribution(Base):
     id = Column(Integer,primary_key=True)
     dept_abbr = Column(VARCHAR(4),nullable=False, unique=True)
     dept_name = Column(VARCHAR(255),nullable=False)
-    class_dists = relationship('ClassDistribution',backref="dept")
+    class_dists = relationship('ClassDistribution',backref="dept",lazy="selectin")
     def __repr__(self) -> str:
         retVal = f"The department of {self.dept_abbr} - {self.dept_name} has the following distributions:\n"
         for dist in self.class_dists:
