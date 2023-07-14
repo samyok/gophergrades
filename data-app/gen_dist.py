@@ -172,7 +172,7 @@ if __name__ == "__main__":
 
     if not args.DisableSRT:
         print("Beginning SRT Updating")
-        srt_frame().apply(srt_updating,args=(session,),axis=1)
+        gen_srt()
         print("Finished SRT Updating")
 
     if not args.DisableASR:
