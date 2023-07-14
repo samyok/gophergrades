@@ -44,10 +44,17 @@ def fetch_better_course_info(dept_obj, term):
                 if "Class Title" in CACHED_REQ[key]:
                     class_dist.class_desc = h.unescape(CACHED_REQ[key]["Class Title"])
                     class_dist.onestop_desc = h.unescape(CACHED_REQ[key]["Course Catalog Description"])
-                    print(f"Updated | {class_dist.class_name}")
-                    session.commit()
+                    print(f"Updated Title | {class_dist.class_name}")
                 else:
                     print(f"Did not update {class_dist.class_name} because a title was not found in the JSON")
+
+                if "Course Catalog Description" in CACHED_REQ[key]:
+                    class_dist.onestop_desc = h.unescape(CACHED_REQ[key]["Course Catalog Description"])
+                    print(f"Updated Description | {class_dist.class_name}")
+                else:
+                    print(f"Did not update {class_dist.class_name} because a description was not found in the JSON")
+                session.add(class_dist)
+                session.commit()
                 session.close()
         else:
             print(f"Did not find {dept_class.class_name} in {term_to_name(term)}")
@@ -60,6 +67,7 @@ if __name__ == "__main__":
     session = Session()
     dept_dists = session.query(DepartmentDistribution).order_by(DepartmentDistribution.dept_abbr).all()
     session.close()
-    fetch_better_titles_multi(dept_dists,1223)
+    #TERMS = [1175, 1179, 1183, 1185, 1189, 1193, 1195, 1199, 1203, 1205, 1209, 1213, 1215, 1219, 1223, 1225, 1229, 1233]
+    fetch_better_titles_multi(dept_dists,1233)
         
 
