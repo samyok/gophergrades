@@ -266,6 +266,15 @@ const recurringGetTimes = (timeRange, day) => {
   return result;
 };
 
+const icsHeader = `BEGIN:VCALENDAR
+PRODID:-//GopherGrades//Classes//EN
+VERSION:1.0
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME: Class Calendar
+X-WR-TIMEZONE:America/Chicago
+`;
+
 /**
  * Turns scrapeASemester output into the text of a full .ics file
  * @param {Object} // given by scrapeASemester
@@ -273,14 +282,7 @@ const recurringGetTimes = (timeRange, day) => {
  */
 const dataToRecurringICS = (scrapedData) => {
   console.log("Composing ics file...");
-  let outputString = `BEGIN:VCALENDAR
-PRODID:-//GopherGrades//Classes//EN
-VERSION:2.0
-CALSCALE:GREGORIAN
-METHOD:PUBLISH
-X-WR-CALNAME: Class Calendar
-X-WR-TIMEZONE:America/Chicago
-`; // header stuff yknow
+  let outputString = icsHeader.slice(); // `slice()` is to make a copy? check if it's necessary
   for (courseInfo of scrapedData.coursesInfo) {
     outputString += createRecurringVEVENT(courseInfo);
   }
@@ -311,6 +313,8 @@ const dataToExportJSON = (scrapedData) => {
   return result;
 };
 
+
+
 /**
  * Given the output of `ScrapeASemester`, returns the semester's full .ics calendar file as a string
  * @param {Object} scrapedData // JSON object: what is directly returned by `ScrapeASemester()`
@@ -319,14 +323,7 @@ const dataToExportJSON = (scrapedData) => {
 function createData(scrapedData) {
   //creates ics file string
   console.log("Started createData");
-  let ouputString = `BEGIN:VCALENDAR
-PRODID:-//GopherGrades//Classes//EN
-VERSION:1.0
-CALSCALE:GREGORIAN
-METHOD:PUBLISH
-X-WR-CALNAME: Class Calendar
-X-WR-TIMEZONE:America/Chicago
-`;
+  let ouputString = icsHeader;
   for (week of scrapedData.weeks) {
     for (classEvent of week.meetingObjects) {
       ouputString += createVEVENT(classEvent);
@@ -336,6 +333,17 @@ X-WR-TIMEZONE:America/Chicago
   console.log(ouputString);
   return ouputString;
 }
+
+// /**
+//  * Given a JSON object from `dataToExportJSON()`, format it into an .ics file (as a string)
+//  * @param {Object} portable
+//  * @return {string} The full .ics file text
+//  */
+// function portableToIcsBlob(portable) {
+//   console.log("Started portableToIcsBlob");
+//   let blob = icsHeader;
+//   for (course)
+// }
 
 /**
  * Given the ouptut of `ScrapeASemester`
