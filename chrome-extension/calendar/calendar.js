@@ -67,30 +67,24 @@ const buttonBody = async () => {
   const loadingPage = htmlToElement(loadingPageTemplate);
   parentDiv.insertBefore(loadingPage, calendarDiv.nextSibling);
     
-    // console.log("Beginning scrape and download..")
-    // fileDownload(createData(await scrapeASemester()))
-  let currentWeek = parseDate(
-                  document
-                  .querySelector(".myu_heading-nav")
-                  .querySelector("h2")
-                  .innerText.match(/\d{2}\/\d{2}\/\d{4}/)[0], 
-                  "mm/dd/yyyy");
+  let scrape;
+  try {
+    let currentWeek = parseDate(
+                    document
+                    .querySelector(".myu_heading-nav")
+                    .querySelector("h2")
+                    .innerText.match(/\d{2}\/\d{2}\/\d{4}/)[0], 
+                    "mm/dd/yyyy");
 
-  console.log("Beginning scrape and download..");
-  let scrape = await scrapeASemester(formatDate(currentWeek, "yyyy-mm-dd"));
-  // fileDownload(dataToRecurringICS(scrape));
+    console.log("Beginning scrape and download..");
+    scrape = await scrapeASemester(formatDate(currentWeek, "yyyy-mm-dd"));
+    // fileDownload(dataToRecurringICS(scrape));
+  } finally {
+    loadingPage.remove();
+  }
   console.log(dataToExportJSON(scrape));
   openCalendarTab(dataToExportJSON(scrape));
 
-  loadingPage.remove();
-
-
-  // scrape = await scrapeASemester(formatDate(new Date(), "yyyy-mm-dd"))
-  // console.log(scrape.coursesInfo)
-  // console.log(scrape.weeks)
-  // console.log(scrape)
-  // c = scrape.coursesInfo[0]
-  // console.log(createRecurringVEVENT(c, []))
 };
 
 const appObserver = new MutationObserver((mutations) => {
