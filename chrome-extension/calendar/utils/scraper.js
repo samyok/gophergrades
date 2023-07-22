@@ -48,8 +48,8 @@ const weekToJSON = async (dateString = "today") => {
 
     let classDetails = meetingEl
       .querySelector(".myu_calendar-class-details")
-      .innerHTML.replace(/\n/g, "")
-      .split("<br>"); // regex is to get rid of random newlines that are in there for some reason
+      .innerHTML.replace(/\n/g, "") // get rid of random newlines that are in there for some reason
+      .replace(/<br>/g, "\n");
     let courseTitleScrape = meetingEl.querySelector(
       ".myu_calendar-class-name"
     ).innerText;
@@ -58,9 +58,9 @@ const weekToJSON = async (dateString = "today") => {
       term: meetingEl.getAttribute("data-strm").trim(), // {string} // in format `xyyx', where `yy` is the year and `xx` = `13` is spring, `19` is fall
       courseNum: meetingEl.getAttribute("data-class-nbr").trim(), // {string}
       date: parseDate(meetingEl.getAttribute("data-fulldate"), "yyyymmdd"), // {Date}
-      meetingType: classDetails[0].trim(), // {string}
-      timeRange: classDetails[1].trim(), // {string}
-      room: classDetails[2].trim(), // {string}
+      meetingType: classDetails.match(/^(Lecture)|(Discussion)|(Laboratory)$/m)[0], // {string} // may need updating if list is not exhaustive
+      timeRange: classDetails.match(/.*:.*/m)[0], // {string}
+      room: classDetails.match(/^(?= ).*(?<= )$/m)[0], // {string} // (room has leading and trailing space)
       courseName: meetingEl
         .querySelector(".myu_calendar-class-name-color-referencer")
         .innerText.trim(), // {string}
