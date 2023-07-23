@@ -79,6 +79,9 @@ const buttonBody = async () => {
     console.log("Beginning scrape and download..");
     scrape = await scrapeASemester(formatDate(currentWeek, "yyyy-mm-dd"));
     // fileDownload(dataToRecurringICS(scrape));
+  } catch (error) {
+    console.error(error);
+    alert("Calendar export scraper error. Are you open to a week that doesn't have classes?"); // this message doesn't display. need to edit manifest?
   } finally {
     loadingPage.remove();
   }

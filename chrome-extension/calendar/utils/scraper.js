@@ -60,7 +60,7 @@ const weekToJSON = async (dateString = "today") => {
       date: parseDate(meetingEl.getAttribute("data-fulldate"), "yyyymmdd"), // {Date}
       meetingType: classDetails.match(/^(Lecture)|(Discussion)|(Laboratory)$/m)[0], // {string} // may need updating if list is not exhaustive
       timeRange: classDetails.match(/.*:.*/m)[0], // {string}
-      room: classDetails.match(/^(?= ).*(?<= )$/m)[0], // {string} // (room has leading and trailing space)
+      room: classDetails.match(/^ .* $/m)[0].trim(), // {string} // (room has leading and trailing space)
       courseName: meetingEl
         .querySelector(".myu_calendar-class-name-color-referencer")
         .innerText.trim(), // {string}
@@ -144,11 +144,8 @@ const scraperSecondPass = (weeks, coursesInfo) => {
   // log the date of this first meeting (needed for .ics spec stuff)
   // copy over `meetingType` and `courseName`
   courseloop: for (let course of coursesInfo) {
-    // for course in coursesInfo
     for (let week of weeks) {
-      // for week in `weeks`
       for (let meeting of week.meetingObjects) {
-        // for meeting in week
         if (meeting.courseNum == course.courseNum) {
           course.firstDate = meeting.date;
           course.meetingType = meeting.meetingType;

@@ -144,16 +144,16 @@ const createRecurringVEVENT = (courseData) => {
     courseData.timeRange,
     courseData.firstDate
   ); // date is exact first day of class
-  let accum = `BEGIN:VEVENT
-DTSTART:${startDate}
-DTEND:${endDate}
-`;
 
   // recurrence info
-  accum += `RRULE:FREQ=WEEKLY;WKST=SU;`;
   let recurrenceEndDate = formatDateWithTime(23, 59, courseData.dateRange[1]);
-  accum += `UNTIL=${recurrenceEndDate};`;
-  accum += `BYDAY=${formatDaysOfWeek(courseData.daysOfWeek, "MO,")}\n`;
+
+  let accum = `BEGIN:VEVENT
+DTSTART:${startDate}
+DTEND:${endDate}${/*
+// recurrence info */''}
+RRULE:FREQ=WEEKLY;WKST=SU;UNTIL=${recurrenceEndDate};BYDAY=${formatDaysOfWeek(courseData.daysOfWeek, "MO,")}\n
+`;
 
   let eventStartTime = parseTime(courseData.timeRange.split(" - ")[0]);
   // Now add the excluded dates
@@ -339,11 +339,40 @@ function createData(scrapedData) {
 //  * @param {Object} portable
 //  * @return {string} The full .ics file text
 //  */
-// function portableToIcsBlob(portable) {
-//   console.log("Started portableToIcsBlob");
-//   let blob = icsHeader;
-//   for (course)
-// }
+function portableToIcsBlob(portable) {
+  portable = JSON.parse(JSON.stringify(portable)); // make clone because i HATE MUTABILITY
+  console.log("Started portableToIcsBlob");
+  let blob = icsHeader.slice();
+  
+  // regular vevents (includes excluded dates)
+  for (course of portable.courses) {
+    blob += `BEGIN:VEVENT
+DTSTART:${course.calendarStrings.dtStart}
+DTEND:${course.calendarStrings.dtEnd}
+RRULE:${course.calendarStrings.rRule}
+${course.calendarStrings.exDates.map((exDate) => `EXDATE:${exDate}`).join("\n")}
+LOCATION:${course.room}
+SUMMARY:${course.courseName} ${course.meetingType}
+DTSTAMP:${formatDatetime(new Date())}
+UID:${createUniqueId(course.term, course.courseNum)}
+END:VEVENT
+`;
+  }
+  // additional meetings
+  for (additionalMeeting of portable.additionalMeetings) {
+      blob += `BEGIN:VEVENT
+DTSTART:${additionalMeeting.calendarStrings.dtStart}
+DTEND:${additionalMeeting.calendarStrings.dtEnd}
+LOCATION:${additionalMeeting.room}
+SUMMARY:${additionalMeeting.courseName + " " + additionalMeeting.meetingType}
+DTSTAMP:${formatDatetime(new Date())}
+UID:${createUniqueId(additionalMeeting.term, additionalMeeting.courseNum)}
+END:VEVENT
+`;
+  }
+  blob += "END:VCALENDAR"
+  return blob;
+}
 
 /**
  * Given the ouptut of `ScrapeASemester`
