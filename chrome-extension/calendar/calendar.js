@@ -1,4 +1,4 @@
-console.log("calendar.js is loaded");
+console.log("[GG] calendar.js is loaded");
 
 const buttonTemplate = `<div id="gcal_btn_group">
 <button id = "gg_button">  </button>
@@ -76,12 +76,12 @@ const buttonBody = async () => {
                     .innerText.match(/\d{2}\/\d{2}\/\d{4}/)[0], 
                     "mm/dd/yyyy");
 
-    console.log("Beginning scrape and download..");
+    console.log("[GG] Beginning scrape and download..");
     scrape = await scrapeASemester(formatDate(currentWeek, "yyyy-mm-dd"));
     // fileDownload(dataToRecurringICS(scrape));
   } catch (error) {
     console.error(error);
-    alert("Calendar export scraper error. Are you open to a week that doesn't have classes?"); // this message doesn't display. need to edit manifest?
+    alert("[GG] Calendar export scraper error. Are you open to a week that doesn't have classes?"); // this message doesn't display. need to edit manifest?
   } finally {
     loadingPage.remove();
   }

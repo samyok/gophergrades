@@ -29,7 +29,7 @@ const weekToJSON = async (dateString = "today") => {
   // parsing begins
   var synchronousMeetings = el.querySelector(".myu_calendar"); // HTML div containing only the classes with set days and times
   if (synchronousMeetings == null) {
-    console.log(`encountered a week without meetings (${dateString}).`);
+    console.log(`[GG] encountered a week without meetings (${dateString}).`);
     return {
       meetingObjects: [],
       sundayDate: sundayThisWeek(parseDate(dateString, "yyyy-mm-dd")),
@@ -42,7 +42,7 @@ const weekToJSON = async (dateString = "today") => {
   for (let meetingEl of meetingElements) {
     if (meetingEl.classList.contains("no-class")) {
       // sometimes a meetingEl marks when there are no classes in a day?
-      console.log("encountered a no-class meetingElement. skipping...");
+      console.log("[GG] encountered a no-class meetingElement. skipping...");
       continue;
     }
 
@@ -67,13 +67,13 @@ const weekToJSON = async (dateString = "today") => {
       institution: meetingEl.dataset.institution, // {string}
       prettyName: courseTitleScrape.match(/(?<=\d\) ).*/)[0].trim(), // {string} e.g. "Adv Programming Principles"
       sectionID: courseTitleScrape.match(/(?<=\()\d+(?=\))/)[0], // {string} e.g. "001" of "CSCI 2021 (001)"
-    });
+    }); // {MeetingObject} spec
   }
 
   weekObject = {
     meetingObjects: meetingObjects,
     sundayDate: sundayThisWeek(parseDate(dateString, "yyyy-mm-dd")),
-  };
+  }; // {WeekObject} spec
   return weekObject;
 };
 
@@ -103,8 +103,24 @@ const generalClassInfo = async (term, courseNum, institution = "UMNTC") => {
     .then((r) => r.text())
     .then((r) => (el.innerHTML = r));
 
+  let table = el.querySelector("table.myu_panel-table.table.responsive").querySelector("tbody").querySelectorAll("tr");
+  let synchronousRow;
+  let synchronousRowCounter = 0;
+  for (let row of table) {
+    if (row.querySelector("[data-th='Days and Times']").innerText !== "------- -") { // !(no meetings, no time range)
+      synchronousRow = row;
+      synchronousRowCounter++;
+    } else {
+      console.log("[GG] found asynchronous meeting in `generalClassInfo`, ignoring...");
+    }
+  }
+
+  if (synchronousRowCounter != 1) {
+    console.log(`[GG]!!!!!!!!!!!!!!! ALERT, ${synchronousRowCounter} synchronous meeting found in generalClassInfo() for url ${url}`);
+  } // if this runs, that means we have a big headache and rewrite ahead of us. pls no
+
   // dateRange parsing
-  let dateRangeString = el.querySelector('[data-th="Meeting Dates"]').innerText;
+  let dateRangeString = synchronousRow.querySelector('[data-th="Meeting Dates"]').innerText;
   let dateRange = dateRangeString.split(" - ").map(function (dateString) {
     return parseDate(dateString, "mm/dd/yyyy");
   });
@@ -115,13 +131,13 @@ const generalClassInfo = async (term, courseNum, institution = "UMNTC") => {
     institution: institution.trim(), // {string}
     dateRange: dateRange, // {Array<Date>}
     daysOfWeek: daysOfWeekToArray(
-      el.querySelector('[data-th="Days and Times"]').innerText.slice(0, 7)
+      synchronousRow.querySelector('[data-th="Days and Times"]').innerText.slice(0, 7)
     ), // {Array<boolean>}
-    timeRange: el
+    timeRange: synchronousRow
       .querySelector('[data-th="Days and Times"]')
       .innerText.slice(8)
       .trim(), // {string} // everything after character 8 (inclusive) // format: hh:mm pm - hh:mm pm
-    room: el.querySelector('[data-th="Room"]').innerText.trim(), // {string}
+    room: synchronousRow.querySelector('[data-th="Room"]').innerText.trim(), // {string}
     // "meetingType"   : // {string} populated in scraperSecondPass
     // "courseName"    : // {string} populated in scraperSecondPass
     // "excludedDates" : // {Array<Date>} populated in scraperSecondPass
@@ -129,15 +145,16 @@ const generalClassInfo = async (term, courseNum, institution = "UMNTC") => {
     // "prettyName"   : // {string} // populated in scraperSecondPass
     // "sectionID"     : // {string} // populated in scraperSecondPass
     // "address"       : // COMING LATER // accessible only through outside site, likely will need to just make local lookup table
-  };
+  }; // {CourseObject} spec
 };
 
 /**
  * Enhances `coursesInfo` by cross-referencing between it and `weeks`.
  * Populates `meetingType`, `courseName` (but not `address` yet)
- * (not yet but will soon) Also adds excluded meetings (e.g. breaks) and (maybe???) additional meetings (e.g. exams).
+ * Also adds excluded meetings (e.g. breaks) and additional meetings (e.g. exams).
  * @param {Array<Array<Object>>} weeks // unmodified
- * @param {Array<Object>} coursesInfo // modifies coursesInfo in place
+ * @param {Array<Object>} coursesInfo // modifies coursesInfo in place.
+ * @returns {Array<Object>} list of additional meetings
  */
 const scraperSecondPass = (weeks, coursesInfo) => {
   // first, find the first meeting of the course.
@@ -237,9 +254,8 @@ const scraperSecondPass = (weeks, coursesInfo) => {
           excludedDate.setDate(excludedDate.getDate() + dayOfWeek); // then shift the date to the correct day of week
           // console.log(excludedDate)
 
-          console.log("Excluded meeting found!");
-          // console.log(`hash: ${hash}, date: ${excludedDate}`)
-
+          console.log(`[GG] Excluded meeting found! hash: ${hash}`);
+          console.log(`[GG] date: ${excludedDate}`)
           modelWeekHT[hash].course.excludedDates.push(excludedDate);
         }
       }
@@ -250,9 +266,9 @@ const scraperSecondPass = (weeks, coursesInfo) => {
         // for meeting in week
         if (modelWeekHT[hash] == null) {
           // if this meeting doesn't appear in the model week
-          console.log(`Additional meeting found! hash: ${hash}`);
+          console.log(`[GG] Additional meeting found! hash: ${hash}`);
           additionalMeeting = thisWeekHT[hash];
-          console.log(`date: ${additionalMeeting.date}$`);
+          console.log(`[GG] date: ${additionalMeeting.date}$`);
           additionalMeetings.push(additionalMeeting);
         }
       }
@@ -262,7 +278,7 @@ const scraperSecondPass = (weeks, coursesInfo) => {
     return additionalMeetings;
   };
 
-  console.log("weeks: \n");
+  console.log("[GG] weeks: \n");
   console.log(weeks);
   let additionalMeetings = findExcludedAndAdditionalMeetings(weeks);
   // console.log(additionalMeetings)
@@ -276,12 +292,12 @@ const scraperSecondPass = (weeks, coursesInfo) => {
 // 1. pick a sample week (which week best to pick?), then grab all the course numbers in it
 // 2. Then get the general course info for each of those course numbers, store it somewhere
 // 3. Then take one of the `dateRange`s (they're all the same) and scrape through the whole thing to find instances of when a class should appear but it doesn't. store this somehow
-console.log("scraper.js runs!");
+console.log("[GG] scraper.js runs!");
 
 /**
  * Given a date, returns info on each course meeting in the semester containing that date. Also returns generally-true info about the courses in the semester
  * @param {string} [sampleDateString="today"] // format: "yyyy-mm-dd". Note: this should be a *representative week of the semester*, not breaktime
- * @returns {Object} // has fields `.weeks` and `.coursesInfo`
+ * @returns {Object} {weeks {List<WeekObject>}, coursesInfo {List<CourseObject>}, additionalMeetings {List<MeetingObject>}}// has fields `.weeks` and `.coursesInfo`
  * `.weeks` is a doubly-nested array of every single class meeting in the semester
  * `.coursesInfo` is the general course info (e.g. term start and end days) for each class *found in the sample week*
  */
@@ -318,10 +334,7 @@ const scrapeASemester = async (sampleDateString = "today") => {
     date <= endDate;
     date.setDate(date.getDate() + 7)
   ) {
-    // the reason we need to pad endDate
     let currentWeekData = weekToJSON(formatDate(date, "yyyy-mm-dd"));
-    // now um somehow check for when a class should be happening, but isn't (e.g. break/holiday)
-    // ??? think about this later
     weeksPromises.push(currentWeekData);
   }
   let weeks = await Promise.all(weeksPromises); // concurrency, yo!
@@ -333,5 +346,5 @@ const scrapeASemester = async (sampleDateString = "today") => {
     weeks: weeks,
     coursesInfo: coursesInfo,
     additionalMeetings: additionalMeetings,
-  }; // {Array<Meeting Objects>}
+  }; // {Array<MeetingObject>}
 };

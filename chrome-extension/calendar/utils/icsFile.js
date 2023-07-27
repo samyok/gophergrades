@@ -281,7 +281,7 @@ X-WR-TIMEZONE:America/Chicago
  * @returns {string} full .ics file contents
  */
 const dataToRecurringICS = (scrapedData) => {
-  console.log("Composing ics file...");
+  console.log("[GG] Composing ics file...");
   let outputString = icsHeader.slice(); // `slice()` is to make a copy? check if it's necessary
   for (courseInfo of scrapedData.coursesInfo) {
     outputString += createRecurringVEVENT(courseInfo);
@@ -322,7 +322,7 @@ const dataToExportJSON = (scrapedData) => {
  */
 function createData(scrapedData) {
   //creates ics file string
-  console.log("Started createData");
+  console.log("[GG] Started createData");
   let ouputString = icsHeader;
   for (week of scrapedData.weeks) {
     for (classEvent of week.meetingObjects) {
@@ -341,7 +341,7 @@ function createData(scrapedData) {
 //  */
 function portableToIcsBlob(portable) {
   portable = JSON.parse(JSON.stringify(portable)); // make clone because i HATE MUTABILITY
-  console.log("Started portableToIcsBlob");
+  console.log("[GG] Started portableToIcsBlob");
   let blob = icsHeader.slice();
   
   // regular vevents (includes excluded dates)
