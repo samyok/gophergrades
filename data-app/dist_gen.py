@@ -19,10 +19,10 @@ from sqlalchemy import and_
 """
 
 # Worry not about the CACHED variables, this is simply to help store previous requests in order to prevent redundant calls to an API
-CACHED_REQ={}
+CACHED_REQ={} 
 CACHED_LINK=""
 # TERMS should hold the value of the next 2 terms, current term, and past 2 term in decreasing order.
-TERMS = [1235 ,1233, 1229, 1225, 1223]
+TERMS = [1239, 1235 ,1233, 1229, 1225]
 # Runs the generate function to fetch data from API
 # TODO: Potential switch to GraphQL API?
 
@@ -205,7 +205,7 @@ if len(session.query(Libed).all()) == 0:
     session.commit()
 
 if __name__ == "__main__":
-    df = pd.read_csv("CLASS_DATA/combined_clean_data.csv",dtype={"CLASS_SECTION":str})
+    df = pd.read_csv("CLASS_DATA/SPR2023_cleaned_data.csv",dtype={"CLASS_SECTION":str})
     print("Loaded Data!")
     print("Adding Profs")
     # Add All Professors Including an "Unknown Instructor" for non-attributed values to the Database
