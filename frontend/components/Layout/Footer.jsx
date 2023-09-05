@@ -27,7 +27,7 @@ const getContributors = async () => {
 const GithubAvatar = ({ name, ...props }) => (
   <WrapItem>
     <Tooltip label={name} placement={"top"} hasArrow>
-      <Avatar size={"lg"} name={name} {...props} />
+      <Avatar size={"md"} name={name} {...props} />
     </Tooltip>
   </WrapItem>
 );
