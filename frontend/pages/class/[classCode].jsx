@@ -23,6 +23,18 @@ import SRTValues from "../../components/SRTValues";
 
 const SPECIAL_TAGS = ["Honors", "Freshman Seminar"];
 
+const DepartmentButton = ({ deptAbbr }) => (
+  <ChakraLink
+    as={NextLink}
+    href={`/dept/${deptAbbr}`}
+    style={{
+      fontWeight: "900",
+    }}
+  >
+    {deptAbbr}
+  </ChakraLink>
+);
+
 export default function Class({ classData, query }) {
   const {
     class_name: className,
@@ -38,17 +50,6 @@ export default function Class({ classData, query }) {
   } = classData;
 
   const classNumber = className.replace(deptAbbr, "");
-  const DepartmentButton = () => (
-    <ChakraLink
-      as={NextLink}
-      href={`/dept/${deptAbbr}`}
-      style={{
-        fontWeight: "900",
-      }}
-    >
-      {deptAbbr}
-    </ChakraLink>
-  );
 
   const [isMobile] = useMediaQuery("(max-width: 550px)");
   const {
@@ -147,7 +148,7 @@ export default function Class({ classData, query }) {
           }}
         >
           <Heading mt={4}>
-            <DepartmentButton />
+            <DepartmentButton deptAbbr={deptAbbr} />
             {classNumber}: {classDesc}
           </Heading>
           <Stack direction={["column", "row"]} mt={1} spacing={2} wrap={"wrap"}>
