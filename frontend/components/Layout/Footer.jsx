@@ -10,6 +10,7 @@ import {
   Tooltip,
   VStack,
   Wrap,
+  chakra,
   WrapItem,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
@@ -17,6 +18,7 @@ import React, { useEffect, useState } from "react";
 import { FaGithub, FaHome, FaLinkedinIn } from "react-icons/fa";
 import LinkButton from "../LinkButton";
 import { footerOverrides } from "../../lib/config";
+import trackEvent from "../../lib/track";
 
 const getContributors = async () => {
   return fetch("/api/contributors").then((r) => r.json());
@@ -51,7 +53,7 @@ const ContributorGroup = () => {
   }, []);
 
   return (
-    <VStack spacing={0}>
+    <VStack spacing={0} mb={4}>
       <Wrap spacing={10} overflow={"visible"} justify={"center"} mb={4}>
         {bigContributors.map((c) => (
           <WrapItem>
@@ -73,10 +75,9 @@ const ContributorGroup = () => {
                     href={c.linkedin}
                     target={"_blank"}
                     onClick={() => {
-                      window?.umami?.trackEvent(
-                        `button.${c.login}.linkedin.click`,
-                        { type: "footer" }
-                      );
+                      trackEvent(`button.${c.login}.linkedin.click`, {
+                        type: "footer",
+                      });
                     }}
                     as={"a"}
                     size={"sm"}
@@ -89,10 +90,9 @@ const ContributorGroup = () => {
                     href={c.website}
                     target={"_blank"}
                     onClick={() => {
-                      window?.umami?.trackEvent(
-                        `button.${c.login}.website.click`,
-                        { type: "footer" }
-                      );
+                      trackEvent(`button.${c.login}.website.click`, {
+                        type: "footer",
+                      });
                     }}
                     as={"a"}
                     size={"sm"}
@@ -105,10 +105,9 @@ const ContributorGroup = () => {
                     href={c.github}
                     target={"_blank"}
                     onClick={() => {
-                      window?.umami?.trackEvent(
-                        `button.${c.login}.github.click`,
-                        { type: "footer" }
-                      );
+                      trackEvent(`button.${c.login}.github.click`, {
+                        type: "footer",
+                      });
                     }}
                     as={"a"}
                     size={"sm"}
@@ -131,7 +130,7 @@ const ContributorGroup = () => {
             href={c.html_url}
             as={"a"}
             onClick={() => {
-              window?.umami?.trackEvent(`avatar.${c.login}.click`, {
+              trackEvent(`avatar.${c.login}.click`, {
                 type: "footer",
               });
             }}
@@ -151,7 +150,7 @@ const ContributorGroup = () => {
         as={"a"}
         target={"_blank"}
         onClick={() => {
-          window?.umami?.trackEvent(`button.github_contribute.click`, {
+          trackEvent(`button.github_contribute.click`, {
             type: "footer",
           });
         }}
@@ -165,7 +164,7 @@ const ContributorGroup = () => {
 
 export const Footer = () => {
   return (
-    <Box pt={10} pb={5}>
+    <Box pt={10} pb={10}>
       <Divider borderColor={"rgba(91,0,19,0.42)"} mb={4} />
       <VStack spacing={4}>
         <ContributorGroup />
@@ -176,26 +175,33 @@ export const Footer = () => {
           color={"gray.600"}
         >
           <NextLink href={"/"}>Gopher Grades</NextLink> is maintained by{" "}
-          <LinkButton target={"_blank"} href={"/social-coding"}>
+          <LinkButton
+            target={"_blank"}
+            href={"/social-coding"}
+            fontWeight={500}
+          >
             Social Coding
           </LinkButton>{" "}
-          with data from Summer 2017 to Fall 2022 provided by the{" "}
+          with data from Summer 2017 to Spring 2023 provided by the{" "}
           <LinkButton
             target={"_blank"}
             href={"https://ogc.umn.edu/data-access-and-privacy"}
+            fontWeight={400}
           >
             Office of Data Access and Privacy
           </LinkButton>
         </Text>
         <LinkButton
-          color={"gray.500"}
-          fontWeight={"300"}
+          color={"gray.900"}
+          fontWeight={"200"}
           target={"_blank"}
           href={
             "https://cla.umn.edu/undergraduate-students/cla-community/student-organizations/cla-student-board"
           }
         >
-          Data from Fall 2022 to Summer 2023 provided by CLA Student Board.
+          Funded by the{" "}
+          <chakra.span fontWeight={300}>CLA Student Board</chakra.span> for
+          2022-2023.
         </LinkButton>
       </VStack>
     </Box>
