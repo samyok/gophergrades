@@ -7,6 +7,7 @@ import {
   Link as ChakraLink,
   Stack,
   Tag,
+  Text,
   useMediaQuery,
   VStack,
   Wrap,
@@ -27,13 +28,29 @@ export default function Class({ classData, query }) {
   const {
     class_name: className,
     class_desc: classDesc,
+    onestop_desc: onestopDesc,
     distributions,
     libEds,
     onestop,
     cred_min: creditMin,
     cred_max: creditMax,
     srt_vals: srtVals,
+    dept_abbr: deptAbbr,
   } = classData;
+
+  const classNumber = className.replace(deptAbbr, "");
+  const DepartmentButton = () => (
+    <ChakraLink
+      as={NextLink}
+      href={`/dept/${deptAbbr}`}
+      style={{
+        fontWeight: "900",
+      }}
+    >
+      {deptAbbr}
+    </ChakraLink>
+  );
+
   const [isMobile] = useMediaQuery("(max-width: 550px)");
   const {
     search,
@@ -131,7 +148,8 @@ export default function Class({ classData, query }) {
           }}
         >
           <Heading mt={4}>
-            {className}: {classDesc}
+            <DepartmentButton />
+            {classNumber}: {classDesc}
           </Heading>
           <Stack direction={["column", "row"]} mt={1} spacing={2} wrap={"wrap"}>
             {creditMin !== null && (
@@ -142,19 +160,25 @@ export default function Class({ classData, query }) {
             )}
             {libEdTags}
           </Stack>
-          <Stack my={4} direction={["column", "row"]}>
+          <Text mt={4} mb={2} fontSize={"sm"}>
+            {onestopDesc}
+          </Text>
+          <Text mb={4} fontSize={"sm"}>
             {onestop && (
-              <ChakraLink as={NextLink} href={onestop} isExternal>
-                OneStop
+              <ChakraLink
+                as={NextLink}
+                href={onestop}
+                isExternal
+                style={{
+                  opacity: 0.5,
+                }}
+              >
+                View on OneStop
                 <ExternalLinkIcon mx={1} mb={1} />
               </ChakraLink>
             )}
-            <ChakraLink as={NextLink} href={`/dept/${classData.dept_abbr}`}>
-              {classData.dept_name} Department
-              <ExternalLinkIcon mx={1} mb={1} />
-            </ChakraLink>
-          </Stack>
-          <VStack spacing={4} align={"start"} pb={4} minH={"60vh"}>
+          </Text>
+          <VStack spacing={4} align={"start"} pb={4} minH={"50vh"}>
             {totalDistributions}
             <SRTValues srtValues={srtVals} />
             <Divider

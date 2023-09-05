@@ -14,6 +14,9 @@ const parseJSON = (str) => {
 };
 
 const SRTValues = ({ srtValues }) => {
+  const parsedJson = parseJSON(srtValues);
+  if (!parsedJson) return null;
+
   const {
     DEEP_UND: deepUnderstanding,
     STIM_INT: interestStimulated,
@@ -22,7 +25,7 @@ const SRTValues = ({ srtValues }) => {
     EFFORT: effort,
     // GRAD_STAND: gradStanding,
     RECC: recommend,
-  } = parseJSON(srtValues);
+  } = parsedJson;
 
   return (
     <Wrap spacing={"8px"} width={"100%"} overflow={"visible"} mb={2}>
