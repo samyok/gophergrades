@@ -10,7 +10,6 @@ import {
   Text,
   useMediaQuery,
   VStack,
-  Wrap,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
