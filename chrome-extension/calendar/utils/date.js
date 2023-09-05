@@ -21,21 +21,20 @@ const MONTH_NAMES = [
  * @returns {Date}
  */
 const parseDate = (dateString, format) => {
-  if (format == "yyyymmdd") {
+  if (format === "yyyymmdd") {
     let year = dateString.slice(0, 4);
     let month = dateString.slice(4, 6);
     let day = dateString.slice(6, 8);
     return new Date(Date.UTC(year, month - 1, day));
-  } else if (format == "yyyy-mm-dd") {
+  } else if (format === "yyyy-mm-dd") {
     let [year, month, day] = dateString.split("-");
     return new Date(Date.UTC(year, month - 1, day));
-  } else if (format == "mm/dd/yyyy") {
+  } else if (format === "mm/dd/yyyy") {
     {
       let [month, day, year] = dateString.split("/");
-      let result = new Date(Date.UTC(year, month - 1, day));
-      return result;
+      return new Date(Date.UTC(year, month - 1, day));
     }
-  } else if (format == "yyyymmddhhmmss") {
+  } else if (format === "yyyymmddhhmmss") {
     let year = dateString.slice(0, 4);
     let month = dateString.slice(4, 6);
     let day = dateString.slice(6, 8);
@@ -68,13 +67,13 @@ const formatDate = (date, format) => {
     return ("0".repeat(width) + input).slice(-width);
   };
 
-  if (format == "yyyy-mm-dd") {
+  if (format === "yyyy-mm-dd") {
     return [year, pad(month, 2), pad(day, 2)].join("-");
-  } else if (format == "yyyymmdd") {
+  } else if (format === "yyyymmdd") {
     return [year, pad(month, 2), pad(day, 2)].join("");
-  } else if (format == "mm/dd/yyyy") {
+  } else if (format === "mm/dd/yyyy") {
     return [pad(month, 2), pad(day, 2), year].join("/");
-  } else if (format == "yyyymmddhhmmss") {
+  } else if (format === "yyyymmddhhmmss") {
     return [
       year,
       pad(month, 2),
@@ -83,7 +82,7 @@ const formatDate = (date, format) => {
       pad(mins, 2),
       pad(secs, 2),
     ];
-  } else if (format == "Month dd, yyyy") {
+  } else if (format === "Month dd, yyyy") {
     return `${MONTH_NAMES[month]} ${day}, ${year}`;
   } else {
     throw new Error(
@@ -110,7 +109,7 @@ const sundayThisWeek = (date) => {
  */
 const daysOfWeekToArray = (daysOfWeekString) => {
   let patterns = [/S([^a]||$)/, /M/, /T[^h]/, /W/, /Th/, /F/, /Sa/];
-  return patterns.map((p) => !(daysOfWeekString.search(p) == -1)); // this is so fancy
+  return patterns.map((p) => !(daysOfWeekString.search(p) === -1)); // this is so fancy
 };
 
 /**
@@ -122,10 +121,10 @@ const daysOfWeekToArray = (daysOfWeekString) => {
 let formatDaysOfWeek = (daysOfWeek, format) => {
   let weekdayNames;
   let delimiter;
-  if (format == "MO,") {
+  if (format === "MO,") {
     weekdayNames = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
     delimiter = ",";
-  } else if (format == "Monday, ") {
+  } else if (format === "Monday, ") {
     // there's gotta be a better way than this to support different formats
     weekdayNames = [
       "Sunday",
