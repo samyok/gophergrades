@@ -2,6 +2,8 @@
 
 EVENT_WATERMARK =
   "<p>This event was created using the GopherGrades extension! Download at <a href='https://umn.lol'>umn.lol</a>.</p>";
+DASHBOARD_URL = "https://dash.umn.lol/api/send";
+DASHBOARD_ID = "22f6733b-ad28-4934-a703-1c1ea4c0e4fc";
 
 // #############################################################
 // figure out the canonical/proper way to import these:
@@ -177,7 +179,34 @@ const googleApi = async (url, token, body, method = "POST") => {
   return res;
 };
 
+const trackEvent = (name, data = {}) => {
+  fetch(DASHBOARD_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      payload: {
+        hostname: window.location.hostname,
+        language: navigator.language,
+        referrer: document.referrer,
+        screen: `${window.screen.width}x${window.screen.height}`,
+        title: document.title,
+        url: window.location.pathname,
+        website: DASHBOARD_ID,
+        name: name,
+        data: {
+          foo: "bar",
+        },
+      },
+      type: "event",
+    }),
+  })
+    .then((r) => r.json())
+    .then(console.log);
+};
+
 document.querySelector("#add").addEventListener("click", async (e) => {
+  trackEvent("ext:adding_to_calendar", {
+    bundles: bundles,
+  });
   const token = await getCalendarToken();
   console.log(bundles, bundleColors);
   document.querySelector("#initial-screen").classList.add("hidden");
