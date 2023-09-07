@@ -129,7 +129,7 @@ const createCardElement = (bundle, courseNum) => {
     </div>`;
   const el = htmlToElement(htmlText);
   // add event listeners to the color picker
-  el.querySelectorAll(".color").forEach((colorEl) => {
+  el.querySelectorAll(".color-picker .color").forEach((colorEl) => {
     colorEl.addEventListener("click", (e) => {
       const colorId = e.target.getAttribute("data-color-id") || 0;
       const card = document.getElementById(`${cardId}-card`);
