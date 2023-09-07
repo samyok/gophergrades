@@ -1,5 +1,6 @@
+let plotterUIPresented = chrome.storage.sync.get("settings").then((result) => result.settings["sb:showMapOfClasses"])
+
 let schedulePresented = false
-//todo use chrome storage
 let plotterPresented = false
 
 let daySelected = "Monday"
@@ -15,6 +16,8 @@ let daySelected = "Monday"
  * @param mutations{MutationRecord[]} mutations from MutationObserver
  */
 async function onChange(mutations) {
+  if (!await plotterUIPresented) return;
+
   const schedule = document.querySelector("#schedule-main");
 
   //create elements if change is detected

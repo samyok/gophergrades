@@ -1,12 +1,3 @@
-let doPlotterUI = chrome.storage.local.get(["showMapOfClasses"]).then((result) => {
-  console.log("Value currently is " + result.key);
-})
-
-// https://stackoverflow.com/questions/46158592/chrome-extensions-storage-listener-for-only-one-stored-variable
-chrome.storage.onChanged.addListener(function (tab) {
-  //detect when the value of "showMapOfClasses" changes to create/destroy UI
-});
-
 /**
  * imagine print() being a function to print to a printer
  *
