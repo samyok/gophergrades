@@ -11,40 +11,32 @@
     <link rel="stylesheet" href="add.css">
 </head>
 <body>
-<div class="layout">
+<div class="layout" id="initial-screen">
     <h1>Add to Calendar</h1>
-    <p class="subtitle">GopherGrades: A <a class="subtitle" href="https://umn.lol/social-coding" target="_blank">Social
-        Coding</a> Project</p>
+    <p class="subtitle">Review and add these classes to your Google Calendar. If you don't have a Google Calendar,
+        you can download an .ics file to import into your calendar of choice.</p>
+    <p class="subtitle">You can also change the color of each class by clicking on the color swatch.</p>
 
     <div class="event-container">
-        <div class="events">
-            <div class="event card" style="--event-color: #ff887c">
-                <div class="title">
-                    <h2 class="event-title">CSCI 1913: Intro to Algs. & Program Dev.</h2>
-                    <div class="color-switcher-container">
-                        <button class="color-switcher">
-                            <div class="color current-color" style="background-color: #ff887c"></div>
-                            <div class="arrow down"></div>
-                        </button>
-                        <div class="color-picker">
-                            <div class="color" style="background-color: #ff0000"></div>
-                            <div class="color" style="background-color: #ff7f00"></div>
-                            <div class="color" style="background-color: #ffff00"></div>
-                            <div class="color" style="background-color: #00ff00"></div>
-                            <div class="color" style="background-color: #0000ff"></div>
-                            <div class="color" style="background-color: #4b0082"></div>
-                            <div class="color" style="background-color: #9400d3"></div>
-                        </div>
-                    </div>
-                </div>
-                <p class="event-time">Lecture: 12:20 PM - 01:10 PM every week on Monday, Wednesday, Friday until May 8,
-                    2023 in Amundsen B75</p>
-                <p class="event-time">Lab: 02:30 PM - 04:25 PM every week on Tuesday until May 1, 2023 in Walter Library
-                    106</p>
-            </div>
-        </div>
+        <div class="events"></div>
+    </div>
+
+    <div class="action-row">
+        <button class="btn primary" id="add">Add to Google Calendar</button>
+        <button class="btn" id="cancel">Download .ics</button>
     </div>
 </div>
+<div class="layout hidden" id="loading-screen">
+    <h1>Adding to Calendar</h1>
+    <div style="display: flex; align-items: center">
+        <div class="loading-spinner" style="margin-right: 10px"></div>
+        <p class="subtitle" style="padding-top: 20px;">Creating Calendar...</p>
+
+    </div>
+
+</div>
+
+<script src="../../calendar/utils/date.js"></script>
 <script src="../../static/vendor/rrule.min.js"></script>
 <script src="colors.js"></script>
 <script src="add.js"></script>

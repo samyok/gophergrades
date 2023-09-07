@@ -1,13 +1,28 @@
-console.log("calendar.js is loaded");
+console.log("[GG] calendar.js is loaded");
 
-const buttonTemplate = `<div id="gcal_btn_group">
-<button id = "gg_button">  </button>
-<button id = "gcal_button">Export to Google Calendar</button>
-<button id = "ics_button">.ics</button>
-</div>`;
+const buttonTemplate = `
+<div id="gg_gcal_btn_group">
+  <button id="gg_gcal_button">
+    <div id="gg_icon"></div>
+    Add Classes to Google Calendar
+  </button>
+</div>
+`;
 
-const loadingPageTemplate = `<div id="cover-spin"></div>`;
-
+const loadingPageTemplate = `
+<div id="cover-spin">
+  <img src="https://umn.lol/images/icon.png"
+     width="800"
+     height="800"
+     alt="loading icon"
+  />
+  
+  <div class="loading-text">
+    <h1>Loading Classes...</h1>
+    <h2>This may take a few seconds.</h2>
+  </div>
+</div>
+`;
 
 /**
  * Turns template string into an actual html element
@@ -58,30 +73,37 @@ const openCalendarTab = async (data) => {
  * Function that runs on button press
  */
 const buttonBody = async () => {
-  
   const calendarDiv = document.getElementsByClassName(
     "myu_btn-group col-lg-12"
-    )[0];
+  )[0];
 
   const parentDiv = document.getElementsByClassName("row")[4];
   const loadingPage = htmlToElement(loadingPageTemplate);
   parentDiv.insertBefore(loadingPage, calendarDiv.nextSibling);
-    
-    // console.log("Beginning scrape and download..")
-    // fileDownload(createData(await scrapeASemester()))
+
+  // console.log("Beginning scrape and download..")
+  // fileDownload(createData(await scrapeASemester()))
   let currentWeek = parseDate(
-                  document
-                  .querySelector(".myu_heading-nav")
-                  .querySelector("h2")
-                  .innerText.match(/\d{2}\/\d{2}\/\d{4}/)[0], 
-                  "mm/dd/yyyy");
+    document
+      .querySelector(".myu_heading-nav")
+      .querySelector("h2")
+      .innerText.match(/\d{2}\/\d{2}\/\d{4}/)[0],
+    "mm/dd/yyyy"
+  );
 
   console.log("Beginning scrape and download..");
   let scrape = await scrapeASemester(formatDate(currentWeek, "yyyy-mm-dd"));
   // fileDownload(dataToRecurringICS(scrape));
   console.log(dataToExportJSON(scrape));
-  openCalendarTab(dataToExportJSON(scrape));
 
+  try {
+    await openCalendarTab(dataToExportJSON(scrape));
+  } catch (e) {
+    console.log("Error opening calendar tab");
+    console.log(e);
+  } finally {
+    loadingPage.remove();
+  }
 
   // scrape = await scrapeASemester(formatDate(new Date(), "yyyy-mm-dd"))
   // console.log(scrape.coursesInfo)

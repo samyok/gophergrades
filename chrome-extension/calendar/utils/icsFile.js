@@ -153,7 +153,7 @@ DTEND:${endDate}
   accum += `RRULE:FREQ=WEEKLY;WKST=SU;`;
   let recurrenceEndDate = formatDateWithTime(23, 59, courseData.dateRange[1]);
   accum += `UNTIL=${recurrenceEndDate};`;
-  accum += `BYDAY=${formatDaysOfWeek(courseData.daysOfWeek)}\n`;
+  accum += `BYDAY=${formatDaysOfWeek(courseData.daysOfWeek, "MO,")}\n`;
 
   let eventStartTime = parseTime(courseData.timeRange.split(" - ")[0]);
   // Now add the excluded dates
@@ -189,7 +189,7 @@ const courseToExportJSON = (courseData) => {
     courseData.firstDate
   ); // date is exact first day of class
   let recurrenceEndDate = formatDateWithTime(23, 59, courseData.dateRange[1]);
-  let daysOfWeekString = formatDaysOfWeek(courseData.daysOfWeek);
+  let daysOfWeekString = formatDaysOfWeek(courseData.daysOfWeek, "MO,");
   let eventStartTime = parseTime(courseData.timeRange.split(" - ")[0]);
 
   result.calendarStrings = {

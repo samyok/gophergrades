@@ -1,3 +1,19 @@
+const MONTH_NAMES = [
+  "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 /**
  * Parses date string into Date object using specified format
  * @param {string} dateString
@@ -5,21 +21,20 @@
  * @returns {Date}
  */
 const parseDate = (dateString, format) => {
-  if (format == "yyyymmdd") {
+  if (format === "yyyymmdd") {
     let year = dateString.slice(0, 4);
     let month = dateString.slice(4, 6);
     let day = dateString.slice(6, 8);
     return new Date(Date.UTC(year, month - 1, day));
-  } else if (format == "yyyy-mm-dd") {
+  } else if (format === "yyyy-mm-dd") {
     let [year, month, day] = dateString.split("-");
     return new Date(Date.UTC(year, month - 1, day));
-  } else if (format == "mm/dd/yyyy") {
+  } else if (format === "mm/dd/yyyy") {
     {
       let [month, day, year] = dateString.split("/");
-      let result = new Date(Date.UTC(year, month - 1, day));
-      return result;
+      return new Date(Date.UTC(year, month - 1, day));
     }
-  } else if (format == "yyyymmddhhmmss") {
+  } else if (format === "yyyymmddhhmmss") {
     let year = dateString.slice(0, 4);
     let month = dateString.slice(4, 6);
     let day = dateString.slice(6, 8);
@@ -52,13 +67,13 @@ const formatDate = (date, format) => {
     return ("0".repeat(width) + input).slice(-width);
   };
 
-  if (format == "yyyy-mm-dd") {
+  if (format === "yyyy-mm-dd") {
     return [year, pad(month, 2), pad(day, 2)].join("-");
-  } else if (format == "yyyymmdd") {
+  } else if (format === "yyyymmdd") {
     return [year, pad(month, 2), pad(day, 2)].join("");
-  } else if (format == "mm/dd/yyyy") {
+  } else if (format === "mm/dd/yyyy") {
     return [pad(month, 2), pad(day, 2), year].join("/");
-  } else if (format == "yyyymmddhhmmss") {
+  } else if (format === "yyyymmddhhmmss") {
     return [
       year,
       pad(month, 2),
@@ -67,6 +82,8 @@ const formatDate = (date, format) => {
       pad(mins, 2),
       pad(secs, 2),
     ];
+  } else if (format === "Month dd, yyyy") {
+    return `${MONTH_NAMES[month]} ${day}, ${year}`;
   } else {
     throw new Error(
       `formatDate() was passed unrecognized format string "${format}"`
@@ -92,21 +109,57 @@ const sundayThisWeek = (date) => {
  */
 const daysOfWeekToArray = (daysOfWeekString) => {
   let patterns = [/S([^a]||$)/, /M/, /T[^h]/, /W/, /Th/, /F/, /Sa/];
-  return patterns.map((p) => !(daysOfWeekString.search(p) == -1)); // this is so fancy
+  return patterns.map((p) => !(daysOfWeekString.search(p) === -1)); // this is so fancy
 };
 
 /**
  * Util: turn array of 7 bools into string of days of week
- * @param {Array<boolean>} daysOfWeek index 0 is Sunday, index 6 is Saturday
+ * @param {boolean[]} daysOfWeek index 0 is Sunday, index 6 is Saturday
+ * @param {string} format "MO," or "Monday, " (encodes day names and delimiter)
  * @returns {string} format: "SU,TU,WE,FR,SA" for instance
  */
-let formatDaysOfWeek = (daysOfWeek) => {
-  let weekdayNames = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+let formatDaysOfWeek = (daysOfWeek, format) => {
+  let weekdayNames;
+  let delimiter;
+  if (format === "MO,") {
+    weekdayNames = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+    delimiter = ",";
+  } else if (format === "Monday, ") {
+    // there's gotta be a better way than this to support different formats
+    weekdayNames = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    delimiter = ", ";
+  } else {
+    throw new Error(
+      `formatDaysOfWeek() was passed unrecognized format string "${format}"`
+    );
+  }
   let includedDays = [];
   for (d = 0; d < 7; d++) {
     if (daysOfWeek[d]) {
       includedDays.push(weekdayNames[d]);
     }
   }
-  return includedDays.join(",");
+  return includedDays.join(delimiter);
+};
+
+const rrToDate = (dateString) => {
+  // 20230118T143000
+  // to
+  // 2023-01-18T14:30:00
+
+  let year = dateString.slice(0, 4);
+  let month = dateString.slice(4, 6);
+  let day = dateString.slice(6, 8);
+  let hour = dateString.slice(9, 11);
+  let min = dateString.slice(11, 13);
+  let sec = dateString.slice(13, 15);
+  return new Date(Date.UTC(year, month - 1, day, hour, min, sec));
 };

@@ -1,269 +1,274 @@
 /* global rrule */
 
-const sample_data = {
-  cal: {
-    additionalMeetings: [],
-    courses: [
-      {
-        calendarStrings: {
-          dtEnd: "20230118T131000",
-          dtStamp: "20230327T012753",
-          dtStart: "20230118T122000",
-          exDates: [
-            "20230116T122000",
-            "20230306T122000",
-            "20230308T122000",
-            "20230310T122000",
-            "20230503T122000",
-            "20230505T122000",
-          ],
-          rRule: "FREQ=WEEKLY;WKST=SU;UNTIL=20230508T235900;BYDAY=MO,WE,FR",
-          uID: "1233-55334-ybsz8mrb31@umn.lol",
-        },
-        courseName: "STAT 3021",
-        courseNum: "55334",
-        dateRange: ["2023-01-17T00:00:00.000Z", "2023-05-08T00:00:00.000Z"],
-        daysOfWeek: [false, true, false, true, false, true, false],
-        excludedDates: [
-          "2023-01-16T00:00:00.000Z",
-          "2023-03-06T00:00:00.000Z",
-          "2023-03-08T00:00:00.000Z",
-          "2023-03-10T00:00:00.000Z",
-          "2023-05-03T00:00:00.000Z",
-          "2023-05-05T00:00:00.000Z",
-        ],
-        firstDate: "2023-01-18T00:00:00.000Z",
-        institution: "UMNTC",
-        meetingType: "Lecture",
-        prettyName: "Intro to Prob&Stat",
-        room: "Amundson Hall B75",
-        sectionID: "004",
-        term: "1233",
-        timeRange: "12:20 PM - 01:10 PM",
-      },
-      {
-        calendarStrings: {
-          dtEnd: "20230118T141500",
-          dtStamp: "20230327T012753",
-          dtStart: "20230118T132500",
-          exDates: [
-            "20230116T132500",
-            "20230306T132500",
-            "20230308T132500",
-            "20230310T132500",
-            "20230503T132500",
-            "20230505T132500",
-          ],
-          rRule: "FREQ=WEEKLY;WKST=SU;UNTIL=20230501T235900;BYDAY=MO,WE,FR",
-          uID: "1233-59511-1x3iea6p8p@umn.lol",
-        },
-        courseName: "CSCI 2041",
-        courseNum: "59511",
-        dateRange: ["2023-01-17T00:00:00.000Z", "2023-05-01T00:00:00.000Z"],
-        daysOfWeek: [false, true, false, true, false, true, false],
-        excludedDates: [
-          "2023-01-16T00:00:00.000Z",
-          "2023-03-06T00:00:00.000Z",
-          "2023-03-08T00:00:00.000Z",
-          "2023-03-10T00:00:00.000Z",
-          "2023-05-03T00:00:00.000Z",
-          "2023-05-05T00:00:00.000Z",
-        ],
-        firstDate: "2023-01-18T00:00:00.000Z",
-        institution: "UMNTC",
-        meetingType: "Lecture",
-        prettyName: "Adv. Programming Principles",
-        room: "Bruininks Hall 230",
-        sectionID: "001",
-        term: "1233",
-        timeRange: "01:25 PM - 02:15 PM",
-      },
-      {
-        calendarStrings: {
-          dtEnd: "20230118T152000",
-          dtStamp: "20230327T012753",
-          dtStart: "20230118T143000",
-          exDates: [
-            "20230116T143000",
-            "20230306T143000",
-            "20230308T143000",
-            "20230310T143000",
-            "20230503T143000",
-            "20230505T143000",
-          ],
-          rRule: "FREQ=WEEKLY;WKST=SU;UNTIL=20230501T235900;BYDAY=MO,WE,FR",
-          uID: "1233-59443-lqbvumk0ap@umn.lol",
-        },
-        courseName: "CSCI 1913",
-        courseNum: "59443",
-        dateRange: ["2023-01-17T00:00:00.000Z", "2023-05-01T00:00:00.000Z"],
-        daysOfWeek: [false, true, false, true, false, true, false],
-        excludedDates: [
-          "2023-01-16T00:00:00.000Z",
-          "2023-03-06T00:00:00.000Z",
-          "2023-03-08T00:00:00.000Z",
-          "2023-03-10T00:00:00.000Z",
-          "2023-05-03T00:00:00.000Z",
-          "2023-05-05T00:00:00.000Z",
-        ],
-        firstDate: "2023-01-18T00:00:00.000Z",
-        institution: "UMNTC",
-        meetingType: "Lecture",
-        prettyName: "Intro to Algs. & Program Dev.",
-        room: "Bruininks Hall 220",
-        sectionID: "001",
-        term: "1233",
-        timeRange: "02:30 PM - 03:20 PM",
-      },
-      {
-        calendarStrings: {
-          dtEnd: "20230118T162500",
-          dtStamp: "20230327T012753",
-          dtStart: "20230118T153500",
-          exDates: [
-            "20230116T153500",
-            "20230306T153500",
-            "20230308T153500",
-            "20230310T153500",
-            "20230503T153500",
-            "20230505T153500",
-          ],
-          rRule: "FREQ=WEEKLY;WKST=SU;UNTIL=20230501T235900;BYDAY=MO,WE,FR",
-          uID: "1233-60000-g7cqokqhgz@umn.lol",
-        },
-        courseName: "CSCI 2011",
-        courseNum: "60000",
-        dateRange: ["2023-01-17T00:00:00.000Z", "2023-05-01T00:00:00.000Z"],
-        daysOfWeek: [false, true, false, true, false, true, false],
-        excludedDates: [
-          "2023-01-16T00:00:00.000Z",
-          "2023-03-06T00:00:00.000Z",
-          "2023-03-08T00:00:00.000Z",
-          "2023-03-10T00:00:00.000Z",
-          "2023-05-03T00:00:00.000Z",
-          "2023-05-05T00:00:00.000Z",
-        ],
-        firstDate: "2023-01-18T00:00:00.000Z",
-        institution: "UMNTC",
-        meetingType: "Lecture",
-        prettyName: "Disc. Structures",
-        room: "Amundson Hall B75",
-        sectionID: "020",
-        term: "1233",
-        timeRange: "03:35 PM - 04:25 PM",
-      },
-      {
-        calendarStrings: {
-          dtEnd: "20230117T141500",
-          dtStamp: "20230327T012753",
-          dtStart: "20230117T132500",
-          exDates: ["20230307T132500", "20230502T132500"],
-          rRule: "FREQ=WEEKLY;WKST=SU;UNTIL=20230501T235900;BYDAY=TU",
-          uID: "1233-59517-sqiq10ggwk@umn.lol",
-        },
-        courseName: "CSCI 2041",
-        courseNum: "59517",
-        dateRange: ["2023-01-17T00:00:00.000Z", "2023-05-01T00:00:00.000Z"],
-        daysOfWeek: [false, false, true, false, false, false, false],
-        excludedDates: ["2023-03-07T00:00:00.000Z", "2023-05-02T00:00:00.000Z"],
-        firstDate: "2023-01-17T00:00:00.000Z",
-        institution: "UMNTC",
-        meetingType: "Laboratory",
-        prettyName: "Adv. Programming Principles",
-        room: "Keller Hall 1-250",
-        sectionID: "007",
-        term: "1233",
-        timeRange: "01:25 PM - 02:15 PM",
-      },
-      {
-        calendarStrings: {
-          dtEnd: "20230117T162500",
-          dtStamp: "20230327T012753",
-          dtStart: "20230117T143000",
-          exDates: ["20230307T143000", "20230502T143000"],
-          rRule: "FREQ=WEEKLY;WKST=SU;UNTIL=20230501T235900;BYDAY=TU",
-          uID: "1233-59444-9unlln6g8f@umn.lol",
-        },
-        courseName: "CSCI 1913",
-        courseNum: "59444",
-        dateRange: ["2023-01-17T00:00:00.000Z", "2023-05-01T00:00:00.000Z"],
-        daysOfWeek: [false, false, true, false, false, false, false],
-        excludedDates: ["2023-03-07T00:00:00.000Z", "2023-05-02T00:00:00.000Z"],
-        firstDate: "2023-01-17T00:00:00.000Z",
-        institution: "UMNTC",
-        meetingType: "Laboratory",
-        prettyName: "Intro to Algs. & Program Dev.",
-        room: "Walter Library 106",
-        sectionID: "003",
-        term: "1233",
-        timeRange: "02:30 PM - 04:25 PM",
-      },
-      {
-        calendarStrings: {
-          dtEnd: "20230117T173000",
-          dtStamp: "20230327T012753",
-          dtStart: "20230117T164000",
-          exDates: ["20230307T164000", "20230502T164000"],
-          rRule: "FREQ=WEEKLY;WKST=SU;UNTIL=20230501T235900;BYDAY=TU",
-          uID: "1233-60005-2krzqiuy5g@umn.lol",
-        },
-        courseName: "CSCI 2011",
-        courseNum: "60005",
-        dateRange: ["2023-01-17T00:00:00.000Z", "2023-05-01T00:00:00.000Z"],
-        daysOfWeek: [false, false, true, false, false, false, false],
-        excludedDates: ["2023-03-07T00:00:00.000Z", "2023-05-02T00:00:00.000Z"],
-        firstDate: "2023-01-17T00:00:00.000Z",
-        institution: "UMNTC",
-        meetingType: "Discussion",
-        prettyName: "Disc. Structures",
-        room: "Lind Hall L120",
-        sectionID: "023",
-        term: "1233",
-        timeRange: "04:40 PM - 05:30 PM",
-      },
-    ],
-  },
+// #############################################################
+// figure out the canonical/proper way to import these:
+// #############################################################
+// from calendar.js (? maybe import from elsewhere?)
+/**
+ * Turns template string into an actual html element
+ * @param {string} html
+ * @returns {ChildNode}
+ */
+const htmlToElement = (html) => {
+  const template = document.createElement("template");
+  html = html.trim(); // Never return a text node of whitespace as the result
+  template.innerHTML = html;
+  return template.content.firstChild;
 };
 
-function getClasses(cal) {
-  const classes = [];
-  cal.forEach((c) => {
-    const {
-      courseName,
-      courseNum,
-      sectionID,
-      prettyName,
-      meetingType,
-      timeRange,
-      room,
-      daysOfWeek,
-      excludedDates,
-      dateRange,
-      firstDate,
-      calendarStrings,
-    } = c;
-    const classObj = {
-      courseName,
-      courseNum,
-      sectionID,
-      prettyName,
-      meetingType,
-      timeRange,
-      room,
-      daysOfWeek,
-      excludedDates,
-      dateRange,
-      firstDate,
-      calendarStrings,
-    };
-    classes.push(classObj);
+// #######################
+// Again, should figure out how to import properly .__.
+// #######################
+/**
+ * The complete classObj
+ * @typedef {Object} classObj
+ * @property {string} courseName
+ * @property {string} courseNum
+ * @property {string} sectionID
+ * @property {string} prettyName
+ * @property {string} meetingType
+ * @property {string} timeRange
+ * @property {string} room
+ * @property {string} daysOfWeek
+ * @property {string} excludedDates
+ * @property {string} dateRange
+ * @property {string} firstDate
+ * @property {string} calendarStrings
+ */
+
+let bundles = {},
+  bundleColors = {};
+/**
+ * Bundles together all the meetings for each class into lil arrays, which themselves go in a dict
+ * e.g. bundles 2041 lecture together with 2041 lab
+ * @param {Array<classObj>} classes
+ * @returns {Object<key: string, classObj[]>} dict of "bundle" lists
+ */
+const unifyClasses = (classes) => {
+  let bundles = {};
+  classes.forEach((meeting) => {
+    if (bundles[meeting.courseName] == null) {
+      bundles[meeting.courseName] = [];
+    }
+    bundles[meeting.courseName].push(meeting);
   });
-  return classes;
-}
+  return bundles; // future enhancement: order the bundles: display lecture first, then lab/discussion
+};
 
 chrome.storage.sync.get(["cal"], (result) => {
   const { cal } = result;
   console.log(cal);
 
-  rrule;
+  // add cards for each class
+  const classes = cal.courses;
+  bundles = unifyClasses(classes);
+  Object.keys(bundles).forEach((courseNum) => {
+    // each bundle is one course, e.g. CSCI 2021 (lecture and lab)
+    addCard(bundles[courseNum], courseNum);
+  });
+});
+
+const colorPicker = (courseNum) =>
+  colors.event
+    .map(
+      (color, index) =>
+        `<button class="color" data-color-id="${index}" style="background-color: ${color.background}"></button>`
+    )
+    .join("");
+
+let currentColor = 1;
+
+/**
+ * Takes a bundle for a course, then returns a new card HTMLElement for that course
+ * @param {Array<classObj>} bundle
+ * @param {string} courseNum
+ * @returns {ChildNode}
+ */
+const createCardElement = (bundle, courseNum) => {
+  const courseName = bundle[0].courseName;
+  const cardId = courseName.replace(/\s/g, "-");
+  const prettyName = bundle[0].prettyName;
+
+  // add in details for lecture AND lab/discussion if applicable (using the bundle)
+  const infoSection = bundle
+    .filter((meeting) => meeting.calendarStrings.rRule)
+    .map((meeting) => {
+      const rr = new rrule.RRule(
+        rrule.RRule.parseString(meeting.calendarStrings.rRule)
+      );
+
+      return `<p class="event-time"><b style="font-weight: 500">${
+        meeting.meetingType
+      }</b>: ${
+        meeting.timeRange
+      } ${rr.toText()} in <b style="font-weight: 400">${meeting.room}</b></p>`;
+    })
+    .join("");
+  const colorId = currentColor++ % colors.event.length;
+  const color = colors.event[colorId];
+  bundleColors[courseNum] = colorId;
+
+  // convert the html string into an actual html element
+  let htmlText = `
+    <div class="event card" style="--event-color: ${
+      color.background
+    }" id="${cardId}-card">
+        <div class="title">
+            <h2 class="event-title">${courseName}: ${prettyName}</h2>
+            <div class="color-switcher-container">
+                <button class="color-switcher">
+                    <div class="color current-color"></div>
+                    <div class="arrow down"></div>
+                </button>
+                <div class="color-picker">
+                    ${colorPicker(courseNum)}
+                </div>
+            </div>
+        </div>
+        ${infoSection}
+    </div>`;
+  const el = htmlToElement(htmlText);
+  // add event listeners to the color picker
+  el.querySelectorAll(".color").forEach((colorEl) => {
+    colorEl.addEventListener("click", (e) => {
+      const colorId = e.target.getAttribute("data-color-id") || 0;
+      const card = document.getElementById(`${cardId}-card`);
+      card.style.setProperty("--event-color", colors.event[colorId].background);
+      bundleColors[courseNum] = colorId;
+    });
+  });
+  return el;
+};
+
+/**
+ *
+ * @param {Object} bundle
+ * @param {string} courseNum
+ */
+const addCard = (bundle, courseNum) => {
+  const parentDiv = document.querySelector(".events");
+  const newCard = createCardElement(bundle, courseNum);
+  parentDiv.appendChild(newCard);
+};
+
+const getCalendarToken = () => {
+  return new Promise((resolve, reject) => {
+    chrome.identity.getAuthToken({ interactive: true }, (token) => {
+      if (token) resolve(token);
+      else reject();
+    });
+  });
+};
+
+const googleApi = async (url, token, body, method = "POST") => {
+  // return {};
+  const res = await fetch(url, {
+    method: method,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  }).then((r) => r.json());
+  if (res.error) console.error(res.error);
+  return res;
+};
+
+document.querySelector("#add").addEventListener("click", async (e) => {
+  const token = await getCalendarToken();
+  console.log(bundles, bundleColors);
+  document.querySelector("#initial-screen").classList.add("hidden");
+  document.querySelector("#loading-screen").classList.remove("hidden");
+  const setLoadingMessage = (message) => {
+    document.querySelector("#loading-screen .subtitle").innerHTML = message;
+  };
+
+  setLoadingMessage("Creating calendar...");
+
+  const createdCalendar = await googleApi(
+    "https://www.googleapis.com/calendar/v3/calendars",
+    token,
+    {
+      summary: "UMN.LOL Schedule",
+    }
+  );
+
+  setLoadingMessage("Adding calendar to calendar list...");
+  console.log(createdCalendar);
+
+  // add calendar to calendarList
+  await googleApi(
+    `https://www.googleapis.com/calendar/v3/users/me/calendarList`,
+    token,
+    {
+      id: createdCalendar.id,
+      colorId: "6", // color id of the calendar, it is 6 for now -- we could let them pick from colors.calendar.
+      selected: true,
+    }
+  );
+  console.log("added calendar to calendar list");
+  setLoadingMessage("Adding events to calendar...");
+
+  // add events to calendar
+  const classes = Object.keys(bundles);
+  for (let i = 0; i < classes.length; i++) {
+    const courseNum = classes[i];
+    const bundle = bundles[courseNum];
+    const colorId = bundleColors[courseNum];
+    const color = colors.event[colorId];
+    const courseName = bundle[0].courseName;
+    const prettyName = bundle[0].prettyName;
+    const cardId = courseName.replace(/\s/g, "-");
+
+    // add in details for lecture AND lab/discussion if applicable (using the bundle)
+    const events = bundle.filter((meeting) => meeting.calendarStrings.rRule);
+
+    for (let j = 0; j < events.length; j++) {
+      setLoadingMessage(
+        `Adding classes to calendar... (${i + 1}/${classes.length})`
+      );
+      const exDate = events[j].calendarStrings.exDates.join(",");
+      const recurrences = [
+        `RRULE:${events[j].calendarStrings.rRule.replace(
+          /([0-9]{8}T[0-9]{6})([^Z])/,
+          "$1Z$2"
+        )}`,
+      ];
+      // if (exDate) {
+      //   recurrences.push(
+      //     `EXDATE;TZID=America/Chicago:${exDate.replaceAll("Z", "")}`
+      //   );
+      // }
+      const event = {
+        start: {
+          dateTime: rrToDate(events[j].calendarStrings.dtStart)
+            .toISOString()
+            .replace("Z", ""),
+          timeZone: "America/Chicago",
+        },
+        end: {
+          dateTime: rrToDate(events[j].calendarStrings.dtEnd)
+            .toISOString()
+            .replace("Z", ""),
+          timeZone: "America/Chicago",
+        },
+        summary: `${courseName}: ${prettyName}`,
+        description: `<p><b style="font-weight: 500">${events[j].meetingType}</b>: ${events[j].timeRange} in <b style="font-weight: 400">${events[j].room}</b></p>`,
+        colorId: (colorId + 1).toString(),
+        recurrence: recurrences,
+        location: events[j].room,
+      };
+
+      console.log(event);
+      // add event to calendar
+      const res = await googleApi(
+        `https://www.googleapis.com/calendar/v3/calendars/${createdCalendar.id}/events`,
+        token,
+        event
+      );
+      console.log(res);
+    }
+  }
+  setLoadingMessage("Done!");
+  location.href = "https://calendar.google.com/calendar/";
 });

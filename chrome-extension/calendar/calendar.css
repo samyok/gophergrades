@@ -1,84 +1,74 @@
-.calendar_button{
-    background-color: #7A0019; /* Green */
-    color: #ffd65b;
-    padding: 12px 16px;
-    margin: 0 auto;
-    display: flex;
-    /*display used to be inline*/
-    font-size: 24px;
-    font-weight: 400;
-    /*margin: 4px 2px*/
-    cursor: pointer;
+#gg_gcal_btn_group {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding-top: 6px;
 }
 
-#gcal_btn_group{
-    padding: 12px 16px;
-    font-size: 18px;
-    display: flex;
-    vertical-align: middle;
-    justify-content: center;
-    height: 54px;
+#gg_icon {
+  border: none;
+  border-radius: 20px;
 
+  background-image: url('https://umn.lol/images/icon-sm.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  margin-left: -5px;
 }
 
-#gg_button{
-    background-color: #7A0019;
-    /*sets borders to be only on certain sides*/
-    border: 1px #000;
-    border-style: solid none solid solid;
-
-    background-image: url('https://umn.lol/images/icon-sm.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    width: 30px;
-
+#gg_gcal_button {
+  border-radius: 5px;
+  box-shadow: #5B0013 0 0 12px;
+  background-color: #5B0013;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-#gcal_button{
-    background-color: #7A0019; /* Green */
-    border: 1px #000;
-    border-style: solid none solid none;
-    color: #ffd65b;
-
-}
-
-#ics_button{
-    background-color: #ffd65b; /* Green */
-    border: 1px #000;
-    border-style: solid solid solid solid;
-    color: #7A0019;
+#gg_gcal_button:hover {
+  opacity: 90%;
 }
 
 #cover-spin {
-    position:fixed;
-    width:100%;
-    left:0;right:0;top:0;bottom:0;
-    background-color: rgba(255,255,255,0.7);
-    z-index:9999;
-    display:flex;
+  position: fixed;
+  width: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.95);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
-@-webkit-keyframes spin {
-	from {-webkit-transform:rotate(0deg);}
-	to {-webkit-transform:rotate(360deg);}
+#cover-spin img {
+  display: block;
+  width: 80px;
+  height: 80px;
+  animation: spin 1.2s linear infinite;
+  margin: 20px;
+}
+
+#cover-spin .loading-text {
+  text-align: center;
 }
 
 @keyframes spin {
-	from {transform:rotate(0deg);}
-	to {transform:rotate(360deg);}
-}
-
-#cover-spin::after {
-    content:'';
-    display:block;
-    position:absolute;
-    left:48%;top:40%;
-    width:40px;height:40px;
-    border-style:solid;
-    border-color:black;
-    border-top-color:transparent;
-    border-width: 4px;
-    border-radius:50%;
-    -webkit-animation: spin .8s linear infinite;
-    animation: spin .8s linear infinite;
+  50% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
