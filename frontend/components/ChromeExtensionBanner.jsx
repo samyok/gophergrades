@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { AiOutlineChrome } from "react-icons/ai";
 import { BsBrowserEdge, BsBrowserFirefox } from "react-icons/bs";
+import trackEvent from "../lib/track";
 
 const voidFunc = () => {};
 const ChromeExtensionBanner = ({ setShowAlert = voidFunc, source }) => {
@@ -46,10 +47,9 @@ const ChromeExtensionBanner = ({ setShowAlert = voidFunc, source }) => {
         if (isFirefox) window.open("/firefox", "_blank");
         else window.open("/chrome", "_blank");
 
-        window.umami?.trackEvent(
-          eventSource + (isFirefox ? ".firefox" : ".chrome"),
-          { type: "download" }
-        );
+        trackEvent(eventSource + (isFirefox ? ".firefox" : ".chrome"), {
+          type: "download",
+        });
         window.localStorage.setItem("downloadedChromeExtension", "true");
       }}
     >
@@ -78,7 +78,7 @@ const ChromeExtensionBanner = ({ setShowAlert = voidFunc, source }) => {
           Thanks for downloading our extension!
         </Text>
         <Text fontSize={"xs"} color={`${colorScheme}.500`}>
-          Now with data from Fall 2022.
+          Now with data from Spring 2023.
         </Text>
       </VStack>
     </Alert>
