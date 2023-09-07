@@ -186,30 +186,47 @@ document.querySelector("#add").addEventListener("click", async (e) => {
     document.querySelector("#loading-screen .subtitle").innerHTML = message;
   };
 
-  setLoadingMessage("Creating calendar...");
+  const createNewCalendar = document.querySelector("#new-calendar")?.checked;
+  let calendarId;
+  if (createNewCalendar) {
+    setLoadingMessage("Creating calendar...");
 
-  const createdCalendar = await googleApi(
-    "https://www.googleapis.com/calendar/v3/calendars",
-    token,
-    {
-      summary: "UMN.LOL Schedule",
-    }
-  );
+    const createdCalendar = await googleApi(
+      "https://www.googleapis.com/calendar/v3/calendars",
+      token,
+      {
+        summary: "UMN.LOL Schedule",
+      }
+    );
 
-  setLoadingMessage("Adding calendar to calendar list...");
-  console.log(createdCalendar);
+    setLoadingMessage("Adding calendar to calendar list...");
+    console.log(createdCalendar);
 
-  // add calendar to calendarList
-  await googleApi(
-    `https://www.googleapis.com/calendar/v3/users/me/calendarList`,
-    token,
-    {
-      id: createdCalendar.id,
-      colorId: "6", // color id of the calendar, it is 6 for now -- we could let them pick from colors.calendar.
-      selected: true,
-    }
-  );
-  console.log("added calendar to calendar list");
+    // add calendar to calendarList
+    await googleApi(
+      `https://www.googleapis.com/calendar/v3/users/me/calendarList`,
+      token,
+      {
+        id: createdCalendar.id,
+        colorId: "6", // color id of the calendar, it is 6 for now -- we could let them pick from colors.calendar.
+        selected: true,
+      }
+    );
+    console.log("added calendar to calendar list");
+    calendarId = createdCalendar.id;
+  } else {
+    setLoadingMessage("Getting primary calendar...");
+    // get primary calendar
+    const calendar = await googleApi(
+      "https://www.googleapis.com/calendar/v3/calendars/primary",
+      token,
+      undefined,
+      "GET"
+    );
+
+    calendarId = calendar.id;
+  }
+
   setLoadingMessage("Adding events to calendar...");
 
   // add events to calendar
@@ -267,7 +284,7 @@ document.querySelector("#add").addEventListener("click", async (e) => {
       console.log(event);
       // add event to calendar
       const res = await googleApi(
-        `https://www.googleapis.com/calendar/v3/calendars/${createdCalendar.id}/events`,
+        `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`,
         token,
         event
       );
