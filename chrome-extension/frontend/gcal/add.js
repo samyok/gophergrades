@@ -1,5 +1,8 @@
 /* global rrule */
 
+EVENT_WATERMARK =
+  "<p>This event was created using the GopherGrades extension! Download at <a href='https://umn.lol'>umn.lol</a>.</p>";
+
 // #############################################################
 // figure out the canonical/proper way to import these:
 // #############################################################
@@ -131,10 +134,10 @@ const createCardElement = (bundle, courseNum) => {
   // add event listeners to the color picker
   el.querySelectorAll(".color-picker .color").forEach((colorEl) => {
     colorEl.addEventListener("click", (e) => {
-      const colorId = e.target.getAttribute("data-color-id") || 0;
+      const colorId = e.target.getAttribute("data-color-id") || "0"; // default to "0"
       const card = document.getElementById(`${cardId}-card`);
       card.style.setProperty("--event-color", colors.event[colorId].background);
-      bundleColors[courseNum] = colorId;
+      bundleColors[courseNum] = parseInt(colorId);
     });
   });
   return el;
@@ -253,7 +256,9 @@ document.querySelector("#add").addEventListener("click", async (e) => {
           timeZone: "America/Chicago",
         },
         summary: `${courseName}: ${prettyName}`,
-        description: `<p><b style="font-weight: 500">${events[j].meetingType}</b>: ${events[j].timeRange} in <b style="font-weight: 400">${events[j].room}</b></p>`,
+        description:
+          `<p><b style="font-weight: 500">${events[j].meetingType}</b>: ${events[j].timeRange} in <b style="font-weight: 400">${events[j].room}</b></p>` +
+          EVENT_WATERMARK,
         colorId: (colorId + 1).toString(),
         recurrence: recurrences,
         location: events[j].room,
