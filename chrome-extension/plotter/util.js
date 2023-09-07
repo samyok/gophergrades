@@ -95,11 +95,15 @@ class Mapper {
   }
 
   doLine(prev, curr) {
+    if ((prev.x > 1500) !== (curr.x > 1500)) {
+      this.ctx.setLineDash([15, 15]);
+    }
     this.ctx.beginPath()
     this.ctx.moveTo(prev.x, prev.y);
     this.ctx.lineTo(curr.x, curr.y);
     this.ctx.stroke();
     this.ctx.closePath();
+    this.ctx.setLineDash([]);
   }
 
   doCircle(section) {
@@ -183,7 +187,6 @@ class Mapper {
 
 function calculateDistances(sections) {
   let dist = 0
-  //draw connecting lines between locations
   for (let i = 1; i < sections.length; i++) {
     const loc0 = sections[i - 1].location
     const loc1 = sections[i].location
@@ -212,11 +215,16 @@ function pixelsToLatLong(sections) {
     x: (a2.dg.x-anchor.dg.x)/(a2.px.x-anchor.px.x),
     y: (a2.dg.y-anchor.dg.y)/(a2.px.y-anchor.px.y)
   }
-  // log(scale.x)
-  // log(scale.y)
+  
   return sections.map(section => {
     //god why
-    const {x: y, y: x} = section.location
+    let {x: y, y: x} = section.location
+    //offset st. paul campus
+    if (y > 1500) {
+      //yea
+      x = x*0.83-900
+      y = y*0.83+3140
+    }
     const lat = anchor.dg.x + (x - anchor.px.x)*scale.x
     const long = anchor.dg.y + (y - anchor.px.y)*scale.y
     return [lat, long];

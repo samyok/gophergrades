@@ -134,17 +134,32 @@ function createUI() {
       `
   }).join("")}
     </div>
-    <div id="gg-plotter-distance">unknown</div>
-    <button id="gg-plotter-gmaps">View in Google Maps</button>
-    <canvas id="gg-plotter-map" width="2304" height="1296" class="card"></canvas>
+    <div style="display: flex; justify-content: space-between; align-items: bottom">
+        <div id="gg-plotter-info">
+            <div id="gg-plotter-distance">unknown</div>
+            <div id="gg-plotter-report" style="color: #f00"></div>
+        </div>
+        <div style="display: default">
+            <a id="gg-plotter-gmaps" class="btn btn-primary" target="_blank">
+                <i class="fa fa-map-pin"></i> View in Google Maps
+            </a>
+        </div>
+    </div>
+    <canvas id="gg-plotter-map" width="2304" height="1296" class="card" style="padding-top: 5px; padding-bottom: 5px;"></canvas>
 </div>
   `
+  // <a id="gg-plotter-disclaimer" class="btn btn-primary" target="_blank" style="background-color: #dd4">
+  //     <i class="fa fa-warning"></i> Disclaimer
+  // </a>
+
   const plotter = htmlToElement(plotterTemplate)
   if (!plotterPresented) {
     plotter.style.display = "none"
   }
   //insert as second child (before the second object; the schedule)
   right.insertBefore(plotter, right.children[1])
+  //todo: if rightside's class is col-md-12, fullscreen is active
+  // place plotter to the right of the schedule?
 
   //add button functionality
   days.forEach(day => {
@@ -207,10 +222,9 @@ async function updateMap() {
   if (!canvas) return
 
   let schedule = getScheduleSections()
+  const invalidSections = schedule.sections.filter(sec => sec.location === undefined)
   //use only sections that have a valid location
   schedule.sections = schedule.sections.filter(sec => sec.location)
-  // todo use this to tell user what sections do not have classrooms yet
-  // const invalidSections = sections.filter(loc => !loc.location)
   const section_nbrs = schedule.sections.map(s => s.id)
   const term = Number(getTermStrm())
 
@@ -248,20 +262,41 @@ async function updateMap() {
   const mapper = new Mapper(ctx)
   mapper.drawMap(schedule)
 
-  const dist = calculateDistances(sections)
+  const dist = calculateDistances(sections).toLocaleString(undefined, {maximumFractionDigits: 2})
+  // determines whether or not the difference between subsequent sections is greater than 1 mile
+  let interCampusTravel = false
+  let prev = null
+  for (let i = 0; i < sections.length; i++) {
+    const curr = sections[i].location.x
+    if (prev && (curr > 1500) !== (prev > 1500)) {
+      interCampusTravel = true
+      break
+    }
+    prev = curr
+  }
   const distNode = document.querySelector("#gg-plotter-distance");
   if (!distNode) {
     log('distance div does not exist???????')
   } else {
-    distNode.textContent = "Distance: " + dist + " miles"
+    distNode.textContent = `Distance: >${(interCampusTravel ? ">>>>" : "")+dist} miles`
   }
 
   const latLongs = pixelsToLatLong(sections);
   const link = "https://www.google.com/maps/dir/" +
-      latLongs.map(c => c[0]+","+c[1]).join("/")
-
+      latLongs.map(c => c[0]+","+c[1]).reverse().join("/")
   const gMapsNode = document.querySelector("#gg-plotter-gmaps")
-  gMapsNode.onclick = function() { window.open(link) }
+  // i really wish i knew what i was doing
+  if (gMapsNode.href !== link) {
+    gMapsNode.href = link
+  }
+
+  //report if there are any sections that do not have a location
+  const reportNode = document.querySelector("#gg-plotter-report")
+  log(invalidSections.length)
+  if (invalidSections.length > 0) {
+    log("sections without locations: " + invalidSections.length)
+    reportNode.textContent = `Warning: ${invalidSections.length} sections do not have a location`
+  }
 }
 
 /**
