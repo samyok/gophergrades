@@ -2,6 +2,7 @@ import { Box, Button, Heading, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import PageLayout from "../components/Layout/PageLayout";
+import trackEvent from "../lib/track";
 
 const REASONS = {
   "listed.":
@@ -29,7 +30,7 @@ export default function NotFound() {
 
   const onClick = async () => {
     setLoading(true);
-    window.umami?.trackEvent(router.asPath.replaceAll("/", "_"), {
+    trackEvent(router.asPath.replaceAll("/", "_"), {
       type: "report-broken-link",
     });
     await fetch("/api/report", {
