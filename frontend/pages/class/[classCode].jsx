@@ -173,7 +173,7 @@ export default function Class({ classData, query }) {
                   opacity: 0.5,
                 }}
               >
-                View on OneStop
+                View in University Catalog
                 <ExternalLinkIcon mx={1} mb={1} />
               </ChakraLink>
             )}
