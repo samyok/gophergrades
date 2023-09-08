@@ -40,7 +40,7 @@ const nextConfig = {
       },
       {
         source: "/social-coding",
-        destination: "https://discord.gg/ctcXWjUJqZ",
+        destination: "https://www.socialcoding.net/",
         permanent: true,
       },
       {
