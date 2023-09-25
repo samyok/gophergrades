@@ -9,7 +9,8 @@ from dotenv import load_dotenv
 import os
 import sqlite3
 
-CHROMA_COLLECTION_NAME = "fall23"
+# CHROMA_COLLECTION_NAME = "extra-fall23"
+collection_names = ["fall23", "extra-fall23"]
 OPENAI_MODEL_NAME = "text-embedding-ada-002"
 DB_PATH = "../../ProcessedData.db"
 
@@ -19,17 +20,6 @@ load_dotenv(".env") # figure out best place to put this
 #     api_key=OPENAI_KEY, 
 #     model_name=OPENAI_MODEL_NAME
 # )
-
-# will eventually be properly hosted. for now, localhost
-chroma_client = chromadb.HttpClient(host="localhost", port=8090)
-
-# could use chroma_client.upsert() method if that's of any utility?
-chroma_client.delete_collection(name=CHROMA_COLLECTION_NAME) # TODO: catch error if collection doesn't exist?
-collection = chroma_client.get_or_create_collection(
-    name=CHROMA_COLLECTION_NAME,
-    # for now, just use default embedding func. 
-    # embedding_function=openai_ef 
-)
 
 sql_connection = sqlite3.connect(DB_PATH)
 cursor = sql_connection.cursor()
@@ -45,18 +35,38 @@ sql_connection.close()
 
 metadatas = []
 documents = []
+documents_extended = []
 ids = []
 
-for row in rows:
+for row in rows[0:100]:
     if row["onestop_desc"] == None:
         print(f"found empty onestop description for {row['class_name']} (id: {row['id']}). Skipping embedding...")
         continue
 
     metadatas.append({"class_name":row["class_name"], "class_desc":row["class_desc"]})
     #   metadatas.append({"subject":subject,"level":catalog_nbr[0],"instructor":x500,"title":title})
+    documents_extended.append(" ".join([row["class_desc"], row["onestop_desc"]]))
     documents.append(row["onestop_desc"])
     ids.append(str(row["id"])) # should we use class_name here instead?
 
-collection.add(metadatas=metadatas, documents=documents, ids=ids)
+# will eventually be properly hosted. for now, localhost
+chroma_client = chromadb.HttpClient(host="localhost", port=8090)
+
+collections = []
+# could use chroma_client.upsert() method if that's of any utility?
+for coll_name in collection_names:
+    try:
+        chroma_client.delete_collection(name=coll_name) # TODO: catch error if collection doesn't exist?
+    except Exception:
+        print(f"creating collection {coll_name} from scratch")
+        pass
+    collections.append(chroma_client.get_or_create_collection(
+        name=coll_name,
+        # for now, just use default embedding func. 
+        # embedding_function=openai_ef 
+    ))
+
+collections[0].add(metadatas=metadatas, documents=documents, ids=ids)
+collections[1].add(metadatas=metadatas, documents=documents_extended, ids=ids)
 
 # @doggu pls merge in sql reading thing?

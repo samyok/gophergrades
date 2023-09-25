@@ -1,9 +1,10 @@
 import chromadb
 # import openai
 
-CHROMA_COLLECTION_NAME = "fall23"
+CHROMA_COLLECTION_NAME = "extra-fall23"
 OPENAI_MODEL_NAME = "text-embedding-ada-002"
 DB_PATH = "../../ProcessedData.db"
+N_RESULTS = 5
 
 # load_dotenv(".env") # figure out best place to put this
 # # OPENAI_KEY = os.getenv("OPENAI_KEY")
@@ -14,15 +15,26 @@ DB_PATH = "../../ProcessedData.db"
 
 # will eventually be properly hosted. for now, localhost
 chroma_client = chromadb.HttpClient(host="localhost", port=8090)
-collection = chroma_client.get_collection(CHROMA_COLLECTION_NAME)
+collections = [chroma_client.get_collection(name) for name in ["fall23", "extra-fall23"]]
+# collection_1 = chroma_client.get_collection("fall23")
+# collection_2 = chroma_client.get_collection("extra-fall23")
 
 while True:
     query = input("> ")
-    matches = collection.query(
-        query_texts=query, 
-        n_results=5
-    )
 
-    for metadata in matches["metadatas"][0]:
-        print(f"{metadata['class_name']}: {metadata['class_desc']}")
-        # print()
+    # keys = list(matches.keys())
+    # values = list(matches.values())
+
+    for collection in collections:
+        matches = collection.query(
+            query_texts=query, 
+            n_results=N_RESULTS
+        )
+
+        print(f"### Collection {collection.name} results:")
+        for i in range(N_RESULTS):
+            metadata = matches["metadatas"][0][i]
+            distance = matches["distances"][0][i]
+            print(f"{metadata['class_name']}: {metadata['class_desc']} (dist: {distance})")
+            # print()
+    print("===")
