@@ -4,5 +4,7 @@ No-Instructor-data.txt
 .vscode
 *.zip
 
+.env
+
 *.DS_Store
 firefox-extension
