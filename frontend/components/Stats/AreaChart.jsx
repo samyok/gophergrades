@@ -210,10 +210,8 @@ export const AreaChart = ({ distribution, averageGPA, isMobile = true }) => {
             hoveredGrade.grade.startsWith("F")
               ? "n"
               : ""}{" "}
-            {hoveredGrade.grade}
-            {" ("}
-            {Math.round(hoveredGrade.gradeCount * 100 / totalStudents)}%
-            {")"}
+            {hoveredGrade.grade} (
+            {Math.round((hoveredGrade.gradeCount * 100) / totalStudents)}%)
           </text>
         </g>
       )}
