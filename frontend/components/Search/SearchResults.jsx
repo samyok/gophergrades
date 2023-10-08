@@ -76,7 +76,7 @@ const Professors = ({ searchResults, onClick }) => {
   return (
     <VStack spacing={2} width={"100%"} align={"start"}>
       <Heading size={"md"} pt={4}>
-        Professors
+        Instructors
       </Heading>
       {searchResults.data.professors.map((row) => (
         <Card key={row.id} href={`/prof/${row.id}`} onClick={onClick}>
