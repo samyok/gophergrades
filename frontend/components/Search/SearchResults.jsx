@@ -79,7 +79,7 @@ const Professors = ({ searchResults, onClick }) => {
         Instructors
       </Heading>
       {searchResults.data.professors.map((row) => (
-        <Card key={row.id} href={`/prof/${row.id}`} onClick={onClick}>
+        <Card key={row.id} href={`/inst/${row.id}`} onClick={onClick}>
           {row.name}
         </Card>
       ))}{" "}
