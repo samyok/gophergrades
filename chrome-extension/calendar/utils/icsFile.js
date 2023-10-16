@@ -144,16 +144,16 @@ const createRecurringVEVENT = (courseData) => {
     courseData.timeRange,
     courseData.firstDate
   ); // date is exact first day of class
-  let accum = `BEGIN:VEVENT
-DTSTART:${startDate}
-DTEND:${endDate}
-`;
 
   // recurrence info
-  accum += `RRULE:FREQ=WEEKLY;WKST=SU;`;
   let recurrenceEndDate = formatDateWithTime(23, 59, courseData.dateRange[1]);
-  accum += `UNTIL=${recurrenceEndDate};`;
-  accum += `BYDAY=${formatDaysOfWeek(courseData.daysOfWeek, "MO,")}\n`;
+
+  let accum = `BEGIN:VEVENT
+DTSTART:${startDate}
+DTEND:${endDate}${/*
+// recurrence info */''}
+RRULE:FREQ=WEEKLY;WKST=SU;UNTIL=${recurrenceEndDate};BYDAY=${formatDaysOfWeek(courseData.daysOfWeek, "MO,")}\n
+`;
 
   let eventStartTime = parseTime(courseData.timeRange.split(" - ")[0]);
   // Now add the excluded dates
@@ -266,21 +266,23 @@ const recurringGetTimes = (timeRange, day) => {
   return result;
 };
 
+const icsHeader = `BEGIN:VCALENDAR
+PRODID:-//GopherGrades//Classes//EN
+VERSION:1.0
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME: Class Calendar
+X-WR-TIMEZONE:America/Chicago
+`;
+
 /**
  * Turns scrapeASemester output into the text of a full .ics file
  * @param {Object} // given by scrapeASemester
  * @returns {string} full .ics file contents
  */
 const dataToRecurringICS = (scrapedData) => {
-  console.log("Composing ics file...");
-  let outputString = `BEGIN:VCALENDAR
-PRODID:-//GopherGrades//Classes//EN
-VERSION:2.0
-CALSCALE:GREGORIAN
-METHOD:PUBLISH
-X-WR-CALNAME: Class Calendar
-X-WR-TIMEZONE:America/Chicago
-`; // header stuff yknow
+  console.log("[GG] Composing ics file...");
+  let outputString = icsHeader.slice(); // `slice()` is to make a copy? check if it's necessary
   for (courseInfo of scrapedData.coursesInfo) {
     outputString += createRecurringVEVENT(courseInfo);
   }
@@ -311,6 +313,8 @@ const dataToExportJSON = (scrapedData) => {
   return result;
 };
 
+
+
 /**
  * Given the output of `ScrapeASemester`, returns the semester's full .ics calendar file as a string
  * @param {Object} scrapedData // JSON object: what is directly returned by `ScrapeASemester()`
@@ -318,15 +322,8 @@ const dataToExportJSON = (scrapedData) => {
  */
 function createData(scrapedData) {
   //creates ics file string
-  console.log("Started createData");
-  let ouputString = `BEGIN:VCALENDAR
-PRODID:-//GopherGrades//Classes//EN
-VERSION:1.0
-CALSCALE:GREGORIAN
-METHOD:PUBLISH
-X-WR-CALNAME: Class Calendar
-X-WR-TIMEZONE:America/Chicago
-`;
+  console.log("[GG] Started createData");
+  let ouputString = icsHeader;
   for (week of scrapedData.weeks) {
     for (classEvent of week.meetingObjects) {
       ouputString += createVEVENT(classEvent);
@@ -335,6 +332,46 @@ X-WR-TIMEZONE:America/Chicago
   ouputString += `END:VCALENDAR`;
   console.log(ouputString);
   return ouputString;
+}
+
+// /**
+//  * Given a JSON object from `dataToExportJSON()`, format it into an .ics file (as a string)
+//  * @param {Object} portable
+//  * @return {string} The full .ics file text
+//  */
+function portableToIcsBlob(portable) {
+  portable = JSON.parse(JSON.stringify(portable)); // make clone because i HATE MUTABILITY
+  console.log("[GG] Started portableToIcsBlob");
+  let blob = icsHeader.slice();
+  
+  // regular vevents (includes excluded dates)
+  for (course of portable.courses) {
+    blob += `BEGIN:VEVENT
+DTSTART:${course.calendarStrings.dtStart}
+DTEND:${course.calendarStrings.dtEnd}
+RRULE:${course.calendarStrings.rRule}
+${course.calendarStrings.exDates.map((exDate) => `EXDATE:${exDate}`).join("\n")}
+LOCATION:${course.room}
+SUMMARY:${course.courseName} ${course.meetingType}
+DTSTAMP:${formatDatetime(new Date())}
+UID:${createUniqueId(course.term, course.courseNum)}
+END:VEVENT
+`;
+  }
+  // additional meetings
+  for (additionalMeeting of portable.additionalMeetings) {
+      blob += `BEGIN:VEVENT
+DTSTART:${additionalMeeting.calendarStrings.dtStart}
+DTEND:${additionalMeeting.calendarStrings.dtEnd}
+LOCATION:${additionalMeeting.room}
+SUMMARY:${additionalMeeting.courseName + " " + additionalMeeting.meetingType}
+DTSTAMP:${formatDatetime(new Date())}
+UID:${createUniqueId(additionalMeeting.term, additionalMeeting.courseNum)}
+END:VEVENT
+`;
+  }
+  blob += "END:VCALENDAR"
+  return blob;
 }
 
 /**

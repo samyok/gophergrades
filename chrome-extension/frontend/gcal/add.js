@@ -60,8 +60,9 @@ const unifyClasses = (classes) => {
   return bundles; // future enhancement: order the bundles: display lecture first, then lab/discussion
 };
 
+let cal;
 chrome.storage.sync.get(["cal"], (result) => {
-  const { cal } = result;
+  cal = result.cal;
   console.log(cal);
 
   // add cards for each class
@@ -322,4 +323,10 @@ document.querySelector("#add").addEventListener("click", async (e) => {
   }
   setLoadingMessage("Done!");
   location.href = "https://calendar.google.com/calendar/";
+});
+
+document.querySelector("#ics").addEventListener("click", async (e) => {
+  blob = portableToIcsBlob(cal)
+  console.log(blob);
+  fileDownload(blob);
 });

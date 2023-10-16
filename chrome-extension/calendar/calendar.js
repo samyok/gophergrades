@@ -80,20 +80,25 @@ const buttonBody = async () => {
   const parentDiv = document.getElementsByClassName("row")[4];
   const loadingPage = htmlToElement(loadingPageTemplate);
   parentDiv.insertBefore(loadingPage, calendarDiv.nextSibling);
+    
+  let scrape;
+  try {
+    let currentWeek = parseDate(
+                    document
+                    .querySelector(".myu_heading-nav")
+                    .querySelector("h2")
+                    .innerText.match(/\d{2}\/\d{2}\/\d{4}/)[0], 
+                    "mm/dd/yyyy");
+    console.log("[GG] Beginning scrape and download..");
+    scrape = await scrapeASemester(formatDate(currentWeek, "yyyy-mm-dd"));
+    // fileDownload(dataToRecurringICS(scrape));
+  } catch (error) {
+    console.error(error);
+    alert("[GG] Calendar export scraper error. Are you open to a week that doesn't have classes?"); // this message doesn't display. need to edit manifest?
+  } finally {
+    loadingPage.remove();
+  }
 
-  // console.log("Beginning scrape and download..")
-  // fileDownload(createData(await scrapeASemester()))
-  let currentWeek = parseDate(
-    document
-      .querySelector(".myu_heading-nav")
-      .querySelector("h2")
-      .innerText.match(/\d{2}\/\d{2}\/\d{4}/)[0],
-    "mm/dd/yyyy"
-  );
-
-  console.log("Beginning scrape and download..");
-  let scrape = await scrapeASemester(formatDate(currentWeek, "yyyy-mm-dd"));
-  // fileDownload(dataToRecurringICS(scrape));
   console.log(dataToExportJSON(scrape));
 
   try {
