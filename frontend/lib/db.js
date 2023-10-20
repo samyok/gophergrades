@@ -213,10 +213,24 @@ export const getSearch = async (search) => {
   const departments = await promisedQuery(deptSQL, params);
   const classes = await promisedQuery(classDistSQL, params);
   const professors = await promisedQuery(professorSQL, params);
+  const similar = await fetch('http://127.0.0.1:8000/search?' + new URLSearchParams({
+    query: search
+  })).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error('Something went wrong');
+  })
+  .catch((error) => {
+    // silently fail if backend is not available
+    console.log(error)
+    return { results: [] }
+  });
 
   return {
     departments: departments.map(parseJSONFromRow),
     classes: classes.map(parseJSONFromRow),
     professors: professors.map(parseJSONFromRow),
+    similar: similar.results
   };
 };

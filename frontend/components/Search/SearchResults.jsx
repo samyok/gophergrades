@@ -87,6 +87,35 @@ const Professors = ({ searchResults, onClick }) => {
   );
 };
 
+export const Similar = ({ searchResults, onClick }) => {
+  if (
+    searchResults === null ||
+    !searchResults.success ||
+    searchResults.data.similar?.length === 0
+  ) {
+    return null;
+  }
+
+  console.log("here i am")
+
+  return (
+    <VStack spacing={2} width={"100%"} align={"start"}>
+      <Heading size={"md"} pt={4}>
+        Search
+      </Heading>
+      {searchResults.data.similar.map((row) => (
+        <Card
+          key={row.class_name}
+          href={`/class/${row.class_name.replace(/ /g, "")}`}
+          onClick={onClick}
+        >
+          {row.class_name} - {row.class_desc}
+        </Card>
+      ))}
+    </VStack>
+  );
+};
+
 export default function SearchResults({
   search,
   searchResults,
@@ -143,7 +172,8 @@ export default function SearchResults({
         {searchResults !== null &&
           searchResults.data.classes.length +
             searchResults.data.professors.length +
-            searchResults.data.departments.length ===
+            searchResults.data.departments.length +
+            searchResults.data.similar.length ===
             0 && (
             <Heading size={"md"} pt={4}>
               No results found.
@@ -159,6 +189,7 @@ export default function SearchResults({
         <Departments searchResults={searchResults} onClick={clickHandler} />
         <Classes searchResults={searchResults} onClick={clickHandler} />
         <Professors searchResults={searchResults} onClick={clickHandler} />
+        <Similar searchResults={searchResults} onClick={clickHandler} />
       </VStack>
     </Collapse>
   );

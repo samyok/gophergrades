@@ -20,6 +20,7 @@ import { distributionsToCards } from "../../components/distributionsToCards";
 import { useSearch } from "../../components/Search/useSearch";
 import SearchResults from "../../components/Search/SearchResults";
 import SRTValues from "../../components/SRTValues";
+import { Similar } from "../../components/Search/SearchResults";
 
 const SPECIAL_TAGS = ["Honors", "Freshman Seminar"];
 
@@ -58,6 +59,11 @@ export default function Class({ classData, query }) {
     pageShown: [showPage, setShowPage],
     handleChange,
   } = useSearch();
+
+  // issues: i have no idea what this actually does, but it sort of works on the dummy data at least
+  const clickHandler = () => {
+    setShowPage(true);
+  };
 
   const totalDistributions = distributionsToCards(
     [
@@ -190,6 +196,16 @@ export default function Class({ classData, query }) {
               }}
             />
             {renderedDistributions}
+            <Divider
+              orientation={"horizontal"}
+              style={{
+                borderColor: "#49080F",
+                borderBottomWidth: 1,
+                opacity: 0.15,
+              }}
+            />
+            {/* currently just a dummy, uses results from last search to populate */}
+            <Similar searchResults={searchResults} onClick={clickHandler} />
           </VStack>
         </Collapse>
       </Box>
