@@ -35,7 +35,7 @@ def fetch_unknown_prof(x:pd.DataFrame) -> pd.DataFrame:
 
     link="http://classinfo.umn.edu/?term="+term+"&subject="+dept+"&json=1"
     classLink=f"http://classinfo.umn.edu/?term={term}&subject={dept}&level={level}"
-    # print(f"Link to class: "+classLink)
+    print(f"Link to class: "+classLink)
 
     if link!=CACHED_LINK:
         with requests.get(link) as url:
@@ -117,24 +117,25 @@ THIS WILL LIKELY NOT STAY CONSISTENT.
 """
 
 
-df = pd.read_csv("CLASS_DATA/SPR2023_raw_data.csv",dtype={"CLASS_SECTION":str,"Unnamed: 14":str})
+df = pd.read_csv("CLASS_DATA/SUM2023_raw_data.csv",dtype={"CLASS_SECTION":str})
 # Unneeded Data
 del df["INSTITUTION"]
-# del df["CAMPUS"]
+del df["TERM_DESCR"]
+del df["COMPONENT_MAIN"]
+del df["INSTR_ROLE"]
 del df["JOBCODE_DESCR"]
 del df["UM_JOBCODE_GROUP"]
 del df["CLASS_HDCNT"]
-del df["INSTR_ROLE"]
 df = df[~(df["CRSE_GRADE_OFF"] == "NR")]
-# Add missing term numbers for most recent semester, cast to take from float to int.
-# df = df.groupby("TERM_DESCR",group_keys=False).apply(term_desc_to_val)
-# df = df.astype({"TERM":int})
-# del df["TERM_DESCR"]
+
 # Write class name as the proper full name that students are accustomed to.
 df["FULL_NAME"] = df["SUBJECT"] + ' ' + df["CATALOG_NBR"]
-# Replace unknown professor values with either a correct name or "Unknown Instructor"
+
+# Write the class section as a 3 digit number
 df["CLASS_SECTION"] = df["CLASS_SECTION"].apply(lambda x: x.zfill(3))
+
+# Replace unknown professor values with either a correct name or "Unknown Instructor"
 df = df.groupby(["TERM","FULL_NAME","CLASS_SECTION"],group_keys=False).apply(fetch_unknown_prof)
 df["HR_NAME"] = df["HR_NAME"].apply(format_name)
-# print(df)
-df.to_csv("CLASS_DATA/SPR2023_cleaned_data.csv",index=False)
+
+df.to_csv("CLASS_DATA/SUM2023_cleaned_data.csv",index=False)
