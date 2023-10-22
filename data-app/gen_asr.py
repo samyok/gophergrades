@@ -55,7 +55,7 @@ def fetch_multiprocess(dept_dists:DepartmentDistribution,term:int) -> None:
 
 
 if __name__ == "__main__":
-    TERMS = [1225, 1229, 1233, 1235, 1239]
+    TERMS = [1229, 1233, 1235, 1239, 1243]
     session = Session()
     dists = session.query(DepartmentDistribution).all()
     session.close()
