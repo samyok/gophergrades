@@ -38,7 +38,7 @@ def fetch_traditional(dept_dist:DepartmentDistribution,term:int) -> None:
             class_dist.class_desc = course["title"]
             class_dist.cred_min = course["credits_minimum"]
             class_dist.cred_max = course["credits_maximum"]
-            class_dist.onestop = f"https://onestop2.umn.edu/pcas/viewCatalogCourse.do?courseId={course['course_id']}"
+            class_dist.onestop = f"https://umtc.catalog.prod.coursedog.com/courses/{course['course_id']}1"
             for attribute in course["course_attributes"]:
                 if attribute["family"] in ["CLE","HON","FSEM"]:
                     libed_dist = session.query(Libed).filter(Libed.name == libed_mapping[attribute['attribute_id']]).first()
