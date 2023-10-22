@@ -78,7 +78,7 @@ const ChromeExtensionBanner = ({ setShowAlert = voidFunc, source }) => {
           Thanks for downloading our extension!
         </Text>
         <Text fontSize={"xs"} color={`${colorScheme}.500`}>
-          Now with data from Spring 2023.
+          Now with data from Summer 2023.
         </Text>
       </VStack>
     </Alert>

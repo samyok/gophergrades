@@ -182,7 +182,7 @@ export const Footer = () => {
           >
             Social Coding
           </LinkButton>{" "}
-          with data from Summer 2017 to Spring 2023 provided by the{" "}
+          with data from Summer 2017 to Summer 2023 provided by the{" "}
           <LinkButton
             target={"_blank"}
             href={"https://ogc.umn.edu/data-access-and-privacy"}
