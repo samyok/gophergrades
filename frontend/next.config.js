@@ -60,6 +60,11 @@ const nextConfig = {
         destination: "/chrome",
         permanent: false,
       },
+      {
+        source: "/prof/:profCode*",
+        destination: "/inst/:profCode*",
+        permanent: false,
+      },
     ];
   },
 };
