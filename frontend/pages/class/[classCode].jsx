@@ -84,7 +84,7 @@ export default function Class({ classData, query }) {
 
   const formattedDistributions = distributions.map((dist) => ({
     ...dist,
-    href: `/prof/${dist.professor_id}`,
+    href: `/inst/${dist.professor_id}`,
     title: dist.professor_name,
     rating: dist.professor_RMP_score,
   }));
