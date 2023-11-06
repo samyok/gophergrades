@@ -125,7 +125,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     
-    df = pd.read_csv("CLASS_DATA/SPR2023_cleaned_data.csv",dtype={"CLASS_SECTION":str})
+    df = pd.read_csv("CLASS_DATA/SUM2023_cleaned_data.csv",dtype={"CLASS_SECTION":str})
     print("Loaded Data!")
     print("Adding Profs")
     # Add All Professors Including an "Unknown Instructor" for non-attributed values to the Database
