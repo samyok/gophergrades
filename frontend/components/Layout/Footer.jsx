@@ -55,7 +55,15 @@ const ContributorGroup = () => {
   return (
     <VStack spacing={0} mb={4}>
       <Wrap spacing={10} overflow={"visible"} justify={"center"} mb={4}>
-        {bigContributors.map((c) => (
+        {bigContributors.length == 0 ? 
+          <Text
+            textAlign={"center"}
+            fontSize={20}
+            fontWeight={400}
+            color={"gray.600"}
+          >Could not load contributors.
+          </Text>
+        : bigContributors.map((c) => (
           <WrapItem>
             <VStack
               boxShadow={"0px 0px 8px rgba(111, 19, 29, 0.1)"}
