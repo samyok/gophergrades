@@ -36,7 +36,6 @@ const sortingFunctions = {
 
 const SingleDistribution = ({ dist, isMobile, isStatic }) => {
   const { isOpen, onToggle } = useDisclosure();
-  const [smallerThan450] = useMediaQuery('(max-width: 450px)')
   const title = dist.title ?? "Unknown";
   let { subtitle } = dist;
   if (!subtitle && dist.terms?.length > 1) {
