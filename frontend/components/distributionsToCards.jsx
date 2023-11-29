@@ -11,7 +11,6 @@ import {
   Text,
   Tooltip,
   useDisclosure,
-  useMediaQuery,
   VStack,
 } from "@chakra-ui/react";
 import React from "react";
@@ -91,27 +90,27 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
             )}
             <HStack pt={3}>
               {dist.rating && (
-                  <Tooltip label={"RateMyProfessor rating"} hasArrow>
-                      <Tag
-                        size={"sm"}
-                        variant={"outline"}
-                        textAlign={"center"}
-                        colorScheme={RMPToColor(dist.rating)}
-                        py={1}
-                      >
-                        {dist.rating.toFixed(1)}
-                        <Show breakpoint='(min-width: 450px)'>
-                          <chakra.span pl={1} mt={-0.5}>
-                            {Array(Math.round(dist.rating)).fill(<StarIcon />)}
-                          </chakra.span>
-                        </Show>
-                        <Hide breakpoint='(min-width: 450px)'>
-                        <chakra.span pl={1} mt={-0.5}>
-                            <StarIcon />
-                          </chakra.span>
-                        </Hide>
-                      </Tag>
-                  </Tooltip>
+                <Tooltip label={"RateMyProfessor rating"} hasArrow>
+                  <Tag
+                    size={"sm"}
+                    variant={"outline"}
+                    textAlign={"center"}
+                    colorScheme={RMPToColor(dist.rating)}
+                    py={1}
+                  >
+                    {dist.rating.toFixed(1)}
+                    <Show breakpoint={"(min-width: 450px)"}>
+                      <chakra.span pl={1} mt={-0.5}>
+                        {Array(Math.round(dist.rating)).fill(<StarIcon />)}
+                      </chakra.span>
+                    </Show>
+                    <Hide breakpoint={"(min-width: 450px)"}>
+                      <chakra.span pl={1} mt={-0.5}>
+                        <StarIcon />
+                      </chakra.span>
+                    </Hide>
+                  </Tag>
+                </Tooltip>
               )}
 
               {dist.averageGPA > 0 && (
