@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "engines" : {
+    "node" : "20.10.0"
+  },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.11",
     "@chakra-ui/react": "^2.3.2",
@@ -22,13 +25,11 @@
     "discord-webhook-node": "^1.1.8",
     "framer-motion": "^6",
     "lodash": "^4.17.21",
-    "next": "^13.5.5",
-    "node": "20.10.0",
+    "next": "13.0.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.7.1",
-    "sqlite3": "^5.1.2",
-    "yarn": "^1.22.19"
+    "sqlite3": "^5.1.2"
   },
   "devDependencies": {
     "@types/node": "18.7.18",

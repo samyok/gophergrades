@@ -1,6 +1,7 @@
 export default async function handler(req, res) {
   if (!process.env.GITHUB_TOKEN) {
-    res.status(401).json({ // 401 - user does not have valid credentials
+    res.status(401).json({
+      // 401 - user does not have valid credentials
       success: false,
       data: [],
     });
