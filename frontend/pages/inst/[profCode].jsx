@@ -62,7 +62,8 @@ export default function Prof({ profData }) {
       (acc, curr) => acc + (curr.students || 0),
       0
     ),
-    title: `${name}`,
+    //title: `${name}`,
+    title: "All Courses",
     isSummary: true,
     info: "This total also includes classes that they may not teach anymore.",
     distribution_id: id,

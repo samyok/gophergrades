@@ -61,7 +61,7 @@ const ContributorGroup = () => {
             fontSize={20}
             fontWeight={400}
             color={"gray.600"}
-          >Could not load contributors.
+          >Failed to load contributors
           </Text>
         : bigContributors.map((c) => (
           <WrapItem>
