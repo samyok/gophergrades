@@ -55,16 +55,6 @@ const ContributorGroup = () => {
   return (
     <VStack spacing={0} mb={4}>
       <Wrap spacing={10} overflow={"visible"} justify={"center"} mb={4}>
-        {bigContributors.length === 0 && (
-          <Text
-            textAlign={"center"}
-            fontSize={20}
-            fontWeight={400}
-            color={"gray.600"}
-          >
-            Failed to load contributors
-          </Text>
-        )}
         {bigContributors &&
           bigContributors.map((c) => (
             <WrapItem>
