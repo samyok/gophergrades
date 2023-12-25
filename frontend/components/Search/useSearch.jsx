@@ -46,7 +46,7 @@ export const useSearch = () => {
       setShowPage(false);
       debouncedSearch(query);
     }
-  }, [query]);
+  }, [query, debouncedSearch]);
 
   return {
     search,

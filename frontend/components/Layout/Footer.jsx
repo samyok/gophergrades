@@ -10,7 +10,6 @@ import {
   Tooltip,
   VStack,
   Wrap,
-  chakra,
   WrapItem,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
@@ -195,9 +194,7 @@ export const Footer = () => {
           color={"gray.900"}
           fontWeight={"300"}
           target={"_blank"}
-          href={
-            "/privacy"
-          }
+          href={"/privacy"}
         >
           View our Privacy Policy here.
         </LinkButton>
