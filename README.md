@@ -15,6 +15,12 @@ yarn dev
 # live at http://localhost:3000
 ```
 
+In order to properly run the frontend you'll need to have a `GITHUB_TOKEN` environment variable set. Follow the instructions by [Github](https://docs.github.com/en/enterprise-server@3.9/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) to create one. Ensure that your personal access token has the `public_repo` scope. This will allow it to fetch collaborator information from the repository. Your `.env` file in the root of the frontend folder should look like:
+
+```bash
+GITHUB_TOKEN=your_token_here
+```
+
 # Building the Firefox Extension
 
 ```bash

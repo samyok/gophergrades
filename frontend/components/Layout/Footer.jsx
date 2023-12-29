@@ -10,7 +10,6 @@ import {
   Tooltip,
   VStack,
   Wrap,
-  chakra,
   WrapItem,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
@@ -194,15 +193,11 @@ export const Footer = () => {
         </Text>
         <LinkButton
           color={"gray.900"}
-          fontWeight={"200"}
+          fontWeight={"300"}
           target={"_blank"}
-          href={
-            "https://cla.umn.edu/undergraduate-students/cla-community/student-organizations/cla-student-board"
-          }
+          href={"/privacy"}
         >
-          Funded by the{" "}
-          <chakra.span fontWeight={300}>CLA Student Board</chakra.span> for
-          2022-2023.
+          Privacy Policy
         </LinkButton>
       </VStack>
     </Box>
