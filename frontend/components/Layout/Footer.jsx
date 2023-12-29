@@ -196,7 +196,7 @@ export const Footer = () => {
           target={"_blank"}
           href={"/privacy"}
         >
-          View our Privacy Policy here.
+          Privacy Policy
         </LinkButton>
       </VStack>
     </Box>
