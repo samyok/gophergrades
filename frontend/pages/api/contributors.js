@@ -1,4 +1,12 @@
 export default async function handler(req, res) {
+  if (!process.env.GITHUB_TOKEN) {
+    res.status(401).json({
+      // 401 - user does not have valid credentials
+      success: false,
+      data: [],
+    });
+    return;
+  }
   const contribs = await fetch(
     "https://api.github.com/repos/samyok/gophergrades/collaborators",
     {
