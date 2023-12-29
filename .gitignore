@@ -6,3 +6,5 @@ No-Instructor-data.txt
 
 *.DS_Store
 firefox-extension
+
+.idea/discord.xml 

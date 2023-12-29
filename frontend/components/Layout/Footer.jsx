@@ -10,7 +10,6 @@ import {
   Tooltip,
   VStack,
   Wrap,
-  chakra,
   WrapItem,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
@@ -55,70 +54,71 @@ const ContributorGroup = () => {
   return (
     <VStack spacing={0} mb={4}>
       <Wrap spacing={10} overflow={"visible"} justify={"center"} mb={4}>
-        {bigContributors.map((c) => (
-          <WrapItem>
-            <VStack
-              boxShadow={"0px 0px 8px rgba(111, 19, 29, 0.1)"}
-              backgroundColor={"rgba(255,255,255,0.4)"}
-              width={250}
-              py={8}
-              borderRadius={10}
-            >
-              <Avatar size={"xl"} name={c.name} src={c.avatar_url} />
-              <Heading fontSize={20}>{c.name}</Heading>
-              <Text fontSize={14} fontWeight={300}>
-                {c.role}
-              </Text>
-              <HStack spacing={4}>
-                {c.linkedin && (
-                  <IconButton
-                    href={c.linkedin}
-                    target={"_blank"}
-                    onClick={() => {
-                      trackEvent(`button.${c.login}.linkedin.click`, {
-                        type: "footer",
-                      });
-                    }}
-                    as={"a"}
-                    size={"sm"}
-                    aria-label={"LinkedIn"}
-                    icon={<FaLinkedinIn size={20} />}
-                  />
-                )}
-                {c.website && (
-                  <IconButton
-                    href={c.website}
-                    target={"_blank"}
-                    onClick={() => {
-                      trackEvent(`button.${c.login}.website.click`, {
-                        type: "footer",
-                      });
-                    }}
-                    as={"a"}
-                    size={"sm"}
-                    aria-label={"Website"}
-                    icon={<FaHome size={20} />}
-                  />
-                )}
-                {c.github && (
-                  <IconButton
-                    href={c.github}
-                    target={"_blank"}
-                    onClick={() => {
-                      trackEvent(`button.${c.login}.github.click`, {
-                        type: "footer",
-                      });
-                    }}
-                    as={"a"}
-                    size={"sm"}
-                    aria-label={"Github"}
-                    icon={<FaGithub size={20} />}
-                  />
-                )}
-              </HStack>
-            </VStack>
-          </WrapItem>
-        ))}
+        {bigContributors &&
+          bigContributors.map((c) => (
+            <WrapItem>
+              <VStack
+                boxShadow={"0px 0px 8px rgba(111, 19, 29, 0.1)"}
+                backgroundColor={"rgba(255,255,255,0.4)"}
+                width={250}
+                py={8}
+                borderRadius={10}
+              >
+                <Avatar size={"xl"} name={c.name} src={c.avatar_url} />
+                <Heading fontSize={20}>{c.name}</Heading>
+                <Text fontSize={14} fontWeight={300}>
+                  {c.role}
+                </Text>
+                <HStack spacing={4}>
+                  {c.linkedin && (
+                    <IconButton
+                      href={c.linkedin}
+                      target={"_blank"}
+                      onClick={() => {
+                        trackEvent(`button.${c.login}.linkedin.click`, {
+                          type: "footer",
+                        });
+                      }}
+                      as={"a"}
+                      size={"sm"}
+                      aria-label={"LinkedIn"}
+                      icon={<FaLinkedinIn size={20} />}
+                    />
+                  )}
+                  {c.website && (
+                    <IconButton
+                      href={c.website}
+                      target={"_blank"}
+                      onClick={() => {
+                        trackEvent(`button.${c.login}.website.click`, {
+                          type: "footer",
+                        });
+                      }}
+                      as={"a"}
+                      size={"sm"}
+                      aria-label={"Website"}
+                      icon={<FaHome size={20} />}
+                    />
+                  )}
+                  {c.github && (
+                    <IconButton
+                      href={c.github}
+                      target={"_blank"}
+                      onClick={() => {
+                        trackEvent(`button.${c.login}.github.click`, {
+                          type: "footer",
+                        });
+                      }}
+                      as={"a"}
+                      size={"sm"}
+                      aria-label={"Github"}
+                      icon={<FaGithub size={20} />}
+                    />
+                  )}
+                </HStack>
+              </VStack>
+            </WrapItem>
+          ))}
       </Wrap>
 
       <Wrap justify={"center"} pb={4}>
@@ -193,15 +193,11 @@ export const Footer = () => {
         </Text>
         <LinkButton
           color={"gray.900"}
-          fontWeight={"200"}
+          fontWeight={"300"}
           target={"_blank"}
-          href={
-            "https://cla.umn.edu/undergraduate-students/cla-community/student-organizations/cla-student-board"
-          }
+          href={"/privacy"}
         >
-          Funded by the{" "}
-          <chakra.span fontWeight={300}>CLA Student Board</chakra.span> for
-          2022-2023.
+          Privacy Policy
         </LinkButton>
       </VStack>
     </Box>
