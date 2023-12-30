@@ -1,3 +1,4 @@
+// changes should be made
 const defaultSettings = [
   {
     sectionName: "Schedule Builder",
