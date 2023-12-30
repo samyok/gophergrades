@@ -57,6 +57,8 @@ const settingTemplate = (prefix, setting, settings) => `
 `;
 
 chrome.storage.sync.get("settings", (data) => {
+  console.log("settings", data);
+
   const defaultSettingCodes = defaultSettings.reduce((acc, section) => {
     section.settings.forEach((setting) => {
       acc[section.code + ":" + setting.code] = setting.value;

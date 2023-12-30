@@ -127,7 +127,9 @@ const appObserver = new MutationObserver(async (mutations) => {
     .get("settings")
     .then((result) => result.settings["myu:addToCalendarButton"]);
 
-  if (!addToCalendarButton) return;
+  console.log("[GG] addToCalendarButton enabled:", addToCalendarButton);
+
+  if (addToCalendarButton === false) return;
 
   const look = document.querySelector("div[class='myu_btn-group col-lg-12']");
   if (look) {
