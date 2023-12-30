@@ -57,10 +57,10 @@ const appendButton = () => {
     parentDiv.insertBefore(newDiv, calendarDiv.nextSibling);
 
     //Apply following
-    newDiv.querySelectorAll("button")[0].addEventListener("click", buttonBody); //Naively apply the event listener to all buttons
-    newDiv.querySelectorAll("button")[1].addEventListener("click", buttonBody);
-    newDiv.querySelectorAll("button")[2].addEventListener("click", buttonBody);
-    // newDiv.querySelectorAll("button").map(b => b.addEventListener("click", buttonBody)) // apply it to all the buttons in the div
+    const buttons = newDiv.querySelectorAll("button");
+    for (let i = 0; i < buttons.length; i++) {
+      buttons[i].addEventListener("click", buttonBody); // Naively apply the event listener to all buttons
+    }
     ButtonIsAdded = true;
   }
 };
@@ -80,21 +80,24 @@ const buttonBody = async () => {
   const parentDiv = document.getElementsByClassName("row")[4];
   const loadingPage = htmlToElement(loadingPageTemplate);
   parentDiv.insertBefore(loadingPage, calendarDiv.nextSibling);
-    
+
   let scrape;
   try {
     let currentWeek = parseDate(
-                    document
-                    .querySelector(".myu_heading-nav")
-                    .querySelector("h2")
-                    .innerText.match(/\d{2}\/\d{2}\/\d{4}/)[0], 
-                    "mm/dd/yyyy");
+      document
+        .querySelector(".myu_heading-nav")
+        .querySelector("h2")
+        .innerText.match(/\d{2}\/\d{2}\/\d{4}/)[0],
+      "mm/dd/yyyy"
+    );
     console.log("[GG] Beginning scrape and download..");
     scrape = await scrapeASemester(formatDate(currentWeek, "yyyy-mm-dd"));
     // fileDownload(dataToRecurringICS(scrape));
   } catch (error) {
     console.error(error);
-    alert("[GG] Calendar export scraper error. Are you open to a week that doesn't have classes?"); // this message doesn't display. need to edit manifest?
+    alert(
+      "[GG] Calendar export scraper error. Are you open to a week that doesn't have classes?"
+    ); // this message doesn't display. need to edit manifest?
   } finally {
     loadingPage.remove();
   }
