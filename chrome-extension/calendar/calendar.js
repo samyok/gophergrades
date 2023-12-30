@@ -95,9 +95,7 @@ const buttonBody = async () => {
     // fileDownload(dataToRecurringICS(scrape));
   } catch (error) {
     console.error(error);
-    alert(
-      "[GG] Calendar export scraper error. Are you open to a week that doesn't have classes?"
-    ); // this message doesn't display. need to edit manifest?
+    alert("Please navigate to a week with scheduled courses and try again."); // this message doesn't display. need to edit manifest?
   } finally {
     loadingPage.remove();
   }
