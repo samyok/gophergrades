@@ -4,7 +4,7 @@ const defaultSettings = [
     code: "sb",
     settings: [
       {
-        name: "Display graphs inline",
+        name: "Display grade distribution graphs",
         code: "displayGraphsInline",
         value: true,
       },
