@@ -8,15 +8,15 @@ const defaultSettings = [
         code: "displayGraphsOnline",
         value: true,
       },
-      {
-        name: "Add to calendar button",
-        code: "addToCalendarButton",
-        value: true,
-      },
+      // {
+      //   name: "Add to calendar button",
+      //   code: "addToCalendarButton",
+      //   value: true,
+      // },
       {
         name: "Show map of classes",
         code: "showMapOfClasses",
-        value: false,
+        value: true,
       },
     ],
   },
