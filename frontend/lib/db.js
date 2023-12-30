@@ -75,17 +75,17 @@ const promisedQuery = (query, params) => {
 
 export const getDistribution = async (classCode) => {
   const sql = `
-      SELECT d.id as distribution_id,
+      SELECT d.id      as distribution_id,
              students,
              term,
              grades,
              professor_id,
-             name            as professor_name,
-             RMP_score       as professor_RMP_score
+             name      as professor_name,
+             RMP_score as professor_RMP_score
       FROM classdistribution
-             LEFT JOIN distribution d on classdistribution.id = d.class_id
-             LEFT JOIN termdistribution t on d.id = t.dist_id
-             LEFT JOIN professor p on d.professor_id = p.id
+               LEFT JOIN distribution d on classdistribution.id = d.class_id
+               LEFT JOIN termdistribution t on d.id = t.dist_id
+               LEFT JOIN professor p on d.professor_id = p.id
       WHERE REPLACE(class_name, ' ', '') = REPLACE($class_name, ' ', '')`;
 
   const params = {
@@ -102,7 +102,8 @@ export const getClassInfo = async (classCode) => {
       SELECT *
       FROM classdistribution
                LEFT JOIN departmentdistribution d on classdistribution.department_id = d.id
-               LEFT JOIN (SELECT lat.right_id,json_group_array(json_object('name', l.name, 'id', lat.left_id)) as libEds
+               LEFT JOIN (SELECT lat.right_id,
+                                 json_group_array(json_object('name', l.name, 'id', lat.left_id)) as libEds
                           FROM libedAssociationTable lat
                                    LEFT JOIN libEd l ON lat.left_id = l.id
                           GROUP BY right_id) libEds on classdistribution.id = libEds.right_id
@@ -113,6 +114,16 @@ export const getClassInfo = async (classCode) => {
   };
 
   const rows = await promisedQuery(sql, params);
+
+  return rows.map(parseJSONFromRow);
+};
+
+export const getEveryClassCode = async () => {
+  const sql = `
+      SELECT class_name
+      FROM classdistribution`;
+
+  const rows = await promisedQuery(sql);
 
   return rows.map(parseJSONFromRow);
 };
@@ -167,12 +178,12 @@ export const getInstructorInfo = async (instructorId) => {
 
 export const getInstructorClasses = async (instructorId) => {
   const sql = `
-    SELECT *
-    FROM professor
-             LEFT JOIN distribution d on professor.id = d.professor_id
-             LEFT JOIN termdistribution t on d.id = t.dist_id
-             LEFT JOIN classdistribution c on d.class_id = c.id
-    WHERE professor.id = $instructor_id`;
+      SELECT *
+      FROM professor
+               LEFT JOIN distribution d on professor.id = d.professor_id
+               LEFT JOIN termdistribution t on d.id = t.dist_id
+               LEFT JOIN classdistribution c on d.class_id = c.id
+      WHERE professor.id = $instructor_id`;
 
   const params = {
     $instructor_id: instructorId,
