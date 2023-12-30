@@ -5,7 +5,7 @@ const defaultSettings = [
     settings: [
       {
         name: "Display graphs inline",
-        code: "displayGraphsOnline",
+        code: "displayGraphsInline",
         value: true,
       },
       // {
