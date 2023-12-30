@@ -84,6 +84,7 @@ chrome.storage.sync.get("settings", (data) => {
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
   console.log(changes);
+  document.querySelector("#changes").style.display = "block";
 });
 
 function login() {
