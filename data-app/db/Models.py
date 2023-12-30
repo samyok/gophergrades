@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, SmallInteger, ForeignKey, VARCHAR, JSON, Float, Table, create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, Session
+from sqlalchemy.orm import relationship, sessionmaker
 from mapping.mappings import term_to_name
 
 """
@@ -23,7 +23,7 @@ class Libed(Base):
     __tablename__ = "libed"
     id = Column(Integer,primary_key=True)
     name = Column(VARCHAR(128),nullable=False,unique=True)
-    class_dists = relationship('ClassDistribution',secondary=libedAssociationTable,back_populates="libeds")
+    class_dists = relationship('ClassDistribution',secondary=libedAssociationTable,back_populates="libeds",lazy='selectin')
     def __str__(self) -> str:
         retVal = f"Libed: {self.name}"
         for class_dist in self.class_dists:
@@ -67,6 +67,7 @@ class Professor(Base):
     RMP_score = Column(Float,nullable=True)
     RMP_diff = Column(Float,nullable=True)
     RMP_link = Column(VARCHAR(512),nullable=True)
+    x500 = Column(VARCHAR(16),nullable=True)
 
     dists = relationship('Distribution',backref="prof")
 
@@ -86,21 +87,15 @@ class ClassDistribution(Base):
     total_grades = Column(JSON,nullable=False)
     # ASR VALS
     onestop = Column(VARCHAR(512),nullable=True)
+    onestop_desc = Column(VARCHAR(2048),nullable=True)
     cred_min = Column(SmallInteger,nullable=True)
     cred_max = Column(SmallInteger,nullable=True)
-    # SRT VALS
-    deep_und = Column(Float,nullable=True)
-    stim_int = Column(Float,nullable=True)
-    tech_eff = Column(Float,nullable=True)
-    acc_sup = Column(Float,nullable=True)
-    effort = Column(Float,nullable=True)
-    grad_stand = Column(Float,nullable=True)
-    recommend = Column(Float,nullable=True)
-    responses = Column(Integer,nullable=True)
+    # SRT VALS: Deep Understanding, Stimulated Interest, Technical Effectiveness, Activities Supported Learning, Effort Reasonable, Grading Standards, Recommend, Number Responses
+    srt_vals = Column(JSON,nullable=True)
 
     department_id = Column(Integer, ForeignKey('departmentdistribution.id',ondelete="CASCADE"))
     dists = relationship('Distribution',backref="classdist")
-    libeds = relationship('Libed',secondary=libedAssociationTable,back_populates="class_dists")
+    libeds = relationship('Libed',secondary=libedAssociationTable,back_populates="class_dists",lazy='selectin')
 
     def __str__(self) -> str:
         return f"{self.class_name}: {self.total_grades}"
@@ -116,7 +111,7 @@ class DepartmentDistribution(Base):
     id = Column(Integer,primary_key=True)
     dept_abbr = Column(VARCHAR(4),nullable=False, unique=True)
     dept_name = Column(VARCHAR(255),nullable=False)
-    class_dists = relationship('ClassDistribution',backref="dept")
+    class_dists = relationship('ClassDistribution',backref="dept",lazy="selectin")
     def __repr__(self) -> str:
         retVal = f"The department of {self.dept_abbr} - {self.dept_name} has the following distributions:\n"
         for dist in self.class_dists:
@@ -128,4 +123,4 @@ engine = create_engine("sqlite:///../ProcessedData.db",echo=False,future=True)
 if __name__ == "__main__":
     Base.metadata.drop_all(engine)
 Base.metadata.create_all(engine)
-session = Session(engine)
+Session = sessionmaker(bind=engine, autoflush=False)

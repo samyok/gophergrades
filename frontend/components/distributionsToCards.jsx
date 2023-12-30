@@ -3,8 +3,10 @@ import {
   Box,
   chakra,
   Collapse,
+  Hide,
   HStack,
   IconButton,
+  Show,
   Tag,
   Text,
   Tooltip,
@@ -97,9 +99,16 @@ const SingleDistribution = ({ dist, isMobile, isStatic }) => {
                     py={1}
                   >
                     {dist.rating.toFixed(1)}
-                    <chakra.span pl={1} mt={-0.5}>
-                      {Array(Math.round(dist.rating)).fill(<StarIcon />)}
-                    </chakra.span>
+                    <Show breakpoint={"(min-width: 450px)"}>
+                      <chakra.span pl={1} mt={-0.5}>
+                        {Array(Math.round(dist.rating)).fill(<StarIcon />)}
+                      </chakra.span>
+                    </Show>
+                    <Hide breakpoint={"(min-width: 450px)"}>
+                      <chakra.span pl={1} mt={-0.5}>
+                        <StarIcon />
+                      </chakra.span>
+                    </Hide>
                   </Tag>
                 </Tooltip>
               )}

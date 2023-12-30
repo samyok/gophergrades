@@ -40,7 +40,7 @@ const nextConfig = {
       },
       {
         source: "/social-coding",
-        destination: "https://discord.gg/ctcXWjUJqZ",
+        destination: "https://www.socialcoding.net/",
         permanent: true,
       },
       {
@@ -58,6 +58,11 @@ const nextConfig = {
       {
         source: "/ext",
         destination: "/chrome",
+        permanent: false,
+      },
+      {
+        source: "/prof/:profCode*",
+        destination: "/inst/:profCode*",
         permanent: false,
       },
     ];

@@ -10,8 +10,6 @@ sqlalchemy = "*"
 requests = "*"
 nameparser = "*"
 scipy = "*"
-
-[dev-packages]
-
-[requires]
-python_version = "3.11"
+alembic = "*"
+ratemyprofessorapi = "*"
+aiohttp = "*"

@@ -384,5 +384,5 @@ def term_to_name(term:int):
         return "Invalid Term"
 
     term //= 10
-    retVal += f"{2017 + (term-117)}"
+    retVal += f"{1900 + (term)}"
     return retVal

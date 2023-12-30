@@ -54,6 +54,11 @@ export const AreaChart = ({ distribution, averageGPA, isMobile = true }) => {
 
   const numGrades = GRADE_ORDER.length - (hasAPlus ? 0 : 1);
 
+  const totalStudents = Object.values(grades).reduce(
+    (total, gradeCount) => total + gradeCount,
+    0
+  );
+
   const handleMouseMove = (e) => {
     const { x, y } = getMouseCoords(e);
 
@@ -205,7 +210,8 @@ export const AreaChart = ({ distribution, averageGPA, isMobile = true }) => {
             hoveredGrade.grade.startsWith("F")
               ? "n"
               : ""}{" "}
-            {hoveredGrade.grade}
+            {hoveredGrade.grade} (
+            {Math.round((hoveredGrade.gradeCount * 100) / totalStudents)}%)
           </text>
         </g>
       )}
