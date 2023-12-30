@@ -121,7 +121,14 @@ const buttonBody = async () => {
   // console.log(createRecurringVEVENT(c, []))
 };
 
-const appObserver = new MutationObserver((mutations) => {
+const appObserver = new MutationObserver(async (mutations) => {
+  // check if the setting to enable this feature is enabled
+  const addToCalendarButton = await chrome.storage.sync
+    .get("settings")
+    .then((result) => result.settings["myu:addToCalendarButton"]);
+
+  if (!addToCalendarButton) return;
+
   const look = document.querySelector("div[class='myu_btn-group col-lg-12']");
   if (look) {
     if (look.parentNode.children.length < 4) {
