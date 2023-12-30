@@ -131,6 +131,9 @@
 
 .action-row {
   margin-top: 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .btn {
@@ -155,8 +158,20 @@
   box-shadow: #2f2f2f 0px 0px 5px;
 }
 
+.btn.small {
+  padding: 5px 15px;
+  font-size: 14px;
+}
+
 .btn.primary:hover {
   background: rgba(91, 0, 19, 0.8);
+}
+
+.btn.bordered {
+  border: 1px solid #2f2f2f;
+  background: none;
+  color: #2f2f2f;
+  box-shadow: none;
 }
 
 .btn:hover {

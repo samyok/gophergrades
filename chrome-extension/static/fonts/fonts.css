@@ -703,3 +703,11 @@
   font-display: swap;
 }
 
+/* Manually patching in Roboto here */
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('roboto-regular.woff2?#iefix') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}

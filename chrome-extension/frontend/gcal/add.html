@@ -6,6 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Add to Calendar | Gopher Grades</title>
+    <link rel="stylesheet" href="google-login.css">
     <link rel="stylesheet" href="../../static/fonts/fonts.css">
     <link rel="stylesheet" href="../global.css">
     <link rel="stylesheet" href="add.css">
@@ -21,24 +22,58 @@
         <div class="events"></div>
     </div>
 
+
     <div class="action-row">
-        <button class="btn primary" id="add">Add to Google Calendar</button>
-        <button class="btn" id="ics">Download .ics</button>
+        <button id="add" class="gsi-material-button" style="width:100px">
+            <div class="gsi-material-button-state"></div>
+            <div class="gsi-material-button-content-wrapper">
+                <div class="gsi-material-button-icon">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"
+                         style="display: block;">
+                        <path fill="#EA4335"
+                              d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+                        <path fill="#4285F4"
+                              d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+                        <path fill="#FBBC05"
+                              d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+                        <path fill="#34A853"
+                              d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+                        <path fill="none" d="M0 0h48v48H0z"></path>
+                    </svg>
+                </div>
+                <span class="gsi-material-button-contents">Continue with Google</span>
+                <span style="display: none;">Continue with Google</span>
+            </div>
+        </button>
+        <!--        <button class="btn primary" id="add">Add to Google Calendar</button>-->
     </div>
+    <p>
+        To add these classes to your Google Calendar, click the button above.
+    </p>
+
+    <hr style="margin-top: 20px;"/>
+    <p style="font-weight: 500;">
+        Options
+    </p>
     <div class="center-vertically">
         <!-- create a checkbox asking if this should be added to a new calendar or their primary calendar -->
         <input type="checkbox" id="new-calendar">
-        <label for="new-calendar">Create a new calendar for these classes</label>
+        <label for="new-calendar">Create a new Google Calendar (for editing or sharing in bulk)</label>
     </div>
+    <button class="btn small" id="ics" style="margin-top: 10px;">Download .ics</button>
+    <p style="opacity: 70%; font-size: 13px;">
+        View our <a href="https://umn.lol/privacy">privacy policy</a> for more information, including our
+        <a href="https://umn.lol/privacy#:~:text=class%20schedule%20feature.-,Limited%20Use%20Policy,-GopherGrades%27%20use%20and">
+            Limited Use Policy</a> covering our use of your data. TLDR: nothing is stored on our servers, and we don't
+        see, access, or sell your data.
+    </p>
 </div>
 <div class="layout hidden" id="loading-screen">
     <h1>Adding to Calendar</h1>
     <div style="display: flex; align-items: center">
         <div class="loading-spinner" style="margin-right: 10px"></div>
         <p class="subtitle" style="padding-top: 20px;">Creating Calendar...</p>
-
     </div>
-
 </div>
 
 <script src="../../calendar/utils/date.js"></script>
