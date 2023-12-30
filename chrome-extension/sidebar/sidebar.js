@@ -15,7 +15,8 @@ window.addEventListener("message", (event) => {
 const debounce = (func, wait = 20, immediate = true) => {
   let timeout;
   return function () {
-    let context = this, args = arguments;
+    let context = this,
+      args = arguments;
     let later = function () {
       timeout = null;
       if (!immediate) func.apply(context, args);
@@ -65,7 +66,7 @@ const appendPortal = (iframeId, target, courseName) => {
   const portal = htmlToElement(iframePortalTemplate(iframeId, courseName));
   target.append(portal);
   return portal;
-}
+};
 
 // code to add the iframe to the page
 const prependFrame = (url, elem, direction = "prepend") => {
@@ -81,7 +82,7 @@ const prependFrame = (url, elem, direction = "prepend") => {
       clearInterval(interval);
       return;
     }
-    frame.contentWindow.postMessage({email: getInternetId()}, "*");
+    frame.contentWindow.postMessage({ email: getInternetId() }, "*");
   }, 1000);
 };
 
@@ -97,7 +98,10 @@ const debouncedFindCourses = debounce((courseList) => {
     const courseId = parentPanel.querySelector("a[name]")?.getAttribute("name");
     console.log("[GG] coursePanels", courseId);
 
-    prependFrame(`${BASE_URL}/class/${courseId}?static=all`, parentPanel.querySelector(".panel-body"));
+    prependFrame(
+      `${BASE_URL}/class/${courseId}?static=all`,
+      parentPanel.querySelector(".panel-body")
+    );
   });
 }, 50);
 
@@ -133,31 +137,39 @@ const loadCourseInfo = (courseInfo) => {
 
 // if we're on a built schedule, load the schedule
 const loadCourseSchedule = (courseSchedule) => {
-  const courses = Array.from(document.querySelectorAll("#schedule-courses tr:has(h4)"))
-    .map(tr => ({
-      courseId: tr.innerText
-        .trim()
-        .split(":")[0]
-        ?.replaceAll(" ", ""), courseName: tr.innerText.trim(), tr
-    }));
+  const courses = Array.from(
+    document.querySelectorAll("#schedule-courses tr:has(h4)")
+  ).map((tr) => ({
+    courseId: tr.innerText.trim().split(":")[0]?.replaceAll(" ", ""),
+    courseName: tr.innerText.trim(),
+    tr,
+  }));
 
   console.log("[GG] scheduled courses", courses);
   for (let i = 0; i < courses.length; i++) {
-    const {courseId, courseName} = courses[i];
+    const { courseId, courseName } = courses[i];
     const iframeTarget = document.querySelector("#app-main .col-xs-12");
     const portal = appendPortal(courseId, iframeTarget, courseName);
     const url = `${BASE_URL}/class/${courseId}?static=all`;
     appendFrame(url, portal);
   }
-}
+};
 
-const onAppChange = () => {
+const onAppChange = async () => {
   const courseList = document.querySelector(".course-list-results");
   const courseInfo = document.querySelector("#crse-info");
   const courseSchedule = document.querySelector("#schedule-courses");
 
+  // see if the option to disable the inline graph loading is enabled
+  const displayGraphsInline = await chrome.storage.sync
+    .get("settings")
+    .then((result) => result.settings["sb:displayGraphsInline"]);
+  if (!displayGraphsInline) return;
+
   // determine which page we're on and load the appropriate data.
-  if (courseList) loadCourses(courseList); else if (courseInfo) loadCourseInfo(courseInfo); else if (courseSchedule) loadCourseSchedule(courseSchedule);
+  if (courseList) loadCourses(courseList);
+  else if (courseInfo) loadCourseInfo(courseInfo);
+  else if (courseSchedule) loadCourseSchedule(courseSchedule);
 };
 
 let loaded = false;
@@ -171,7 +183,7 @@ const onLoad = () => {
     onAppChange();
   });
 
-  appObserver.observe(app, {childList: true, subtree: true});
+  appObserver.observe(app, { childList: true, subtree: true });
 };
 
 window.addEventListener("load", onLoad);
