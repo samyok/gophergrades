@@ -45,7 +45,7 @@ chrome.action.onClicked.addListener((tab) => {
 
 const RuntimeMessages = {
   openCalendarTab: async (request) => {
-    await chrome.storage.sync.set({ cal: request.data });
+    await chrome.storage.local.set({ cal: request.data });
 
     await chrome.tabs.create({
       url: chrome.runtime.getURL("frontend/gcal/add.html"),
