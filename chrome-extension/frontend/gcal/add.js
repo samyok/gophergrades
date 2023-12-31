@@ -61,7 +61,7 @@ const unifyClasses = (classes) => {
 };
 
 let cal;
-chrome.storage.sync.get(["cal"], (result) => {
+chrome.storage.local.get(["cal"], (result) => {
   cal = result.cal;
   console.log(cal);
 
@@ -326,7 +326,7 @@ document.querySelector("#add").addEventListener("click", async (e) => {
 });
 
 document.querySelector("#ics").addEventListener("click", async (e) => {
-  blob = portableToIcsBlob(cal)
+  blob = portableToIcsBlob(cal);
   console.log(blob);
   fileDownload(blob);
 });
