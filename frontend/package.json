@@ -8,18 +8,18 @@
     "start": "next start",
     "lint": "next lint"
   },
-  "engines" : {
-    "node" : "18.x"
+  "engines": {
+    "node": "18.x"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.11",
     "@chakra-ui/react": "^2.3.2",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
-    "@mdx-js/loader": "^2.3.0",
-    "@mdx-js/react": "^2.3.0",
+    "@mdx-js/loader": "^3.0.0",
+    "@mdx-js/react": "^3.0.0",
     "@next/font": "^13.0.2",
-    "@next/mdx": "^13.4.19",
+    "@next/mdx": "^14.0.4",
     "@types/sqlite3": "^3.1.8",
     "@vercel/og": "^0.0.20",
     "discord-webhook-node": "^1.1.8",
