@@ -1,0 +1,12 @@
+body {
+  width: 480px;
+  height: 580px;
+}
+
+.setting {
+  display: flex;
+}
+
+.setting label {
+  margin-bottom: 8px;
+}
