@@ -1,0 +1,57 @@
+import PageLayout from "../components/Layout/PageLayout";
+import {Box, Heading} from "@chakra-ui/react";
+import dynamic from "next/dynamic";
+
+[//]: # (Page title is included below)
+
+Tired of manually searching for grade distributions on gopher grades? Want to be able to see the physical locations of your classes to map
+out your schedule? Want to be able to import your schedule directly into your calendar? Then look no further than the Gopher Grades V2 Extension!
+This tool is a great addition to any student's arsenal to help enrich their academic experience at the University of Minnesota. Available for Chrome and Firefox.
+
+## Installation
+
+For users on Chrome, you can install the extension by visiting the [Chrome Web Store](https://umn.lol/chrome) and clicking "Add to Chrome". For users on Firefox,
+you can install the extension by visiting the [Firefox Add-ons Store](https://umn.lol/firefox) and clicking "Add to Firefox".
+
+## Features
+
+- Grade Distributions
+- Class Locations
+- Schedule Importing
+
+### Grade Distributions
+
+Grade distributions can be viewed on schedule builder directly on both the class pages and on your built schedules. This extension by default will
+display the grade distributions for the overall course and the specific professor teaching the course if you're looking at a specific course given that there
+is data available. On built schedules, navigating to the bottom of the page will display the overall grade distribution for all of your selected courses.
+
+### Class Locations
+*Chrome Only*. To view class locations navigate to a built schedule and click the "Map" button right above your displayed schedule. This will open a dropdown
+with days of the week and a map. By selecting a day of the week, the map will display the locations of all of your classes on that day. These maps can be exported to
+google maps and will even inform you if some of your classes are online.
+
+### Schedule Importing
+*Chrome Only*. To import your schedule into your calendar, navigate to your MyU classes page under the academics tab and find a week with courses.
+Click the "Add Classes to Google Calendar" button and the extension will parse your courses. Once your courses are parsed you can change the colors for each course
+and decide to either add the events to your calendar or download an .ics file to import into
+other calendars.
+
+export default function MDXPage({children}) {
+  // noinspection JSCheckFunctionSignatures
+  const ChromeExtensionBanner = dynamic(() => import("../components/ChromeExtensionBanner"), {ssr: false});
+
+  return <PageLayout title={"Browser Extension Information | Gopher Grades"}>
+    <Heading
+      fontSize={["50px", "55px", "90px"]}
+      pt={20}
+      pb={10}
+      textAlign={["center", "left", "left"]}
+    >Extension</Heading>
+    <Box pb={5}>
+      <ChromeExtensionBanner/>
+    </Box>
+
+    {children}
+
+  </PageLayout>
+}

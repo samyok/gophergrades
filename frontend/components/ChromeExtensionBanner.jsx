@@ -13,6 +13,7 @@ import trackEvent from "../lib/track";
 
 const voidFunc = () => {};
 const ChromeExtensionBanner = ({ setShowAlert = voidFunc, source }) => {
+  if (typeof window === "undefined") return null;
   const isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
   const isMicrosoftEdge = navigator.userAgent.toLowerCase().indexOf("edg") > -1;
   const isChrome = navigator.userAgent.toLowerCase().indexOf("chrome") > -1;
