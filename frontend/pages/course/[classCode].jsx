@@ -82,6 +82,8 @@ export default function Class({ classData }) {
     title: `${classDesc} (${className}) | GopherGrades`,
     imageURL: `${
       process.env.NEXT_PUBLIC_VERCEL_URL
+        ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+        : ""
     }/api/image/class/${className.replace(" ", "")}`,
   };
 
