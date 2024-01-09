@@ -120,8 +120,28 @@ export const getClassInfo = async (classCode) => {
 
 export const getEveryClassCode = async () => {
   const sql = `
-      SELECT class_name
+      SELECT class_name, class_desc
       FROM classdistribution`;
+
+  const rows = await promisedQuery(sql);
+
+  return rows.map(parseJSONFromRow);
+};
+
+export const getEveryProfessorCode = async () => {
+  const sql = `
+      SELECT id, name
+      FROM professor`;
+
+  const rows = await promisedQuery(sql);
+
+  return rows.map(parseJSONFromRow);
+};
+
+export const getEveryDepartmentCode = async () => {
+  const sql = `
+      SELECT dept_abbr, dept_name
+      FROM departmentdistribution`;
 
   const rows = await promisedQuery(sql);
 
