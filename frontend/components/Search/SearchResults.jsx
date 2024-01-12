@@ -31,7 +31,7 @@ const Classes = ({ searchResults, onClick }) => {
       {searchResults.data.classes.map((row) => (
         <Card
           key={row.class_name}
-          href={`/course/${row.class_name.replace(/ /g, "")}`}
+          href={`/class/${row.class_name.replace(/ /g, "")}`}
           onClick={onClick}
         >
           {row.class_name} - {row.class_desc}

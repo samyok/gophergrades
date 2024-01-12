@@ -23,10 +23,6 @@ const nextConfig = {
         destination: "https://dash.umn.lol/:match*",
       },
       {
-        source: "/course/:courseCode/:path*",
-        destination: "/course/:courseCode",
-      },
-      {
         source: "/class/:courseCode/:path*",
         destination: "/class/:courseCode",
       },

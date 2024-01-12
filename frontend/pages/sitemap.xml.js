@@ -20,7 +20,7 @@ async function generateSiteMap() {
   const courseXML = courses.map(
     (course) => `
   <url>
-    <loc>https://umn.lol/course/${cleanPrimaryID(
+    <loc>https://umn.lol/class/${cleanPrimaryID(
       course.class_name
     )}/${cleanDescription(course.class_desc)}</loc>
     <image:image>
