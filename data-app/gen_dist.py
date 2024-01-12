@@ -16,8 +16,6 @@ from gen_courseinfo import *
     we also associate professors with their RMP score should it be found. Lastly, this is also where we will utilize
     the SRT data to gain more information about classes.
 """
-# Runs the generate function to fetch data from API
-# TODO: Potential switch to GraphQL API?
 
 def process_dist(x: pd.DataFrame) -> None:
     """
@@ -99,14 +97,6 @@ def process_dept(dept_abbr:str):
     session.close()
     # print(f"Created New Department: {dept.dept_abbr} : {dept.dept_name}")
 
-def gen_terms(term_init:int) -> list:
-    if term_init % 10 == 3:
-        return [term_init-8, term_init-4, term_init, term_init+2, term_init+6]
-    elif term_init % 10 == 5:
-        return [term_init-6,term_init-2,term_init,term_init+4,term_init+8]
-    elif term_init % 10 == 9:
-        return [term_init-6,term_init-4,term_init,term_init+4,term_init+6]
-
 
 # Add all libeds as defined in libed_mapping. This is a constant addition as there are a finite amount of libed requirements.
 session = Session()
@@ -121,7 +111,6 @@ if __name__ == "__main__":
     parser.add_argument('-dr','--disableRMP', dest='DisableRMP', action='store_true', help='Disables RMP Search.')
     parser.add_argument('-ds','--disableSRT', dest='DisableSRT', action='store_true', help='Disables SRT Updating for Class Distributions.')
     parser.add_argument('-da','--disableASR', dest='DisableASR', action='store_true', help='Disables ASR Updating for Class Libeds, Titles, and Onestop Links.')
-    parser.add_argument('-dc','--disableCINFO', dest='DisableCINFO', action='store_true', help='Disables Courseinfo updating for titles and Onestop Descriptions')
 
     args = parser.parse_args()
     
@@ -158,13 +147,6 @@ if __name__ == "__main__":
     new_additions.groupby(["TERM","HR_NAME","FULL_NAME"],group_keys=False).apply(process_dist)
     print("Finished Generating Distributions")
 
-    # For each term, search every department's classes and insert information regarding credits, libeds, onestop link, etc
-    # IF the class distribution has not already been modified.
-    highest_term = max(new_additions["TERM"].unique(), default=1233) 
-    # Worry not about the CACHED variables, this is simply to help store previous requests in order to prevent redundant calls to an API
-    # TERMS should hold the value of the next 2 terms, current term, and past 2 term in decreasing order.
-    TERMS = gen_terms(highest_term)
-
     if not args.DisableRMP:
         print("RMP Update For Professors")
         RMP_Update_Multiprocess()
@@ -176,14 +158,7 @@ if __name__ == "__main__":
         print("Finished SRT Updating")
 
     if not args.DisableASR:
-        print("Inserting Libed Search")
-        for term in TERMS:
-            dept_dists = session.query(DepartmentDistribution).all()
-            fetch_multiprocess(dept_dists,term)
-        print("Finished Libed Search")
-
-    if not args.DisableCINFO:
-        print("Beginning Title Search")
-        for term in new_additions["TERM"].unique():
-            fetch_better_titles_multi(session.query(DepartmentDistribution).all(),term)
-        print("Finished Title Search")
+        print("Improving Class Information")
+        dept_dists = session.query(DepartmentDistribution).all()
+        fetch_multiprocess(dept_dists)
+        print("Finished Improving Class Information")
