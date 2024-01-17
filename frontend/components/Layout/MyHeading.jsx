@@ -1,6 +1,7 @@
 import Head from "next/head";
 
-const DEFAULT_TITLE = "Gopher Grades - A Social Coding Project";
+const DEFAULT_TITLE =
+  "Gopher Grades - Updated University of Minnesota Grade Data";
 const DEFAULT_DESC = "View grades for past classes, professors, and more.";
 
 const publicURL = process.env.NEXT_PUBLIC_VERCEL_URL
