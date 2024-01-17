@@ -28,7 +28,7 @@ const footerOverrides = {
     big: true,
     index: 20,
     role: "Feature Engineering",
-    linkedin: "https://www.linkedin.com/in/josephmcindoo/",
+    linkedin: "https://www.linkedin.com/in/joeyjosephmcindoo/",
     github: "https://github.com/JosephMcIndoo",
   },
 };
