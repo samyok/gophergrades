@@ -22,6 +22,18 @@ const nextConfig = {
         source: "/stats/:match*",
         destination: "https://dash.umn.lol/:match*",
       },
+      {
+        source: "/class/:courseCode/:path*",
+        destination: "/class/:courseCode",
+      },
+      {
+        source: "/inst/:profCode/:path*",
+        destination: "/inst/:profCode",
+      },
+      {
+        source: "/dept/:deptCode/:path*",
+        destination: "/dept/:deptCode",
+      },
     ];
   },
   redirects: async () => {
