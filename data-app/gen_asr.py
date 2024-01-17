@@ -6,7 +6,7 @@ from multiprocessing import Pool
 from time import time
 
 
-def fetch_traditional(dept_dist:DepartmentDistribution,term:int) -> None:
+def fetch_traditional(dept_dist:DepartmentDistribution) -> None:
     """
     Uses the ASR Api: https://github.com/umn-asr/courses
     to fetch class information for relavent classes, classes that are recently being conducted +- 2 terms
@@ -20,7 +20,7 @@ def fetch_traditional(dept_dist:DepartmentDistribution,term:int) -> None:
     """
     dept = dept_dist.dept_abbr
 
-    link=f"https://courses.umn.edu/campuses/UMNTC/terms/{term}/courses.json?q=subject_id={dept}"
+    link=f"https://app.coursedog.com/api/v1/cm/umn_umntc_peoplesoft/courses/?subjectCode={dept}"
 
     with requests.get(link) as url:
         try:
@@ -29,39 +29,39 @@ def fetch_traditional(dept_dist:DepartmentDistribution,term:int) -> None:
             print("Json malformed, icky!")
             req={}
             return
-    for course in req["courses"]:
-        subj = course["subject"]["subject_id"]
-        nbr = course["catalog_number"]
+        
+    for course in req.values():
+        course_nbr = course["courseNumber"]
         session = Session()
-        class_dist = session.query(ClassDistribution).filter(ClassDistribution.class_name == f"{subj} {nbr}").first()
+        class_dist = session.query(ClassDistribution).filter(ClassDistribution.class_name == f"{dept} {course_nbr}").first()
         if class_dist:
-            class_dist.class_desc = course["title"]
-            class_dist.cred_min = course["credits_minimum"]
-            class_dist.cred_max = course["credits_maximum"]
-            class_dist.onestop = f"https://umtc.catalog.prod.coursedog.com/courses/{course['course_id']}1"
-            for attribute in course["course_attributes"]:
-                if attribute["family"] in ["CLE","HON","FSEM"]:
-                    libed_dist = session.query(Libed).filter(Libed.name == libed_mapping[attribute['attribute_id']]).first()
-                    libed_dist.class_dists.append(class_dist)
+            class_dist.class_desc = course["longName"]
+            class_dist.onestop_desc = course["description"]
+            class_dist.cred_min = course["credits"]["creditHours"]["min"]
+            class_dist.cred_max = course["credits"]["creditHours"]["max"]
+            class_dist.onestop = f"https://umtc.catalog.prod.coursedog.com/courses/{course['sisId']}"
+            for attribute in course["attributes"]:
+                libed_dist = session.query(Libed).filter(Libed.name == libed_mapping[attribute]).first()
+                if libed_dist == None:
+                    print(attribute, libed_mapping[attribute])
+                libed_dist.class_dists.append(class_dist)
             print(f"Updated {class_dist.class_name} ({class_dist.onestop}) : [{class_dist.cred_min} - {class_dist.cred_max}] credits : Libeds: ({class_dist.libeds})")
         session.commit()
         session.close()
 
 
-def fetch_multiprocess(dept_dists:DepartmentDistribution,term:int) -> None:
+def fetch_multiprocess(dept_dists:DepartmentDistribution) -> None:
     with Pool(10) as p:
-        p.starmap(fetch_traditional,[[dept_dist,term] for dept_dist in dept_dists])
+        p.map(fetch_traditional, dept_dists)
 
 
 
 if __name__ == "__main__":
-    TERMS = [1229, 1233, 1235, 1239, 1243]
     session = Session()
     dists = session.query(DepartmentDistribution).all()
     session.close()
     start = time()
-    for term in TERMS:
-        fetch_multiprocess(dists,term)
+    fetch_multiprocess(dists)
     end = time()
     print(f"Time Elapsed: {end-start}")
     

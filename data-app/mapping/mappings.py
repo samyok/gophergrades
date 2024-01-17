@@ -340,22 +340,37 @@ dept_mapping = {
     'YOST': 'Youth Development and Research',
     }
 libed_mapping = {
-    'AH': 'Arts/Humanities',
-    'BIOL': 'Biological Sciences',
-    'CIV': 'Civic Life and Ethics',
-    'ENV': 'Environment',
-    'GP': 'Global Perspectives',
-    'IP': 'International Perspective Theme',
-    'HIS': 'Historical Perspectives',
-    'LITR': 'Literature',
-    'MATH': 'Mathematical Thinking',
-    'PHYS': 'Physical Sciences',
-    'DSJ': 'Race, Power, and Justice in the United States',
-    'SOCS': 'Social Sciences',
-    'TS': 'Technology and Society',
-    'WI': 'Writing Intensive',
-    'HON': 'Honors',
-    'FR SEMINAR': 'Freshman Seminar'
+    # College of Liberal Education
+    'CLE - AH (Arts/Humanities)': 'Arts/Humanities',
+    'CLE - BIOL (Biological Sciences)': 'Biological Sciences',
+    'CLE - CIV (Civic Life and Ethics)': 'Civic Life and Ethics',
+    'CLE - ENV (Environment)': 'Environment',
+    'CLE - GP (Global Perspectives)': 'Global Perspectives',
+    'IP': 'International Perspective Theme', # This is obsolete, no longer utilized
+    'CLE - HIS (Historical Perspectives)': 'Historical Perspectives',
+    'CLE - LITR (Literature)': 'Literature',
+    'CLE - MATH (Mathematical Thinking)': 'Mathematical Thinking',
+    'CLE - MATH (Mathematical Thinking Core)': 'Mathematical Thinking', # This is an alias for the above
+    'CLE - PHYS (Physical Sciences)': 'Physical Sciences',
+    'CLE - DSJ (Race, Power, and Justice US)': 'Race, Power, and Justice in the United States',
+    'CLE - DSJ (Diversity and Soc Justice US)': 'Race, Power, and Justice in the United States', # This is an alias for the above
+    'CLE - SOCS (Social Sciences)': 'Social Sciences',
+    'CLE - TS (Technology and Society)': 'Technology and Society',
+    'CLE - WI (Writing Intensive)': 'Writing Intensive',
+    # Community Engagement Learning
+    'CEL - SERV-LRNG (Service-Learning)': "Service Learning",
+    'CEL - FIELD STDY (Field Study)': "Field Study",
+    'CEL - RESEARCH (Research)': "Research",
+    'CEL - INTRN COOP (Internship/Co-op)': 'Internship/Co-op',
+    'CEL - PRACTICUM (Practicum)': "Practicum",
+    'CEL - ENTREPREN (Entrepreneurship)': "Entrepreneurship",
+    'CEL - STDNT TCHG (Student Teaching)': "Student Teaching",
+    'CEL - CLINICAL (Clinical)' : "Clinical",
+    # Other
+    'HON - HON (Honors)': 'Honors',
+    'FSEM - FR SEMINAR (Freshman Seminar)': 'Freshman Seminar',
+    'TOP - TOPICS (Topics Course)': 'Topics Course',
+    'ONL - ONLINE (Online may be available)': "Online Available",
 }
 grade_mapping = {
     'A+': 4.3,
