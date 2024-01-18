@@ -240,7 +240,6 @@
     }
 
     //fetch data from api
-    //this await is necessary despite saying it's not idk it's async bro
     const section_data = await SBAPI.fetchSectionInformation(section_nbrs, term)
 
     // sift through returned sections to get sections needed for the day selected
