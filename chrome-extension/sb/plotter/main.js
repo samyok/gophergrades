@@ -381,7 +381,7 @@ function loadMapImage() {
   const imageTemplate = (imageURL, id) => `
   <img src="${imageURL}" id="${id}" style="display: none;">`
 
-  const mapURL = chrome.runtime.getURL('plotter/walking.png')
+  const mapURL = chrome.runtime.getURL('static/walking.png')
   const mapTag = htmlToElement(imageTemplate(mapURL, "gg-map-image"))
   document.body.appendChild(mapTag)
 

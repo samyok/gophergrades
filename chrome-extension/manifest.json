@@ -16,14 +16,14 @@
         "https://*.schedulebuilder.umn.edu/*"
       ],
       "css": [
-        "sidebar/sidebar.css",
-        "plotter/plotter.css"
+        "sb/sidebar/sidebar.css",
+        "sb/plotter/plotter.css"
       ],
       "js": [
-        "sidebar/sidebar.js",
-        "plotter/apiapi.js",
-        "plotter/util.js",
-        "plotter/main.js"
+        "sb/sidebar/sidebar.js",
+        "sb/plotter/apiapi.js",
+        "sb/plotter/util.js",
+        "sb/plotter/main.js"
       ]
     },
     {
@@ -92,7 +92,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["plotter/walking.png", "static/icons/icon-128.png"],
+      "resources": ["static/walking.png", "static/icons/icon-128.png"],
       "matches": ["https://schedulebuilder.umn.edu/*"]
     }
   ]
