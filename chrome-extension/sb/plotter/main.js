@@ -24,7 +24,7 @@ async function onChange(mutations) {
   if (schedule !== schedulePresented) {
     schedulePresented = schedule
     if (schedule) {
-      log("schedule has just appeared; creating UI")
+      SBUtil.log("schedule has just appeared; creating UI")
       createUI()
     }
   }
@@ -60,7 +60,7 @@ async function onChange(mutations) {
 }
 
 function updateButton() {
-  debug('updating button')
+  SBUtil.debug('updating button')
   const group = document.querySelector("div#rightside div.btn-group")
   const buttonPresent = document.querySelector("#gg-map-btn")
   //button bar not loaded yet or button already exists
@@ -113,7 +113,7 @@ function toggleMap() {
  *    - (buttons obliterate entire main content view and replace it)
  */
 function createUI() {
-  debug("creating UI")
+  SBUtil.debug("creating UI")
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const right = document.querySelector("#rightside");
 
@@ -219,7 +219,7 @@ function setDayButtonSelected(activeDay) {
  * information on the page (namely the section list in the left column)
  */
 async function updateMap() {
-  debug("updating map")
+  SBUtil.debug("updating map")
   const canvas = document.querySelector("#gg-plotter-map");
   // canvas not loaded yet
   if (!canvas) return
@@ -229,12 +229,12 @@ async function updateMap() {
   //use only sections that have a valid location
   schedule.sections = schedule.sections.filter(sec => sec.location)
   const section_nbrs = schedule.sections.map(s => s.id)
-  const term = Number(getTermStrm())
+  const term = Number(SBUtil.getTermStrm())
 
   // classes not loaded yet
   // there shouldn't be a case where the scheduler is loaded without sections
   if (schedule.sections.length === 0) {
-    log("no classes have assigned classrooms yet")
+    SBUtil.log("no classes have assigned classrooms yet")
     return
   }
 
@@ -253,7 +253,7 @@ async function updateMap() {
   })
   //sort by start time to plot schedule in order
   day_sections.sort((a, b) => a.startTime - b.startTime)
-  //map back onto PlotterSections for the plotter to use
+  //map back onto Section objects for the plotter to use
   const sections = day_sections.map(s => {
     return schedule.sections.find(ps => ps.id === s.id)
   })
@@ -262,10 +262,10 @@ async function updateMap() {
 
   // monitor changes and update map
   const ctx = canvas.getContext("2d")
-  const mapper = new Mapper(ctx)
+  const mapper = new SBUtil.Mapper(ctx)
   mapper.drawMap(schedule)
 
-  const dist = calculateDistances(sections).toLocaleString(undefined, {maximumFractionDigits: 2})
+  const dist = SBUtil.calculateDistances(sections).toLocaleString(undefined, {maximumFractionDigits: 2})
   // determines whether or not the difference between subsequent sections is greater than 1 mile
   let interCampusTravel = false
   let prev = null
@@ -279,12 +279,12 @@ async function updateMap() {
   }
   const distNode = document.querySelector("#gg-plotter-distance");
   if (!distNode) {
-    log('distance div does not exist???????')
+    SBUtil.log('distance div does not exist???????')
   } else {
     distNode.textContent = `Distance: >${(interCampusTravel ? ">>>>" : "")+dist} miles`
   }
 
-  const latLongs = pixelsToLatLong(sections);
+  const latLongs = SBUtil.pixelsToLatLong(sections);
   const link = "https://www.google.com/maps/dir/" +
       latLongs.map(c => c[0]+","+c[1]).reverse().join("/")
   const gMapsNode = document.querySelector("#gg-plotter-gmaps")
@@ -295,9 +295,9 @@ async function updateMap() {
 
   //report if there are any sections that do not have a location
   const reportNode = document.querySelector("#gg-plotter-report")
-  log(invalidSections.length)
+  SBUtil.log(invalidSections.length)
   if (invalidSections.length > 0) {
-    log("sections without locations: " + invalidSections.length)
+    SBUtil.log("sections without locations: " + invalidSections.length)
     reportNode.textContent = `Warning: ${invalidSections.length} sections do not have a location`
   }
 }
@@ -306,7 +306,7 @@ async function updateMap() {
  * scrapes locally available information about the current schedule's sections
  * (section number, location, color)
  *
- * @returns {PlotterSchedule} array of section objects with section, location,
+ * @returns {SBUtil.Schedule} array of section objects with section, location,
  * and color attributes
  */
 function getScheduleSections() {
@@ -336,12 +336,12 @@ function getScheduleSections() {
       try {
         sectionNbr = Number(sectionNbr)
       } catch {
-        debug("could not read section number " + sectionNbr)
+        SBUtil.debug("could not read section number " + sectionNbr)
         sectionNbr = null
       }
     } else {
       sectionNbr = null;
-      debug("could not obtain section no. (very weird)")
+      SBUtil.debug("could not obtain section no. (very weird)")
     }
     //this should only evaluate to true once, but shouldn't cause problems
     // if this statement doesn't hold
@@ -353,26 +353,26 @@ function getScheduleSections() {
     if (location === "No room listed.") {
       location = undefined
     } else if (location === "Remote Class" || location === "Online Only") {
-      debug("Remote Class detected don't acknowledge")
+      SBUtil.debug("Remote Class detected don't acknowledge")
       //todo: acknowledge
       // when it says remote class that means mandatory attendance which would
       // be important to tell the user about whatever none of this matters
       location = undefined
     } else {
-      const locationObject = locations.find(loc => loc.location === location);
+      const locationObject = SBUtil.locations.find(loc => loc.location === location);
       if (!locationObject) {
-        debug("could not find location " + location)
+        SBUtil.debug("could not find location " + location)
         location = undefined
       } else {
         location = locationObject
       }
     }
 
-    const newSection = new PlotterSection(sectionNbr, location, currColor);
+    const newSection = new SBUtil.Section(sectionNbr, location, currColor);
     sections.push(newSection)
   });
 
-  return new PlotterSchedule(sections, selected)
+  return new SBUtil.Schedule(sections, selected)
 }
 
 //load map image as an img tag
