@@ -6,23 +6,23 @@
 /**
  * object to interface with the API and cache results
  */
-class SBAPI {
+var SBAPI = (function() {
   /**
    * private cache to store requested data so it can quickly be retrieved when
    * needed (e.g. user flips through built schedules)
    *
-   * @type {Map<int, SBSection>}
+   * @type {Map<int, Section>}
    */
-  static #cache = new Map()
+  let cache = new Map()
 
   /**
    * @param sections{int[]} section numbers
    * @param semesterStrm{int} strm number for user's current semester
-   * @returns {SBSection[]} SBSchedule object with information from all sections
+   * @returns {Promise<Section[]>} Schedule object with information from all sections
    */
-  static async fetchSectionInformation(sections, semesterStrm) {
-    // const cacheSections = sections.filter(s => SBAPI.#cache.has(s))
-    const fetchSections = sections.filter(s => !SBAPI.#cache.has(s))
+  async function fetchSectionInformation(sections, semesterStrm) {
+    // const cacheSections = sections.filter(s => cache.has(s))
+    const fetchSections = sections.filter(s => !cache.has(s))
 
     if (fetchSections.length !== 0) {
       let requestNbrs = fetchSections.join("%2C")
@@ -38,12 +38,12 @@ class SBAPI {
 
       //add fetchSections to cache
       data.forEach(s => {
-        const section_data = this.#constructSectionFromData(s)
-        SBAPI.#cache.set(s.id, section_data)
+        const section_data = constructSectionFromData(s)
+        cache.set(s.id, section_data)
       })
     }
 
-    return sections.map(s => SBAPI.#cache.get(s))
+    return sections.map(s => cache.get(s))
   }
 
   /**
@@ -51,9 +51,9 @@ class SBAPI {
    * https://schedulebuilder.umn.edu/api.php?type=sections&institution=UMNTC&campus=UMNTC&term=1233&class_nbrs=60085%2C60076%2C60200%2C57982%2C60367%2C59712%2C58026%2C58027%2C57985%2C57986%2C66368%2C66373%2C59261%2C59518
    *
    * @param data
-   * @returns {SBSection}
+   * @returns {Section}
    */
-  static #constructSectionFromData(data) {
+  function constructSectionFromData(data) {
     const {
         id,
         campus,
@@ -72,27 +72,32 @@ class SBAPI {
     //gather meeting info from meetings object
     const days = [monday, tuesday, wednesday, thursday, friday, saturday, sunday]
 
-    return new SBSection(id, days, start_time, end_time)
+    return new Section(id, days, start_time, end_time)
   }
-}
 
-/**
- * object that encapsulates the important information returned by the schedule
- * builder API
- */
-class SBSection {
   /**
-   * @param id{int}
-   * @param days{boolean[]}
-   * @param startTime{int} start time in seconds since midnight
-   * @param endTime{int} end time in seconds since midnight
+   * object that encapsulates the important information returned by the schedule
+   * builder API
    */
-  constructor(id, days, startTime, endTime) {
-    this.id = id
-    this.days = days
-    //only works for sections with a meeting time/location
-    // (the overwhelming majority of classes, but not all unfortunately)
-    this.startTime = startTime
-    this.endTime = endTime
+  class Section {
+    /**
+     * @param id{int}
+     * @param days{boolean[]}
+     * @param startTime{int} start time in seconds since midnight
+     * @param endTime{int} end time in seconds since midnight
+     */
+    constructor(id, days, startTime, endTime) {
+      this.id = id
+      this.days = days
+      //only works for sections with a meeting time/location
+      // (the overwhelming majority of classes, but not all unfortunately)
+      this.startTime = startTime
+      this.endTime = endTime
+    }
   }
-}
+
+  return {
+    fetchSectionInformation,
+    Section
+  }
+})();
