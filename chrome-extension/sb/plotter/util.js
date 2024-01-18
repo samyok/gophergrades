@@ -1,24 +1,5 @@
 var SBUtil = (function () {
-  /**
-   * imagine print() being a function to print to a printer
-   *
-   * @param message what to print to the console
-   */
-  function log(message) {
-    console.log("[GG/plotter] " + message)
-  }
-
-  /**
-   * most complicated javascript debugging tool
-   *
-   * @param message what to print to the console
-   */
-  function debug(message) {
-    //uncomment for debugging lol
-    console.debug("[GG/plotter] " + message)
-  }
-
-  log("loaded sb/plotter/util.js")
+  console.log("loaded sb/plotter/util.js")
 
   /**
    * object which stores the name and corresponding x- and y-coordinates of a
@@ -358,8 +339,6 @@ var SBUtil = (function () {
     Section,
     Schedule,
     Mapper,
-    log,
-    debug,
     calculateDistances,
     pixelsToLatLong,
     getTermStrm,

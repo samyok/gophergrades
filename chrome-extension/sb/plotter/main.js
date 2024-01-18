@@ -24,7 +24,7 @@ async function onChange(mutations) {
   if (schedule !== schedulePresented) {
     schedulePresented = schedule
     if (schedule) {
-      SBUtil.log("schedule has just appeared; creating UI")
+      console.debug("schedule has just appeared; creating UI")
       createUI()
     }
   }
@@ -60,7 +60,7 @@ async function onChange(mutations) {
 }
 
 function updateButton() {
-  SBUtil.debug('updating button')
+  console.debug('updating button')
   const group = document.querySelector("div#rightside div.btn-group")
   const buttonPresent = document.querySelector("#gg-map-btn")
   //button bar not loaded yet or button already exists
@@ -113,7 +113,7 @@ function toggleMap() {
  *    - (buttons obliterate entire main content view and replace it)
  */
 function createUI() {
-  SBUtil.debug("creating UI")
+  console.debug("creating UI")
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const right = document.querySelector("#rightside");
 
@@ -219,7 +219,7 @@ function setDayButtonSelected(activeDay) {
  * information on the page (namely the section list in the left column)
  */
 async function updateMap() {
-  SBUtil.debug("updating map")
+  console.debug("updating map")
   const canvas = document.querySelector("#gg-plotter-map");
   // canvas not loaded yet
   if (!canvas) return
@@ -234,7 +234,7 @@ async function updateMap() {
   // classes not loaded yet
   // there shouldn't be a case where the scheduler is loaded without sections
   if (schedule.sections.length === 0) {
-    SBUtil.log("no classes have assigned classrooms yet")
+    console.warn("no classes have assigned classrooms yet")
     return
   }
 
@@ -279,7 +279,7 @@ async function updateMap() {
   }
   const distNode = document.querySelector("#gg-plotter-distance");
   if (!distNode) {
-    SBUtil.log('distance div does not exist???????')
+    console.warn('distance div does not exist???????')
   } else {
     distNode.textContent = `Distance: >${(interCampusTravel ? ">>>>" : "")+dist} miles`
   }
@@ -295,9 +295,8 @@ async function updateMap() {
 
   //report if there are any sections that do not have a location
   const reportNode = document.querySelector("#gg-plotter-report")
-  SBUtil.log(invalidSections.length)
   if (invalidSections.length > 0) {
-    SBUtil.log("sections without locations: " + invalidSections.length)
+    console.warn("sections without locations: " + invalidSections.length)
     reportNode.textContent = `Warning: ${invalidSections.length} sections do not have a location`
   }
 }
@@ -336,12 +335,12 @@ function getScheduleSections() {
       try {
         sectionNbr = Number(sectionNbr)
       } catch {
-        SBUtil.debug("could not read section number " + sectionNbr)
+        console.warn("could not read section number " + sectionNbr)
         sectionNbr = null
       }
     } else {
       sectionNbr = null;
-      SBUtil.debug("could not obtain section no. (very weird)")
+      console.warn("could not obtain section no. (very weird)")
     }
     //this should only evaluate to true once, but shouldn't cause problems
     // if this statement doesn't hold
@@ -353,7 +352,7 @@ function getScheduleSections() {
     if (location === "No room listed.") {
       location = undefined
     } else if (location === "Remote Class" || location === "Online Only") {
-      SBUtil.debug("Remote Class detected don't acknowledge")
+      console.debug("Remote Class detected don't acknowledge")
       //todo: acknowledge
       // when it says remote class that means mandatory attendance which would
       // be important to tell the user about whatever none of this matters
@@ -361,7 +360,7 @@ function getScheduleSections() {
     } else {
       const locationObject = SBUtil.locations.find(loc => loc.location === location);
       if (!locationObject) {
-        SBUtil.debug("could not find location " + location)
+        console.warn("could not find location " + location)
         location = undefined
       } else {
         location = locationObject
