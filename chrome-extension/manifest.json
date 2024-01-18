@@ -23,7 +23,7 @@
         "sb/sidebar/sidebar.js",
         "sb/plotter/apiapi.js",
         "sb/plotter/util.js",
-        "sb/plotter/main.js"
+        "sb/plotter/plotter.js"
       ]
     },
     {
