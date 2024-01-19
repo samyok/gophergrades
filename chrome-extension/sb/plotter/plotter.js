@@ -43,21 +43,6 @@
 
     if (doUpdateButton) updateButton();
     if (doUpdateMap && plotterPresented) await updateMap();
-
-    mutations.forEach(mutation => {
-      switch (mutation.type) {
-        case "childList":
-          break;
-        case "attributes":
-          switch (mutation.attributeName) {
-            case "status":
-            case "username":
-            default:
-              break;
-          }
-          break;
-      }
-    })
   }
 
   function updateButton() {
@@ -97,12 +82,6 @@
       plotter.style.display = "none";
       button.className = "btn btn-default"
     }
-
-    //todo: consider map an option like the schedule and agenda?
-    // as in: replace the agenda/schedule when the map button is pressed
-    // i don't really like it
-    // you can hover over scheduler items and see where they are on the map
-    // it's a feature
   }
 
   /**
@@ -118,12 +97,7 @@
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const right = document.querySelector("#rightside");
 
-    //we must know from updateUI this is already false
-    // if (!right) return
-
     //prepare map to be drawn on
-    //todo: needs to detect sat and sun, but always add mon-fri by default
-    // or maybe it doesn't need to add all 5 by default? wouldn't be useful
     const plotterTemplate = `
   <div id="gg-plotter">
       <div class="btn-group btn-group-justified hidden-print" style="margin-bottom: 1em;">
@@ -152,9 +126,6 @@
       <canvas id="gg-plotter-map" width="2304" height="1296" class="card" style="padding-top: 5px; padding-bottom: 5px;"></canvas>
   </div>
     `
-    // <a id="gg-plotter-disclaimer" class="btn btn-primary" target="_blank" style="background-color: #dd4">
-    //     <i class="fa fa-warning"></i> Disclaimer
-    // </a>
 
     const plotter = htmlToElement(plotterTemplate)
     if (!plotterPresented) {
@@ -162,8 +133,6 @@
     }
     //insert as second child (before the second object; the schedule)
     right.insertBefore(plotter, right.children[1])
-    //todo: if rightside's class is col-md-12, fullscreen is active
-    // place plotter to the right of the schedule?
 
     //add button functionality
     days.forEach(day => {
@@ -173,28 +142,8 @@
       button.onclick = async function () {
         setDayButtonSelected(day)
         daySelected = day
-        //this technically doesn't need to happen due to setDayButtonSelected
-        // causing an attribute change to be signalled but just in case i ever
-        // need it i'm going to leave it here with this egregiously long note
-        // await updateMap()
       }
     })
-    // const mapDiv = document.createElement("div")
-    // mapDiv.id = "gg-plotter-slippy"
-    // mapDiv.style.aspectRatio = "auto 2304/1296";
-    // right.appendChild(mapDiv)
-
-    // const map = L.map('gg-plotter-slippy').setView([44.9742, -93.2326], 13);
-
-    // // we should not be using openstreetmap in production as it is a free service
-    // // that is funded by donations
-    // L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    // }).addTo(map);
-
-    // L.marker([44.9742, -93.2326]).addTo(map)
-    //     .bindPopup('meme<br>memes')
-    //     .openPopup();
   }
 
   /**
@@ -266,7 +215,7 @@
     mapper.drawMap(schedule)
 
     const dist = SBUtil.calculateDistances(sections).toLocaleString(undefined, {maximumFractionDigits: 2})
-    // determines whether or not the difference between subsequent sections is greater than 1 mile
+    // determines whether or not subsequent classes take place on different campuses (mpls vs st paul)
     let interCampusTravel = false
     let prev = null
     for (let i = 0; i < sections.length; i++) {
@@ -297,7 +246,7 @@
     const reportNode = document.querySelector("#gg-plotter-report")
     if (invalidSections.length > 0) {
       console.warn("sections without locations: " + invalidSections.length)
-      reportNode.textContent = `Warning: ${invalidSections.length} sections do not have a location`
+      reportNode.textContent = `Warning: ${invalidSections.length} section${invalidSections.length === 1 ? " does" : "s do"} not have a location`
     }
   }
 
