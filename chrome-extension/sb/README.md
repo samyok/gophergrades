@@ -13,4 +13,5 @@
 - [ ] stricter understanding of shape of schedule builder website
     - querySelectors (which are everywhere) probably aren't fully narrowed down (instead having things like `[0]` or `lastChild` at the end)
     - querySelectors should be relegated to initialization (or state changes, e.g. change of URL)
+- [ ] make console output useful
 - [ ] apply this to sidebar.js(?)
