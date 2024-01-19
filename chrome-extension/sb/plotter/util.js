@@ -191,40 +191,39 @@ var SBUtil = (function () {
   }
 
   /**
+   * converts the position of a section on the plotter map (image) to actual
+   * coordinates in the world
    *
-   * @param sections{Section[]}
-   * @returns {[number, number][]}
+   * @param section{Section}
+   * @returns {lat: number, long: number}
    */
-  function pixelsToLatLong(sections) {
+  function pixelsToLatLong(section) {
+    // anchor points that provide a "bases" for the transformation
+    // (yeah, i took Intro to Linear Algebra)
     const anchor = {
-      px: { x: 306, y: 684 },
-      dg: { x: 44.9788553, y: -93.2375145 }
+      px: { x: 684, y: 306 },
+      dg: { long: -93.2375145, lat: 44.9788553 }
     }
     const a2 = {
-      px: { x: 1166, y: 1438 },
-      dg: { x: 44.9704473, y: -93.2273553 }
+      px: { x: 1438, y: 1166 },
+      dg: { long: -93.2273553, lat: 44.9704473 }
     }
     //degrees per pixel
     const scale = {
-      x: (a2.dg.x-anchor.dg.x)/(a2.px.x-anchor.px.x),
-      y: (a2.dg.y-anchor.dg.y)/(a2.px.y-anchor.px.y)
+      x: (a2.dg.long-anchor.dg.long)/(a2.px.x-anchor.px.x),
+      y: (a2.dg.lat-anchor.dg.lat)/(a2.px.y-anchor.px.y)
     }
 
-    function transform(section) {
-      //god why
-      let {x: y, y: x} = section.location
-      //offset st. paul campus
-      if (y > 1500) {
-        //yea
-        x = x*0.83-900
-        y = y*0.83+3140
-      }
-      const lat = anchor.dg.x + (x - anchor.px.x)*scale.x
-      const long = anchor.dg.y + (y - anchor.px.y)*scale.y
-      return [lat, long];
+    let {x, y} = section.location
+    //offset st. paul campus
+    if (x > 1500) {
+      //yea
+      x = x*0.83+3140
+      y = y*0.83-900
     }
-    
-    return sections.map(transform)
+    const lat = anchor.dg.lat + (y - anchor.px.y)*scale.y
+    const long = anchor.dg.long + (x - anchor.px.x)*scale.x
+    return {lat, long};
   }
 
   /**
@@ -234,9 +233,9 @@ var SBUtil = (function () {
    * @returns 
    */
   function makeGoogleMapsLink(sections) {
-    const latLongs = pixelsToLatLong(sections);
+    const latLongs = sections.map(pixelsToLatLong);
     const link = "https://www.google.com/maps/dir/" +
-        latLongs.map(c => c[0]+","+c[1]).reverse().join("/")
+        latLongs.map(c => c.lat+","+c.long).reverse().join("/")
     
     return link;
   }
