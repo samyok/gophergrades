@@ -1,3 +1,9 @@
+/**
+ * where the bulk of event handling/DOM manipulation happens
+ * 
+ * uses util.js and apiapi.js to present plotter feature to the webpage
+ */
+
 (function() {
   let plotterUIPresented = chrome.storage.sync.get("settings").then((result) => result.settings["sb:showMapOfClasses"])
 
@@ -175,6 +181,11 @@
     if (!canvas) return
 
     let schedule = getScheduleSections()
+
+    //TODO: create useful Schedule class that can filter invalid sections and
+    // generate daily schedules so that this logic can be removed from
+    // plotter.js
+
     const invalidSections = schedule.sections.filter(sec => sec.location === undefined)
     //use only sections that have a valid location
     schedule.sections = schedule.sections.filter(sec => sec.location)
@@ -214,18 +225,11 @@
     const mapper = new SBUtil.Mapper(ctx)
     mapper.drawMap(schedule)
 
+    //total sequence distance
     const dist = SBUtil.calculateDistances(sections).toLocaleString(undefined, {maximumFractionDigits: 2})
-    // determines whether or not subsequent classes take place on different campuses (mpls vs st paul)
-    let interCampusTravel = false
-    let prev = null
-    for (let i = 0; i < sections.length; i++) {
-      const curr = sections[i].location.x
-      if (prev && (curr > 1500) !== (prev > 1500)) {
-        interCampusTravel = true
-        break
-      }
-      prev = curr
-    }
+    // whether or not you have to get on campus connector
+    // it is eternal
+    let interCampusTravel = SBUtil.scheduleHasInterCampusTravel(sections)
     const distNode = document.querySelector("#gg-plotter-distance");
     if (!distNode) {
       console.warn('distance div does not exist???????')
@@ -233,16 +237,17 @@
       distNode.textContent = `Distance: >${(interCampusTravel ? ">>>>" : "")+dist} miles`
     }
 
-    const latLongs = SBUtil.pixelsToLatLong(sections);
-    const link = "https://www.google.com/maps/dir/" +
-        latLongs.map(c => c[0]+","+c[1]).reverse().join("/")
+    //update the Google Maps link to reflect class sequence
+    const link = SBUtil.makeGoogleMapsLink(sections);
     const gMapsNode = document.querySelector("#gg-plotter-gmaps")
-    // i really wish i knew what i was doing
+    // note to self: if this check is removed it never stops updating the page,
+    // calling this function, causing an infinite loop; hopefully i will have a
+    // more fundamental solution to this problem soon
     if (gMapsNode.href !== link) {
       gMapsNode.href = link
     }
 
-    //report if there are any sections that do not have a location
+    //warning that reports if there are any sections that do not have a location
     const reportNode = document.querySelector("#gg-plotter-report")
     if (invalidSections.length > 0) {
       console.warn("sections without locations: " + invalidSections.length)
@@ -297,26 +302,11 @@
 
       //location (excl. room no. (for now))
       //a section can have multiple locations for different meeting times
-      let location = tds[4].firstElementChild.textContent.trim();
-      if (location === "No room listed.") {
-        location = undefined
-      } else if (location === "Remote Class" || location === "Online Only") {
-        console.debug("Remote Class detected don't acknowledge")
-        //todo: acknowledge
-        // when it says remote class that means mandatory attendance which would
-        // be important to tell the user about whatever none of this matters
-        location = undefined
-      } else {
-        const locationObject = SBUtil.locations.find(loc => loc.location === location);
-        if (!locationObject) {
-          console.warn("could not find location " + location)
-          location = undefined
-        } else {
-          location = locationObject
-        }
-      }
+      //i have no idea what we would do about that
+      const location = tds[4].firstElementChild.textContent.trim();
+      const locationObject = SBUtil.getLocation(location)
 
-      const newSection = new SBUtil.Section(sectionNbr, location, currColor);
+      const newSection = new SBUtil.Section(sectionNbr, locationObject, currColor);
       sections.push(newSection)
     });
 

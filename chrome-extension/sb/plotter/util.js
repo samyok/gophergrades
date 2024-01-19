@@ -1,6 +1,6 @@
-var SBUtil = (function () {
-  console.log("loaded sb/plotter/util.js")
+console.log("loaded sb/plotter/util.js")
 
+var SBUtil = (function () {
   /**
    * object which stores the name and corresponding x- and y-coordinates of a
    * location (and by x- and y-coordinates i mean what pixel on the washed out
@@ -170,6 +170,27 @@ var SBUtil = (function () {
   }
 
   /**
+   * determines whether or not subsequent classes take place on different 
+   * campuses (mpls vs st paul)
+   * 
+   * @param {Section[]} sections 
+   */
+  function scheduleHasInterCampusTravel(sections) {
+    let interCampusTravel = false
+    let prev = null
+    for (let i = 0; i < sections.length; i++) {
+      const curr = sections[i].location.x
+      if (prev && (curr > 1500) !== (prev > 1500)) {
+        interCampusTravel = true
+        break
+      }
+      prev = curr
+    }
+
+    return interCampusTravel;
+  }
+
+  /**
    *
    * @param sections{Section[]}
    * @returns {[number, number][]}
@@ -205,6 +226,20 @@ var SBUtil = (function () {
   }
 
   /**
+   * generates a Google Maps link representing the order and location of
+   * classes in a sections array to show rough pathfinding between classes
+   * @param {Section[]} sections 
+   * @returns 
+   */
+  function makeGoogleMapsLink(sections) {
+    const latLongs = pixelsToLatLong(sections);
+    const link = "https://www.google.com/maps/dir/" +
+        latLongs.map(c => c[0]+","+c[1]).reverse().join("/")
+    
+    return link;
+  }
+
+  /**
    * gets term from page's breadcrumb element and converts it to strm for use in API
    *
    * @returns {?string}
@@ -235,6 +270,30 @@ var SBUtil = (function () {
     }
     return terms
   }()
+
+  /**
+   * 
+   * @param {string} loc_str
+   */
+  function getLocation(loc_str) {
+    if (loc_str === "No room listed.") {
+      // no room is listed (yet, hopefully)
+      return undefined;
+    } else if (loc_str === "Remote Class" || loc_str === "Online Only") {
+      console.debug("Remote Class detected don't acknowledge")
+      //todo: acknowledge
+      // when it says remote class that means mandatory attendance which would
+      // be important to tell the user about
+      return undefined
+    }
+
+    const locationObject = locations.find(loc => loc.location === loc_str);
+    if (!locationObject) {
+      console.warn("could not find location " + loc_str)
+    }
+
+    return locationObject
+  }
 
   //todo succeed this garbage
   const locations = function () {
@@ -340,8 +399,9 @@ var SBUtil = (function () {
     Schedule,
     Mapper,
     calculateDistances,
-    pixelsToLatLong,
+    scheduleHasInterCampusTravel,
+    makeGoogleMapsLink,
     getTermStrm,
-    locations
+    getLocation
   }
 })();
