@@ -141,7 +141,7 @@
     right.insertBefore(plotter, right.children[1])
 
     //add button functionality
-    days.forEach(day => {
+    function makeButton(day) {
       const button = document.querySelector(`#gg-plotter-${day.toLowerCase()}-btn`)
       if (day === "Monday")
         button.className = "btn btn-default active";
@@ -149,7 +149,8 @@
         setDayButtonSelected(day)
         daySelected = day
       }
-    })
+    }
+    days.forEach(makeButton)
   }
 
   /**
@@ -162,12 +163,12 @@
     //maybe make global at this point
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     //reset button styling
-    days.forEach(day => {
+    function styleDayButton(day) {
       const button = document.querySelector(`#gg-plotter-${day.toLowerCase()}-btn`)
       if (day === activeDay) button.className = "btn btn-default active";
       else button.className = "btn btn-default";
-    })
-
+    }
+    days.forEach(styleDayButton)
   }
 
   /**
@@ -271,7 +272,7 @@
     let sections = []
     let selected = null
 
-    scheduleList.forEach(element => {
+    function generateSectionInfo(element) {
       const tds = element.children
 
       //class header
@@ -308,7 +309,8 @@
 
       const newSection = new SBUtil.Section(sectionNbr, locationObject, currColor);
       sections.push(newSection)
-    });
+    }
+    scheduleList.forEach(generateSectionInfo);
 
     return new SBUtil.Schedule(sections, selected)
   }

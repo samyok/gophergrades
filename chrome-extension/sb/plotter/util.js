@@ -209,8 +209,8 @@ var SBUtil = (function () {
       x: (a2.dg.x-anchor.dg.x)/(a2.px.x-anchor.px.x),
       y: (a2.dg.y-anchor.dg.y)/(a2.px.y-anchor.px.y)
     }
-    
-    return sections.map(section => {
+
+    function transform(section) {
       //god why
       let {x: y, y: x} = section.location
       //offset st. paul campus
@@ -222,7 +222,9 @@ var SBUtil = (function () {
       const lat = anchor.dg.x + (x - anchor.px.x)*scale.x
       const long = anchor.dg.y + (y - anchor.px.y)*scale.y
       return [lat, long];
-    })
+    }
+    
+    return sections.map(transform)
   }
 
   /**
