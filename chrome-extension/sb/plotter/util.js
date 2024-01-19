@@ -24,36 +24,174 @@ var SBUtil = (function () {
    * object which contains the necessary data for the plotter to map out a single
    * section with id, location, and color information
    */
-  class Section {
+  class Meeting {
     /**
-     *
-     * @param id{int?}
-     * @param location{Location}
-     * @param color
+     * 
+     * @param {string} id 
+     * @param {string} location 
+     * @param {string[]} days 
+     * @param {int} start_time 
+     * @param {int} end_time 
+     * @param {string?} color 
      */
-    constructor(id, location, color) {
+    constructor(id, location, days, start_time, end_time, color) {
       this.id = id
       this.location = location
+      this.days = days
+      this.start_time = start_time
+      this.end_time = end_time
       this.color = color
     }
   }
 
   /**
-   * object which contains the necessary data for the plotter to map out a
-   * schedule
-   *
-   * you pass this object to the mapper when drawing the map
+   * object containing all information related to a built/saved schedule
+   * 
+   * while not enforceable, this object should be treated as immutable once
+   * created, using only the (non-mutating) functions to generate useful 
+   * information
    */
   class Schedule {
     /**
      *
-     * @param sections{Section[]}
+     * @param sections{Meeting[]}
      * @param highlight{boolean?}
      */
     constructor(sections, highlight) {
       this.sections = sections
       this.highlight = highlight
     }
+
+    containsWeekendClasses() {
+      this.sections.find(section => {
+        return section
+      })
+    }
+
+    /**
+     * 
+     * @param {string} daySelected day of the week to generate for
+     * @returns {Itinerary}
+     */
+    generateItinerary(daySelected) {
+      //this is still awful, but in a new place
+      const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+      //filter sections that belong to selected day and sort by start time
+      const day_sections = this.sections
+        .filter(s => s.days[days.indexOf(daySelected)])
+        .filter(s => s.location !== undefined)
+        .sort((a, b) => a.start_time - b.start_time)
+
+      const itinerary = new Itinerary(day_sections, this.highlight);
+      return itinerary;
+    }
+
+    countInvalidSections() {
+      return this.sections.filter(s => s.location === undefined).length
+    }
+  }
+
+  /**
+   * object which contains the necessary data for the plotter to map out a
+   * schedule (you pass this object to the mapper when drawing the map)
+   */
+  class Itinerary {
+    /**
+     * 
+     * @param {Meeting[]} sections 
+     * @param {string?} highlight 
+     */
+    constructor(sections, highlight) {
+      this.sections = sections
+      this.highlight = highlight
+    }
+
+    /**
+     * @returns {number} distance in miles between classes for a day
+     */
+    calculateDistances() {
+      let dist = 0
+      const meetings = this.sections
+      for (let i = 1; i < meetings.length; i++) {
+        const loc0 = meetings[i - 1].location
+        const loc1 = meetings[i].location
+        dist += Math.sqrt(Math.pow(loc1.x - loc0.x, 2) + Math.pow(loc1.y - loc0.y, 2))
+      }
+      //scale pixels to miles
+      return 1
+      return dist / 144 * 500 / 5280
+    }
+
+    /**
+     * determines whether or not subsequent classes take place on different 
+     * campuses (mpls vs st paul)
+     * 
+     * @returns {boolean}
+     */
+    hasInterCampusTravel() {
+      let interCampusTravel = false
+      let prev = null
+      for (let i = 0; i < this.sections.length; i++) {
+        const curr = this.sections[i].location.x
+        if (prev && (curr > 1500) !== (prev > 1500)) {
+          interCampusTravel = true
+          break
+        }
+        prev = curr
+      }
+
+      return false
+      return interCampusTravel;
+    }
+
+    /**
+     * generates a Google Maps link representing the order and location of
+     * classes in a sections array to show rough pathfinding between classes
+     * @returns {string}
+     */
+    makeGoogleMapsLink() {
+      /**
+       * converts the position of a section on the plotter map (image) to actual
+       * coordinates in the world
+       *
+       * @param {Meeting} section
+       * @returns {lat: number, long: number}
+       */
+      function pixelsToLatLong(section) {
+        // anchor points that provide a "bases" for the transformation
+        // (yeah, i took Intro to Linear Algebra)
+        const anchor = {
+          px: { x: 684, y: 306 },
+          dg: { long: -93.2375145, lat: 44.9788553 }
+        }
+        const a2 = {
+          px: { x: 1438, y: 1166 },
+          dg: { long: -93.2273553, lat: 44.9704473 }
+        }
+        //degrees per pixel
+        const scale = {
+          x: (a2.dg.long-anchor.dg.long)/(a2.px.x-anchor.px.x),
+          y: (a2.dg.lat-anchor.dg.lat)/(a2.px.y-anchor.px.y)
+        }
+
+        let {x, y} = section.location
+        //offset st. paul campus
+        if (x > 1500) {
+          //yea
+          x = x*0.83+3140
+          y = y*0.83-900
+        }
+        const lat = anchor.dg.lat + (y - anchor.px.y)*scale.y
+        const long = anchor.dg.long + (x - anchor.px.x)*scale.x
+        return {lat, long};
+      }
+
+      const latLongs = this.sections.map(pixelsToLatLong);
+      const link = "https://www.google.com/maps/dir/" +
+          latLongs.map(c => c.lat+","+c.long).reverse().join("/")
+      return link;
+    }
+
   }
 
   /**
@@ -157,120 +295,6 @@ var SBUtil = (function () {
       }
     }
   }
-
-  function calculateDistances(sections) {
-    let dist = 0
-    for (let i = 1; i < sections.length; i++) {
-      const loc0 = sections[i - 1].location
-      const loc1 = sections[i].location
-      dist += Math.sqrt(Math.pow(loc1.x - loc0.x, 2) + Math.pow(loc1.y - loc0.y, 2))
-    }
-    //scale pixels to miles
-    return dist / 144 * 500 / 5280
-  }
-
-  /**
-   * determines whether or not subsequent classes take place on different 
-   * campuses (mpls vs st paul)
-   * 
-   * @param {Section[]} sections 
-   */
-  function scheduleHasInterCampusTravel(sections) {
-    let interCampusTravel = false
-    let prev = null
-    for (let i = 0; i < sections.length; i++) {
-      const curr = sections[i].location.x
-      if (prev && (curr > 1500) !== (prev > 1500)) {
-        interCampusTravel = true
-        break
-      }
-      prev = curr
-    }
-
-    return interCampusTravel;
-  }
-
-  /**
-   * converts the position of a section on the plotter map (image) to actual
-   * coordinates in the world
-   *
-   * @param section{Section}
-   * @returns {lat: number, long: number}
-   */
-  function pixelsToLatLong(section) {
-    // anchor points that provide a "bases" for the transformation
-    // (yeah, i took Intro to Linear Algebra)
-    const anchor = {
-      px: { x: 684, y: 306 },
-      dg: { long: -93.2375145, lat: 44.9788553 }
-    }
-    const a2 = {
-      px: { x: 1438, y: 1166 },
-      dg: { long: -93.2273553, lat: 44.9704473 }
-    }
-    //degrees per pixel
-    const scale = {
-      x: (a2.dg.long-anchor.dg.long)/(a2.px.x-anchor.px.x),
-      y: (a2.dg.lat-anchor.dg.lat)/(a2.px.y-anchor.px.y)
-    }
-
-    let {x, y} = section.location
-    //offset st. paul campus
-    if (x > 1500) {
-      //yea
-      x = x*0.83+3140
-      y = y*0.83-900
-    }
-    const lat = anchor.dg.lat + (y - anchor.px.y)*scale.y
-    const long = anchor.dg.long + (x - anchor.px.x)*scale.x
-    return {lat, long};
-  }
-
-  /**
-   * generates a Google Maps link representing the order and location of
-   * classes in a sections array to show rough pathfinding between classes
-   * @param {Section[]} sections 
-   * @returns 
-   */
-  function makeGoogleMapsLink(sections) {
-    const latLongs = sections.map(pixelsToLatLong);
-    const link = "https://www.google.com/maps/dir/" +
-        latLongs.map(c => c.lat+","+c.long).reverse().join("/")
-    
-    return link;
-  }
-
-  /**
-   * gets term from page's breadcrumb element and converts it to strm for use in API
-   *
-   * @returns {?string}
-   */
-  function getTermStrm() {
-    //getting term from breadcrumbs (or so they're called)
-    let term = document.querySelector(
-        "#app-header > div > div.row.app-crumbs.hidden-print > div > ol > li:nth-child(2) > a")
-    if (term) {
-      term = term.textContent
-      term = strms[term]
-    } else {
-      term = null
-    }
-
-    return term
-  }
-
-  const strms = function () {
-    let terms = {}
-    //future-proofing
-    for (let i = 20; i < 50; i++) {
-      const year = 2000 + i
-      const strm = 1000 + 10 * i
-      terms["Spring " + year] = strm + 3
-      terms["Summer " + year] = strm + 5
-      terms["Fall " + year] = strm + 9
-    }
-    return terms
-  }()
 
   /**
    * 
@@ -396,13 +420,9 @@ var SBUtil = (function () {
 
   return {
     Location,
-    Section,
+    Meeting,
     Schedule,
     Mapper,
-    calculateDistances,
-    scheduleHasInterCampusTravel,
-    makeGoogleMapsLink,
-    getTermStrm,
     getLocation
   }
 })();

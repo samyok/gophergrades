@@ -181,56 +181,19 @@
     // canvas not loaded yet
     if (!canvas) return
 
-    let schedule = getScheduleSections()
-
-    //TODO: create useful Schedule class that can filter invalid sections and
-    // generate daily schedules so that this logic can be removed from
-    // plotter.js
-
-    const invalidSections = schedule.sections.filter(sec => sec.location === undefined)
-    //use only sections that have a valid location
-    schedule.sections = schedule.sections.filter(sec => sec.location)
-    const section_nbrs = schedule.sections.map(s => s.id)
-    const term = Number(SBUtil.getTermStrm())
-
-    // classes not loaded yet
-    // there shouldn't be a case where the scheduler is loaded without sections
-    if (schedule.sections.length === 0) {
-      console.warn("no classes have assigned classrooms yet")
-      return
-    }
-
-    //fetch data from api
-    const section_data = await SBAPI.fetchSectionInformation(section_nbrs, term)
-
-    // sift through returned sections to get sections needed for the day selected
-    const day_sections = []
-    //yeah the order is different on purpose oh god this is so awful
-    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    section_data.forEach(section => {
-      // i am disgusted by and ashamed of this
-      if (section.days[days.indexOf(daySelected)])
-        day_sections.push(section);
-    })
-    //sort by start time to plot schedule in order
-    day_sections.sort((a, b) => a.startTime - b.startTime)
-    //map back onto Section objects for the plotter to use
-    const sections = day_sections.map(s => {
-      return schedule.sections.find(ps => ps.id === s.id)
-    })
-    //maybe this object stuff is kinda gross, where should this parsing go
-    schedule.sections = sections
+    let schedule = await compileScheduleInfo();
+    let itinerary = schedule.generateItinerary(daySelected);
 
     // monitor changes and update map
     const ctx = canvas.getContext("2d")
     const mapper = new SBUtil.Mapper(ctx)
-    mapper.drawMap(schedule)
+    mapper.drawMap(itinerary)
 
     //total sequence distance
-    const dist = SBUtil.calculateDistances(sections).toLocaleString(undefined, {maximumFractionDigits: 2})
+    const dist = itinerary.calculateDistances().toLocaleString(undefined, {maximumFractionDigits: 2})
     // whether or not you have to get on campus connector
     // it is eternal
-    let interCampusTravel = SBUtil.scheduleHasInterCampusTravel(sections)
+    let interCampusTravel = itinerary.hasInterCampusTravel()
     const distNode = document.querySelector("#gg-plotter-distance");
     if (!distNode) {
       console.warn('distance div does not exist???????')
@@ -239,7 +202,7 @@
     }
 
     //update the Google Maps link to reflect class sequence
-    const link = SBUtil.makeGoogleMapsLink(sections);
+    const link = itinerary.makeGoogleMapsLink();
     const gMapsNode = document.querySelector("#gg-plotter-gmaps")
     // note to self: if this check is removed it never stops updating the page,
     // calling this function, causing an infinite loop; hopefully i will have a
@@ -250,29 +213,90 @@
 
     //warning that reports if there are any sections that do not have a location
     const reportNode = document.querySelector("#gg-plotter-report")
-    if (invalidSections.length > 0) {
-      console.warn("sections without locations: " + invalidSections.length)
-      reportNode.textContent = `Warning: ${invalidSections.length} section${invalidSections.length === 1 ? " does" : "s do"} not have a location`
+    const invalidCount = schedule.countInvalidSections()
+    if (invalidCount > 0) {
+      console.warn("sections without locations: " + invalidCount)
+      reportNode.textContent = `Warning: ${invalidCount} section${invalidCount === 1 ? " does" : "s do"} not have a location`
     }
+  }
+
+  const strms = function () {
+    let terms = {}
+    //future-proofing
+    for (let i = 20; i < 50; i++) {
+      const year = 2000 + i
+      const strm = 1000 + 10 * i
+      terms["Spring " + year] = strm + 3
+      terms["Summer " + year] = strm + 5
+      terms["Fall " + year] = strm + 9
+    }
+    return terms
+  }()
+
+  /**
+   * gets term from page's breadcrumb element and converts it to strm for use in API
+   *
+   * @returns {?string}
+   */
+  function getTermStrm() {
+    //getting term from breadcrumbs (or so they're called)
+    let term = document.querySelector(
+        "#app-header > div > div.row.app-crumbs.hidden-print > div > ol > li:nth-child(2) > a")
+    if (term) {
+      term = term.textContent
+      term = strms[term]
+    } else {
+      term = null
+    }
+
+    return term
+  }
+
+  /**
+   * generates the schedule presented using local information and information
+   * retrieved from the Schedule Builder API
+   * 
+   * @returns {Promise<SBUtil.Schedule>}
+   */
+  async function compileScheduleInfo() {
+
+    //information scraped from webpage
+    const scrapedSchedule = scrapeScheduleSections()
+    const section_nbrs = scrapedSchedule.sections.map(s => s.id)
+    const term = Number(getTermStrm())
+    //data fetched from API
+    const section_data = await SBAPI.fetchSectionInformation(section_nbrs, term)
+
+    //compile local and API information into Section objects into a Schedule
+    const compiled_sections = scrapedSchedule.sections.map(section => {
+      const api_info = section_data.find(s => s.id === section.id)
+      const {
+        id, location, days, startTime, endTime
+      } = api_info
+      const locationObject = SBUtil.getLocation(location)
+      return new SBUtil.Meeting(id, locationObject, days, startTime, endTime, section.color);
+    })
+
+    return new SBUtil.Schedule(compiled_sections, scrapedSchedule.selected);
   }
 
   /**
    * scrapes locally available information about the current schedule's sections
-   * (section number, location, color)
+   * (section number, color)
    *
-   * @returns {SBUtil.Schedule} array of section objects with section, location,
+   * @returns {sections: {id: string, color: string}[], selected: string?} array of section objects with section, location,
    * and color attributes
    */
-  function getScheduleSections() {
-    let currColor = null
+  function scrapeScheduleSections() {
     const scheduleBody = document.querySelector(
         "#schedule-courses > div > div > table > tbody");
     const scheduleList = Array.from(scheduleBody.children)
 
     let sections = []
+    let currColor = null
     let selected = null
 
-    function generateSectionInfo(element) {
+    function scrapeSectionInfo(element) {
       const tds = element.children
 
       //class header
@@ -301,18 +325,16 @@
       // if this statement doesn't hold
       if (highlighted) selected = sectionNbr;
 
-      //location (excl. room no. (for now))
-      //a section can have multiple locations for different meeting times
-      //i have no idea what we would do about that
-      const location = tds[4].firstElementChild.textContent.trim();
-      const locationObject = SBUtil.getLocation(location)
+      // SBAPI is now being used for location info
+      // const location = tds[4].firstElementChild.textContent.trim();
+      // const locationObject = SBUtil.getLocation(location)
 
-      const newSection = new SBUtil.Section(sectionNbr, locationObject, currColor);
+      const newSection = {id: sectionNbr, color: currColor};
       sections.push(newSection)
     }
-    scheduleList.forEach(generateSectionInfo);
+    scheduleList.forEach(scrapeSectionInfo);
 
-    return new SBUtil.Schedule(sections, selected)
+    return {sections, selected};
   }
 
   //load map image as an img tag
