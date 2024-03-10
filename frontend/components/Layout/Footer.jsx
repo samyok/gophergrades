@@ -185,10 +185,10 @@ export const Footer = () => {
           with data from Summer 2017 to Fall 2023 provided by the{" "}
           <LinkButton
             target={"_blank"}
-            href={"https://ogc.umn.edu/data-access-and-privacy"}
+            href={"https://idr.umn.edu/"}
             fontWeight={400}
           >
-            Office of Data Access and Privacy
+            Office of Institutional Data and Research
           </LinkButton>
         </Text>
         <LinkButton
