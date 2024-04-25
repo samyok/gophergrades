@@ -1,31 +1,47 @@
-from db.Models import Professor, Session
-import ratemyprofessor as rmp
 from multiprocessing import Pool
 
-# Tries to find the Univeristy of Minnesota - Twin Cities on RateMyProfessor.
+import ratemyprofessor as rmp
+
+from db.Models import Professor, Session
+
+# Tries to find the University of Minnesota - Twin Cities on RateMyProfessor.
 SCHOOL = rmp.School(school_id=1257)
 
+
 def update(prof):
-    # This depends on internet connection, it's possible that fail an update if the internet disconnects.
-    RMP_Prof = rmp.get_professor_by_school_and_name(SCHOOL,prof.name)
+    session = Session()
     try:
-        # Original prof is a Query object, doing this gets us the actual object for modification.
-        session = Session()
-        prof = session.query(Professor).filter(Professor.id == prof.id).first()
-        prof.RMP_score = RMP_Prof.rating
-        prof.RMP_diff = RMP_Prof.difficulty
-        prof.RMP_link = f"https://www.ratemyprofessors.com/professor/{RMP_Prof.id}"
-        session.commit()
-        print(f"Gave {prof.name} ({RMP_Prof.name}) an RMP score of {prof.RMP_score}")
-        session.close()
-    except ValueError:
-        print(f"Failed to find or update {prof.name}")
-        session.close()
-    except AttributeError:
-        print(f"Failed to update {prof.name} with no attributes.")
-        session.close()
+        # Retrieve all potential matches for the professor's name at the specified school
+        potential_profs = rmp.get_professors_by_school_and_name(SCHOOL, prof.name)
+        best_match = None
+        for candidate in potential_profs:
+            # Check if the candidate's school ID matches the desired school ID
+            if candidate.school.id == SCHOOL.id and candidate.name == prof.name and candidate.rating > 0:
+                best_match = candidate
+                break  # Assuming you want the first correct match, otherwise you can use other criteria
+
+        if best_match:
+            # Fetch the professor object to update
+            prof = session.query(Professor).filter(Professor.id == prof.id).first()
+            prev = prof.RMP_score
+            prof.RMP_score = best_match.rating
+            prof.RMP_diff = best_match.difficulty
+            prof.RMP_link = f"https://www.ratemyprofessors.com/professor/{best_match.id}"
+            session.commit()
+            print(f"Updated {prof.name} with RMP score {prof.RMP_score} (prev: {prev})")
+        else:
+            print(f"No suitable match found for {prof.name} at the correct school")
+            prof = session.query(Professor).filter(Professor.id == prof.id).first()
+            prev = prof.RMP_score
+            prev_link = prof.RMP_link
+            prof.RMP_score = None
+            prof.RMP_diff = None
+            prof.RMP_link = None
+            session.commit()
+            print(f"Removed {prof.name}'s RMP score (prev: {prev} @ {prev_link})")
     except Exception as e:
-        print(f"Failed to update {prof.name} with unknown error {e}.")
+        print(f"Failed to update {prof.name} with error: {e}")
+    finally:
         session.close()
 
 def RMP_Update_Multiprocess():
@@ -34,6 +50,7 @@ def RMP_Update_Multiprocess():
     session.close()
     with Pool(10) as p:
         p.map(update, profs)
+
 
 if __name__ == "__main__":
     RMP_Update_Multiprocess()
