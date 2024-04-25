@@ -103,7 +103,7 @@ function SiteMap() {
   // getServerSideProps will do the heavy lifting
 }
 
-export async function getStaticProps({ res }) {
+export async function getServerSideProps({ res }) {
   // We generate the XML sitemap with the posts data
   const sitemap = await generateSiteMap();
 
