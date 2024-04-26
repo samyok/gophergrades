@@ -95,13 +95,15 @@ def fetch_unknown_prof(x: pd.DataFrame) -> pd.DataFrame:
     dept = x["SUBJECT"].iloc[0]
     catalog_nbr = x["CATALOG_NBR"].iloc[0]
     term = str(x["TERM"].iloc[0])
+    institution = str(x["INSTITUTION"].iloc[0])
+    campus = str(x["CAMPUS"].iloc[0])
 
     course_resp = requests.get(
         "https://schedulebuilder.umn.edu/api.php",
         params={
             "type": "course",
-            "institution": "UMNTC",
-            "campus": "UMNTC",
+            "institution": institution,
+            "campus": campus,
             "term": term,
             "subject": dept,
             "catalog_nbr": catalog_nbr,
@@ -127,8 +129,8 @@ def fetch_unknown_prof(x: pd.DataFrame) -> pd.DataFrame:
         "https://schedulebuilder.umn.edu/api.php",
         params={
             "type": "sections",
-            "institution": "UMNTC",
-            "campus": "UMNTC",
+            "institution": institution,
+            "campus": campus,
             "term": term,
             "class_nbrs": ", ".join([str(x) for x in data["sections"]]),
         },
@@ -226,7 +228,6 @@ THIS WILL LIKELY NOT STAY CONSISTENT.
 
 df = pd.read_csv("CLASS_DATA/FALL2023_raw_data.csv", dtype={"CLASS_SECTION": str})
 # Unneeded Data
-del df["INSTITUTION"]
 del df["TERM_DESCR"]
 del df["COMPONENT_MAIN"]
 del df["INSTR_ROLE"]
@@ -247,6 +248,8 @@ df["CLASS_SECTION"] = df["CLASS_SECTION"].apply(lambda x: x.zfill(3))
 
 # If you are using multiple terms in a dataset.
 df = df.groupby(["TERM", "FULL_NAME"]).apply(fetch_unknown_prof)
+
+del df["INSTITUTION"]
 
 df["HR_NAME"] = df["HR_NAME"].apply(format_name)
 
