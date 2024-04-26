@@ -81,6 +81,11 @@ class Professor(Base):
 class ClassDistribution(Base):
     __tablename__ = "classdistribution"
     id = Column(Integer,primary_key=True)
+
+    campus = Column(VARCHAR(8),nullable=True)
+    dept_abbr = Column(VARCHAR(4),nullable=True)
+    course_num = Column(VARCHAR(4),nullable=True)
+
     class_name = Column(VARCHAR(10),nullable=False, unique=True)
     class_desc = Column(VARCHAR(255),nullable=False)
     total_students = Column(Integer,nullable=False)
@@ -109,7 +114,9 @@ class ClassDistribution(Base):
 class DepartmentDistribution(Base):
     __tablename__ = "departmentdistribution"
     id = Column(Integer,primary_key=True)
+    campus = Column(VARCHAR(8),nullable=True)
     dept_abbr = Column(VARCHAR(4),nullable=False, unique=True)
+    
     dept_name = Column(VARCHAR(255),nullable=False)
     class_dists = relationship('ClassDistribution',backref="dept",lazy="selectin")
     def __repr__(self) -> str:
