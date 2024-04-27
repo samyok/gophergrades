@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, SmallInteger, ForeignKey, VARCHAR, JSON, Float, Table, create_engine
+from sqlalchemy import Column, ForeignKeyConstraint, Integer, PrimaryKeyConstraint, SmallInteger, ForeignKey, VARCHAR, JSON, Float, Table, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from mapping.mappings import term_to_name
@@ -84,7 +84,7 @@ class ClassDistribution(Base):
 
     campus = Column(VARCHAR(8),nullable=True)
     dept_abbr = Column(VARCHAR(4),nullable=True)
-    course_num = Column(VARCHAR(4),nullable=True)
+    course_num = Column(VARCHAR(8),nullable=True)
 
     class_name = Column(VARCHAR(10),nullable=False, unique=True)
     class_desc = Column(VARCHAR(255),nullable=False)
@@ -98,12 +98,15 @@ class ClassDistribution(Base):
     # SRT VALS: Deep Understanding, Stimulated Interest, Technical Effectiveness, Activities Supported Learning, Effort Reasonable, Grading Standards, Recommend, Number Responses
     srt_vals = Column(JSON,nullable=True)
 
-    department_id = Column(Integer, ForeignKey('departmentdistribution.id',ondelete="CASCADE"))
     dists = relationship('Distribution',backref="classdist")
     libeds = relationship('Libed',secondary=libedAssociationTable,back_populates="class_dists",lazy='selectin')
 
+    __table_args__ = (
+        ForeignKeyConstraint(['campus','dept_abbr'], ['departmentdistribution.campus','departmentdistribution.dept_abbr']),
+    )
+
     def __str__(self) -> str:
-        return f"{self.class_name}: {self.total_grades}"
+        return f"{self.dept_abbr} {self.course_num}: {self.total_grades}"
 
     def __repr__(self) -> str:
         retVal = f"{self.class_name} ({self.class_desc}) has been taught to {self.total_students} with an overall distribution of {self.total_grades} comprised of the following:\n"
@@ -113,12 +116,16 @@ class ClassDistribution(Base):
 
 class DepartmentDistribution(Base):
     __tablename__ = "departmentdistribution"
-    id = Column(Integer,primary_key=True)
     campus = Column(VARCHAR(8),nullable=True)
     dept_abbr = Column(VARCHAR(4),nullable=False, unique=True)
     
     dept_name = Column(VARCHAR(255),nullable=False)
     class_dists = relationship('ClassDistribution',backref="dept",lazy="selectin")
+
+    __table_args__ = (
+        PrimaryKeyConstraint('campus','dept_abbr'),
+    )
+
     def __repr__(self) -> str:
         retVal = f"The department of {self.dept_abbr} - {self.dept_name} has the following distributions:\n"
         for dist in self.class_dists:
