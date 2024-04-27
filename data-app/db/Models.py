@@ -86,7 +86,6 @@ class ClassDistribution(Base):
     dept_abbr = Column(VARCHAR(4),nullable=True)
     course_num = Column(VARCHAR(8),nullable=True)
 
-    class_name = Column(VARCHAR(10),nullable=False, unique=True)
     class_desc = Column(VARCHAR(255),nullable=False)
     total_students = Column(Integer,nullable=False)
     total_grades = Column(JSON,nullable=False)
