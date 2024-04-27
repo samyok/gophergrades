@@ -89,9 +89,10 @@ def process_prof(prof_name:str):
     session.close()
     # print(f"Added New Professor {professor.name}.")
 
-def process_dept(dept_abbr:str):
+def process_dept(dept_tuple:str):
+    campus, dept_abbr = dept_tuple
     session = Session()
-    dept = DepartmentDistribution(dept_abbr=dept_abbr,dept_name=dept_mapping.get(dept_abbr,"Unknown Department"))
+    dept = DepartmentDistribution(campus=campus, dept_abbr=dept_abbr,dept_name=dept_mapping.get(campus).get(dept_abbr,"Unknown Department"))
     session.add(dept)
     session.commit()
     session.close()
@@ -135,8 +136,8 @@ if __name__ == "__main__":
     print("Finished Prof Insertion")
 
     print("Adding Departments")
-    dept_list = np.array([dept.dept_abbr for dept in session.query(DepartmentDistribution).all()])
-    diff_list = np.setdiff1d(df["SUBJECT"].unique(),dept_list)
+    dept_list = np.array([(dept.campus, dept.dept_abbr) for dept in session.query(DepartmentDistribution).all()])
+    diff_list = np.setdiff1d(set(zip(df['CAMPUS'],df["SUBJECT"])),dept_list)
     if (len(diff_list) > 0):
         for x in diff_list:
             process_dept(x)
