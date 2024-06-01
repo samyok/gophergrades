@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKeyConstraint, Integer, PrimaryKeyConstraint, SmallInteger, ForeignKey, VARCHAR, JSON, Float, Table, create_engine
+from sqlalchemy import Column, ForeignKeyConstraint, Integer, PrimaryKeyConstraint, SmallInteger, ForeignKey, VARCHAR, JSON, Float, Table, create_engine, and_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from mapping.mappings import term_to_name
@@ -55,9 +55,9 @@ class Distribution(Base):
     # It will be displayed as unlisted professor in class distributions.
     term_dists = relationship('TermDistribution',backref="dist")
     def __str__(self) -> str:
-        return f"{self.classdist.class_name} taught by {self.prof.name} over {len(self.term_dists)} terms."
+        return f"{self.classdist.dept_abbr} {self.classdist.course_num} taught by {self.prof.name} over {len(self.term_dists)} terms."
     def __repr__(self) -> str:
-        return f"{self.classdist.class_name} taught by {self.prof.name} over {len(self.term_dists)} terms."
+        return f"{self.classdist.dept_abbr} {self.classdist.course_num} taught by {self.prof.name} over {len(self.term_dists)} terms."
         
 
 class Professor(Base):
@@ -108,7 +108,7 @@ class ClassDistribution(Base):
         return f"{self.dept_abbr} {self.course_num}: {self.total_grades}"
 
     def __repr__(self) -> str:
-        retVal = f"{self.class_name} ({self.class_desc}) has been taught to {self.total_students} with an overall distribution of {self.total_grades} comprised of the following:\n"
+        retVal = f"{self.campus} {self.dept_abbr} {self.course_num} ({self.class_desc}) has been taught to {self.total_students} with an overall distribution of {self.total_grades} comprised of the following:\n"
         for dist in self.dists:
             retVal += f"{repr(dist)}\n"
         return retVal

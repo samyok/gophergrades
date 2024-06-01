@@ -1,7 +1,7 @@
 import pandas as pd
 from numpy import NaN
 from scipy.interpolate import interp1d
-from db.Models import ClassDistribution, Session
+from db.Models import ClassDistribution, Session, and_
 
 
 # THIS FILE IS INCREDIBLY INEFFICIENT, NORMALIZE NEEDS TO BE OPTIMIZED SOMEHOW
@@ -217,7 +217,7 @@ def gen_srt():
         
         # Iterate over all rows in the department
         for index, row in dept.iterrows():
-            class_dist = session.query(ClassDistribution).filter(ClassDistribution.class_name == row["FULL_NAME"]).first()
+            class_dist = session.query(ClassDistribution).filter(and_(ClassDistribution.dept_abbr == row["DEPT"], ClassDistribution.course_num == row["CLASS_NUM"], ClassDistribution.campus == "UMNTC")).first()
             if class_dist:
                 gen_val = {}
                 if row["DEEP_UND"] == row["DEEP_UND"]:

@@ -502,6 +502,14 @@ dept_mapping = {
     },
 }
 
+catalog_mapping = {
+    "UMNCR": "umc",
+    "UMNDL": "umd",
+    "UMNMO": "umm",
+    "UMNRO": "umr",
+    "UMNTC": "umtc",
+}
+
 libed_mapping = {
     # College of Liberal Education
     "CLE - AH (Arts/Humanities)": "Arts/Humanities",
@@ -509,7 +517,7 @@ libed_mapping = {
     "CLE - CIV (Civic Life and Ethics)": "Civic Life and Ethics",
     "CLE - ENV (Environment)": "Environment",
     "CLE - GP (Global Perspectives)": "Global Perspectives",
-    "IP": "International Perspective Theme",  # This is obsolete, no longer utilized
+    "IP": "International Perspective Theme",  # This is obsolete, no longer utilized 
     "CLE - HIS (Historical Perspectives)": "Historical Perspectives",
     "CLE - LITR (Literature)": "Literature",
     "CLE - MATH (Mathematical Thinking)": "Mathematical Thinking",
@@ -520,8 +528,10 @@ libed_mapping = {
     "CLE - SOCS (Social Sciences)": "Social Sciences",
     "CLE - TS (Technology and Society)": "Technology and Society",
     "CLE - WI (Writing Intensive)": "Writing Intensive",
+    "CLE - HP (Historical Perspective Core)": "Historical Perspective",
     # Community Engagement Learning
     "CEL - SERV-LRNG (Service-Learning)": "Service Learning",
+    "CELD - SERV-LRNG (Service-learning)": "Service Learning",  # Alias for above
     "CEL - FIELD STDY (Field Study)": "Field Study",
     "CEL - RESEARCH (Research)": "Research",
     "CEL - INTRN COOP (Internship/Co-op)": "Internship/Co-op",
@@ -529,6 +539,54 @@ libed_mapping = {
     "CEL - ENTREPREN (Entrepreneurship)": "Entrepreneurship",
     "CEL - STDNT TCHG (Student Teaching)": "Student Teaching",
     "CEL - CLINICAL (Clinical)": "Clinical",
+    # Crookston
+    "GE - COMMUNICAT (Goal 1 - Written/Oral Comm)": "Goal 1 - Written/Oral Comm",
+    "GE - CR THINKG (Goal 2 - Critical Thinking)": "Goal 2 - Critical Thinking",
+    "GE - BIOL SCI (Goal 3a - Biological Science)": "Goal 3a - Biological Science",
+    "GE - PHYS SCI (Goal 3b - Physical Science)": "Goal 3b - Physical Science",
+    "GE - MATH THINK (Goal 4 - Mathematical Thinking)": "Goal 4 - Mathematical Thinking",
+    "GE - HI/BEH/SSC (Goal 5 - Hist & Behavrl/SocSci)": "Goal 5 - Hist & Behavrl/SocSci",
+    "GE - HUMANITIES (Goal 6 - Hum: Arts/Lit/Phil)": "Goal 6 - Hum: Arts/Lit/Phil",
+    "GE - HUMAN DIV (Goal 7 - Human Diversity)": "Goal 7 - Human Diversity",
+    "GE - GLOB PERSP (Goal 8 - Global Perspective)": "Goal 8 - Global Perspective",
+    "GE - ETH/CIV RE (Goal 9 - Eth/Civic Responsblty)": "Goal 9 - Eth/Civic Responsblty",
+    "GE - PEOPLE/ENV (Goal 10 - People/Environment)": "Goal 10 - People/Environment",
+    "MTC - MTC GOAL10 (People and the Environment)": "Goal 10 - People/Environment", # Alias for above
+    # Duluth
+    "DLE - CDIVERSITY (Cultural Diversity in the US)": "Cultural Diversity in the US",
+    "DLE - FINE ARTS (Fine Arts)": "Fine Arts",
+    "DLE - GLOBAL PER (Global Perspectives)": "Global Perspectives",
+    "DLE - HUMANITIES (Humanities)": "Humanities",
+    "DLE - LOGIC & QR (Logic & Quantitative Reasoning)": "Logic & Quantitative Reasoning",
+    "DLE - NAT SCI (Natural Sciences)": "Natural Sciences",
+    "MTC - MTC GOAL3 (Natural Sciences)": "Natural Sciences", # Alias for above
+    "DLE - COMM & LAN (Oral Communication & Languages)": "Oral Communication & Languages",
+    "DLE - SOC SCI (Social Sciences)": "Social Sciences",
+    "DLE - SUSTAIN (Sustainability)": "Sustainability",
+    "DLE - RACE JUST (Race, Power and Justice)": "Race, Power and Justice",
+    "DLE - WRITING (Writing & Information Literacy)": "Writing & Information Literacy",
+    # Morris
+    "GER - ART/P (Artistic Performance)": "Artistic Performance",
+    "GER - HUM (Communicatin,Lang,Lit,Phlosphy)": "Comm, Lang, Lit, & Philosophy",
+    "GER - E/CR (E/CR)": "Ethical and Civic Responsibility",
+    "GER - E/CR (Ethical & Civic Responsibility)": "Ethical and Civic Responsibility", # Alias for above
+    "GER - FA (Fine Arts)": "Fine Arts",
+    "GER - FA (FA)": "Fine Arts", # Alias for above
+    "GER - HIST (Historical Perspectives)": "Historical Perspectives",
+    "GER - HIST (Hist)": "Historical Perspectives", # Alias for above
+    "GER - SS (Human Behvr,Socl Proces,Instns)": "Human Behvr, Socl Proces, Instns",
+    "GER - HUM (Hum)": "Human Behvr, Socl Proces, Instns", # Alias for above
+    "GER - HDIV (Human Diversity)" : "Human Diversity",
+    "GER - IC (Intellectual Community)" : "Intellectual Community",
+    "GER - IP (IP)": "International Perspectives",
+    "GER - IP (International Perspectives)" : "International Perspectives", # Alias for above
+    "GER - M/SR (Mathmatical/Symbolic Reasoning)": "Mathmatical/Symbolic Reasoning",
+    "GER - ENVT (People and the Environment)": "People and the Environment",
+    "GER - SCI-L (Physical & Biol Sci w/Lab)": "Physical & Biol Sci w/Lab",
+    "GER - SCI (Physical & Biol Sci w/o Lab)": "Physical & Biol Sci w/o Lab",
+    "GER - WL (World Language)": "World Language",
+    "GER - WE (Writing Enriched)": "Writing Enriched",
+    "GER - WLA (Writing for the Liberal Arts)": "Writing for Liberal Arts",
     # Other
     "HON - HON (Honors)": "Honors",
     "FSEM - FR SEMINAR (Freshman Seminar)": "Freshman Seminar",

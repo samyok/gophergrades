@@ -7,7 +7,7 @@ SCHOOL = rmp.School(school_id=1257)
 
 def update(prof):
     # This depends on internet connection, it's possible that fail an update if the internet disconnects.
-    RMP_Profs = list(filter(lambda rmp_prof: rmp_prof.school.id == 1257,rmp.get_professors_by_school_and_name(SCHOOL,prof.name)))
+    RMP_Profs = list(filter(lambda rmp_prof: rmp_prof.school.id in [1257, 1372],rmp.get_professors_by_school_and_name(SCHOOL,prof.name)))
     
     if (len(RMP_Profs) == 0):
         print(f"Failed to find {prof.name}")
