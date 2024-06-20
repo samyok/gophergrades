@@ -50,12 +50,6 @@ const htmlToElement = (html) => {
 
 // Begin code for sorting course list
 
-// document.addEventListener('change', function(event) {
-//   if (event.target.matches('.size-dropdown')) {
-//     handleDropdownChange(event);
-//   }
-// });
-
 // dropdown element
 const dropdownTemplate = `
 <div style="display: inline-block; margin-left: -20px; margin-right: 5px;">
@@ -476,8 +470,7 @@ const loadDropdown = () => {
   const emptyDiv = courseListOptions.firstElementChild;
   const dropdownElement = htmlToElement(dropdownTemplate);
   const firstDiv = emptyDiv.firstElementChild;
-  const dropdown = emptyDiv.insertBefore(dropdownElement, firstDiv);
-  dropdown.setAttribute("id", "dropdown");
+  emptyDiv.insertBefore(dropdownElement, firstDiv);
 };
 
 const onAppChange = async () => {
@@ -503,7 +496,6 @@ const onAppChange = async () => {
     console.log("Course-sort dropdown not found!");
   }
 
-  // const dropdown = document.querySelector("#dropdown");
   if (!courseSortDropdown) loadDropdown();
 };
 
