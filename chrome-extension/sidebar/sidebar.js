@@ -120,9 +120,9 @@ const sortBySeatsAvailable = () => {
   console.log(courseDivs); // For debugging purposes, display the updated dictionary
 
 
-  courseListResults.innerHTML = '';
+  courseListResults.firstElementChild.innerHTML = '';
   courseDivs.forEach(courseDiv => {
-      courseListResults.appendChild(courseDiv);
+      courseListResults.firstElementChild.appendChild(courseDiv);
   });
 
   const buttons2 = document.querySelectorAll('.action-sections.btn.btn-default.pull-right');
@@ -207,12 +207,9 @@ const sortByMostCommonGrade = () => {
       console.log(courseMostCommonGradeDict);
       console.log(courseDivs);
 
-      // Clear current content in courseListResults
-      courseListResults.innerHTML = '';
-
-      // Append sorted courseDivs back to courseListResults
+      courseListResults.firstElementChild.innerHTML = '';
       courseDivs.forEach(courseDiv => {
-        courseListResults.appendChild(courseDiv);
+          courseListResults.firstElementChild.appendChild(courseDiv);
       });
 
       // Optionally set dropdown value or perform other actions
@@ -286,12 +283,9 @@ const sortByPopularity = () => {
       console.log(coursePopularityDict);
       console.log(courseDivs);
 
-      // Clear current content in courseListResults
-      courseListResults.innerHTML = '';
-
-      // Append sorted courseDivs back to courseListResults
+      courseListResults.firstElementChild.innerHTML = '';
       courseDivs.forEach(courseDiv => {
-        courseListResults.appendChild(courseDiv);
+          courseListResults.firstElementChild.appendChild(courseDiv);
       });
 
       // Optionally set dropdown value or perform other actions
@@ -341,9 +335,9 @@ const sortByUnits = () => {
   console.log(courseDivs); // For debugging purposes, display the updated dictionary
 
 
-  courseListResults.innerHTML = '';
+  courseListResults.firstElementChild.innerHTML = '';
   courseDivs.forEach(courseDiv => {
-      courseListResults.appendChild(courseDiv);
+      courseListResults.firstElementChild.appendChild(courseDiv);
   });
 
   document.querySelector('.size-dropdown').value = 'E';
