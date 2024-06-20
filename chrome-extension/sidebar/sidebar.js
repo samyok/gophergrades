@@ -48,6 +48,311 @@ const htmlToElement = (html) => {
   return template.content.firstChild;
 };
 
+// Begin code for sorting course list
+document.addEventListener('change', function(event) {
+  if (event.target.matches('.size-dropdown')) {
+    handleDropdownChange(event);
+  }
+});
+
+const dropdownTemplate = `
+<div style="display: inline-block; font-size: 14px; padding: 6px 12px;">
+  <select class="size-dropdown" style="font-size: 16px; padding: 5px 12px;">
+    <option value="A">Sort By Course # (Default)</option>
+    <option value="B">Sort By Seats Available</option>
+    <option value="C">Sort By Most-Common Grade</option>
+    <option value="D">Sort By Popularity</option>
+    <option value="E">Sort By Units</option>
+  </select>
+</div>
+`;
+
+const handleDropdownChange = (event) => {
+  if (event.target.value === "A") {
+    location.reload();
+  }
+  if (event.target.value === "B") {
+    const buttons = document.querySelectorAll('.action-sections.btn.btn-default');    
+    buttons.forEach(button => button.click());
+    setTimeout(sortBySeatsAvailable, 1000);
+  }
+  if (event.target.value === "C") {
+    sortByMostCommonGrade();
+  }
+  if (event.target.value === "D") {
+    sortByPopularity();
+  }
+  if (event.target.value === "E") {
+    sortByUnits();
+  }
+};
+
+const sortBySeatsAvailable = () => {
+  const courseSizeDict = {};
+
+  // Get the main container with class 'course-list-results'
+  let courseListResults = document.querySelector('.course-list-results');
+  let courseDivs = Array.from(courseListResults.firstElementChild.children);
+
+  for (let courseDiv of courseDivs) {
+    let courseName = courseDiv.querySelector('a').getAttribute('name');
+    
+    // Navigate to the correct div
+    let targetDiv = courseDiv.querySelector('div:nth-child(2) > div:nth-child(3)');
+    let trElements = targetDiv.querySelectorAll('tr');
+    
+    let sum = 0;
+    trElements.forEach(tr => {
+        let lastChildText = tr.lastElementChild.innerText;
+        sum += parseFloat(extractDifference(lastChildText)) || 0; // Ensure the text is converted to a number
+    });
+    
+    courseSizeDict[courseName] = sum;
+  }
+
+  courseDivs.sort((a, b) => {
+    let nameA = a.querySelector('a').getAttribute('name');
+    let nameB = b.querySelector('a').getAttribute('name');
+    return courseSizeDict[nameB] - courseSizeDict[nameA];
+  });
+
+  console.log(courseSizeDict); // For debugging purposes, display the updated dictionary
+  console.log(courseDivs); // For debugging purposes, display the updated dictionary
+
+
+  courseListResults.innerHTML = '';
+  courseDivs.forEach(courseDiv => {
+      courseListResults.appendChild(courseDiv);
+  });
+
+  const buttons2 = document.querySelectorAll('.action-sections.btn.btn-default.pull-right');
+  buttons2.forEach(button => button.click());
+
+  document.querySelector('.size-dropdown').value = 'B';
+};
+
+function extractDifference(text) {
+    let matches = text.match(/(\d+)\s+of\s+(\d+)/g);
+    let totalDifference = 0;
+    
+    if (matches) {
+        matches.forEach(match => {
+            let parts = match.match(/(\d+)\s+of\s+(\d+)/);
+            let current = parseInt(parts[1]);
+            let total = parseInt(parts[2]);
+            totalDifference += (total - current);
+        });
+    }
+    return totalDifference;
+}
+
+const sortByMostCommonGrade = () => {
+  let courseMostCommonGradeDict = {};
+
+  // Get the main container with class 'course-list-results'
+  let courseListResults = document.querySelector('.course-list-results');
+  let courseDivs = Array.from(courseListResults.firstElementChild.children);
+
+  // Array to hold all fetch promises
+  let fetchPromises = [];
+
+  for (let courseDiv of courseDivs) {
+    let courseName = courseDiv.querySelector('a').getAttribute('name');
+    let fullURL = `https://corsproxy.io/?https://umn.lol/class/${courseName}?static=all`;
+
+    let fetchPromise = fetch(fullURL, {
+      method: 'GET',
+    })
+    .then(response => {
+      if (!response.ok) {
+        courseMostCommonGradeDict[courseName] = 0;
+        return null;
+      }
+      return response.text();
+    })
+    .then(html => {
+      if (html) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const spans = doc.querySelectorAll('.css-sbue0t');
+        
+        if (spans.length > 0) {
+          const lastSpan = spans[spans.length - 1];
+          let myStr = lastSpan.innerHTML;
+          let myNum = parseFloat(myStr.match(/<!-- -->(\d+)<!-- -->%/)[1]);
+          courseMostCommonGradeDict[courseName] = myNum;
+          return myNum;
+        } else {
+          return null;
+        }
+      }
+    })
+    .catch(error => {
+      console.log('Error: ' + error);
+    });
+
+    fetchPromises.push(fetchPromise);
+  }
+
+  // Wait for all fetch promises to resolve
+  Promise.all(fetchPromises)
+    .then(() => {
+      // Once all promises have resolved (fetch requests are complete and data is populated), sort courseDivs
+      courseDivs.sort((a, b) => {
+        let nameA = a.querySelector('a').getAttribute('name');
+        let nameB = b.querySelector('a').getAttribute('name');
+        return courseMostCommonGradeDict[nameB] - courseMostCommonGradeDict[nameA];
+      });
+
+      console.log(courseMostCommonGradeDict);
+      console.log(courseDivs);
+
+      // Clear current content in courseListResults
+      courseListResults.innerHTML = '';
+
+      // Append sorted courseDivs back to courseListResults
+      courseDivs.forEach(courseDiv => {
+        courseListResults.appendChild(courseDiv);
+      });
+
+      // Optionally set dropdown value or perform other actions
+      document.querySelector('.size-dropdown').value = 'C';
+    })
+    .catch(error => {
+      console.error('Error waiting for fetch promises:', error);
+    });
+};
+
+
+const sortByPopularity = () => {
+  let coursePopularityDict = {};
+
+  // Get the main container with class 'course-list-results'
+  let courseListResults = document.querySelector('.course-list-results');
+  let courseDivs = Array.from(courseListResults.firstElementChild.children);
+
+  // Array to hold all fetch promises
+  let fetchPromises = [];
+
+  for (let courseDiv of courseDivs) {
+    let courseName = courseDiv.querySelector('a').getAttribute('name');
+    let fullURL = `https://corsproxy.io/?https://umn.lol/class/${courseName}?static=all`;
+
+    let fetchPromise = fetch(fullURL, {
+      method: 'GET',
+    })
+    .then(response => {
+      if (!response.ok) {
+        coursePopularityDict[courseName] = 0;
+        return null;
+      }
+      return response.text();
+    })
+    .then(html => {
+      if (html) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const spans = doc.querySelectorAll('.chakra-badge.css-5h3htq');
+        
+        if (spans.length > 0) {
+          const lastSpan = spans[spans.length - 1];
+          let myStr = lastSpan.innerHTML;
+          console.log(myStr)
+          let myNum = parseFloat(myStr.match(/(\d+)<!-- --> students/)[1]);
+          coursePopularityDict[courseName] = myNum;
+          return myNum;
+        } else {
+          return null;
+        }
+      }
+    })
+    .catch(error => {
+      console.log('Error: ' + error);
+    });
+
+    fetchPromises.push(fetchPromise);
+  }
+
+  // Wait for all fetch promises to resolve
+  Promise.all(fetchPromises)
+    .then(() => {
+      // Once all promises have resolved (fetch requests are complete and data is populated), sort courseDivs
+      courseDivs.sort((a, b) => {
+        let nameA = a.querySelector('a').getAttribute('name');
+        let nameB = b.querySelector('a').getAttribute('name');
+        return coursePopularityDict[nameB] - coursePopularityDict[nameA];
+      });
+
+      console.log(coursePopularityDict);
+      console.log(courseDivs);
+
+      // Clear current content in courseListResults
+      courseListResults.innerHTML = '';
+
+      // Append sorted courseDivs back to courseListResults
+      courseDivs.forEach(courseDiv => {
+        courseListResults.appendChild(courseDiv);
+      });
+
+      // Optionally set dropdown value or perform other actions
+      document.querySelector('.size-dropdown').value = 'D';
+    })
+    .catch(error => {
+      console.error('Error waiting for fetch promises:', error);
+    });
+};
+
+
+const sortByUnits = () => {
+  const courseUnitsDict = {};
+
+  // Get the main container with class 'course-list-results'
+  let courseListResults = document.querySelector('.course-list-results');
+  let courseDivs = Array.from(courseListResults.firstElementChild.children);
+
+  for (let courseDiv of courseDivs) {
+    let courseName = courseDiv.querySelector('a').getAttribute('name');
+    
+    // Navigate to the correct div
+    let targetDiv = courseDiv.querySelector('div:nth-child(2) > div:nth-child(2)').children;
+    let trElements = targetDiv[targetDiv.length - 2];
+
+    myCleanText = trElements.innerHTML.trim().replace(/\s+/g, '');
+    numberMatch = (myCleanText.match(/(\d+(\.\d+)?)/));
+
+    if (numberMatch) {
+      console.log(parseFloat(numberMatch[0])); // Output: 2
+      courseUnitsDict[courseName] = parseFloat(numberMatch[0]);
+    } else {
+      console.log('No number found');
+      courseUnitsDict[courseName] = 0;
+    }
+    
+    
+  }
+
+  courseDivs.sort((a, b) => {
+    let nameA = a.querySelector('a').getAttribute('name');
+    let nameB = b.querySelector('a').getAttribute('name');
+    return courseUnitsDict[nameB] - courseUnitsDict[nameA];
+  });
+
+  console.log(courseUnitsDict); // For debugging purposes, display the updated dictionary
+  console.log(courseDivs); // For debugging purposes, display the updated dictionary
+
+
+  courseListResults.innerHTML = '';
+  courseDivs.forEach(courseDiv => {
+      courseListResults.appendChild(courseDiv);
+  });
+
+  document.querySelector('.size-dropdown').value = 'E';
+};
+
+// end sorting feature
+
+
+
 const iframeTemplate = `
 <div class="gopher-grades-container">
 <iframe class="gopher-grades-result-iframe" referrerpolicy="unsafe-url"></iframe>
@@ -155,6 +460,15 @@ const loadCourseSchedule = (courseSchedule) => {
   }
 };
 
+const loadDropdown = () => {
+  const courseListOptions = document.querySelector(".course-list-options");
+  const emptyDiv = courseListOptions.firstElementChild;
+  const dropdownElement = htmlToElement(dropdownTemplate);
+  const firstDiv = emptyDiv.firstElementChild;
+  const dropdown = emptyDiv.insertBefore(dropdownElement, firstDiv);
+  dropdown.setAttribute("id", "dropdown");
+};
+
 const onAppChange = async () => {
   const courseList = document.querySelector(".course-list-results");
   const courseInfo = document.querySelector("#crse-info");
@@ -170,10 +484,16 @@ const onAppChange = async () => {
   if (courseList) loadCourses(courseList);
   else if (courseInfo) loadCourseInfo(courseInfo);
   else if (courseSchedule) loadCourseSchedule(courseSchedule);
+
+  const dropdown = document.querySelector("#dropdown");
+  if (!dropdown) loadDropdown();
 };
+
+
 
 let loaded = false;
 const onLoad = () => {
+
   if (loaded) return;
   loaded = true;
 
