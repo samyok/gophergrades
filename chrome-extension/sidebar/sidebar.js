@@ -59,7 +59,7 @@ document.addEventListener('change', function(event) {
 // dropdown element
 const dropdownTemplate = `
 <div style="display: inline-block; margin-left: -20px; margin-right: 5px;">
-  <select class="size-dropdown" style="height: 34px; transform: translateY(3%); font-size: 14px; padding: 6px 12px;">
+  <select class="size-dropdown" style="border-color: #ccc; border-radius: 3px; height: 34px; transform: translateY(3%); font-size: 14px; padding: 6px 12px;">
     <option value="A">Sort By Course # (Default)</option>
     <option value="B">Sort By Seats Available</option>
     <option value="C">Sort By Most-Common Grade</option>
