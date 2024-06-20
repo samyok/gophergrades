@@ -68,3 +68,21 @@ chrome.runtime.onInstalled.addListener(async () => {
 
   await chrome.storage.sync.set({ settings: defaultSettingCodes });
 });
+
+// background script
+chrome.runtime.onMessage.addListener(function (message, sender, senderResponse) {
+  if (message.type === "json") {
+    fetch(`https://umn.lol/api/class/${message.courseName}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({source: {url: message.url}})
+    }).then(res => {
+      return res.json();
+    }).then(res => {
+      senderResponse(res);
+    })
+  }
+  return true
+});

@@ -65,7 +65,8 @@
     "*://*.umn.lol/*",
     "*://umn.lol/*",
     "*://*.umn.edu/*",
-    "*://umn.edu/*"
+    "*://umn.edu/*",
+    "https://umn.lol/*"
   ],
   "permissions": [
     "storage",

@@ -56,7 +56,7 @@ const dropdownTemplate = `
   <select class="size-dropdown" style="border-color: #ccc; border-radius: 3px; height: 34px; transform: translateY(3%); font-size: 14px; padding: 6px 12px;">
     <option value="sortCourseCodeAsc">Sort By Course # (Default)</option>
     <option value="sortSeatsAvailDes">Sort By Seats Available</option>
-    <option value="sortMostCommonGradeDes">Sort By Most-Common Grade</option>
+    <option value="sortMostCommonGradeDes">Sort By Most-Common A Grade</option>
     <option value="sortPopularityDes">Sort By Popularity</option>
     <option value="sortUnitsDes">Sort By Units</option>
   </select>
@@ -165,38 +165,24 @@ const sortByMostCommonGrade = () => {
 
   for (let courseDiv of courseDivs) {
     let courseName = courseDiv.querySelector('a').getAttribute('name');
-    let fullURL = `https://corsproxy.io/?https://umn.lol/class/${courseName}?static=all`; // we need to use corsproxy.io to bypass CORS restriction
 
-    let fetchPromise = fetch(fullURL, {
-      method: 'GET',
-    })
-    .then(response => {
-      if (!response.ok) {
-        courseMostCommonGradeDict[courseName] = 0; // update dictionary value to 0
-        return null;
-      }
-      return response.text();
-    })
-    .then(html => {
-      if (html) {
-        // Get the information we need from the html
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const spans = doc.querySelectorAll('.css-sbue0t');
-        
-        if (spans.length > 0) {
-          const lastSpan = spans[spans.length - 1];
-          let myStr = lastSpan.innerHTML;
-          let myNum = parseFloat(myStr.match(/<!-- -->(\d+)<!-- -->%/)[1]);
-          courseMostCommonGradeDict[courseName] = myNum; // update dictionary to desired value
-          return myNum;
+    // Push the fetch promise into the array
+    let fetchPromise = new Promise((resolve, reject) => {
+      chrome.runtime.sendMessage({ type: 'json', url: window.location.href, courseName: courseName }, response => {
+        if (response.success && response.data) {
+          let totalStudents = response.data.total_students;
+          let totalGrades = response.data.total_grades;
+          let numberOfAs = totalGrades["A"];
+          let val = (numberOfAs / totalStudents) * 100;
+          console.log(`Percentage of A's for ${courseName}: ${val}%`);
+
+          // Store the calculated percentage in the dictionary
+          courseMostCommonGradeDict[courseName] = val;
         } else {
-          return null;
+          courseMostCommonGradeDict[courseName] = 0;
         }
-      }
-    })
-    .catch(error => {
-      console.log('Error: ' + error);
+        resolve(); // Resolve the promise once processing is done
+      });
     });
 
     fetchPromises.push(fetchPromise);
@@ -205,7 +191,7 @@ const sortByMostCommonGrade = () => {
   // Wait for all fetch promises to resolve
   Promise.all(fetchPromises)
     .then(() => {
-      // Once all promises have resolved (fetch requests are complete and data is populated), sort courseDivs using same process as before
+      // Once all promises have resolved (fetch requests are complete and data is populated), sort courseDivs
       courseDivs.sort((a, b) => {
         let nameA = a.querySelector('a').getAttribute('name');
         let nameB = b.querySelector('a').getAttribute('name');
@@ -214,24 +200,27 @@ const sortByMostCommonGrade = () => {
 
       console.log("Most Common Grade Dict: ", courseMostCommonGradeDict); // For debugging purposes, display the updated dictionary
       console.log("Sorted Most Common Grade Course Divs: ", courseDivs); // For debugging purposes, display the updated divs
-    
 
+      // Clear and update the course list results
       courseListResults.firstElementChild.innerHTML = '';
       courseDivs.forEach(courseDiv => {
-          courseListResults.firstElementChild.appendChild(courseDiv);
+        courseListResults.firstElementChild.appendChild(courseDiv);
       });
 
+      // Set dropdown value after sorting
       document.querySelector('.size-dropdown').value = 'sortMostCommonGradeDes';
     })
     .catch(error => {
-      console.error('Error waiting for fetch promises:', error);
+      console.error('Error fetching course data:', error);
     });
 };
+
 
 // NOTE: the rest of the functions follow very similar code from the last two.
 // The first one is to build dictionaries from information that is already on the schedule builder page (eg. seats available, course units)
 // The second one is to build dictionaries from information using an API (eg. popularity, most-common grade)
 // Refer to them if you are confused about something
+
 
 const sortByPopularity = () => {
   let coursePopularityDict = {};
@@ -245,38 +234,18 @@ const sortByPopularity = () => {
 
   for (let courseDiv of courseDivs) {
     let courseName = courseDiv.querySelector('a').getAttribute('name');
-    let fullURL = `https://corsproxy.io/?https://umn.lol/class/${courseName}?static=all`;
 
-    let fetchPromise = fetch(fullURL, {
-      method: 'GET',
-    })
-    .then(response => {
-      if (!response.ok) {
-        coursePopularityDict[courseName] = 0;
-        return null;
-      }
-      return response.text();
-    })
-    .then(html => {
-      if (html) {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const spans = doc.querySelectorAll('.chakra-badge.css-5h3htq');
-        
-        if (spans.length > 0) {
-          const lastSpan = spans[spans.length - 1];
-          let myStr = lastSpan.innerHTML;
-          console.log(myStr)
-          let myNum = parseFloat(myStr.match(/(\d+)<!-- --> students/)[1]);
-          coursePopularityDict[courseName] = myNum;
-          return myNum;
+    // Push the fetch promise into the array
+    let fetchPromise = new Promise((resolve, reject) => {
+      chrome.runtime.sendMessage({ type: 'json', url: window.location.href, courseName: courseName }, response => {
+        if (response.success && response.data) {
+          let totalStudents = response.data.total_students;
+          coursePopularityDict[courseName] = totalStudents;
         } else {
-          return null;
+          coursePopularityDict[courseName] = 0;
         }
-      }
-    })
-    .catch(error => {
-      console.log('Error: ' + error);
+        resolve(); // Resolve the promise once processing is done
+      });
     });
 
     fetchPromises.push(fetchPromise);
@@ -292,19 +261,20 @@ const sortByPopularity = () => {
         return coursePopularityDict[nameB] - coursePopularityDict[nameA];
       });
 
-      console.log("Course Popularity Dict: ", coursePopularityDict); // For debugging purposes, display the updated dictionary
-      console.log("Sorted Popularity Course Divs: ", courseDivs); // For debugging purposes, display the updated divs
+      console.log("Most Common Grade Dict: ", coursePopularityDict); // For debugging purposes, display the updated dictionary
+      console.log("Sorted Most Common Grade Course Divs: ", courseDivs); // For debugging purposes, display the updated divs
 
+      // Clear and update the course list results
       courseListResults.firstElementChild.innerHTML = '';
       courseDivs.forEach(courseDiv => {
-          courseListResults.firstElementChild.appendChild(courseDiv);
+        courseListResults.firstElementChild.appendChild(courseDiv);
       });
 
-      // Optionally set dropdown value or perform other actions
+      // Set dropdown value after sorting
       document.querySelector('.size-dropdown').value = 'sortPopularityDes';
     })
     .catch(error => {
-      console.error('Error waiting for fetch promises:', error);
+      console.error('Error fetching course data:', error);
     });
 };
 
