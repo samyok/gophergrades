@@ -30,6 +30,10 @@ const DepartmentButton = ({ deptAbbr }) => (
     style={{
       fontWeight: "900",
     }}
+    _after={{
+      content: '" "',
+      display: "inline",
+    }}
   >
     {deptAbbr}
   </ChakraLink>
@@ -37,7 +41,6 @@ const DepartmentButton = ({ deptAbbr }) => (
 
 export default function Class({ classData, query }) {
   const {
-    class_name: className,
     class_desc: classDesc,
     onestop_desc: onestopDesc,
     distributions,
@@ -47,9 +50,10 @@ export default function Class({ classData, query }) {
     cred_max: creditMax,
     srt_vals: srtVals,
     dept_abbr: deptAbbr,
+    course_num: classNumber,
   } = classData;
 
-  const classNumber = className.replace(deptAbbr, "");
+  const className = `${deptAbbr} ${classNumber}`;
 
   const [isMobile] = useMediaQuery("(max-width: 550px)");
   const {
@@ -81,7 +85,7 @@ export default function Class({ classData, query }) {
       process.env.NEXT_PUBLIC_VERCEL_URL
         ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
         : ""
-    }/api/image/class/${className.replace(" ", "")}`,
+    }/api/image/class/${deptAbbr}${classNumber}`,
   };
 
   const formattedDistributions = distributions.map((dist) => ({

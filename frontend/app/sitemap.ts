@@ -20,12 +20,12 @@ const getAllRoutes = async () => {
 
   const courseXML = courses.map(
     (course: {
-      class_name: { toString: () => string };
+      dept_abbr: { toString: () => string };
+      course_num: { toString: () => string };
       class_desc: string;
     }) => ({
-      url: `https://umn.lol/class/${cleanPrimaryID(
-        course.class_name
-      )}/${cleanDescription(course.class_desc)}`,
+      url: `https://umn.lol/class/${course.dept_abbr}
+      ${course.course_num}/${cleanDescription(course.class_desc)}`,
       // image: `https://umn.lol/api/image/class/${cleanPrimaryID(
       //   course.class_name
       // )}`,

@@ -41,9 +41,9 @@ class TermDistribution(Base):
     grades = Column(JSON,nullable=False)
 
     def __str__(self) -> str:
-        return f"{self.dist.classdist.class_name} taught by {self.dist.prof.name} in {term_to_name(self.term)} for {self.students} students with a grade distribution of {self.grades}"
+        return f"{self.classdist.dept_abbr} {self.classdist.course_num} taught by {self.dist.prof.name} in {term_to_name(self.term)} for {self.students} students with a grade distribution of {self.grades}"
     def __repr__(self) -> str:
-        return f"{self.dist.classdist.class_name} taught by {self.dist.prof.name} in {term_to_name(self.term)} for {self.students} students with a grade distribution of {self.grades}"
+        return f"{self.classdist.dept_abbr} {self.classdist.course_num} taught by {self.dist.prof.name} in {term_to_name(self.term)} for {self.students} students with a grade distribution of {self.grades}"
 
 
 class Distribution(Base):
