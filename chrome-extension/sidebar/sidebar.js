@@ -106,8 +106,8 @@ const sortBySeatsAvailable = () => {
     
     let sum = 0;
     trElements.forEach(tr => {
-        let lastChildText = tr.lastElementChild.innerText;
-        sum += parseFloat(extractDifference(lastChildText)) || 0; // Ensure the text is converted to a number
+      let lastChildText = tr.lastElementChild.innerText;
+      sum += parseFloat(extractDifference(lastChildText)) || 0; // Ensure the text is converted to a number
     });
     
     courseSizeDict[courseName] = sum;
@@ -168,7 +168,11 @@ const sortByMostCommonGrade = () => {
 
     // Push the fetch promise into the array
     let fetchPromise = new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage({ type: 'json', url: window.location.href, courseName: courseName }, response => {
+      chrome.runtime.sendMessage({ type: 'umnlolApiResponseJson', url: window.location.href, courseName: courseName }, response => {
+        // If the response is consistently unsuccessful or there's no data
+        // Check background.js and ctrl+f for 'umnlolApiResponseJson'
+        // That is where I handled the request
+        
         if (response.success && response.data) {
           let totalStudents = response.data.total_students;
           let totalGrades = response.data.total_grades;
@@ -237,7 +241,7 @@ const sortByPopularity = () => {
 
     // Push the fetch promise into the array
     let fetchPromise = new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage({ type: 'json', url: window.location.href, courseName: courseName }, response => {
+      chrome.runtime.sendMessage({ type: 'umnlolApiResponseJson', url: window.location.href, courseName: courseName }, response => {
         if (response.success && response.data) {
           let totalStudents = response.data.total_students;
           coursePopularityDict[courseName] = totalStudents;
@@ -463,7 +467,7 @@ const onAppChange = async () => {
   if (courseSortDropdown) {
     courseSortDropdown.addEventListener('change', handleDropdownChange);
   } else {
-    console.log("Course-sort dropdown not found!");
+    console.log("Course-sort dropdown not found for whatever reason. This feature will not work.");
   }
 
   if (!courseSortDropdown) loadDropdown();

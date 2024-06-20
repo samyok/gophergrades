@@ -53,11 +53,6 @@ const RuntimeMessages = {
   },
 };
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  const { type } = request;
-  RuntimeMessages[type](request);
-});
-
 chrome.runtime.onInstalled.addListener(async () => {
   const defaultSettingCodes = defaultSettings.reduce((acc, section) => {
     section.settings.forEach((setting) => {
@@ -69,20 +64,32 @@ chrome.runtime.onInstalled.addListener(async () => {
   await chrome.storage.sync.set({ settings: defaultSettingCodes });
 });
 
-// background script
-chrome.runtime.onMessage.addListener(function (message, sender, senderResponse) {
-  if (message.type === "json") {
-    fetch(`https://umn.lol/api/class/${message.courseName}`, {
-      method: 'POST',
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "umnlolApiResponseJson") {
+    // Handle JSON message type with a GET request
+    // This is where we
+    fetch(`https://umn.lol/api/class/${message.courseName}?url=${encodeURIComponent(message.url)}`, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({source: {url: message.url}})
+      }
     }).then(res => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
       return res.json();
     }).then(res => {
-      senderResponse(res);
-    })
+      sendResponse(res); // Send response back to the sender
+    }).catch(error => {
+      console.error('Error fetching data:', error);
+      sendResponse({ error: 'Error fetching data' }); // Send an error response
+    });
+
+    // Return true to indicate that sendResponse will be called asynchronously
+    return true;
+  } else {
+    // Handle other message types if necessary
+    const { type } = message;
+    RuntimeMessages[type](message); // Assuming RuntimeMessages is defined elsewhere
   }
-  return true
 });
