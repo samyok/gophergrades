@@ -49,14 +49,14 @@ const htmlToElement = (html) => {
 };
 
 // Begin code for sorting course list
+
 document.addEventListener('change', function(event) {
   if (event.target.matches('.size-dropdown')) {
     handleDropdownChange(event);
   }
 });
 
-// padding: 6px 10px;
-// padding: 4px 10px;
+// dropdown element
 const dropdownTemplate = `
 <div style="display: inline-block; margin-left: -20px; margin-right: 5px;">
   <select class="size-dropdown" style="height: 34px; transform: translateY(3%); font-size: 14px; padding: 6px 12px;">
@@ -69,6 +69,7 @@ const dropdownTemplate = `
 </div>
 `;
 
+// handle sorting options
 const handleDropdownChange = (event) => {
   if (event.target.value === "A") {
     location.reload();
@@ -90,6 +91,7 @@ const handleDropdownChange = (event) => {
 };
 
 const sortBySeatsAvailable = () => {
+  // Looks like { "CSCI4011":26, "CSCI4041":37 ... }
   const courseSizeDict = {};
 
   // Get the main container with class 'course-list-results'
@@ -97,9 +99,10 @@ const sortBySeatsAvailable = () => {
   let courseDivs = Array.from(courseListResults.firstElementChild.children);
 
   for (let courseDiv of courseDivs) {
+    // Get name of course
     let courseName = courseDiv.querySelector('a').getAttribute('name');
     
-    // Navigate to the correct div
+    // Get seats available value
     let targetDiv = courseDiv.querySelector('div:nth-child(2) > div:nth-child(3)');
     let trElements = targetDiv.querySelectorAll('tr');
     
@@ -112,6 +115,7 @@ const sortBySeatsAvailable = () => {
     courseSizeDict[courseName] = sum;
   }
 
+  // sort the courseDivs in the order we want
   courseDivs.sort((a, b) => {
     let nameA = a.querySelector('a').getAttribute('name');
     let nameB = b.querySelector('a').getAttribute('name');
@@ -119,20 +123,23 @@ const sortBySeatsAvailable = () => {
   });
 
   console.log(courseSizeDict); // For debugging purposes, display the updated dictionary
-  console.log(courseDivs); // For debugging purposes, display the updated dictionary
+  console.log(courseDivs); // For debugging purposes, display the updated divs
 
-
+  // remove all the courses to add our own ordering of the courses
   courseListResults.firstElementChild.innerHTML = '';
   courseDivs.forEach(courseDiv => {
       courseListResults.firstElementChild.appendChild(courseDiv);
   });
 
+  // click all the 'hide' buttons
   const buttons2 = document.querySelectorAll('.action-sections.btn.btn-default.pull-right');
   buttons2.forEach(button => button.click());
 
+  // ensure this value is selected
   document.querySelector('.size-dropdown').value = 'B';
 };
 
+// Helper function to determine seats available
 function extractDifference(text) {
     let matches = text.match(/(\d+)\s+of\s+(\d+)/g);
     let totalDifference = 0;
@@ -160,20 +167,21 @@ const sortByMostCommonGrade = () => {
 
   for (let courseDiv of courseDivs) {
     let courseName = courseDiv.querySelector('a').getAttribute('name');
-    let fullURL = `https://corsproxy.io/?https://umn.lol/class/${courseName}?static=all`;
+    let fullURL = `https://corsproxy.io/?https://umn.lol/class/${courseName}?static=all`; // we need to use corsproxy.io to bypass CORS restriction
 
     let fetchPromise = fetch(fullURL, {
       method: 'GET',
     })
     .then(response => {
       if (!response.ok) {
-        courseMostCommonGradeDict[courseName] = 0;
+        courseMostCommonGradeDict[courseName] = 0; // update dictionary value to 0
         return null;
       }
       return response.text();
     })
     .then(html => {
       if (html) {
+        // Get the information we need from the html
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
         const spans = doc.querySelectorAll('.css-sbue0t');
@@ -182,7 +190,7 @@ const sortByMostCommonGrade = () => {
           const lastSpan = spans[spans.length - 1];
           let myStr = lastSpan.innerHTML;
           let myNum = parseFloat(myStr.match(/<!-- -->(\d+)<!-- -->%/)[1]);
-          courseMostCommonGradeDict[courseName] = myNum;
+          courseMostCommonGradeDict[courseName] = myNum; // update dictionary to desired value
           return myNum;
         } else {
           return null;
@@ -199,7 +207,7 @@ const sortByMostCommonGrade = () => {
   // Wait for all fetch promises to resolve
   Promise.all(fetchPromises)
     .then(() => {
-      // Once all promises have resolved (fetch requests are complete and data is populated), sort courseDivs
+      // Once all promises have resolved (fetch requests are complete and data is populated), sort courseDivs using same process as before
       courseDivs.sort((a, b) => {
         let nameA = a.querySelector('a').getAttribute('name');
         let nameB = b.querySelector('a').getAttribute('name');
@@ -214,7 +222,6 @@ const sortByMostCommonGrade = () => {
           courseListResults.firstElementChild.appendChild(courseDiv);
       });
 
-      // Optionally set dropdown value or perform other actions
       document.querySelector('.size-dropdown').value = 'C';
     })
     .catch(error => {
@@ -222,6 +229,10 @@ const sortByMostCommonGrade = () => {
     });
 };
 
+// NOTE: the rest of the functions follow very similar code from the last two.
+// The first one is to build dictionaries from information that is already on the schedule builder page (eg. seats available, course units)
+// The second one is to build dictionaries from information using an API (eg. popularity, most-common grade)
+// Refer to them if you are confused about something
 
 const sortByPopularity = () => {
   let coursePopularityDict = {};
