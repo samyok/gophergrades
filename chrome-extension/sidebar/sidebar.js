@@ -50,44 +50,48 @@ const htmlToElement = (html) => {
 
 // Begin code for sorting course list
 
-document.addEventListener('change', function(event) {
-  if (event.target.matches('.size-dropdown')) {
-    handleDropdownChange(event);
-  }
-});
+// document.addEventListener('change', function(event) {
+//   if (event.target.matches('.size-dropdown')) {
+//     handleDropdownChange(event);
+//   }
+// });
 
 // dropdown element
 const dropdownTemplate = `
 <div style="display: inline-block; margin-left: -20px; margin-right: 5px;">
   <select class="size-dropdown" style="border-color: #ccc; border-radius: 3px; height: 34px; transform: translateY(3%); font-size: 14px; padding: 6px 12px;">
-    <option value="A">Sort By Course # (Default)</option>
-    <option value="B">Sort By Seats Available</option>
-    <option value="C">Sort By Most-Common Grade</option>
-    <option value="D">Sort By Popularity</option>
-    <option value="E">Sort By Units</option>
+    <option value="sortCourseCodeAsc">Sort By Course # (Default)</option>
+    <option value="sortSeatsAvailDes">Sort By Seats Available</option>
+    <option value="sortMostCommonGradeDes">Sort By Most-Common Grade</option>
+    <option value="sortPopularityDes">Sort By Popularity</option>
+    <option value="sortUnitsDes">Sort By Units</option>
   </select>
 </div>
 `;
 
 // handle sorting options
 const handleDropdownChange = (event) => {
-  if (event.target.value === "A") {
+  var selectedValue = event.target.value;
+  console.log("my choice: " + selectedValue);
+
+  if (selectedValue === "sortCourseCodeAsc") {
     location.reload();
   }
-  if (event.target.value === "B") {
+  if (selectedValue === "sortSeatsAvailDes") {
     const buttons = document.querySelectorAll('.action-sections.btn.btn-default');    
     buttons.forEach(button => button.click());
     setTimeout(sortBySeatsAvailable, 1000);
   }
-  if (event.target.value === "C") {
+  if (selectedValue === "sortMostCommonGradeDes") {
     sortByMostCommonGrade();
   }
-  if (event.target.value === "D") {
+  if (selectedValue === "sortPopularityDes") {
     sortByPopularity();
   }
-  if (event.target.value === "E") {
+  if (selectedValue === "sortUnitsDes") {
     sortByUnits();
   }
+  // expand with more below...
 };
 
 const sortBySeatsAvailable = () => {
@@ -122,13 +126,13 @@ const sortBySeatsAvailable = () => {
     return courseSizeDict[nameB] - courseSizeDict[nameA];
   });
 
-  console.log(courseSizeDict); // For debugging purposes, display the updated dictionary
-  console.log(courseDivs); // For debugging purposes, display the updated divs
+  console.log("Sorted Seats Dict: ", courseSizeDict); // For debugging purposes, display the updated dictionary
+  console.log("Sorted Seats Course Divs: ", courseDivs); // For debugging purposes, display the updated divs
 
   // remove all the courses to add our own ordering of the courses
   courseListResults.firstElementChild.innerHTML = '';
   courseDivs.forEach(courseDiv => {
-      courseListResults.firstElementChild.appendChild(courseDiv);
+    courseListResults.firstElementChild.appendChild(courseDiv);
   });
 
   // click all the 'hide' buttons
@@ -136,23 +140,23 @@ const sortBySeatsAvailable = () => {
   buttons2.forEach(button => button.click());
 
   // ensure this value is selected
-  document.querySelector('.size-dropdown').value = 'B';
+  document.querySelector('.size-dropdown').value = 'sortSeatsAvailDes';
 };
 
 // Helper function to determine seats available
 function extractDifference(text) {
-    let matches = text.match(/(\d+)\s+of\s+(\d+)/g);
-    let totalDifference = 0;
-    
-    if (matches) {
-        matches.forEach(match => {
-            let parts = match.match(/(\d+)\s+of\s+(\d+)/);
-            let current = parseInt(parts[1]);
-            let total = parseInt(parts[2]);
-            totalDifference += (total - current);
-        });
-    }
-    return totalDifference;
+  let matches = text.match(/(\d+)\s+of\s+(\d+)/g);
+  let totalDifference = 0;
+  
+  if (matches) {
+    matches.forEach(match => {
+      let parts = match.match(/(\d+)\s+of\s+(\d+)/);
+      let current = parseInt(parts[1]);
+      let total = parseInt(parts[2]);
+      totalDifference += (total - current);
+    });
+  }
+  return totalDifference;
 }
 
 const sortByMostCommonGrade = () => {
@@ -214,15 +218,16 @@ const sortByMostCommonGrade = () => {
         return courseMostCommonGradeDict[nameB] - courseMostCommonGradeDict[nameA];
       });
 
-      console.log(courseMostCommonGradeDict);
-      console.log(courseDivs);
+      console.log("Most Common Grade Dict: ", courseMostCommonGradeDict); // For debugging purposes, display the updated dictionary
+      console.log("Sorted Most Common Grade Course Divs: ", courseDivs); // For debugging purposes, display the updated divs
+    
 
       courseListResults.firstElementChild.innerHTML = '';
       courseDivs.forEach(courseDiv => {
           courseListResults.firstElementChild.appendChild(courseDiv);
       });
 
-      document.querySelector('.size-dropdown').value = 'C';
+      document.querySelector('.size-dropdown').value = 'sortMostCommonGradeDes';
     })
     .catch(error => {
       console.error('Error waiting for fetch promises:', error);
@@ -293,8 +298,8 @@ const sortByPopularity = () => {
         return coursePopularityDict[nameB] - coursePopularityDict[nameA];
       });
 
-      console.log(coursePopularityDict);
-      console.log(courseDivs);
+      console.log("Course Popularity Dict: ", coursePopularityDict); // For debugging purposes, display the updated dictionary
+      console.log("Sorted Popularity Course Divs: ", courseDivs); // For debugging purposes, display the updated divs
 
       courseListResults.firstElementChild.innerHTML = '';
       courseDivs.forEach(courseDiv => {
@@ -302,7 +307,7 @@ const sortByPopularity = () => {
       });
 
       // Optionally set dropdown value or perform other actions
-      document.querySelector('.size-dropdown').value = 'D';
+      document.querySelector('.size-dropdown').value = 'sortPopularityDes';
     })
     .catch(error => {
       console.error('Error waiting for fetch promises:', error);
@@ -331,7 +336,7 @@ const sortByUnits = () => {
       console.log(parseFloat(numberMatch[0])); // Output: 2
       courseUnitsDict[courseName] = parseFloat(numberMatch[0]);
     } else {
-      console.log('No number found');
+      // No number found
       courseUnitsDict[courseName] = 0;
     }
     
@@ -344,16 +349,15 @@ const sortByUnits = () => {
     return courseUnitsDict[nameB] - courseUnitsDict[nameA];
   });
 
-  console.log(courseUnitsDict); // For debugging purposes, display the updated dictionary
-  console.log(courseDivs); // For debugging purposes, display the updated dictionary
-
+  console.log("Course Units Dict: ", courseUnitsDict); // For debugging purposes, display the updated dictionary
+  console.log("Sorted Units Course Divs: ", courseDivs); // For debugging purposes, display the updated divs
 
   courseListResults.firstElementChild.innerHTML = '';
   courseDivs.forEach(courseDiv => {
       courseListResults.firstElementChild.appendChild(courseDiv);
   });
 
-  document.querySelector('.size-dropdown').value = 'E';
+  document.querySelector('.size-dropdown').value = 'sortUnitsDes';
 };
 
 // end sorting feature
@@ -492,8 +496,15 @@ const onAppChange = async () => {
   else if (courseInfo) loadCourseInfo(courseInfo);
   else if (courseSchedule) loadCourseSchedule(courseSchedule);
 
-  const dropdown = document.querySelector("#dropdown");
-  if (!dropdown) loadDropdown();
+  var courseSortDropdown = document.querySelector('.size-dropdown');
+  if (courseSortDropdown) {
+    courseSortDropdown.addEventListener('change', handleDropdownChange);
+  } else {
+    console.log("Course-sort dropdown not found!");
+  }
+
+  // const dropdown = document.querySelector("#dropdown");
+  if (!courseSortDropdown) loadDropdown();
 };
 
 
