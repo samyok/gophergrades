@@ -55,9 +55,11 @@ document.addEventListener('change', function(event) {
   }
 });
 
+// padding: 6px 10px;
+// padding: 4px 10px;
 const dropdownTemplate = `
-<div style="display: inline-block; font-size: 14px; padding: 6px 12px;">
-  <select class="size-dropdown" style="font-size: 16px; padding: 5px 12px;">
+<div style="display: inline-block; margin-left: -20px; margin-right: 5px;">
+  <select class="size-dropdown" style="height: 34px; transform: translateY(3%); font-size: 14px; padding: 6px 12px;">
     <option value="A">Sort By Course # (Default)</option>
     <option value="B">Sort By Seats Available</option>
     <option value="C">Sort By Most-Common Grade</option>
