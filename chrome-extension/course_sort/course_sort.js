@@ -136,29 +136,31 @@ const buildDictionary = (fetchDataFunc, dictToUpdate) => {
       for (let courseDiv of courseDivs) {
         let courseName = courseDiv.querySelector('a').getAttribute('name');
         let fetchPromise = new Promise((resolve, reject) => {
-          fetch(`https://gophergrades-git-fork-divyesh-thirukon-b17043-umn-social-coding.vercel.app/api/class/${courseName}?url=${encodeURIComponent(window.location.href)}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }).then(res => {
-            if (!res.ok) {
-              throw new Error(`HTTP error! Status: ${res.status}`);
-            }
-            return res.json();
-          }).then(response => {
-            if (response.success && response.data) {
-              let result = fetchDataFunc(response.data);
-              dictToUpdate[courseName] = result;
-            } else {
-              dictToUpdate[courseName] = 0;
-            }
-          }).catch(error => {
-            console.error('Error fetching data:', error);
-          });
-          resolve();
+          try {
+            // For debuggging, use `https://gophergrades-9wharkgah-umn-social-coding.vercel.app/api/class/${courseName}`
+            fetch(`https://umn.lol/api/class/${courseName}`)
+            .then(res => {
+              if (!res.ok) {
+                dictToUpdate[courseName] = 0;
+              }
+              return res.json();
+            }).then(response => {
+              if (response.success && response.data) {
+                let result = fetchDataFunc(response.data);
+                dictToUpdate[courseName] = result;
+              } else {
+                dictToUpdate[courseName] = 0;
+              }
+              resolve();
+            }).catch(error => {
+              console.error(courseSortingLogPrefix + 'Error fetching data:', error);
+            });
+          } catch {
+            dictToUpdate[courseName] = 0;
+            resolve();
+          }
+          
         });
-
         fetchPromises.push(fetchPromise);
       }
     }
@@ -175,46 +177,6 @@ const buildDictionary = (fetchDataFunc, dictToUpdate) => {
   });
 };
 
-// const buildDictionary = (fetchDataFunc, dictToUpdate) => {
-//   const loadingElement = `<h2 class='loadingIndicator'><p>Sorting...</p></h2>`;
-//   let courseListResults = document.querySelector('.course-list-results').parentElement;
-//   courseListResults.insertBefore(htmlToElement(loadingElement), courseListResults.firstChild);
-
-//   return new Promise((resolve, reject) => {
-//     let courseListResults = document.querySelector('.course-list-results');
-//     let courseDivs = Array.from(courseListResults.firstElementChild.children);
-//     let fetchPromises = [];
-
-//     if (Object.keys(dictToUpdate).length === 0) {
-//       for (let courseDiv of courseDivs) {
-//         let courseName = courseDiv.querySelector('a').getAttribute('name');
-//         let fetchPromise = new Promise((resolve, reject) => {
-//           chrome.runtime.sendMessage({ type: 'umnlolApiResponseJson', url: window.location.href, courseName: courseName }, response => {
-//             if (response.success && response.data) {
-//               let result = fetchDataFunc(response.data);
-//               dictToUpdate[courseName] = result;
-//             } else {
-//               dictToUpdate[courseName] = 0;
-//             }
-//             resolve();
-//           });
-//         });
-
-//         fetchPromises.push(fetchPromise);
-//       }
-//     }
-
-//     Promise.all(fetchPromises)
-//       .then(() => {
-//         document.querySelector('.loadingIndicator').remove();
-//         resolve(dictToUpdate);
-//       })
-//       .catch(error => {
-//         document.querySelector('.loadingIndicator').remove();
-//         reject(error);
-//       });
-//   });
-// };
 
 const buildMostCommonGradeDict = () => {
   return buildDictionary(
