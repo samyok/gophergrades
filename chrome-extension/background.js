@@ -53,9 +53,9 @@ const RuntimeMessages = {
   },
 };
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  const { type } = message;
-  RuntimeMessages[type](message);
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  const { type } = request;
+  RuntimeMessages[type](request);
 });
 
 chrome.runtime.onInstalled.addListener(async () => {
