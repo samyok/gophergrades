@@ -53,6 +53,11 @@ const RuntimeMessages = {
   },
 };
 
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  const { type } = message;
+  RuntimeMessages[type](message);
+});
+
 chrome.runtime.onInstalled.addListener(async () => {
   const defaultSettingCodes = defaultSettings.reduce((acc, section) => {
     section.settings.forEach((setting) => {
@@ -62,9 +67,4 @@ chrome.runtime.onInstalled.addListener(async () => {
   }, {});
 
   await chrome.storage.sync.set({ settings: defaultSettingCodes });
-});
-
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  const { type } = message;
-  RuntimeMessages[type](message);
 });
