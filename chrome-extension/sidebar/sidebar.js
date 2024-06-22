@@ -48,288 +48,6 @@ const htmlToElement = (html) => {
   return template.content.firstChild;
 };
 
-// Begin code for sorting course list
-
-// dropdown element
-const dropdownTemplate = `
-<div style="display: inline-block; margin-left: -20px; margin-right: 5px;">
-  <select class="size-dropdown" style="border-color: #ccc; border-radius: 3px; height: 34px; transform: translateY(3%); font-size: 14px; padding: 6px 12px;">
-    <option value="sortCourseCodeAsc">Sort By Course # (Default)</option>
-    <option value="sortSeatsAvailDes">Sort By Seats Available</option>
-    <option value="sortMostCommonGradeDes">Sort By Most-Common A Grade</option>
-    <option value="sortPopularityDes">Sort By Popularity</option>
-    <option value="sortUnitsDes">Sort By Units</option>
-  </select>
-</div>
-`;
-
-// handle sorting options
-const handleDropdownChange = (event) => {
-  var selectedValue = event.target.value;
-  console.log("my choice: " + selectedValue);
-
-  if (selectedValue === "sortCourseCodeAsc") {
-    location.reload();
-  }
-  if (selectedValue === "sortSeatsAvailDes") {
-    const buttons = document.querySelectorAll('.action-sections.btn.btn-default');    
-    buttons.forEach(button => button.click());
-    setTimeout(sortBySeatsAvailable, 1000);
-  }
-  if (selectedValue === "sortMostCommonGradeDes") {
-    sortByMostCommonGrade();
-  }
-  if (selectedValue === "sortPopularityDes") {
-    sortByPopularity();
-  }
-  if (selectedValue === "sortUnitsDes") {
-    sortByUnits();
-  }
-  // expand with more below...
-};
-
-const sortBySeatsAvailable = () => {
-  // Looks like { "CSCI4011":26, "CSCI4041":37 ... }
-  const courseSizeDict = {};
-
-  // Get the main container with class 'course-list-results'
-  let courseListResults = document.querySelector('.course-list-results');
-  let courseDivs = Array.from(courseListResults.firstElementChild.children);
-
-  for (let courseDiv of courseDivs) {
-    // Get name of course
-    let courseName = courseDiv.querySelector('a').getAttribute('name');
-    
-    // Get seats available value
-    let targetDiv = courseDiv.querySelector('div:nth-child(2) > div:nth-child(3)');
-    let trElements = targetDiv.querySelectorAll('tr');
-    
-    let sum = 0;
-    trElements.forEach(tr => {
-      let lastChildText = tr.lastElementChild.innerText;
-      sum += parseFloat(extractDifference(lastChildText)) || 0; // Ensure the text is converted to a number
-    });
-    
-    courseSizeDict[courseName] = sum;
-  }
-
-  // sort the courseDivs in the order we want
-  courseDivs.sort((a, b) => {
-    let nameA = a.querySelector('a').getAttribute('name');
-    let nameB = b.querySelector('a').getAttribute('name');
-    return courseSizeDict[nameB] - courseSizeDict[nameA];
-  });
-
-  console.log("Sorted Seats Dict: ", courseSizeDict); // For debugging purposes, display the updated dictionary
-  console.log("Sorted Seats Course Divs: ", courseDivs); // For debugging purposes, display the updated divs
-
-  // remove all the courses to add our own ordering of the courses
-  courseListResults.firstElementChild.innerHTML = '';
-  courseDivs.forEach(courseDiv => {
-    courseListResults.firstElementChild.appendChild(courseDiv);
-  });
-
-  // click all the 'hide' buttons
-  const buttons2 = document.querySelectorAll('.action-sections.btn.btn-default.pull-right');
-  buttons2.forEach(button => button.click());
-
-  // ensure this value is selected
-  document.querySelector('.size-dropdown').value = 'sortSeatsAvailDes';
-};
-
-// Helper function to determine seats available
-function extractDifference(text) {
-  let matches = text.match(/(\d+)\s+of\s+(\d+)/g);
-  let totalDifference = 0;
-  
-  if (matches) {
-    matches.forEach(match => {
-      let parts = match.match(/(\d+)\s+of\s+(\d+)/);
-      let current = parseInt(parts[1]);
-      let total = parseInt(parts[2]);
-      totalDifference += (total - current);
-    });
-  }
-  return totalDifference;
-}
-
-const sortByMostCommonGrade = () => {
-  let courseMostCommonGradeDict = {};
-
-  // Get the main container with class 'course-list-results'
-  let courseListResults = document.querySelector('.course-list-results');
-  let courseDivs = Array.from(courseListResults.firstElementChild.children);
-
-  // Array to hold all fetch promises
-  let fetchPromises = [];
-
-  for (let courseDiv of courseDivs) {
-    let courseName = courseDiv.querySelector('a').getAttribute('name');
-
-    // Push the fetch promise into the array
-    let fetchPromise = new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage({ type: 'umnlolApiResponseJson', url: window.location.href, courseName: courseName }, response => {
-        // If the response is consistently unsuccessful or there's no data
-        // Check background.js and ctrl+f for 'umnlolApiResponseJson'
-        // That is where I handled the request
-        
-        if (response.success && response.data) {
-          let totalStudents = response.data.total_students;
-          let totalGrades = response.data.total_grades;
-          let numberOfAs = totalGrades["A"];
-          let val = (numberOfAs / totalStudents) * 100;
-          console.log(`Percentage of A's for ${courseName}: ${val}%`);
-
-          // Store the calculated percentage in the dictionary
-          courseMostCommonGradeDict[courseName] = val;
-        } else {
-          courseMostCommonGradeDict[courseName] = 0;
-        }
-        resolve(); // Resolve the promise once processing is done
-      });
-    });
-
-    fetchPromises.push(fetchPromise);
-  }
-
-  // Wait for all fetch promises to resolve
-  Promise.all(fetchPromises)
-    .then(() => {
-      // Once all promises have resolved (fetch requests are complete and data is populated), sort courseDivs
-      courseDivs.sort((a, b) => {
-        let nameA = a.querySelector('a').getAttribute('name');
-        let nameB = b.querySelector('a').getAttribute('name');
-        return courseMostCommonGradeDict[nameB] - courseMostCommonGradeDict[nameA];
-      });
-
-      console.log("Most Common Grade Dict: ", courseMostCommonGradeDict); // For debugging purposes, display the updated dictionary
-      console.log("Sorted Most Common Grade Course Divs: ", courseDivs); // For debugging purposes, display the updated divs
-
-      // Clear and update the course list results
-      courseListResults.firstElementChild.innerHTML = '';
-      courseDivs.forEach(courseDiv => {
-        courseListResults.firstElementChild.appendChild(courseDiv);
-      });
-
-      // Set dropdown value after sorting
-      document.querySelector('.size-dropdown').value = 'sortMostCommonGradeDes';
-    })
-    .catch(error => {
-      console.error('Error fetching course data:', error);
-    });
-};
-
-
-// NOTE: the rest of the functions follow very similar code from the last two.
-// The first one is to build dictionaries from information that is already on the schedule builder page (eg. seats available, course units)
-// The second one is to build dictionaries from information using an API (eg. popularity, most-common grade)
-// Refer to them if you are confused about something
-
-
-const sortByPopularity = () => {
-  let coursePopularityDict = {};
-
-  // Get the main container with class 'course-list-results'
-  let courseListResults = document.querySelector('.course-list-results');
-  let courseDivs = Array.from(courseListResults.firstElementChild.children);
-
-  // Array to hold all fetch promises
-  let fetchPromises = [];
-
-  for (let courseDiv of courseDivs) {
-    let courseName = courseDiv.querySelector('a').getAttribute('name');
-
-    // Push the fetch promise into the array
-    let fetchPromise = new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage({ type: 'umnlolApiResponseJson', url: window.location.href, courseName: courseName }, response => {
-        if (response.success && response.data) {
-          let totalStudents = response.data.total_students;
-          coursePopularityDict[courseName] = totalStudents;
-        } else {
-          coursePopularityDict[courseName] = 0;
-        }
-        resolve(); // Resolve the promise once processing is done
-      });
-    });
-
-    fetchPromises.push(fetchPromise);
-  }
-
-  // Wait for all fetch promises to resolve
-  Promise.all(fetchPromises)
-    .then(() => {
-      // Once all promises have resolved (fetch requests are complete and data is populated), sort courseDivs
-      courseDivs.sort((a, b) => {
-        let nameA = a.querySelector('a').getAttribute('name');
-        let nameB = b.querySelector('a').getAttribute('name');
-        return coursePopularityDict[nameB] - coursePopularityDict[nameA];
-      });
-
-      console.log("Most Common Grade Dict: ", coursePopularityDict); // For debugging purposes, display the updated dictionary
-      console.log("Sorted Most Common Grade Course Divs: ", courseDivs); // For debugging purposes, display the updated divs
-
-      // Clear and update the course list results
-      courseListResults.firstElementChild.innerHTML = '';
-      courseDivs.forEach(courseDiv => {
-        courseListResults.firstElementChild.appendChild(courseDiv);
-      });
-
-      // Set dropdown value after sorting
-      document.querySelector('.size-dropdown').value = 'sortPopularityDes';
-    })
-    .catch(error => {
-      console.error('Error fetching course data:', error);
-    });
-};
-
-
-const sortByUnits = () => {
-  const courseUnitsDict = {};
-
-  // Get the main container with class 'course-list-results'
-  let courseListResults = document.querySelector('.course-list-results');
-  let courseDivs = Array.from(courseListResults.firstElementChild.children);
-
-  for (let courseDiv of courseDivs) {
-    let courseName = courseDiv.querySelector('a').getAttribute('name');
-    
-    // Navigate to the correct div
-    let targetDiv = courseDiv.querySelector('div:nth-child(2) > div:nth-child(2)').children;
-    let trElements = targetDiv[targetDiv.length - 2];
-
-    myCleanText = trElements.innerHTML.trim().replace(/\s+/g, '');
-    numberMatch = (myCleanText.match(/(\d+(\.\d+)?)/));
-
-    if (numberMatch) {
-      console.log(parseFloat(numberMatch[0])); // Output: 2
-      courseUnitsDict[courseName] = parseFloat(numberMatch[0]);
-    } else {
-      // No number found
-      courseUnitsDict[courseName] = 0;
-    }
-    
-    
-  }
-
-  courseDivs.sort((a, b) => {
-    let nameA = a.querySelector('a').getAttribute('name');
-    let nameB = b.querySelector('a').getAttribute('name');
-    return courseUnitsDict[nameB] - courseUnitsDict[nameA];
-  });
-
-  console.log("Course Units Dict: ", courseUnitsDict); // For debugging purposes, display the updated dictionary
-  console.log("Sorted Units Course Divs: ", courseDivs); // For debugging purposes, display the updated divs
-
-  courseListResults.firstElementChild.innerHTML = '';
-  courseDivs.forEach(courseDiv => {
-      courseListResults.firstElementChild.appendChild(courseDiv);
-  });
-
-  document.querySelector('.size-dropdown').value = 'sortUnitsDes';
-};
-
-// end sorting feature
-
 
 
 const iframeTemplate = `
@@ -440,12 +158,17 @@ const loadCourseSchedule = (courseSchedule) => {
 };
 
 const loadDropdown = () => {
-  const courseListOptions = document.querySelector(".course-list-options");
-  const emptyDiv = courseListOptions.firstElementChild;
-  const dropdownElement = htmlToElement(dropdownTemplate);
-  const firstDiv = emptyDiv.firstElementChild;
-  emptyDiv.insertBefore(dropdownElement, firstDiv);
+  if ((window.location.host + window.location.pathname).startsWith('schedulebuilder.umn.edu/explore/')) {
+    const courseListOptions = document.querySelector(".course-list-options");
+    const emptyDiv = courseListOptions.firstElementChild;
+    const dropdownElement = htmlToElement(dropdownTemplate);
+    const firstDiv = emptyDiv.firstElementChild;
+    emptyDiv.insertBefore(dropdownElement, firstDiv);
+  }
 };
+
+let currentPage = 0;
+let lastPage = 0;
 
 const onAppChange = async () => {
   const courseList = document.querySelector(".course-list-results");
@@ -466,11 +189,21 @@ const onAppChange = async () => {
   var courseSortDropdown = document.querySelector('.size-dropdown');
   if (courseSortDropdown) {
     courseSortDropdown.addEventListener('change', handleDropdownChange);
-  } else {
-    console.log("Course-sort dropdown not found for whatever reason. This feature will not work.");
   }
-
   if (!courseSortDropdown) loadDropdown();
+  
+  const activeItem = document.querySelector('.page-item.active').firstElementChild;
+  if (activeItem) {
+    lastPage = activeItem.getAttribute('page-value');
+  }
+  if (currentPage != lastPage) {
+    if (currentPage != 0 && document.querySelector('.size-dropdown').value != 'sortCourseCodeAsc') {
+      location.reload();
+      // we reload because of some weird bug that expands all sections
+    }
+    currentPage = lastPage;
+    resetDictionaries();
+  }
 };
 
 

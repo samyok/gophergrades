@@ -67,7 +67,6 @@ chrome.runtime.onInstalled.addListener(async () => {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "umnlolApiResponseJson") {
     // Handle JSON message type with a GET request
-    // This is where we
     fetch(`https://umn.lol/api/class/${message.courseName}?url=${encodeURIComponent(message.url)}`, {
       method: 'GET',
       headers: {
