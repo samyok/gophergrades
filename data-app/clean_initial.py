@@ -95,13 +95,15 @@ def fetch_unknown_prof(x: pd.DataFrame) -> pd.DataFrame:
     dept = x["SUBJECT"].iloc[0]
     catalog_nbr = x["CATALOG_NBR"].iloc[0]
     term = str(x["TERM"].iloc[0])
+    institution = str(x["INSTITUTION"].iloc[0])
+    campus = str(x["CAMPUS"].iloc[0])
 
     course_resp = requests.get(
         "https://schedulebuilder.umn.edu/api.php",
         params={
             "type": "course",
-            "institution": "UMNTC",
-            "campus": "UMNTC",
+            "institution": institution,
+            "campus": campus,
             "term": term,
             "subject": dept,
             "catalog_nbr": catalog_nbr,
@@ -127,8 +129,8 @@ def fetch_unknown_prof(x: pd.DataFrame) -> pd.DataFrame:
         "https://schedulebuilder.umn.edu/api.php",
         params={
             "type": "sections",
-            "institution": "UMNTC",
-            "campus": "UMNTC",
+            "institution": institution,
+            "campus": campus,
             "term": term,
             "class_nbrs": ", ".join([str(x) for x in data["sections"]]),
         },
@@ -173,7 +175,7 @@ def fetch_unknown_prof(x: pd.DataFrame) -> pd.DataFrame:
     del merged_instructors["CLASS_SECTION_x"]
     merged_instructors.rename(columns={"CLASS_SECTION_y": "CLASS_SECTION"}, inplace=True)
     
-    print(f"{dept} {catalog_nbr}")
+    print(f"{campus} {dept} {catalog_nbr}")
 
     merged_total = pd.merge(x, merged_instructors, on='CLASS_SECTION', how='left')
     merged_total["HR_NAME_x"].fillna(merged_total["HR_NAME_y"], inplace=True)
@@ -224,9 +226,8 @@ THIS WILL LIKELY NOT STAY CONSISTENT.
 """
 
 
-df = pd.read_csv("CLASS_DATA/FALL2023_raw_data.csv", dtype={"CLASS_SECTION": str})
+df = pd.read_csv("CLASS_DATA/SPR24_raw_data.csv", dtype={"CLASS_SECTION": str})
 # Unneeded Data
-del df["INSTITUTION"]
 del df["TERM_DESCR"]
 del df["COMPONENT_MAIN"]
 del df["INSTR_ROLE"]
@@ -235,7 +236,7 @@ del df["UM_JOBCODE_GROUP"]
 del df["CLASS_HDCNT"]
 df = df[~(df["CRSE_GRADE_OFF"] == "NR")]
 
-df["TERM"] = 1239
+df["TERM"] = 1243
 
 # Write class name as the proper full name that students are accustomed to.
 df["FULL_NAME"] = df["SUBJECT"] + " " + df["CATALOG_NBR"]
@@ -246,8 +247,10 @@ df["CLASS_SECTION"] = df["CLASS_SECTION"].apply(lambda x: x.zfill(3))
 # Replace unknown professor values with either a correct name or "Unknown Instructor"
 
 # If you are using multiple terms in a dataset.
-df = df.groupby(["TERM", "FULL_NAME"]).apply(fetch_unknown_prof)
+df = df.groupby(["TERM", "FULL_NAME","CAMPUS"]).apply(fetch_unknown_prof)
+
+del df["INSTITUTION"]
 
 df["HR_NAME"] = df["HR_NAME"].apply(format_name)
 
-df.to_csv("CLASS_DATA/FALL2023_cleaned_data.csv", index=False)
+df.to_csv("CLASS_DATA/SPR24_cleaned_data.csv", index=False)

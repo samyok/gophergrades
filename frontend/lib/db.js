@@ -86,7 +86,9 @@ export const getDistribution = async (classCode) => {
                LEFT JOIN distribution d on classdistribution.id = d.class_id
                LEFT JOIN termdistribution t on d.id = t.dist_id
                LEFT JOIN professor p on d.professor_id = p.id
-      WHERE REPLACE(class_name, ' ', '') = REPLACE($class_name, ' ', '')`;
+      WHERE 
+        classdistribution.campus == "UMNTC" AND
+        classdistribution.dept_abbr || course_num = REPLACE($class_name, ' ', '')`;
 
   const params = {
     $class_name: classCode,
@@ -101,13 +103,14 @@ export const getClassInfo = async (classCode) => {
   const sql = `
       SELECT *
       FROM classdistribution
-               LEFT JOIN departmentdistribution d on classdistribution.department_id = d.id
+               LEFT JOIN departmentdistribution d on classdistribution.dept_abbr = d.dept_abbr AND classdistribution.campus = d.campus
                LEFT JOIN (SELECT lat.right_id,
                                  json_group_array(json_object('name', l.name, 'id', lat.left_id)) as libEds
                           FROM libedAssociationTable lat
                                    LEFT JOIN libEd l ON lat.left_id = l.id
                           GROUP BY right_id) libEds on classdistribution.id = libEds.right_id
-      WHERE REPLACE(class_name, ' ', '') = REPLACE($class_name, ' ', '')`;
+      WHERE classdistribution.campus == "UMNTC" AND
+      classdistribution.dept_abbr || course_num = REPLACE($class_name, ' ', '')`;
 
   const params = {
     $class_name: classCode,
@@ -120,8 +123,9 @@ export const getClassInfo = async (classCode) => {
 
 export const getEveryClassCode = async () => {
   const sql = `
-      SELECT class_name, class_desc
-      FROM classdistribution`;
+      SELECT dept_abbr, course_num, class_desc
+      FROM classdistribution
+      WHERE campus == "UMNTC"`;
 
   const rows = await promisedQuery(sql);
 
@@ -141,7 +145,8 @@ export const getEveryProfessorCode = async () => {
 export const getEveryDepartmentCode = async () => {
   const sql = `
       SELECT dept_abbr, dept_name
-      FROM departmentdistribution`;
+      FROM departmentdistribution
+      WHERE campus == "UMNTC"`;
 
   const rows = await promisedQuery(sql);
 
@@ -152,7 +157,9 @@ export const getDeptInfo = async (deptCode) => {
   const sql = `
       SELECT *
       FROM departmentdistribution
-      WHERE dept_abbr = $dept_code`;
+      WHERE dept_abbr = $dept_code
+      AND campus == "UMNTC"
+      `;
 
   const params = {
     $dept_code: deptCode.toUpperCase(),
@@ -167,9 +174,12 @@ export const getClassDistribtionsInDept = async (deptCode) => {
   const sql = `
       SELECT *
       FROM departmentdistribution
-               LEFT JOIN classdistribution on classdistribution.department_id = departmentdistribution.id
-      WHERE dept_abbr = $dept_code
-      ORDER BY replace(classdistribution.class_name, ' ', '')
+        LEFT JOIN classdistribution on classdistribution.dept_abbr = departmentdistribution.dept_abbr AND
+        classdistribution.campus = departmentdistribution.campus
+      WHERE 
+        classdistribution.dept_abbr = $dept_code AND
+        classdistribution.campus == "UMNTC"
+      ORDER BY course_num ASC
   `;
 
   const params = {
@@ -203,7 +213,9 @@ export const getInstructorClasses = async (instructorId) => {
                LEFT JOIN distribution d on professor.id = d.professor_id
                LEFT JOIN termdistribution t on d.id = t.dist_id
                LEFT JOIN classdistribution c on d.class_id = c.id
-      WHERE professor.id = $instructor_id`;
+      WHERE professor.id = $instructor_id
+      AND c.campus == "UMNTC"
+      `;
 
   const params = {
     $instructor_id: instructorId,
@@ -216,25 +228,35 @@ export const getInstructorClasses = async (instructorId) => {
 
 export const getSearch = async (search) => {
   const classDistSQL = `
-      SELECT id, class_name, class_desc, total_students
+      SELECT id, dept_abbr || ' ' || course_num AS class_name, class_desc, total_students
       FROM classdistribution
-      WHERE REPLACE(class_name, ' ', '') LIKE $search
-         OR REPLACE(class_desc, ' ', '') LIKE $search
+      WHERE campus == "UMNTC" AND 
+        (
+          dept_abbr || course_num LIKE $search
+          OR REPLACE(class_desc, ' ', '') LIKE $search
+        )
       ORDER BY total_students DESC
       LIMIT 10`;
 
   const professorSQL = `
       SELECT *
       FROM professor
-      WHERE REPLACE(name, ' ', '') LIKE $search
+      WHERE 
+        REPLACE(name, ' ', '') LIKE $search AND
+        EXISTS (
+          SELECT 1
+          FROM distribution d, classdistribution c
+          WHERE d.professor_id = professor.id AND d.class_id = c.id AND c.campus == "UMNTC"
+        )
       ORDER BY RMP_score DESC
       LIMIT 10`;
 
   const deptSQL = `
       SELECT *
       FROM departmentdistribution
-      WHERE dept_name LIKE $search
-         OR dept_abbr LIKE $search
+      WHERE 
+        (dept_name LIKE $search OR dept_abbr LIKE $search) AND
+        campus == "UMNTC"
       LIMIT 10`;
 
   const params = {

@@ -38,8 +38,8 @@ export default function Prof({ profData }) {
   const formattedDistributions = distributions
     .map((dist) => ({
       ...dist,
-      title: `${dist.class_name}: ${dist.class_desc}`,
-      href: `/class/${dist.class_name.replace(" ", "")}`,
+      title: `${dist.dept_abbr} ${dist.course_num}: ${dist.class_desc}`,
+      href: `/class/${dist.dept_abbr}${dist.course_num}`,
     }))
     // sort by number of students
     .sort((a, b) => b.students - a.students);

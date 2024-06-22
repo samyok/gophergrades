@@ -30,8 +30,8 @@ export default function Dept({ deptData }) {
     ...dist,
     grades: dist.total_grades,
     students: dist.total_students,
-    title: `${dist.class_name}: ${dist.class_desc}`,
-    href: `/class/${dist.class_name.replace(" ", "")}`,
+    title: `${dist.dept_abbr} ${dist.course_num}: ${dist.class_desc}`,
+    href: `/class/${dist.dept_abbr}${dist.course_num}`,
   }));
 
   const totalDistribution = {
