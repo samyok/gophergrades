@@ -64,7 +64,7 @@ const sortCourses = (buildDictFunc, dropdownValue, additionalLogic = () => {}) =
 
     document.querySelector('.size-dropdown').value = dropdownValue;
   }).catch(error => {
-    console.error('Error building course dictionary:', error);
+    console.error(courseSortingLogPrefix + 'Error building course dictionary:', error);
   });
 };
 
