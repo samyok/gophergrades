@@ -137,7 +137,6 @@ const buildDictionary = (fetchDataFunc, dictToUpdate) => {
         let courseName = courseDiv.querySelector('a').getAttribute('name');
         let fetchPromise = new Promise((resolve, reject) => {
           try {
-            // For debuggging, use `https://gophergrades-9wharkgah-umn-social-coding.vercel.app/api/class/${courseName}`
             fetch(`https://umn.lol/api/class/${courseName}`)
             .then(res => {
               if (!res.ok) {
