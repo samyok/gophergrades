@@ -103,49 +103,50 @@ const generalClassInfo = async (term, courseNum, institution = "UMNTC") => {
     .then((r) => r.text())
     .then((r) => (el.innerHTML = r));
 
+  synchronousRows = [];
   let table = el.querySelector("table.myu_panel-table.table.responsive").querySelector("tbody").querySelectorAll("tr");
-  let synchronousRow;
-  let synchronousRowCounter = 0;
   for (let row of table) {
-    if (row.querySelector("[data-th='Days and Times']").innerText !== "------- -") { // !(no meetings, no time range)
-      synchronousRow = row;
-      synchronousRowCounter++;
-    } else {
+    if (row.querySelector("[data-th='Days and Times']").innerText == "------- -") { // !(no meetings, no time range)
       console.log("[GG] found asynchronous meeting in `generalClassInfo`, ignoring...");
+      continue;
     }
+    
+    // dateRange parsing
+    let dateRangeString = row.querySelector('[data-th="Meeting Dates"]').innerText;
+    let dateRange = dateRangeString.split(" - ").map(function (dateString) {
+      return parseDate(dateString, "mm/dd/yyyy");
+    });
+
+    const courseObject = {
+      term: term.trim(), // {string}
+      courseNum: courseNum.trim(), // {string}
+      institution: institution.trim(), // {string}
+      dateRange: dateRange, // {Array<Date>}
+      daysOfWeek: daysOfWeekToArray(
+        row.querySelector('[data-th="Days and Times"]').innerText.slice(0, 7)
+      ), // {Array<boolean>}
+      timeRange: row
+        .querySelector('[data-th="Days and Times"]')
+        .innerText.slice(8)
+        .trim(), // {string} // everything after character 8 (inclusive) // format: hh:mm pm - hh:mm pm
+      room: row.querySelector('[data-th="Room"]').innerText.trim(), // {string}
+      // "meetingType"   : // {string} populated in scraperSecondPass
+      // "courseName"    : // {string} populated in scraperSecondPass
+      // "excludedDates" : // {Array<Date>} populated in scraperSecondPass
+      // "firstDate"     : // {Date} // populated in scraperSecondPass
+      // "prettyName"   : // {string} // populated in scraperSecondPass
+      // "sectionID"     : // {string} // populated in scraperSecondPass
+      // "address"       : // COMING LATER // accessible only through outside site, likely will need to just make local lookup table
+    }; // {CourseObject} spec
+    synchronousRows.push(courseObject);
   }
 
-  if (synchronousRowCounter != 1) {
-    console.log(`[GG]!!!!!!!!!!!!!!! ALERT, ${synchronousRowCounter} synchronous meeting found in generalClassInfo() for url ${url}`);
+  if (synchronousRows.length != 1) {
+    console.log(`[GG] Note: ${synchronousRows.length} synchronous meeting found in generalClassInfo() for url ${url}`);
   } // if this runs, that means we have a big headache and rewrite ahead of us. pls no
+  // oh wait, I just did the rewrite and everything's good now, yay :D
 
-  // dateRange parsing
-  let dateRangeString = synchronousRow.querySelector('[data-th="Meeting Dates"]').innerText;
-  let dateRange = dateRangeString.split(" - ").map(function (dateString) {
-    return parseDate(dateString, "mm/dd/yyyy");
-  });
-
-  return {
-    term: term.trim(), // {string}
-    courseNum: courseNum.trim(), // {string}
-    institution: institution.trim(), // {string}
-    dateRange: dateRange, // {Array<Date>}
-    daysOfWeek: daysOfWeekToArray(
-      synchronousRow.querySelector('[data-th="Days and Times"]').innerText.slice(0, 7)
-    ), // {Array<boolean>}
-    timeRange: synchronousRow
-      .querySelector('[data-th="Days and Times"]')
-      .innerText.slice(8)
-      .trim(), // {string} // everything after character 8 (inclusive) // format: hh:mm pm - hh:mm pm
-    room: synchronousRow.querySelector('[data-th="Room"]').innerText.trim(), // {string}
-    // "meetingType"   : // {string} populated in scraperSecondPass
-    // "courseName"    : // {string} populated in scraperSecondPass
-    // "excludedDates" : // {Array<Date>} populated in scraperSecondPass
-    // "firstDate"     : // {Date} // populated in scraperSecondPass
-    // "prettyName"   : // {string} // populated in scraperSecondPass
-    // "sectionID"     : // {string} // populated in scraperSecondPass
-    // "address"       : // COMING LATER // accessible only through outside site, likely will need to just make local lookup table
-  }; // {CourseObject} spec
+  return synchronousRows;
 };
 
 /**
@@ -157,13 +158,33 @@ const generalClassInfo = async (term, courseNum, institution = "UMNTC") => {
  * @returns {Array<Object>} list of additional meetings
  */
 const scraperSecondPass = (weeks, coursesInfo) => {
+  const timeRangeRepr = (timeRangeString, format) => {
+    let ARBITRARY_DATE = new Date();
+    if (format == "week") {
+      // "hh:mm - hh:mm pm" (first am/pm is ommitted)
+      timeRange = getTimes(timeRangeString, ARBITRARY_DATE); // long string that is dumb. we will cut it down >:)
+    } else if (format == "coursesInfo") {
+      // "hh:mm pm - hh:mm pm"
+      timeRange = recurringGetTimes(timeRangeString, ARBITRARY_DATE); // long string that is dumb
+    } else {
+      throw new Error(
+        `timeRangeRepr() was passed unrecognized format ${format}`
+      );
+    }
+    return timeRange.map((s) => s.slice(9, 13)).join("-"); // crop off extraneous info
+  };
+
   // first, find the first meeting of the course.
   // log the date of this first meeting (needed for .ics spec stuff)
   // copy over `meetingType` and `courseName`
   courseloop: for (let course of coursesInfo) {
     for (let week of weeks) {
       for (let meeting of week.meetingObjects) {
-        if (meeting.courseNum == course.courseNum) {
+        if (meeting.courseNum == course.courseNum // match courses to first meeting based on room, time range, date range
+            && meeting.room == course.room 
+            && timeRangeRepr(meeting.timeRange, "week") == timeRangeRepr(course.timeRange, "coursesInfo")
+            && new Date(course.dateRange[0]) <= meeting.date
+            && meeting.date <= new Date(course.dateRange[1])) {
           course.firstDate = meeting.date;
           course.meetingType = meeting.meetingType;
           course.courseName = meeting.courseName;
@@ -187,29 +208,15 @@ const scraperSecondPass = (weeks, coursesInfo) => {
      * @param {string} format "week" for "hh:mm - hh:mm pm" format, "coursesInfo" for "hh:mm pm - hh:mm pm" format
      * @returns {string} "hhmm-hhmm" (start time, then end time)
      */
-    const timeRangeRepr = (timeRangeString, format) => {
-      let ARBITRARY_DATE = new Date();
-      if (format == "week") {
-        // "hh:mm - hh:mm pm" (first am/pm is ommitted)
-        timeRange = getTimes(timeRangeString, ARBITRARY_DATE); // long string that is dumb. we will cut it down >:)
-      } else if (format == "coursesInfo") {
-        // "hh:mm pm - hh:mm pm"
-        timeRange = recurringGetTimes(timeRangeString, ARBITRARY_DATE); // long string that is dumb
-      } else {
-        throw new Error(
-          `timeRangeRepr() was passed unrecognized format ${format}`
-        );
-      }
-      return timeRange.map((s) => s.slice(9, 13)).join("-"); // crop off extraneous info
-    };
 
     // ###################################
     // First, set up model week hash table
     // ###################################
-    let modelWeekHT = {}; // empty json object (hash table)
+    const hashMeeting = (day, timeRange, courseNum, room) => { // perhaps have hash also include room name?
+      return [day, timeRange, courseNum, room].join("-");
+    }
+    let modelWeekHT = {}; // maps hash: str |-> {course: CourseObject, day: int}
     for (day = 0; day < 7; day++) {
-      // for day in a week
-
       // console.log(coursesInfo) // debug
       for (let course of coursesInfo) {
         course.excludedDates = []; // initialize to no excluded dates
@@ -217,13 +224,12 @@ const scraperSecondPass = (weeks, coursesInfo) => {
         if (course.daysOfWeek[day]) {
           // if the course has a meeting on this day, add the course to today's hash table
           timeRange = timeRangeRepr(course.timeRange, "coursesInfo"); // single standardized string representing the timeRange
-          hash = [day, timeRange, course.courseNum].join("-");
+          hash = hashMeeting(day, timeRange, course.courseNum, course.room);
           modelWeekHT[hash] = { course: course, day: day }; // content of hash table: pointer to the course object
         }
         // hash table. hash is based on day, time range, course num. value is pointer to the course object
       }
     }
-    let modelWeekKeys = Object.keys(modelWeekHT);
 
     let additionalMeetings = [];
 
@@ -232,21 +238,23 @@ const scraperSecondPass = (weeks, coursesInfo) => {
     // ###############################
     for (let week of weeks) {
       // Create a hash table for the actual week as well
-      let thisWeekHT = {};
+      let thisWeekHT = {}; // maps hash: str |-> MeetingObject
       for (let meeting of week.meetingObjects) {
         let day = meeting.date.getUTCDay();
         let timeRange = timeRangeRepr(meeting.timeRange, "week"); // single standarized string representing the timeRange
-        let hash = [day, timeRange, meeting.courseNum].join("-");
+        let hash = hashMeeting(day, timeRange, meeting.courseNum, meeting.room);
         thisWeekHT[hash] = meeting;
       }
-      let thisWeekKeys = Object.keys(thisWeekHT);
 
       // okay, setup's over
       // now the fun begins
 
       // finding excluded meetings
       // for meeting in model week, ensure that it appears in the actual week. if it doesn't, add it to the excluded meetings list
-      for (let hash of modelWeekKeys) {
+      // console.log(modelWeekHT)
+      // console.log(thisWeekHT)
+      for (let hash of Object.keys(modelWeekHT)) {
+        const course = modelWeekHT[hash].course;
         if (thisWeekHT[hash] == null) {
           let dayOfWeek = modelWeekHT[hash].day;
           // console.log(dayOfWeek)
@@ -254,20 +262,29 @@ const scraperSecondPass = (weeks, coursesInfo) => {
           excludedDate.setDate(excludedDate.getDate() + dayOfWeek); // then shift the date to the correct day of week
           // console.log(excludedDate)
 
-          console.log(`[GG] Excluded meeting found! hash: ${hash}`);
-          console.log(`[GG] date: ${excludedDate}`)
-          modelWeekHT[hash].course.excludedDates.push(excludedDate);
+          // console.log(`[GG] found possible excluded meeting! hash: ${hash}`)
+          // console.log(`[GG] date ${excludedDate}`)
+          // console.log(`[GG] course date range: ${course.dateRange}`)
+          if (new Date(course.dateRange[0]) <= excludedDate // don't add an excluded date if the meeting's already out of recurrence range
+              && excludedDate <= new Date(course.dateRange[1])) {
+            console.log(`[GG] Excluded meeting found! hash: ${hash}`);
+            console.log(`[GG] date: ${excludedDate}`)
+            course.excludedDates.push(excludedDate);
+          }
         }
       }
 
       // finding additional meetings
       // for meeting in actual week, ensure it appears in the model week. If it doesn't, add it to the additional dates
-      for (let hash of thisWeekKeys) {
+      for (let hash of Object.keys(thisWeekHT)) {
+        const meeting = thisWeekHT[hash];
         // for meeting in week
-        if (modelWeekHT[hash] == null) {
-          // if this meeting doesn't appear in the model week
+        if (modelWeekHT[hash] == null // if meeting doesn't appear in the model week
+            || !(new Date(modelWeekHT[hash].course.dateRange[0]) <= meeting.date 
+                 && meeting.date <= new Date(modelWeekHT[hash].course.dateRange[1])) // or if the meeting *is* in the model week, but this is outside of its recurrence range
+        ) {
           console.log(`[GG] Additional meeting found! hash: ${hash}`);
-          additionalMeeting = thisWeekHT[hash];
+          additionalMeeting = meeting;
           console.log(`[GG] date: ${additionalMeeting.date}$`);
           additionalMeetings.push(additionalMeeting);
         }
@@ -319,10 +336,10 @@ const scrapeASemester = async (sampleDateString = "today") => {
   for (let courseNum of courseNums) {
     coursesInfoPromises.push(generalClassInfo(term, courseNum, institution));
   }
-  let coursesInfo = await Promise.all(coursesInfoPromises); // concurrency, yo!
+  let coursesInfo = (await Promise.all(coursesInfoPromises)).flat(); // concurrency, yo!
 
   // 3: loop through week by week and do ...stuff
-  startDate = endDate = coursesInfo[0].dateRange[0];
+  startDate = coursesInfo[0].dateRange[0]; // assumption: coursesInfo[0] has the widest date range (this is not necessarily true)
   endDate = coursesInfo[0].dateRange[1];
   endDate.setDate(endDate.getDate() + 7); // pad an extra week onto endDate so we can be sure we got everything
 
