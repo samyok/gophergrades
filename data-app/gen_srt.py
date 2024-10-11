@@ -1,5 +1,5 @@
 import pandas as pd
-from numpy import NaN
+from numpy import nan
 from scipy.interpolate import interp1d
 from db.Models import ClassDistribution, Session, and_
 
@@ -16,8 +16,8 @@ def srt_frame() -> pd.DataFrame:
     """
     df = pd.read_csv("SRT_DATA/combined_srt.csv")
     del df["Term"]  # Data only for recordkeeping, not important in calculations.
-    # Sometimes this divide by zero error occurs in data, replace it with a NaN
-    df = df.replace("#DIV/0!", NaN)
+    # Sometimes this divide by zero error occurs in data, replace it with a nan
+    df = df.replace("#DIV/0!", nan)
     df = df.astype(
         {
             "DEEP_UND": float,
@@ -37,7 +37,7 @@ def srt_frame() -> pd.DataFrame:
     ] = df[
         ["DEEP_UND", "STIM_INT", "TECH_EFF", "ACC_SUP", "EFFORT", "GRAD_STAND", "RECC"]
     ].apply(
-        lambda x: x.apply(lambda y: NaN if (y < 1 or y > 6) else y)
+        lambda x: x.apply(lambda y: nan if (y < 1 or y > 6) else y)
     )
 
     # Weight each of the values.
@@ -51,7 +51,7 @@ def srt_frame() -> pd.DataFrame:
 
     # Group and sum and divide
     ret_df = df.groupby("FULL_NAME").sum()
-    ret_df = df.replace(0, NaN)
+    ret_df = df.replace(0, nan)
 
     def count_non_nans(row):
         row["DEEP_UND"] = row["RESP"] if row["DEEP_UND"] == row["DEEP_UND"] else 0
@@ -71,26 +71,26 @@ def srt_frame() -> pd.DataFrame:
     def normalize(row):
         loc_row = count_df[row["FULL_NAME"]]
         row["DEEP_UND"] = (
-            row["DEEP_UND"] / loc_row["DEEP_UND"] if loc_row["DEEP_UND"] != 0 else NaN
+            row["DEEP_UND"] / loc_row["DEEP_UND"] if loc_row["DEEP_UND"] != 0 else nan
         )
         row["STIM_INT"] = (
-            row["STIM_INT"] / loc_row["STIM_INT"] if loc_row["STIM_INT"] != 0 else NaN
+            row["STIM_INT"] / loc_row["STIM_INT"] if loc_row["STIM_INT"] != 0 else nan
         )
         row["TECH_EFF"] = (
-            row["TECH_EFF"] / loc_row["TECH_EFF"] if loc_row["TECH_EFF"] != 0 else NaN
+            row["TECH_EFF"] / loc_row["TECH_EFF"] if loc_row["TECH_EFF"] != 0 else nan
         )
         row["ACC_SUP"] = (
-            row["ACC_SUP"] / loc_row["ACC_SUP"] if loc_row["ACC_SUP"] != 0 else NaN
+            row["ACC_SUP"] / loc_row["ACC_SUP"] if loc_row["ACC_SUP"] != 0 else nan
         )
         row["EFFORT"] = (
-            row["EFFORT"] / loc_row["EFFORT"] if loc_row["EFFORT"] != 0 else NaN
+            row["EFFORT"] / loc_row["EFFORT"] if loc_row["EFFORT"] != 0 else nan
         )
         row["GRAD_STAND"] = (
             row["GRAD_STAND"] / loc_row["GRAD_STAND"]
             if loc_row["GRAD_STAND"] != 0
-            else NaN
+            else nan
         )
-        row["RECC"] = row["RECC"] / loc_row["RECC"] if loc_row["RECC"] != 0 else NaN
+        row["RECC"] = row["RECC"] / loc_row["RECC"] if loc_row["RECC"] != 0 else nan
         return row
 
     ret_df = ret_df.groupby("FULL_NAME", as_index=False, group_keys=False).sum()
