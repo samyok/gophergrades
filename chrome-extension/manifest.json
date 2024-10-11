@@ -19,7 +19,8 @@
         "sidebar/sidebar.css"
       ],
       "js": [
-        "sidebar/sidebar.js"
+        "sidebar/sidebar.js",
+        "course_sort/course_sort.js"
       ]
     },
     {
