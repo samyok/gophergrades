@@ -38,11 +38,6 @@ const MyHeading = ({
     <meta property={"twitter:title"} content={title || DEFAULT_TITLE} />
     <meta property={"twitter:description"} content={DEFAULT_DESC} />
     {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-    <script
-      data-website-id={"22f6733b-ad28-4934-a703-1c1ea4c0e4fc"}
-      data-domains={"umn.lol"}
-      src={"/stats/script.js"}
-    />
   </Head>
 );
 export default MyHeading;
