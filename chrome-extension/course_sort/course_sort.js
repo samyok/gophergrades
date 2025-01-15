@@ -8,7 +8,7 @@ const dropdownTemplate = `
   <select class="size-dropdown" style="border-color: #ccc; border-radius: 3px; height: 34px; transform: translateY(3%); font-size: 14px; padding: 6px 12px;">
     <option value="sortCourseCodeAsc">Sort By Course # (Default)</option>
     <option value="sortSeatsAvailDes">Sort By Seats Available</option>
-    <option value="sortMostCommonGradeDes">Sort By Most-Common A Grade</option>
+    <option value="sortMostCommonGradeDes">Sort By A Grade Rate</option>
     <option value="sortAvgGrade">Sort By Average Grade</option>
     <option value="sortPopularityDes">Sort By Popularity</option>
     <option value="sortUnitsDes">Sort By Units</option>
