@@ -4,10 +4,13 @@ from nameparser import HumanName
 import re
 import json
 import sys
+import warnings
 
 # Worry not about the CACHED variables, this is simply to help store previous requests in order to prevent redundant calls to an API
 CACHED_REQ = {}
 CACHED_LINK = ""
+
+warnings.filterwarnings("ignore")
 
 
 def fetch_unknown_prof_deprecated(x: pd.DataFrame) -> pd.DataFrame:
@@ -226,7 +229,7 @@ THIS WILL LIKELY NOT STAY CONSISTENT.
 """
 
 
-df = pd.read_csv("CLASS_DATA/SUM2024_raw_data.csv", dtype={"CLASS_SECTION": str})
+df = pd.read_csv("CLASS_DATA/FALL2024_raw_data.csv", dtype={"CLASS_SECTION": str})
 # Unneeded Data
 del df["TERM_DESCR"]
 del df["COMPONENT_MAIN"]
@@ -236,7 +239,7 @@ del df["UM_JOBCODE_GROUP"]
 del df["CLASS_HDCNT"]
 df = df[~(df["CRSE_GRADE_OFF"] == "NR")]
 
-df["TERM"] = 1245
+df["TERM"] = 1249
 
 # Write class name as the proper full name that students are accustomed to.
 df["FULL_NAME"] = df["SUBJECT"] + " " + df["CATALOG_NBR"]
@@ -253,4 +256,4 @@ del df["INSTITUTION"]
 
 df["HR_NAME"] = df["HR_NAME"].apply(format_name)
 
-df.to_csv("CLASS_DATA/SUM2024_cleaned_data.csv", index=False)
+df.to_csv("CLASS_DATA/FALL2024_cleaned_data.csv", index=False)

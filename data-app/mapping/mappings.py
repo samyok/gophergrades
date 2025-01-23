@@ -592,6 +592,17 @@ libed_mapping = {
     "FSEM - FR SEMINAR (Freshman Seminar)": "Freshman Seminar",
     "TOP - TOPICS (Topics Course)": "Topics Course",
     "ONL - ONLINE (Online may be available)": "Online Available",
+    # Minnesota Transfer Curriculum
+    "MTC - MTC GOAL1 (Communication)": "Communication",
+    "MTC - MTC GOAL2 (Critical Thinking)": "Critical Thinking",
+    "MTC - MTC GOAL3 (Natural Sciences)": "Natural Sciences",
+    "MTC - MTC GOAL4 (Mathematics/Logical Reasoning)": "Mathematical/Logical Reasoning",
+    "MTC - MTC GOAL5 (History and the Social and Behavioral Sciences)": "History and the Social & Behavioral Sciences",
+    "MTC - MTC GOAL6 (Humanities and Fine Arts)": "Humanities and Fine Arts",
+    "MTC - MTC GOAL7 (Human Diversity)": "Human Diversity",
+    "MTC - MTC GOAL8 (Global Perspective)": "Global Perspective",
+    "MTC - MTC GOAL9 (Ethical & Civic Responsibility)": "Ethical and Civic Responsibility",
+    "MTC - MTC GOAL10 (People and the Environment)": "People and the Environment",
 }
 grade_mapping = {
     "A+": 4.3,
