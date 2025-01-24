@@ -4,7 +4,7 @@ import numpy as np
 from collections import Counter
 from db.Models import *
 from mapping.mappings import dept_mapping, libed_mapping
-from gen_rmp import *
+# from gen_rmp import *
 from gen_srt import *
 from gen_asr import *
 from gen_courseinfo import *
@@ -103,7 +103,7 @@ def process_dept(dept_tuple:str):
 # Add all libeds as defined in libed_mapping. This is a constant addition as there are a finite amount of libed requirements.
 session = Session()
 if len(session.query(Libed).all()) == 0:
-    session.add_all([Libed(name=libed) for libed in libed_mapping.values()])
+    session.add_all([Libed(name=libed) for libed in set(libed_mapping.values())])
     session.commit()
 session.close()
 
@@ -116,7 +116,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     
-    df = pd.read_csv("CLASS_DATA/SUM2024_cleaned_data.csv",dtype={"CLASS_SECTION":str})
+    df = pd.read_csv("CLASS_DATA/FALL2024_cleaned_data.csv",dtype={"CLASS_SECTION":str})
     print("Loaded Data!")
     print("Adding Profs")
     # Add All Professors Including an "Unknown Instructor" for non-attributed values to the Database
