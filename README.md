@@ -3,6 +3,15 @@
 
 GopherGrades is a web app that allows you to look up past grades for courses at the University of Minnesota. The frontend is built with NextJS, SQLite, and ChakraUI. The backend is written in Python utilizing the pandas library to wrangle data provided to us by the [Office of Data Access and Privacy](https://ogc.umn.edu/data-access-and-privacy) and [The Office of Undergraduate Education Academic Support Resources](https://github.com/umn-asr/courses).
 
+# Other Schools' Versions
+
+We are excited to highlight other schools' versions of GopherGrades! Check out the University of Oregon's version of GopherGrades at [uo.zone](https://uo.zone/).
+
+| School | Preview |
+|--------|---------|
+| [uo.zone](https://uo.zone/) | ![uo.zone Preview](https://uo.zone/static/homepage.png) |
+
+If you have created your own version of GopherGrades and would like to be highlighted here, please message Samyok via Discord (@samyok) or email (sam@yok.dev).
 
 # Running Locally
 ```bash
