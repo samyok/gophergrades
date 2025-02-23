@@ -48,6 +48,8 @@ const htmlToElement = (html) => {
   return template.content.firstChild;
 };
 
+
+
 const iframeTemplate = `
 <div class="gopher-grades-container">
 <iframe class="gopher-grades-result-iframe" referrerpolicy="unsafe-url"></iframe>
@@ -155,6 +157,19 @@ const loadCourseSchedule = (courseSchedule) => {
   }
 };
 
+const loadDropdown = () => {
+  if ((window.location.host + window.location.pathname).startsWith('schedulebuilder.umn.edu/explore/')) {
+    const courseListOptions = document.querySelector(".course-list-options");
+    const emptyDiv = courseListOptions.firstElementChild;
+    const dropdownElement = htmlToElement(dropdownTemplate);
+    const firstDiv = emptyDiv.firstElementChild;
+    emptyDiv.insertBefore(dropdownElement, firstDiv);
+  }
+};
+
+let currentPage = 0;
+let lastPage = 0;
+
 const onAppChange = async () => {
   const courseList = document.querySelector(".course-list-results");
   const courseInfo = document.querySelector("#crse-info");
@@ -170,10 +185,32 @@ const onAppChange = async () => {
   if (courseList) loadCourses(courseList);
   else if (courseInfo) loadCourseInfo(courseInfo);
   else if (courseSchedule) loadCourseSchedule(courseSchedule);
+
+  var courseSortDropdown = document.querySelector('.size-dropdown');
+  if (courseSortDropdown) {
+    courseSortDropdown.addEventListener('change', handleDropdownChange);
+  }
+  if (!courseSortDropdown) loadDropdown();
+  
+  const activeItem = document.querySelector('.page-item.active').firstElementChild;
+  if (activeItem) {
+    lastPage = activeItem.getAttribute('page-value');
+  }
+  if (currentPage != lastPage) {
+    if (currentPage != 0 && document.querySelector('.size-dropdown').value != 'sortCourseCodeAsc') {
+      location.reload();
+      // we reload because of some weird bug that expands all sections
+    }
+    currentPage = lastPage;
+    resetDictionaries();
+  }
 };
+
+
 
 let loaded = false;
 const onLoad = () => {
+
   if (loaded) return;
   loaded = true;
 
