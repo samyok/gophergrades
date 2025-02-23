@@ -11,7 +11,7 @@ We are excited to highlight other schools' versions of GopherGrades!
 
 | School | Preview |
 |--------|---------|
-| [uo.zone](https://uo.zone/) | [<img src="https://uo.zone/static/homepage.png" alt="uo.zone Preview" style="max-width: 400px">](https://uo.zone) |
+| | |
 
 </center>
 
