@@ -1,0 +1,2 @@
+### Files in this folder:
+- `gen_chroma.py` regenerates the chroma database from the course descriptions found in `ProcessedData.db`. This requires a file `./.env` file (see `./example.env`). This also requires a chromadb server (for the time being, hosted locally on port 8090). (get image from `docker pull chromadb/chroma`)
