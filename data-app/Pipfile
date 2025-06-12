@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pandas = "*"
+pandas = "2.2.3"
 openpyxl = "*"
 sqlalchemy = "*"
 requests = "*"
