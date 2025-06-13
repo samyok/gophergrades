@@ -21,7 +21,7 @@ import { useSearch } from "../../components/Search/useSearch";
 import SearchResults from "../../components/Search/SearchResults";
 import SRTValues from "../../components/SRTValues";
 
-const SPECIAL_TAGS = ["Honors", "Freshman Seminar"];
+const SPECIAL_TAGS = ["Honors", "Freshman Seminar", "Topics Course"];
 
 const DepartmentButton = ({ deptAbbr }) => (
   <ChakraLink
