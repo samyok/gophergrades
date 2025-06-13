@@ -17,8 +17,6 @@ const SRTValues = ({ srtValues }) => {
   const parsedJson = parseJSON(srtValues);
   if (!parsedJson) return null;
 
-  console.log(parsedJson)
-
   const {
     DEEP_UND: deepUnderstanding,
     STIM_INT: interestStimulated,
@@ -27,7 +25,7 @@ const SRTValues = ({ srtValues }) => {
     EFFORT: effort,
     // GRAD_STAND: gradStanding,
     RECC: recommend,
-    RESP: respondents
+    RESP: respondents,
   } = parsedJson;
 
   return (

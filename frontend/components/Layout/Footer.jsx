@@ -181,8 +181,9 @@ export const Footer = () => {
             fontWeight={500}
           >
             Social Coding
-          </LinkButton>{" "}
-          with data from Summer 2017 to Spring 2025 provided by the University in response to a public records request.
+          </LinkButton>
+          with data from Summer 2017 to Spring 2025 provided by the University
+          in response to a public records request
         </Text>
         <Text
           textAlign={"center"}
