@@ -182,14 +182,15 @@ export const Footer = () => {
           >
             Social Coding
           </LinkButton>{" "}
-          with data from Summer 2017 to Fall 2024 provided by the{" "}
-          <LinkButton
-            target={"_blank"}
-            href={"https://idr.umn.edu/"}
-            fontWeight={400}
-          >
-            Office of Institutional Data and Research
-          </LinkButton>
+          with data from Summer 2017 to Spring 2025 provided by the University in response to a public records request.
+        </Text>
+        <Text
+          textAlign={"center"}
+          fontSize={"sm"}
+          fontWeight={300}
+          color={"gray.600"}
+        >
+          Not affiliated with the University of Minnesota
         </Text>
         <LinkButton
           color={"gray.900"}
