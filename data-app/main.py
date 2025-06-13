@@ -5,6 +5,7 @@ from db.Models import Session, Professor, DepartmentDistribution, TermDistributi
 
 from src.generation.process import Process
 from src.enhance.courseDog import CourseDogEnhance
+from src.rmp.rmp import RMP
 
 # Add all libeds as defined in libed_mapping. This is a constant addition as there are a finite amount of libed requirements.
 
@@ -90,6 +91,7 @@ if __name__ == "__main__":
     
     if not args.DisableRMP:
         print("[MAIN] RMP Update For Instructors")
+        RMP().update_profs()
         print("[MAIN] RMP Updated")
     
     if not args.DisableSRT:
