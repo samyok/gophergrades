@@ -17,6 +17,8 @@ const SRTValues = ({ srtValues }) => {
   const parsedJson = parseJSON(srtValues);
   if (!parsedJson) return null;
 
+  console.log(parsedJson)
+
   const {
     DEEP_UND: deepUnderstanding,
     STIM_INT: interestStimulated,
@@ -25,6 +27,7 @@ const SRTValues = ({ srtValues }) => {
     EFFORT: effort,
     // GRAD_STAND: gradStanding,
     RECC: recommend,
+    RESP: respondents
   } = parsedJson;
 
   return (
@@ -32,41 +35,41 @@ const SRTValues = ({ srtValues }) => {
       {recommend && (
         <BigNumberCard
           source={"Recommend"}
-          tooltip={`I would recommend this class to a friend. (${recommend.respondents} responses)`}
-          val={recommend.val?.toFixed(2)}
-          outOf={5}
+          tooltip={`I would recommend this class to a friend. (${respondents} responses)`}
+          val={recommend?.toFixed(2)}
+          outOf={6}
         />
       )}
       {effort && (
         <BigNumberCard
           source={"Effort"}
-          tooltip={`Effort needed to succeed is reasonable. (${effort.respondents} responses)`}
-          val={effort.val?.toFixed(2)}
-          outOf={5}
+          tooltip={`Effort needed to succeed is reasonable. (${respondents} responses)`}
+          val={effort?.toFixed(2)}
+          outOf={6}
         />
       )}
       {deepUnderstanding && (
         <BigNumberCard
           source={"Understanding"}
-          tooltip={`Deeper understanding of the subject matter. (${deepUnderstanding.respondents} responses)`}
-          val={deepUnderstanding.val?.toFixed(2)}
-          outOf={5}
+          tooltip={`Deeper understanding of the subject matter. (${respondents} responses)`}
+          val={deepUnderstanding?.toFixed(2)}
+          outOf={6}
         />
       )}
       {interestStimulated && (
         <BigNumberCard
           source={"Interesting"}
-          tooltip={`Interest in the subject matter was stimulated. (${interestStimulated.respondents} responses)`}
-          val={interestStimulated.val?.toFixed(2)}
-          outOf={5}
+          tooltip={`Interest in the subject matter was stimulated. (${respondents} responses)`}
+          val={interestStimulated?.toFixed(2)}
+          outOf={6}
         />
       )}
       {activitiesSupported && (
         <BigNumberCard
           source={"Activities"}
-          tooltip={`Activities supported learning. (${activitiesSupported.respondents} responses)`}
-          val={activitiesSupported.val?.toFixed(2)}
-          outOf={5}
+          tooltip={`Activities supported learning. (${respondents} responses)`}
+          val={activitiesSupported?.toFixed(2)}
+          outOf={6}
         />
       )}
     </Wrap>

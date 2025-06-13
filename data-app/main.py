@@ -6,6 +6,7 @@ from db.Models import Session, Professor, DepartmentDistribution, TermDistributi
 from src.generation.process import Process
 from src.enhance.courseDog import CourseDogEnhance
 from src.rmp.rmp import RMP
+from src.srt.srt import SRT
 
 # Add all libeds as defined in libed_mapping. This is a constant addition as there are a finite amount of libed requirements.
 
@@ -96,4 +97,6 @@ if __name__ == "__main__":
     
     if not args.DisableSRT:
         print("[MAIN] Beginning SRT Updating")
+        SRT.initialize("SRT_DATA/main.csv")
+        SRT.insertReviews()
         print("[MAIN] Finished SRT Updating")

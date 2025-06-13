@@ -653,7 +653,7 @@ libed_mapping = {
     # "GER - WLA (Writing for the Liberal Arts)": "Writing for Liberal Arts",
     ## Other
     "HON - HON (Honors)": "Honors",
-    # "FSEM - FR SEMINAR (Freshman Seminar)": "Freshman Seminar",
+    "FSEM - FR SEMINAR (Freshman Seminar)": "Freshman Seminar",
     "TOP - TOPICS (Topics Course)": "Topics Course",
     # "ONL - ONLINE (Online may be available)": "Online Available",
     ## Minnesota Transfer Curriculum
