@@ -4,7 +4,7 @@ const searchDurations = {
 };
 
 const disabledPages = [
-  "/prof/7810", // "unknown professor" -- lags too much
+  "/inst/7810", // "unknown professor" -- lags too much
 ];
 
 const footerOverrides = {
