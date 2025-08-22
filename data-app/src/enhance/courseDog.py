@@ -109,31 +109,39 @@ class CourseDogEnhance(EnhanceBase):
                 # --- Fetch Course Attributes from UMN Courses API ---
                 api_url = f"https://courses.umn.edu/campuses/{api_campus}/terms/{current_term}/courses.json?q=catalog_number={course_nbr},subject_id={dept}"
                 attributes_for_course = []
+                MAX_RETRIES = 3
+                for attempt in range(MAX_RETRIES):
+                    try:
+                        response = requests.get(api_url, timeout=30)
+                        response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
+                        data = response.json()
 
-                try:
-                    response = requests.get(api_url, timeout=10)
-                    response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
-                    data = response.json()
-
-                    if data.get("courses"):
-                        course_data = data["courses"][0]  # Assume the first result is the correct one
-                        api_attributes = course_data.get("course_attributes", [])
+                        if data.get("courses"):
+                            course_data = data["courses"][0]  # Assume the first result is the correct one
+                            api_attributes = course_data.get("course_attributes", [])
                         
-                        for attr in api_attributes:
-                            family = attr.get("family", "")
-                            attr_id = attr.get("attribute_id", "")
+                            for attr in api_attributes:
+                                family = attr.get("family", "")
+                                attr_id = attr.get("attribute_id", "")
                             
-                            # Create a key to look up in our mapping dictionary
-                            api_key = f"{family}_{attr_id}"
+                                # Create a key to look up in our mapping dictionary
+                                api_key = f"{family}_{attr_id}"
                             
-                            if api_key in API_LIBED_MAPPING:
-                                attributes_for_course.append(API_LIBED_MAPPING[api_key])
-                            elif attr_id in API_LIBED_MAPPING: # Fallback for keys like 'FSEM'
-                                attributes_for_course.append(API_LIBED_MAPPING[attr_id])
+                                if api_key in API_LIBED_MAPPING:
+                                    attributes_for_course.append(API_LIBED_MAPPING[api_key])
+                                elif attr_id in API_LIBED_MAPPING: # Fallback for keys like 'FSEM'
+                                    attributes_for_course.append(API_LIBED_MAPPING[attr_id])
+                        break
 
-                except requests.exceptions.RequestException as e:
-                    print(f"[API Enhance] API request failed for {dept} {course_nbr}: {e}")
-                    continue  # Skip to the next course if the API call fails
+                    except requests.exceptions.RequestException as e:
+                        print(f"[API Enhance] Attempt {attempt + 1} failed for {dept} {course_nbr}: {e}")
+                        if attempt + 1 == MAX_RETRIES:
+                            # If this was the last attempt, print a final error and continue to the next course
+                            print(f"[API Enhance] All retries failed for {dept} {course_nbr}. Skipping.")
+                            continue
+                        else:
+                            # Wait for 2 seconds before trying again
+                            time.sleep(2)
                 
                 # --- Find and Update the Course in the Database ---
                 class_dist = session.query(ClassDistribution).filter(
