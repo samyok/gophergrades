@@ -27,7 +27,9 @@ const weekToJSON = async (dateString = "today") => {
     .then((r) => (el.innerHTML = r));
 
   // parsing begins
-  var synchronousMeetings = el.querySelector(".myu_calendar"); // HTML div containing only the classes with set days and times
+  var synchronousMeetings = el.querySelector(".myu_calendar");
+  console.log("[GG DEBUG] synchronousMeetings:", synchronousMeetings);
+
   if (synchronousMeetings == null) {
     console.log(`[GG] encountered a week without meetings (${dateString}).`);
     return {
@@ -35,40 +37,105 @@ const weekToJSON = async (dateString = "today") => {
       sundayDate: sundayThisWeek(parseDate(dateString, "yyyy-mm-dd")),
     };
   }
-  var meetingElements = synchronousMeetings.querySelectorAll(
-    ".myu_calendar-class"
-  ); // list of all the classes this week as HTML elems
-  const meetingObjects = []; // list of json objects holding meeting data
+
+  var meetingElements = synchronousMeetings.querySelectorAll(".myu_calendar-class");
+  console.log("[GG DEBUG] meetingElements:", meetingElements);
+  // list of all the classes this week as HTML elems
+
+  const meetingObjects = []; // Will hold the scraped meeting data
+
+  console.log("[GG DEBUG] meetingElements:", meetingElements);
+  
+  // Loop through each calendar class element
   for (let meetingEl of meetingElements) {
+    console.log("[GG DEBUG] Found meetingEl:", meetingEl, meetingEl.innerText);
+  
+    // Skip any placeholder for days with no classes
     if (meetingEl.classList.contains("no-class")) {
-      // sometimes a meetingEl marks when there are no classes in a day?
       console.log("[GG] encountered a no-class meetingElement. skipping...");
       continue;
     }
-
-    let classDetails = meetingEl
-      .querySelector(".myu_calendar-class-details")
-      .innerHTML.replace(/\n/g, "") // get rid of random newlines that are in there for some reason
+  
+    // Defensive: Try to get class details element
+    let classDetailsEl = meetingEl.querySelector(".myu_calendar-class-details");
+    if (!classDetailsEl) {
+      console.warn("[GG DEBUG] No .myu_calendar-class-details found for:", meetingEl);
+      continue;
+    }
+    let classDetailsRaw = classDetailsEl.innerHTML;
+    console.log("[GG DEBUG] classDetailsRaw:", classDetailsRaw);
+  
+    // Clean up HTML to plain text
+    let classDetails = classDetailsRaw
+      .replace(/\n/g, "")
       .replace(/<br>/g, "\n");
-    let courseTitleScrape = meetingEl.querySelector(
-      ".myu_calendar-class-name"
-    ).innerText;
-
-    meetingObjects.push({
-      term: meetingEl.getAttribute("data-strm").trim(), // {string} // in format `xyyx', where `yy` is the year and `xx` = `13` is spring, `19` is fall
-      courseNum: meetingEl.getAttribute("data-class-nbr").trim(), // {string}
-      date: parseDate(meetingEl.getAttribute("data-fulldate"), "yyyymmdd"), // {Date}
-      meetingType: classDetails.match(/^(Lecture)|(Discussion)|(Laboratory)$/m)[0], // {string} // may need updating if list is not exhaustive
-      timeRange: classDetails.match(/.*:.*/m)[0], // {string}
-      room: classDetails.match(/^ .* $/m)[0].trim(), // {string} // (room has leading and trailing space)
-      courseName: meetingEl
-        .querySelector(".myu_calendar-class-name-color-referencer")
-        .innerText.trim(), // {string}
-      institution: meetingEl.dataset.institution, // {string}
-      prettyName: courseTitleScrape.match(/(?<=\d\) ).*/)[0].trim(), // {string} e.g. "Adv Programming Principles"
-      sectionID: courseTitleScrape.match(/(?<=\()\d+(?=\))/)[0], // {string} e.g. "001" of "CSCI 2021 (001)"
-    }); // {MeetingObject} spec
+    console.log("[GG DEBUG] classDetails:", classDetails);
+  
+    // Defensive: Try to get course title element
+    let courseTitleEl = meetingEl.querySelector(".myu_calendar-class-name");
+    if (!courseTitleEl) {
+      console.warn("[GG DEBUG] No .myu_calendar-class-name found for:", meetingEl);
+      continue;
+    }
+    let courseTitleScrape = courseTitleEl.innerText;
+    console.log("[GG DEBUG] courseTitleScrape:", courseTitleScrape);
+  
+    // Defensive: Try to get color referencer
+    let courseNameEl = meetingEl.querySelector(".myu_calendar-class-name-color-referencer");
+    let courseName = courseNameEl ? courseNameEl.innerText.trim() : null;
+  
+    // Extract with regex, with fallback if match fails
+    let meetingTypeMatch = classDetails.match(/^(Lecture|Discussion|Laboratory)/m);
+    let timeRangeMatch = classDetails.match(/.*:.*/m);
+    let roomMatch = classDetails.match(/(\n\s*.+\s*\n)/m); // More robust for room line
+  
+    let prettyNameMatch = courseTitleScrape.match(/(?<=\d\) ).*/);
+    let sectionIDMatch = courseTitleScrape.match(/(?<=\()\d+(?=\))/);
+  
+    // Print extracted pieces
+    console.log("[GG DEBUG] meetingTypeMatch:", meetingTypeMatch);
+    console.log("[GG DEBUG] timeRangeMatch:", timeRangeMatch);
+    console.log("[GG DEBUG] roomMatch:", roomMatch);
+    console.log("[GG DEBUG] prettyNameMatch:", prettyNameMatch);
+    console.log("[GG DEBUG] sectionIDMatch:", sectionIDMatch);
+  
+    // Defensive: Data attributes
+    let term = meetingEl.getAttribute("data-strm");
+    let courseNum = meetingEl.getAttribute("data-class-nbr");
+    let dateRaw = meetingEl.getAttribute("data-fulldate");
+    let institution = meetingEl.getAttribute("data-institution");
+  
+    // Defensive: Only add if all required data is present
+    if (
+      term && courseNum && dateRaw &&
+      meetingTypeMatch && timeRangeMatch && roomMatch &&
+      courseName && institution && prettyNameMatch && sectionIDMatch
+    ) {
+      // Parse date string as needed
+      let date = parseDate(dateRaw, "yyyymmdd");
+  
+      meetingObjects.push({
+        term: term.trim(),
+        courseNum: courseNum.trim(),
+        date: date,
+        meetingType: meetingTypeMatch[0],
+        timeRange: timeRangeMatch[0],
+        room: roomMatch[1].trim(),
+        courseName: courseName,
+        institution: institution,
+        prettyName: prettyNameMatch[0].trim(),
+        sectionID: sectionIDMatch[0],
+      });
+  
+      console.log("[GG DEBUG] Added meetingObject:", meetingObjects[meetingObjects.length - 1]);
+    } else {
+      console.warn("[GG DEBUG] Skipping meeting due to missing data:", {
+        term, courseNum, dateRaw, meetingTypeMatch, timeRangeMatch, roomMatch, courseName, institution, prettyNameMatch, sectionIDMatch
+      });
+    }
   }
+  
+  console.log("[GG DEBUG] Final meetingObjects array:", meetingObjects);
 
   weekObject = {
     meetingObjects: meetingObjects,
