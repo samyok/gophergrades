@@ -1,8 +1,22 @@
 /**
+ * # Course Data Scraper Utilities
+ * 
  * Some utilityish functions to scrape course data
  * The two functions work, but this alone is not yet very useful
  * Also the functions are still missing some features, (see commented-out lines in JSON objects)
+ * 
+ * Main Functions:
+ * - weekToJSON: Scrapes meetings for a given week
+ * - generalClassInfo: Scrapes general info for a class
+ * - scraperSecondPass: Cross-references and enhances course/meeting info
+ * - scrapeASemester: Orchestrates scraping for an entire semester
+ * 
+ * ORGANIZED: The file is restructured, with original comments retained where useful for context.
  */
+
+// ============================
+// Week-Level Scraping
+// ============================
 
 /**
  * Scrapes a list of json objects containing all the meetings in a given week
@@ -17,7 +31,7 @@ const weekToJSON = async (dateString = "today") => {
 
   // appends the date info to our base url
   let baseURL =
-    "https://www.myu.umn.edu/psp/psprd/EMPLOYEE/CAMP/s/WEBLIB_IS_DS.ISCRIPT1.FieldFormula.IScript_DrawSection?group=UM_SSS&section=UM_SSS_ACAD_SCHEDULE&pslnk=1&cmd=smartnav"; // the base url
+    "https://www.myu.umn.edu/psp/psprd/EMPLOYEE/CAMP/s/WEBLIB_IS_DS.ISCRIPT1.FieldFormula.IScript_DrawSection?group=UM_SSS&section=UM_SSS_ACAD_SCHEDULE&pslnk=1&cmd=smartnav";
   let url = baseURL.concat("&effdt=", dateString);
 
   // create a (queryable!) DOM element from the url
@@ -31,7 +45,7 @@ const weekToJSON = async (dateString = "today") => {
   console.log("[GG DEBUG] synchronousMeetings:", synchronousMeetings);
 
   if (synchronousMeetings == null) {
-    console.log(`[GG] encountered a week without meetings (${dateString}).`);
+    console.log(`[GG DEBUG] encountered a week without meetings (${dateString}).`);
     return {
       meetingObjects: [],
       sundayDate: sundayThisWeek(parseDate(dateString, "yyyy-mm-dd")),
@@ -39,20 +53,15 @@ const weekToJSON = async (dateString = "today") => {
   }
 
   var meetingElements = synchronousMeetings.querySelectorAll(".myu_calendar-class");
-  console.log("[GG DEBUG] meetingElements:", meetingElements);
-  // list of all the classes this week as HTML elems
+  const meetingObjects = []; 
 
-  const meetingObjects = []; // Will hold the scraped meeting data
-
-  console.log("[GG DEBUG] meetingElements:", meetingElements);
-  
   // Loop through each calendar class element
   for (let meetingEl of meetingElements) {
     console.log("[GG DEBUG] Found meetingEl:", meetingEl, meetingEl.innerText);
   
     // Skip any placeholder for days with no classes
     if (meetingEl.classList.contains("no-class")) {
-      console.log("[GG] encountered a no-class meetingElement. skipping...");
+      console.log("[GG DEBUG] encountered a no-class meetingElement. skipping...");
       continue;
     }
   
@@ -63,13 +72,11 @@ const weekToJSON = async (dateString = "today") => {
       continue;
     }
     let classDetailsRaw = classDetailsEl.innerHTML;
-    console.log("[GG DEBUG] classDetailsRaw:", classDetailsRaw);
   
     // Clean up HTML to plain text
     let classDetails = classDetailsRaw
       .replace(/\n/g, "")
       .replace(/<br>/g, "\n");
-    console.log("[GG DEBUG] classDetails:", classDetails);
   
     // Defensive: Try to get course title element
     let courseTitleEl = meetingEl.querySelector(".myu_calendar-class-name");
@@ -78,7 +85,6 @@ const weekToJSON = async (dateString = "today") => {
       continue;
     }
     let courseTitleScrape = courseTitleEl.innerText;
-    console.log("[GG DEBUG] courseTitleScrape:", courseTitleScrape);
   
     // Defensive: Try to get color referencer
     let courseNameEl = meetingEl.querySelector(".myu_calendar-class-name-color-referencer");
@@ -93,11 +99,11 @@ const weekToJSON = async (dateString = "today") => {
     let sectionIDMatch = courseTitleScrape.match(/(?<=\()\d+(?=\))/);
   
     // Print extracted pieces
-    console.log("[GG DEBUG] meetingTypeMatch:", meetingTypeMatch);
-    console.log("[GG DEBUG] timeRangeMatch:", timeRangeMatch);
-    console.log("[GG DEBUG] roomMatch:", roomMatch);
-    console.log("[GG DEBUG] prettyNameMatch:", prettyNameMatch);
-    console.log("[GG DEBUG] sectionIDMatch:", sectionIDMatch);
+    // console.log("[GG DEBUG] meetingTypeMatch:", meetingTypeMatch);
+    // console.log("[GG DEBUG] timeRangeMatch:", timeRangeMatch);
+    // console.log("[GG DEBUG] roomMatch:", roomMatch);
+    // console.log("[GG DEBUG] prettyNameMatch:", prettyNameMatch);
+    // console.log("[GG DEBUG] sectionIDMatch:", sectionIDMatch);
   
     // Defensive: Data attributes
     let term = meetingEl.getAttribute("data-strm");
@@ -144,6 +150,10 @@ const weekToJSON = async (dateString = "today") => {
   return weekObject;
 };
 
+// ============================
+// General Class Info Scraping
+// ============================
+
 /**
  * Scrapes general info on a class: session start, days of week, meeting times, location, etc
  * @param {string} term
@@ -178,12 +188,12 @@ const generalClassInfo = async (term, courseNum, institution = "UMNTC") => {
       synchronousRow = row;
       synchronousRowCounter++;
     } else {
-      console.log("[GG] found asynchronous meeting in `generalClassInfo`, ignoring...");
+      console.log("[GG DEBUG] found asynchronous meeting in `generalClassInfo`, ignoring...");
     }
   }
 
   if (synchronousRowCounter != 1) {
-    console.log(`[GG]!!!!!!!!!!!!!!! ALERT, ${synchronousRowCounter} synchronous meeting found in generalClassInfo() for url ${url}`);
+    console.log(`[GG DEBUG]!!!!!!!!!!!!!!! ALERT, ${synchronousRowCounter} synchronous meeting found in generalClassInfo() for url ${url}`);
   } // if this runs, that means we have a big headache and rewrite ahead of us. pls no
 
   // dateRange parsing
@@ -215,6 +225,10 @@ const generalClassInfo = async (term, courseNum, institution = "UMNTC") => {
   }; // {CourseObject} spec
 };
 
+// ============================
+// Data Enhancement and Cross-Reference
+// ============================
+
 /**
  * Enhances `coursesInfo` by cross-referencing between it and `weeks`.
  * Populates `meetingType`, `courseName` (but not `address` yet)
@@ -237,6 +251,7 @@ const scraperSecondPass = (weeks, coursesInfo) => {
           course.sectionID = meeting.sectionID;
           course.prettyName = meeting.prettyName;
           continue courseloop; // hah, this is fun!
+          //that's not such fun actually
         }
       }
     }
@@ -256,23 +271,18 @@ const scraperSecondPass = (weeks, coursesInfo) => {
      */
     const timeRangeRepr = (timeRangeString, format) => {
       let ARBITRARY_DATE = new Date();
+      let timeRange;
       if (format == "week") {
-        // "hh:mm - hh:mm pm" (first am/pm is ommitted)
-        timeRange = getTimes(timeRangeString, ARBITRARY_DATE); // long string that is dumb. we will cut it down >:)
+        timeRange = getTimes(timeRangeString, ARBITRARY_DATE);
       } else if (format == "coursesInfo") {
-        // "hh:mm pm - hh:mm pm"
-        timeRange = recurringGetTimes(timeRangeString, ARBITRARY_DATE); // long string that is dumb
+        timeRange = recurringGetTimes(timeRangeString, ARBITRARY_DATE);
       } else {
-        throw new Error(
-          `timeRangeRepr() was passed unrecognized format ${format}`
-        );
+        throw new Error(`timeRangeRepr() was passed unrecognized format ${format}`);
       }
       return timeRange.map((s) => s.slice(9, 13)).join("-"); // crop off extraneous info
     };
 
-    // ###################################
     // First, set up model week hash table
-    // ###################################
     let modelWeekHT = {}; // empty json object (hash table)
     for (day = 0; day < 7; day++) {
       // for day in a week
@@ -294,9 +304,7 @@ const scraperSecondPass = (weeks, coursesInfo) => {
 
     let additionalMeetings = [];
 
-    // ###############################
     // Main loop through all the weeks
-    // ###############################
     for (let week of weeks) {
       // Create a hash table for the actual week as well
       let thisWeekHT = {};
@@ -321,8 +329,8 @@ const scraperSecondPass = (weeks, coursesInfo) => {
           excludedDate.setDate(excludedDate.getDate() + dayOfWeek); // then shift the date to the correct day of week
           // console.log(excludedDate)
 
-          console.log(`[GG] Excluded meeting found! hash: ${hash}`);
-          console.log(`[GG] date: ${excludedDate}`)
+          console.log(`[GG DEBUG] Excluded meeting found! hash: ${hash}`);
+          console.log(`[GG DEBUG] date: ${excludedDate}`)
           modelWeekHT[hash].course.excludedDates.push(excludedDate);
         }
       }
@@ -341,6 +349,7 @@ const scraperSecondPass = (weeks, coursesInfo) => {
       }
     }
 
+    // console.log("[GG DEBUG] modelWeek: \n")
     // console.log(modelWeek)
     return additionalMeetings;
   };
@@ -352,6 +361,10 @@ const scraperSecondPass = (weeks, coursesInfo) => {
   return additionalMeetings;
 };
 
+// ============================
+// Semester-Level Scraping
+// ============================
+
 // BEGIN ZONE OF EXTRA JANK
 
 // Scraping up all meeting times, including catching when classes are canceled for holidays
@@ -359,7 +372,7 @@ const scraperSecondPass = (weeks, coursesInfo) => {
 // 1. pick a sample week (which week best to pick?), then grab all the course numbers in it
 // 2. Then get the general course info for each of those course numbers, store it somewhere
 // 3. Then take one of the `dateRange`s (they're all the same) and scrape through the whole thing to find instances of when a class should appear but it doesn't. store this somehow
-console.log("[GG] scraper.js runs!");
+console.log("[GG DEBUG] scraper.js runs!");
 
 /**
  * Given a date, returns info on each course meeting in the semester containing that date. Also returns generally-true info about the courses in the semester
