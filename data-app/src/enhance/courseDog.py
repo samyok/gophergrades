@@ -104,20 +104,6 @@ class CourseDogEnhance(EnhanceBase):
                 class_dist.onestop_desc = course["Course description"]
                 class_dist.cred_min = course["Minimum credits"]
                 class_dist.cred_max = course["Maximum credits"]
-                # figure out how to get this shit now
-                # class_dist.onestop = f"https://{catalog_mapping.get(campus_str)}.catalog.prod.coursedog.com/courses/{course['sisId']}"
-                # cooked on this sections for now
-
-                # for attribute in attributes_for_course:
-                #     if attribute not in libed_mapping:
-                #         print("[CD Enhance] Libed not found:", attribute)
-                #         continue
-                    
-                #     libed_dist = session.query(Libed).filter(Libed.name == libed_mapping[attribute]).first()
-                #     if libed_dist == None:
-                #         print("[CD Enhance] Libed not found:", attribute, libed_mapping[attribute])
-                #     elif class_dist not in libed_dist.class_dists:
-                #         libed_dist.class_dists.append(class_dist) 
 
                 for attribute in attributes_for_course:
                     libed_obj = session.query(Libed).filter(Libed.name == attribute).first()
