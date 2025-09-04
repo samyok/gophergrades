@@ -9,8 +9,7 @@ import datetime
 import time
 from .abstract import EnhanceBase
 from db.Models import DepartmentDistribution, ClassDistribution, Libed, Session, and_
-from mapping.mappings import catalog_mapping # Assuming this is still needed for other parts
-
+from mapping.mappings import catalog_mapping, libed_mapping # Assuming this is still needed for other parts
 # A mapping of API attribute identifiers to the names stored in the database.
 # The key is a combination of the attribute's "family" and "attribute_id" from the API response.
 API_LIBED_MAPPING = {
@@ -127,10 +126,10 @@ class CourseDogEnhance(EnhanceBase):
                                 # Create a key to look up in our mapping dictionary
                                 api_key = f"{family}_{attr_id}"
                             
-                                if api_key in API_LIBED_MAPPING:
-                                    attributes_for_course.append(API_LIBED_MAPPING[api_key])
-                                elif attr_id in API_LIBED_MAPPING: # Fallback for keys like 'FSEM'
-                                    attributes_for_course.append(API_LIBED_MAPPING[attr_id])
+                                if api_key in libed_mapping:
+                                    attributes_for_course.append(libed_mapping[api_key])
+                                elif attr_id in libed_mapping: # Fallback for keys like 'FSEM'
+                                    attributes_for_course.append(libed_mapping[attr_id])
                         break
 
                     except requests.exceptions.RequestException as e:
