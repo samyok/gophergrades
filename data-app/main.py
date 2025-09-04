@@ -87,7 +87,7 @@ if __name__ == "__main__":
         session = Session()
         dept_dists = session.query(DepartmentDistribution).all()
         session.close()
-        CourseDogEnhance().enhance(dept_dists,clean_filename)
+        CourseDogEnhance().enhance(dept_dists)
         print("[MAIN] Finished CourseDog Updating")
     
     if not args.DisableRMP:

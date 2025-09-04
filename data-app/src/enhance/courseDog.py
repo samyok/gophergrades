@@ -9,29 +9,7 @@ import datetime
 import time
 from .abstract import EnhanceBase
 from db.Models import DepartmentDistribution, ClassDistribution, Libed, Session, and_
-from mapping.mappings import catalog_mapping, libed_mapping # Assuming this is still needed for other parts
-# A mapping of API attribute identifiers to the names stored in the database.
-# The key is a combination of the attribute's "family" and "attribute_id" from the API response.
-API_LIBED_MAPPING = {
-    "HON_HON": "Honors",
-    "CLE_WI": "Writing Intensive",
-    "CLE_AH": "Arts/Humanities",
-    "CLE_BIOL": "Biological Sciences",
-    "CLE_CIV": "Civic Life and Ethics",
-    "CLE_ENV": "Environment",
-    "CLE_GP": "Global Perspectives",
-    "CLE_HIS": "Historical Perspectives",
-    "CLE_HP": "Historical Perspectives",  # Alias for Historical Perspectives Core
-    "CLE_LITR": "Literature",
-    "CLE_MATH": "Mathematical Thinking",
-    "CLE_PHYS": "Physical Sciences",
-    "CLE_DSJ": "Race, Power, and Justice in the United States",
-    "CLE_SOCS": "Social Sciences",
-    "CLE_TS": "Technology and Society",
-    # Attributes below don't fit the family_id pattern and are matched by attribute_id alone
-    "FSEM": "Freshman Seminar",
-    "TOP": "Topics Course"
-}
+from mapping.mappings import catalog_mapping, libed_mapping, campus_api_mapping
 
 class CourseDogEnhance(EnhanceBase):
 
@@ -48,7 +26,7 @@ class CourseDogEnhance(EnhanceBase):
             semester_code = '3'
         elif 6 <= month <= 8:  # Summer
             semester_code = '5'
-        else:  # Fall (September onwards)
+        else:  # Fall
             semester_code = '9'
         
         sterm = f"{year - 1900}{semester_code}"
@@ -85,14 +63,6 @@ class CourseDogEnhance(EnhanceBase):
             print(f"[API Enhance] No courses found in master CSV for {dept} on {campus_str}.")
             return
         
-        # Mapping for campus codes used in the API URL
-        campus_api_mapping = {
-            "UMNTC": "umntc",
-            "UMNRO": "umnro",
-            "UMNDL": "umndl",
-            "UMNCR": "umncr",
-            "UMNMO": "umnmo",
-        }
         api_campus = campus_api_mapping.get(campus_str)
         if not api_campus:
             print(f"[API Enhance] Invalid campus code for API call: {campus_str}")
@@ -128,8 +98,6 @@ class CourseDogEnhance(EnhanceBase):
                             
                                 if api_key in libed_mapping:
                                     attributes_for_course.append(libed_mapping[api_key])
-                                elif attr_id in libed_mapping: # Fallback for keys like 'FSEM'
-                                    attributes_for_course.append(libed_mapping[attr_id])
                         break
 
                     except requests.exceptions.RequestException as e:
