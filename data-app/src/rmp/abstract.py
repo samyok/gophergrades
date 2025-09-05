@@ -61,7 +61,7 @@ class AbstractRMP(ABC):
 
     def update_profs(self) -> None:
         # Any higher gets rate limited by RMP
-        with Pool(5) as p:
+        with Pool(3) as p:
             session = Session()
             profs = session.query(Professor).order_by(Professor.name).all()
             session.close()
