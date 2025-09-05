@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKeyConstraint, Integer, PrimaryKeyConstraint, SmallInteger, ForeignKey, VARCHAR, JSON, Float, Table, create_engine, and_
+from sqlalchemy import Column, ForeignKeyConstraint, Integer, PrimaryKeyConstraint, SmallInteger, ForeignKey, VARCHAR, JSON, Float, Table, create_engine, and_, event
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from mapping.mappings import term_to_name
@@ -132,7 +132,28 @@ class DepartmentDistribution(Base):
         return retVal
 
 
-engine = create_engine("sqlite:///../ProcessedData.db",echo=False,future=True)
+engine = create_engine(
+    "sqlite:///../ProcessedData.db",
+    echo=False,
+    future=True,
+    pool_pre_ping=True,
+    pool_recycle=300,
+    connect_args={
+        'timeout': 30,
+        'check_same_thread': False
+    }
+)
+
+# Enable WAL mode for better concurrent access
+@event.listens_for(engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA journal_mode=WAL")
+    cursor.execute("PRAGMA synchronous=NORMAL")
+    cursor.execute("PRAGMA temp_store=MEMORY")
+    cursor.execute("PRAGMA mmap_size=134217728")  # 128MB
+    cursor.close()
+
 if __name__ == "__main__":
     Base.metadata.drop_all(engine)
 Base.metadata.create_all(engine)
