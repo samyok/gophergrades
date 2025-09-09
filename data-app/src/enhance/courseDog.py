@@ -4,32 +4,11 @@
 import pandas as pd
 import time
 import random
-import threading
 from .abstract import EnhanceBase
-from .threading_abstract import ThreadingEnhanceBase
 from db.Models import DepartmentDistribution, ClassDistribution, Session, and_
-from sqlalchemy.exc import OperationalError, PendingRollbackError
 
-# Thread-local storage for database sessions
-thread_local = threading.local()
-
-class CourseDogEnhance(ThreadingEnhanceBase):
+class CourseDogEnhance(EnhanceBase):
     """Handles course enhancement using CourseDosg CSV exports for basic course information"""
-
-    def _get_thread_session(self):
-        """Get a thread-local database session."""
-        if not hasattr(thread_local, 'session') or thread_local.session is None:
-            thread_local.session = Session()
-        return thread_local.session
-
-    def _close_thread_session(self):
-        """Close the thread-local database session."""
-        if hasattr(thread_local, 'session') and thread_local.session is not None:
-            try:
-                thread_local.session.close()
-            except Exception:
-                pass
-            thread_local.session = None
 
     def enhance_helper(self, dept_dist: DepartmentDistribution) -> None:
         """Enhance courses for a department using CSV data for basic course information"""
@@ -67,54 +46,29 @@ class CourseDogEnhance(ThreadingEnhanceBase):
             print(f"[CourseDog] No courses found in master CSV for {dept} on {campus_str}.")
             return
         
-        # Retry mechanism for database operations with exponential backoff
-        max_retries = 5
-        retry_delay_base = 2.0
-
-        for attempt in range(max_retries):
-            session = None
-            try:
-                session = self._get_thread_session()
-                
-                for _, course in dept_courses.iterrows():
-                    course_nbr = str(course["Course number"])
-                    self._process_course_csv(session, dept, course_nbr, campus_str, course)
-                
-                print("[CourseDog] Committing changes to the database.")
-                session.commit()
-                print(f"[CourseDog] Successfully processed {len(dept_courses)} courses for {dept}")
-                break  # Success, exit retry loop
-                
-            except (OperationalError, PendingRollbackError) as e:
-                if session:
-                    try:
-                        session.rollback()
-                    except Exception:
-                        pass
-                    self._close_thread_session()  # Close and recreate session on error
-                
-                if attempt < max_retries - 1:
-                    retry_delay = retry_delay_base * (2 ** attempt) + random.uniform(0.5, 2.0)
-                    print(f"[CourseDog] Database locked for {dept}, retrying in {retry_delay:.2f}s (attempt {attempt + 1}/{max_retries})")
-                    time.sleep(retry_delay)
+        session = Session()
+        updated_count = 0
+        skipped_count = 0
+        
+        try:
+            for _, course in dept_courses.iterrows():
+                course_nbr = str(course["Course number"])
+                result = self._process_course_csv(session, dept, course_nbr, campus_str, course)
+                if result:
+                    updated_count += 1
                 else:
-                    print(f"[CourseDog] Failed to process {dept} after {max_retries} attempts: {e}")
-                    return  # Give up on this department
-                    
-            except Exception as e:
-                if session:
-                    try:
-                        session.rollback()
-                    except Exception:
-                        pass
-                    self._close_thread_session()
-                print(f"[CourseDog] Unexpected error processing {dept}: {e}")
-                break
-            finally:
-                # Keep session alive for thread reuse, only close on error or completion
-                pass
+                    skipped_count += 1
+            
+            session.commit()
+            print(f"[CourseDog] {dept}: Updated {updated_count} courses, skipped {skipped_count} (not in database)")
+            
+        except Exception as e:
+            session.rollback()
+            print(f"[CourseDog] Error processing {dept}: {e}")
+        finally:
+            session.close()
 
-    def _process_course_csv(self, session, dept: str, course_nbr: str, campus_str: str, course_data) -> None:
+    def _process_course_csv(self, session, dept: str, course_nbr: str, campus_str: str, course_data) -> bool:
         """Process a single course with CSV data for basic course information."""
         
         # --- Find and Update the Course in the Database ---
@@ -134,5 +88,6 @@ class CourseDogEnhance(ThreadingEnhanceBase):
             class_dist.cred_max = course_data["Maximum credits"]
             
             print(f"[CourseDog] Updated [{class_dist.campus}] {dept} {course_nbr} - {class_dist.class_desc} | Credits: {class_dist.cred_min}-{class_dist.cred_max}")
-        else:
-            print(f"[CourseDog] Course not found in database: {dept} {course_nbr}")
+            return True
+        # Removed the "not found" message to reduce log noise
+        return False

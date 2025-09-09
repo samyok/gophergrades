@@ -5,33 +5,12 @@ import requests
 import datetime
 import time
 import random
-import threading
 from .abstract import EnhanceBase
-from .threading_abstract import ThreadingEnhanceBase
 from db.Models import DepartmentDistribution, ClassDistribution, Libed, Session, and_
 from mapping.mappings import libed_mapping, campus_api_mapping
-from sqlalchemy.exc import OperationalError, PendingRollbackError
 
-# Thread-local storage for database sessions
-thread_local = threading.local()
-
-class CourseInfoEnhance(ThreadingEnhanceBase):
+class CourseInfoEnhance(EnhanceBase):
     """Handles course enhancement using UMN Courses API for libed/attribute information"""
-
-    def _get_thread_session(self):
-        """Get a thread-local database session."""
-        if not hasattr(thread_local, 'session') or thread_local.session is None:
-            thread_local.session = Session()
-        return thread_local.session
-
-    def _close_thread_session(self):
-        """Close the thread-local database session."""
-        if hasattr(thread_local, 'session') and thread_local.session is not None:
-            try:
-                thread_local.session.close()
-            except Exception:
-                pass
-            thread_local.session = None
 
     def _calculate_current_term(self) -> str:
         """
@@ -68,59 +47,27 @@ class CourseInfoEnhance(ThreadingEnhanceBase):
         
         current_term = self._calculate_current_term()
         
-        # Retry mechanism for database operations with exponential backoff
-        max_retries = 5
-        retry_delay_base = 2.0
+        session = Session()
+        try:
+            # Get all courses for this department from database
+            courses = session.query(ClassDistribution).filter(
+                and_(
+                    ClassDistribution.dept_abbr == dept,
+                    ClassDistribution.campus == campus_str
+                )
+            ).all()
 
-        for attempt in range(max_retries):
-            session = None
-            try:
-                session = self._get_thread_session()
-                
-                # Get all courses for this department from database
-                courses = session.query(ClassDistribution).filter(
-                    and_(
-                        ClassDistribution.dept_abbr == dept,
-                        ClassDistribution.campus == campus_str
-                    )
-                ).all()
-
-                for course in courses:
-                    self._process_course_api(session, dept, course.course_num, campus_str, api_campus, current_term)
-                
-                print("[CourseInfo] Committing changes to the database.")
-                session.commit()
-                print(f"[CourseInfo] Successfully processed {len(courses)} courses for {dept}")
-                break  # Success, exit retry loop
-                
-            except (OperationalError, PendingRollbackError) as e:
-                if session:
-                    try:
-                        session.rollback()
-                    except Exception:
-                        pass
-                    self._close_thread_session()  # Close and recreate session on error
-                
-                if attempt < max_retries - 1:
-                    retry_delay = retry_delay_base * (2 ** attempt) + random.uniform(0.5, 2.0)
-                    print(f"[CourseInfo] Database locked for {dept}, retrying in {retry_delay:.2f}s (attempt {attempt + 1}/{max_retries})")
-                    time.sleep(retry_delay)
-                else:
-                    print(f"[CourseInfo] Failed to process {dept} after {max_retries} attempts: {e}")
-                    return  # Give up on this department
-                    
-            except Exception as e:
-                if session:
-                    try:
-                        session.rollback()
-                    except Exception:
-                        pass
-                    self._close_thread_session()
-                print(f"[CourseInfo] Unexpected error processing {dept}: {e}")
-                break
-            finally:
-                # Keep session alive for thread reuse, only close on error or completion
-                pass
+            for course in courses:
+                self._process_course_api(session, dept, course.course_num, campus_str, api_campus, current_term)
+            
+            session.commit()
+            print(f"[CourseInfo] Successfully processed {len(courses)} courses for {dept}")
+            
+        except Exception as e:
+            session.rollback()
+            print(f"[CourseInfo] Error processing {dept}: {e}")
+        finally:
+            session.close()
 
     def _process_course_api(self, session, dept: str, course_nbr: str, campus_str: str, api_campus: str, current_term: str) -> None:
         """Process a single course with API calls to get libed information."""
