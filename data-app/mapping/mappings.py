@@ -574,15 +574,6 @@ catalog_mapping = {
     "UMNTC": "umtc",
 }
 
-# Mapping for campus codes used in the Course Info API
-campus_api_mapping = {
-    "UMNTC": "umntc",
-    "UMNRO": "umnro",
-    "UMNDL": "umndl",
-    "UMNCR": "umncr",
-    "UMNMO": "umnmo",
-}
-
 libed_mapping = {
     # College of Liberal Education
     "CLE - AH (Arts/Humanities)": "Arts/Humanities",

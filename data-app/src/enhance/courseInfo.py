@@ -7,7 +7,7 @@ import time
 import random
 from .abstract import EnhanceBase
 from db.Models import DepartmentDistribution, ClassDistribution, Libed, Session, and_
-from mapping.mappings import libed_mapping, campus_api_mapping
+from mapping.mappings import libed_mapping
 
 class CourseInfoEnhance(EnhanceBase):
     """Handles course enhancement using UMN Courses API for libed/attribute information"""
@@ -45,7 +45,7 @@ class CourseInfoEnhance(EnhanceBase):
         initial_delay = random.uniform(0.5, 2.0)
         time.sleep(initial_delay)
 
-        api_campus = campus_api_mapping.get(campus_str)
+        api_campus = campus_str.lower()
         if not api_campus:
             print(f"[CourseInfo] Invalid campus code for API call: {campus_str}")
             return
