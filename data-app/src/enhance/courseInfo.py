@@ -36,6 +36,11 @@ class CourseInfoEnhance(EnhanceBase):
         dept = dept_dist.dept_abbr
         campus_str = str(dept_dist.campus)
 
+        # Only process UMNTC and UMNRO campuses
+        if campus_str not in ["UMNTC", "UMNRO"]:
+            print(f"[CourseInfo] Skipping {dept} on {campus_str} - only processing UMNTC and UMNRO")
+            return
+
         # Add random delay to reduce concurrent database access
         initial_delay = random.uniform(0.5, 2.0)
         time.sleep(initial_delay)
@@ -47,27 +52,37 @@ class CourseInfoEnhance(EnhanceBase):
         
         current_term = self._calculate_current_term()
         
-        session = Session()
-        try:
-            # Get all courses for this department from database
-            courses = session.query(ClassDistribution).filter(
-                and_(
-                    ClassDistribution.dept_abbr == dept,
-                    ClassDistribution.campus == campus_str
-                )
-            ).all()
+        # Simple retry mechanism for database locks
+        max_retries = 3
+        for attempt in range(max_retries):
+            session = Session()
+            try:
+                # Get all courses for this department from database
+                courses = session.query(ClassDistribution).filter(
+                    and_(
+                        ClassDistribution.dept_abbr == dept,
+                        ClassDistribution.campus == campus_str
+                    )
+                ).all()
 
-            for course in courses:
-                self._process_course_api(session, dept, course.course_num, campus_str, api_campus, current_term)
-            
-            session.commit()
-            print(f"[CourseInfo] Successfully processed {len(courses)} courses for {dept}")
-            
-        except Exception as e:
-            session.rollback()
-            print(f"[CourseInfo] Error processing {dept}: {e}")
-        finally:
-            session.close()
+                for course in courses:
+                    self._process_course_api(session, dept, course.course_num, campus_str, api_campus, current_term)
+                
+                session.commit()
+                print(f"[CourseInfo] Successfully processed {len(courses)} courses for {dept}")
+                break  # Success, exit retry loop
+                
+            except Exception as e:
+                session.rollback()
+                if "database is locked" in str(e).lower() and attempt < max_retries - 1:
+                    retry_delay = (attempt + 1) * 2.0 + random.uniform(0.5, 1.5)
+                    print(f"[CourseInfo] Database locked for {dept}, retrying in {retry_delay:.1f}s (attempt {attempt + 1}/{max_retries})")
+                    time.sleep(retry_delay)
+                else:
+                    print(f"[CourseInfo] Error processing {dept}: {e}")
+                    break
+            finally:
+                session.close()
 
     def _process_course_api(self, session, dept: str, course_nbr: str, campus_str: str, api_campus: str, current_term: str) -> None:
         """Process a single course with API calls to get libed information."""
@@ -119,20 +134,25 @@ class CourseInfoEnhance(EnhanceBase):
         ).first()
 
         if class_dist:
-            # Overwrite existing libed attributes with fresh data from the API
-            class_dist.libeds.clear()
-            session.flush()  # Ensure the clear operation is executed before adding new ones
+            try:
+                # Overwrite existing libed attributes with fresh data from the API
+                class_dist.libeds.clear()
+                session.flush()  # Ensure the clear operation is executed before adding new ones
 
-            # Use set() to ensure each attribute is unique
-            for attribute_name in set(attributes_for_course):
-                libed_obj = session.query(Libed).filter(Libed.name == attribute_name).first()
-                if libed_obj is None:
-                    print(f"[CourseInfo] Libed '{attribute_name}' not found in DB for {dept} {course_nbr}")
-                elif libed_obj not in class_dist.libeds:
-                    class_dist.libeds.append(libed_obj)
-            
-            updated_libeds = [l.name for l in class_dist.libeds]
-            print(f"[CourseInfo] Updated [{class_dist.campus}] {dept} {course_nbr} | Libeds: {updated_libeds}")
+                # Use set() to ensure each attribute is unique
+                for attribute_name in set(attributes_for_course):
+                    libed_obj = session.query(Libed).filter(Libed.name == attribute_name).first()
+                    if libed_obj is None:
+                        print(f"[CourseInfo] Libed '{attribute_name}' not found in DB for {dept} {course_nbr}")
+                    elif libed_obj not in class_dist.libeds:
+                        class_dist.libeds.append(libed_obj)
+                
+                updated_libeds = [l.name for l in class_dist.libeds]
+                print(f"[CourseInfo] Updated [{class_dist.campus}] {dept} {course_nbr} | Libeds: {updated_libeds}")
+                
+            except Exception as e:
+                print(f"[CourseInfo] Error updating libeds for {dept} {course_nbr}: {e}")
+                # Don't re-raise, continue with next course
         
         # Be a good citizen and don't spam the API
         time.sleep(0.1)
