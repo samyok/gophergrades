@@ -5,6 +5,7 @@ from db.Models import Session, Professor, DepartmentDistribution, TermDistributi
 
 from src.generation.process import Process
 from src.enhance.courseDog import CourseDogEnhance
+from src.enhance.courseInfo import CourseInfoEnhance
 from src.rmp.rmp import RMP
 from src.srt.srt import SRT
 
@@ -96,7 +97,6 @@ if __name__ == "__main__":
         session = Session()
         dept_dists = session.query(DepartmentDistribution).all()
         session.close()
-        from src.enhance.courseInfo import CourseInfoEnhance
         CourseInfoEnhance().enhance(dept_dists)
         print("[MAIN] Finished CourseInfo Updating")
     
