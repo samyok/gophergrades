@@ -67,7 +67,10 @@ class CourseInfoEnhance(EnhanceBase):
                         libed_name = libed_mapping[attr_id]
                     else:
                         continue
-                    # Removed logging for libed not found due to many irrelevant unmapped attributes
+                    # Removed logging for libed not found due to many irrelevant unmapped attributes making it hard to monitor
+                    # [CI Enhanced] Libed mapping not found for attribute: ONL_ONLINE / ONLINE
+                    # [CI Enhanced] Libed mapping not found for attribute: DELM_08 / 08
+                    # There are more examples like this but they are not useful to log
                     
                     libed_dist = session.query(Libed).filter(Libed.name == libed_name).first()
                     if class_dist not in libed_dist.class_dists:
