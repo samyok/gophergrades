@@ -4,7 +4,6 @@ import numpy as np
 from db.Models import Session, Professor, DepartmentDistribution, TermDistribution
 
 from src.generation.process import Process
-from src.enhance.courseDog import CourseDogEnhance
 from src.enhance.courseInfo import CourseInfoEnhance
 from src.rmp.rmp import RMP
 from src.srt.srt import SRT
