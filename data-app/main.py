@@ -15,8 +15,7 @@ if __name__ == "__main__":
     parser.add_argument("clean_filename", type=str, help="The filename of the CSV file to process.")
     parser.add_argument('-dr','--disableRMP', dest='DisableRMP', action='store_true', help='Disables RMP Search.')
     parser.add_argument('-ds','--disableSRT', dest='DisableSRT', action='store_true', help='Disables SRT Updating for Class Distributions.')
-    parser.add_argument('-dc','--disableCD', dest='DisableCD', action='store_true', help='Disables CourseDog Updating for Class Libeds, Titles, and Onestop Links.')
-    parser.add_argument('-dci','--disableCI', dest='DisableCI', action='store_true', help='Disables CourseInfo Updating for Class Libeds and Attributes.')
+    parser.add_argument('-dc','--disableCI', dest='DisableCI', action='store_true', help='Disables CourseInfo Updating for Class Libeds and Attributes.')
 
     args = parser.parse_args()
     clean_filename = args.clean_filename
@@ -82,14 +81,6 @@ if __name__ == "__main__":
     session.close()
     new_additions.groupby(["TERM", "NAME", "FULL_NAME", "CAMPUS"], group_keys=False).apply(Process.process_dist)
     print("[MAIN] Finished Generating Distributions")
-
-    if not args.DisableCD:
-        print("[MAIN] Beginning CourseDog Updating")
-        session = Session()
-        dept_dists = session.query(DepartmentDistribution).all()
-        session.close()
-        CourseDogEnhance().enhance(dept_dists)
-        print("[MAIN] Finished CourseDog Updating")
 
     if not args.DisableCI:
         print("[MAIN] Beginning CourseInfo Updating")
