@@ -73,6 +73,6 @@ class CourseInfoEnhance(EnhanceBase):
                     if class_dist not in libed_dist.class_dists:
                         libed_dist.class_dists.append(class_dist)
                         
-                print(f"[CourseInfo] Updated [{class_dist.campus}] {class_dist.dept_abbr} {class_dist.course_num} : Libeds: ({class_dist.libeds})")
+                print(f"[CI Enhance] Updated [{class_dist.campus}] {class_dist.dept_abbr} {class_dist.course_num} : Libeds: ({class_dist.libeds})")
             session.commit()
             session.close()
