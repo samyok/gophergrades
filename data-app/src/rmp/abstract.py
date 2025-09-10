@@ -28,7 +28,7 @@ class AbstractRMP(ABC):
 
 
 
-    def get_prof_by_school_and_name(self, college: dict[str, str], professor_name: str) -> dict[str, str | float | int]:
+    def get_prof_by_school_and_name(self, college: dict[str, str], professor_name: str) -> list[dict[str, str | float | int]]:
         query = gql("""
             query NewSearchTeachersQuery($professorName: String!, $schoolID: ID!){
                 newSearch{
@@ -50,7 +50,14 @@ class AbstractRMP(ABC):
                 }
             }
         """)
-        result = self.gqlClient.execute(query, variable_values={"professorName": professor_name, "schoolID": college["id"]})
+        try:
+            result = self.gqlClient.execute(query, variable_values={"professorName": professor_name, "schoolID": college["id"]})
+        except TimeoutError:
+            print(f"[RMP ERROR] Timeout when searching for {professor_name} at {college['name']}")
+            return []
+        except Exception as e:
+            print(f"[RMP ERROR] Unknown error {e} when searching for {professor_name} at {college['name']}")
+            return []
         print(f"[RMP GQL] Searched for {professor_name} at {college['name']}")
         return result["newSearch"]["teachers"]["edges"]
 
