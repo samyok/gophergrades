@@ -667,6 +667,25 @@ libed_mapping = {
     # "MTC - MTC GOAL8 (Global Perspective)": "Global Perspective",
     # "MTC - MTC GOAL9 (Ethical & Civic Responsibility)": "Ethical and Civic Responsibility",
     # "MTC - MTC GOAL10 (People and the Environment)": "People and the Environment",
+    ## CourseInfo Mapping
+    "HON_HON": "Honors",
+    "CLE_WI": "Writing Intensive",
+    "CLE_AH": "Arts/Humanities",
+    "CLE_BIOL": "Biological Sciences",
+    "CLE_CIV": "Civic Life and Ethics",
+    "CLE_ENV": "Environment",
+    "CLE_GP": "Global Perspectives",
+    "CLE_HIS": "Historical Perspectives",
+    "CLE_HP": "Historical Perspectives",  # Alias for Historical Perspectives Core
+    "CLE_LITR": "Literature",
+    "CLE_MATH": "Mathematical Thinking",
+    "CLE_PHYS": "Physical Sciences",
+    "CLE_DSJ": "Race, Power, and Justice in the United States",
+    "CLE_SOCS": "Social Sciences",
+    "CLE_TS": "Technology and Society",
+    # Attributes below don't fit the family_id pattern and are matched by attribute_id alone
+    "FSEM": "Freshman Seminar",
+    "TOP": "Topics Course"    
 }
 grade_mapping = {
     "A+": 4.3,

@@ -4,7 +4,7 @@ import numpy as np
 from db.Models import Session, Professor, DepartmentDistribution, TermDistribution
 
 from src.generation.process import Process
-from src.enhance.courseDog import CourseDogEnhance
+from src.enhance.courseInfo import CourseInfoEnhance
 from src.rmp.rmp import RMP
 from src.srt.srt import SRT
 
@@ -15,7 +15,7 @@ if __name__ == "__main__":
     parser.add_argument("clean_filename", type=str, help="The filename of the CSV file to process.")
     parser.add_argument('-dr','--disableRMP', dest='DisableRMP', action='store_true', help='Disables RMP Search.')
     parser.add_argument('-ds','--disableSRT', dest='DisableSRT', action='store_true', help='Disables SRT Updating for Class Distributions.')
-    parser.add_argument('-dc','--disableCD', dest='DisableCD', action='store_true', help='Disables CourseDog Updating for Class Libeds, Titles, and Onestop Links.')
+    parser.add_argument('-dc','--disableCI', dest='DisableCI', action='store_true', help='Disables CourseInfo Updating for Class Libeds and Attributes.')
 
     args = parser.parse_args()
     clean_filename = args.clean_filename
@@ -82,13 +82,13 @@ if __name__ == "__main__":
     new_additions.groupby(["TERM", "NAME", "FULL_NAME", "CAMPUS"], group_keys=False).apply(Process.process_dist)
     print("[MAIN] Finished Generating Distributions")
 
-    if not args.DisableCD:
-        print("[MAIN] Beginning CourseDog Updating")
+    if not args.DisableCI:
+        print("[MAIN] Beginning CourseInfo Updating")
         session = Session()
         dept_dists = session.query(DepartmentDistribution).all()
         session.close()
-        CourseDogEnhance().enhance(dept_dists)
-        print("[MAIN] Finished CourseDog Updating")
+        CourseInfoEnhance().enhance(dept_dists)
+        print("[MAIN] Finished CourseInfo Updating")
     
     if not args.DisableRMP:
         print("[MAIN] RMP Update For Instructors")
