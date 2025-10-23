@@ -1,6 +1,7 @@
 import argparse
 import pandas as pd
 import numpy as np
+import asyncio
 from db.Models import Session, Professor, DepartmentDistribution, TermDistribution
 
 from src.generation.process import Process
@@ -87,7 +88,7 @@ if __name__ == "__main__":
         session = Session()
         dept_dists = session.query(DepartmentDistribution).all()
         session.close()
-        CourseInfoEnhance().enhance(dept_dists)
+        asyncio.run(CourseInfoEnhance().enhance(dept_dists))
         print("[MAIN] Finished CourseInfo Updating")
     
     if not args.DisableRMP:
