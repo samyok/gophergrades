@@ -15,7 +15,7 @@ class EnhanceBase(ABC):
     async def enhance(self, dept_dists: list[DepartmentDistribution]) -> None:
         """Enhance the data for a list of department distributions in a multiprocessing pool."""
 
-        semaphore = asyncio.Semaphore(10)  # Limit concurrent tasks to 10
+        semaphore = asyncio.Semaphore(9)  # Limit concurrent tasks to something under 5 due to rate limiting
         
-        tasks = [self.enhance_helper(dept) for dept in dept_dists]
+        tasks = [self.enhance_helper(dept, semaphore) for dept in dept_dists]
         await asyncio.gather(*tasks)

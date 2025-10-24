@@ -5,6 +5,7 @@ from .abstract import EnhanceBase
 from db.Models import DepartmentDistribution, ClassDistribution, Libed, Session, and_
 import httpx
 import datetime
+import json
 from mapping.mappings import libed_mapping
 import asyncio
 
@@ -66,9 +67,9 @@ class CourseInfoEnhance(EnhanceBase):
         finally:
             session.close()
 
-    async def enhance_helper(self, dept_dist: DepartmentDistribution) -> None:
+    async def enhance_helper(self, dept_dist: DepartmentDistribution, semaphore: asyncio.Semaphore) -> None:
 
-        async with asyncio.Semaphore(10):
+        async with semaphore:
             dept = dept_dist.dept_abbr
             campus = dept_dist.campus
             campus_str = str(campus)
@@ -87,8 +88,14 @@ class CourseInfoEnhance(EnhanceBase):
                     response.raise_for_status()
                     req = response.json()
                     courses = req.get("courses", [])
-                except (httpx.RequestError, ValueError) as e:
-                    print(f"[CI ERROR] Failed to fetch or parse data for {dept} at {campus_str}: {e}")
+                except httpx.HTTPStatusError as e:
+                    print(f"[CI HTTP ERROR] Failed for {dept}. Status: {e.response.status_code}. URL: {e.request.url}")
+                    return
+                except json.JSONDecodeError as e:
+                    print(f"[CI PARSE ERROR] Failed to parse JSON for {dept}. URL: {link}. Error: {repr(e)}")
+                    return
+                except httpx.RequestError as e:
+                    print(f"[CI REQUEST ERROR] Failed to fetch data for {dept}. Error: {repr(e)}") 
                     return
         
             if not courses:
