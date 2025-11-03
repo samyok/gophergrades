@@ -6,65 +6,85 @@ let plotterPresented = false
 let daySelected = "Monday"
 
 /**
- * updates the UI to match the current state of the page
+ * Update UI state in response to DOM mutations.
  *
- * this is where all the decisions on when to refresh different components are
- * made:
- *    UI creation
- *    UI updates
+ * Called by a debounced MutationObserver. Responsibilities:
+ *  - create the plotter UI when the schedule appears
+ *  - update the Map button when the toolbar changes
+ *  - trigger map updates when attributes or structure change
  *
- * @param mutations{MutationRecord[]} mutations from MutationObserver
+ * The function attempts to be resilient to transient DOM states and is
+ * wrapped in a try/catch so errors are surfaced via `errorLog` rather than
+ * throwing into the page.
+ *
+ * @param {MutationRecord[]} mutations - array of DOM mutation records
  */
 async function onChange(mutations) {
-  if (!await plotterUIPresented) return;
+  try {
+    if (!await plotterUIPresented) return;
 
-  const schedule = document.querySelector("#schedule-main");
+    const schedule = document.querySelector("#schedule-main");
 
-  //create elements if change is detected
-  if (schedule !== schedulePresented) {
-    schedulePresented = schedule
-    if (schedule) {
-      log("schedule has just appeared; creating UI")
-      createUI()
+    //create elements if change is detected
+    if (schedule !== schedulePresented) {
+      schedulePresented = schedule
+      if (schedule) {
+        log("schedule has just appeared; creating UI")
+        try { createUI() } catch (e) { errorLog(e, 'createUI') }
+      }
     }
+
+    //update iff schedule view is present
+    if (!schedule) return;
+
+    // update button only when necessary
+    // (changes to DOM structure, e.g. button is removed)
+    let doUpdateButton = mutations.find(m => m.type === "childList")
+    //update map when DOM changes or attributes change
+    // (for color hover """"feature"""")
+    let doUpdateMap =
+        doUpdateButton || mutations.find(m => m.type === "attributes");
+
+    if (doUpdateButton) updateButton();
+    if (doUpdateMap && plotterPresented) {
+      // protect against runaway repeated updates when a persistent error exists
+      const gp = window.GGPlotter || {}
+      if (!gp.shouldRun || gp.shouldRun()) {
+        await updateMap()
+      } else {
+        debug('updateMap suppressed due to recent failures or ongoing update')
+      }
+    }
+
+    mutations.forEach(mutation => {
+      switch (mutation.type) {
+        case "childList":
+          break;
+        case "attributes":
+          switch (mutation.attributeName) {
+            case "status":
+            case "username":
+            default:
+              break;
+          }
+          break;
+      }
+    })
+  } catch (e) {
+    errorLog(e, 'onChange')
   }
-
-  //update iff schedule view is present
-  if (!schedule) return;
-
-  // update button only when necessary
-  // (changes to DOM structure, e.g. button is removed)
-  let doUpdateButton = mutations.find(m => m.type === "childList")
-  //update map when DOM changes or attributes change
-  // (for color hover """"feature"""")
-  let doUpdateMap =
-      doUpdateButton || mutations.find(m => m.type === "attributes");
-
-  if (doUpdateButton) updateButton();
-  if (doUpdateMap && plotterPresented) await updateMap();
-
-  mutations.forEach(mutation => {
-    switch (mutation.type) {
-      case "childList":
-        break;
-      case "attributes":
-        switch (mutation.attributeName) {
-          case "status":
-          case "username":
-          default:
-            break;
-        }
-        break;
-    }
-  })
 }
 
+/**
+ * Ensure the Map button is present in the right-side toolbar.
+ * This function is idempotent and will not duplicate the button.
+ */
 function updateButton() {
-  debug('updating button')
   const group = document.querySelector("div#rightside div.btn-group")
   const buttonPresent = document.querySelector("#gg-map-btn")
   //button bar not loaded yet or button already exists
   if (!group || buttonPresent) return;
+  debug('updating button')
 
   const buttonTemplate = (active) => `
   <div id="gg-map-btn" class="btn-group">
@@ -83,18 +103,27 @@ function updateButton() {
   });
 }
 
+/**
+ * Toggle the plotter panel visibility and update the Map button
+ * styling. Wrapped in a try/catch to avoid uncaught exceptions from the
+ * UI path.
+ */
 function toggleMap() {
-  plotterPresented = !plotterPresented
-  const plotter = document.querySelector("#gg-plotter")
-  // const map = document.querySelector("#gg-plotter-map")
-  const button = document.querySelector("div#rightside div.btn-group")
-      .children[2].children[0]
-  if (plotterPresented) {
-    plotter.style.display = "block";
-    button.className = "btn btn-default active"
-  } else {
-    plotter.style.display = "none";
-    button.className = "btn btn-default"
+  try {
+    plotterPresented = !plotterPresented
+    const plotter = document.querySelector("#gg-plotter")
+    // const map = document.querySelector("#gg-plotter-map")
+    const button = document.querySelector("div#rightside div.btn-group")
+        .children[2].children[0]
+    if (plotterPresented) {
+      plotter.style.display = "block";
+      button.className = "btn btn-default active"
+    } else {
+      plotter.style.display = "none";
+      button.className = "btn btn-default"
+    }
+  } catch (e) {
+    errorLog(e, 'toggleMap')
   }
 
   //todo: consider map an option like the schedule and agenda?
@@ -112,8 +141,16 @@ function toggleMap() {
  *  - changing from agenda view to calendar view
  *    - (buttons obliterate entire main content view and replace it)
  */
+/**
+ * Build and insert the plotter UI (day buttons, info panel, canvas).
+ *
+ * This function is tolerant of missing DOM pieces and wraps the main
+ * construction in try/catch to ensure errors are logged rather than
+ * interrupting page execution.
+ */
 function createUI() {
-  debug("creating UI")
+  try {
+    debug("creating UI")
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const right = document.querySelector("#rightside");
 
@@ -164,20 +201,27 @@ function createUI() {
   //todo: if rightside's class is col-md-12, fullscreen is active
   // place plotter to the right of the schedule?
 
-  //add button functionality
-  days.forEach(day => {
-    const button = document.querySelector(`#gg-plotter-${day.toLowerCase()}-btn`)
-    if (day === "Monday")
-      button.className = "btn btn-default active";
-    button.onclick = async function () {
-      setDayButtonSelected(day)
-      daySelected = day
-      //this technically doesn't need to happen due to setDayButtonSelected
-      // causing an attribute change to be signalled but just in case i ever
-      // need it i'm going to leave it here with this egregiously long note
-      // await updateMap()
-    }
-  })
+    //add button functionality
+    days.forEach(day => {
+      const button = document.querySelector(`#gg-plotter-${day.toLowerCase()}-btn`)
+      if (day === "Monday")
+        button.className = "btn btn-default active";
+      button.onclick = async function () {
+        try {
+          setDayButtonSelected(day)
+          daySelected = day
+          //this technically doesn't need to happen due to setDayButtonSelected
+          // causing an attribute change to be signalled but just in case i ever
+          // need it i'm going to leave it here with this egregiously long note
+          // await updateMap()
+        } catch (e) {
+          errorLog(e, 'day button onclick')
+        }
+      }
+    })
+  } catch (e) {
+    errorLog(e, 'createUI')
+  }
   // const mapDiv = document.createElement("div")
   // mapDiv.id = "gg-plotter-slippy"
   // mapDiv.style.aspectRatio = "auto 2304/1296";
@@ -202,10 +246,14 @@ function createUI() {
  *
  * @param activeDay string of day to switch to active styling
  */
+/**
+ * Update the styling of the day selector buttons so only the active day
+ * is styled as selected.
+ *
+ * @param {string} activeDay - day name to set as active (e.g. 'Monday')
+ */
 function setDayButtonSelected(activeDay) {
-  //maybe make global at this point
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  //reset button styling
   days.forEach(day => {
     const button = document.querySelector(`#gg-plotter-${day.toLowerCase()}-btn`)
     if (day === activeDay) button.className = "btn btn-default active";
@@ -218,9 +266,27 @@ function setDayButtonSelected(activeDay) {
  * plots on the map the representation of all the classes in a schedule from
  * information on the page (namely the section list in the left column)
  */
+/**
+ * Gather the current schedule, fetch section details from the SBAPI,
+ * and draw the map. Uses `window.GGPlotter` guards to avoid concurrent
+ * updates and to respect exponential backoff when errors occur.
+ */
 async function updateMap() {
   debug("updating map")
-  const canvas = document.querySelector("#gg-plotter-map");
+  // prevent concurrent updates and honor suppression set by recordFailure
+  const gp = window.GGPlotter || {}
+  if (gp._updating) {
+    debug('updateMap already running; skipping')
+    return
+  }
+  if (gp._suppressUntil && Date.now() < gp._suppressUntil) {
+    debug('updateMap suppressed until ' + new Date(gp._suppressUntil).toISOString())
+    return
+  }
+
+  gp._updating = true
+  try {
+    const canvas = document.querySelector("#gg-plotter-map");
   // canvas not loaded yet
   if (!canvas) return
 
@@ -228,8 +294,40 @@ async function updateMap() {
   const invalidSections = schedule.sections.filter(sec => sec.location === undefined)
   //use only sections that have a valid location
   schedule.sections = schedule.sections.filter(sec => sec.location)
+  // lightweight change-detection: skip work if schedule/day hasn't changed
+  try {
+    const gpLocal = window.GGPlotter || {}
+    const makeKey = (sched) => {
+      const ids = (sched.sections || []).map(s => `${s.id}:${s.location ? s.location.x+','+s.location.y : 'nil'}:${s.color || ''}`)
+      return ids.join('|') + '|' + daySelected + '|' + (plotterPresented ? '1' : '0')
+    }
+    const key = makeKey(schedule)
+    if (gpLocal._lastScheduleKey === key) {
+      // avoid noisy logs; use debug so it only appears at verbose level
+      debug('updateMap: no change in schedule since last draw; skipping')
+      // refresh small UI parts that are cheap (e.g., gMaps link) if needed
+      try {
+        const latLongs = pixelsToLatLong(schedule.sections || [])
+        const link = "https://www.google.com/maps/dir/" + (latLongs.map(c => c[0]+","+c[1]).reverse().join("/"))
+        const gMapsNode = document.querySelector("#gg-plotter-gmaps")
+        if (gMapsNode && gMapsNode.href !== link) gMapsNode.href = link
+      } catch (e) { /* ignore */ }
+      return
+    }
+    gpLocal._lastScheduleKey = key
+    gpLocal._lastScheduleTs = Date.now()
+    window.GGPlotter = gpLocal
+  } catch (e) {
+    // ignore change-detection errors
+  }
   const section_nbrs = schedule.sections.map(s => s.id)
-  const term = Number(getTermStrm())
+  const termStrm = getTermStrm()
+  if (!termStrm) {
+    errorLog('No term/strm found on page; aborting map update', 'updateMap')
+    return
+  }
+  const term = Number(termStrm)
+  debug('updateMap using term: ' + term)
 
   // classes not loaded yet
   // there shouldn't be a case where the scheduler is loaded without sections
@@ -295,10 +393,24 @@ async function updateMap() {
 
   //report if there are any sections that do not have a location
   const reportNode = document.querySelector("#gg-plotter-report")
-  log(invalidSections.length)
+  // avoid spamming the console when there are zero missing locations
   if (invalidSections.length > 0) {
     log("sections without locations: " + invalidSections.length)
-    reportNode.textContent = `Warning: ${invalidSections.length} sections do not have a location`
+    if (reportNode) reportNode.textContent = `Warning: ${invalidSections.length} sections do not have a location`
+  } else {
+    debug('invalidSections=0')
+  }
+    // success -- reset failure count so subsequent updates run immediately
+    try { if (gp.resetFailures) gp.resetFailures() } catch (e) { debug('resetFailures failed ' + e) }
+  } catch (e) {
+    try {
+      if (gp.recordFailure) gp.recordFailure(e, 'updateMap')
+      else errorLog(e, 'updateMap')
+    } catch (ee) {
+      errorLog(ee, 'updateMap.recordFailure')
+    }
+  } finally {
+    gp._updating = false
   }
 }
 
@@ -310,69 +422,80 @@ async function updateMap() {
  * and color attributes
  */
 function getScheduleSections() {
-  let currColor = null
-  const scheduleBody = document.querySelector(
-      "#schedule-courses > div > div > table > tbody");
-  const scheduleList = Array.from(scheduleBody.children)
+  try {
+    let currColor = null
+    const scheduleBody = document.querySelector(
+        "#schedule-courses > div > div > table > tbody");
+    if (!scheduleBody) return new PlotterSchedule([], null)
+    const scheduleList = Array.from(scheduleBody.children)
 
-  let sections = []
-  let selected = null
+    let sections = []
+    let selected = null
 
-  scheduleList.forEach(element => {
-    const tds = element.children
+    scheduleList.forEach(element => {
+      const tds = element.children
 
-    //class header
-    if (tds.length === 3) {
-      currColor = tds[0].style.backgroundColor
-      return
-    }
-
-    //section (id/location)
-    let sectionNbr = tds[1]
-    //check this td for highlighting (could check any other than the first)
-    const highlighted = sectionNbr.classList.contains("info")
-    if (sectionNbr) {
-      sectionNbr = sectionNbr.firstElementChild.textContent.trim();
-      try {
-        sectionNbr = Number(sectionNbr)
-      } catch {
-        debug("could not read section number " + sectionNbr)
-        sectionNbr = null
+      //class header
+      if (tds.length === 3) {
+        currColor = tds[0].style.backgroundColor
+        return
       }
-    } else {
-      sectionNbr = null;
-      debug("could not obtain section no. (very weird)")
-    }
-    //this should only evaluate to true once, but shouldn't cause problems
-    // if this statement doesn't hold
-    if (highlighted) selected = sectionNbr;
 
-    //location (excl. room no. (for now))
-    //a section can have multiple locations for different meeting times
-    let location = tds[4].firstElementChild.textContent.trim();
-    if (location === "No room listed.") {
-      location = undefined
-    } else if (location === "Remote Class" || location === "Online Only") {
-      debug("Remote Class detected don't acknowledge")
-      //todo: acknowledge
-      // when it says remote class that means mandatory attendance which would
-      // be important to tell the user about whatever none of this matters
-      location = undefined
-    } else {
-      const locationObject = locations.find(loc => loc.location === location);
-      if (!locationObject) {
-        debug("could not find location " + location)
-        location = undefined
+      //section (id/location)
+      let sectionNbr = tds[1]
+      //check this td for highlighting (could check any other than the first)
+      const highlighted = sectionNbr && sectionNbr.classList && sectionNbr.classList.contains("info")
+      if (sectionNbr) {
+        sectionNbr = sectionNbr.firstElementChild.textContent.trim();
+        try {
+          sectionNbr = Number(sectionNbr)
+        } catch (err) {
+          debug("could not read section number " + sectionNbr)
+          sectionNbr = null
+        }
       } else {
-        location = locationObject
+        sectionNbr = null;
+        debug("could not obtain section no. (very weird)")
       }
-    }
+      //this should only evaluate to true once, but shouldn't cause problems
+      // if this statement doesn't hold
+      if (highlighted) selected = sectionNbr;
 
-    const newSection = new PlotterSection(sectionNbr, location, currColor);
-    sections.push(newSection)
-  });
+      //location (excl. room no. (for now))
+      //a section can have multiple locations for different meeting times
+      let location = undefined
+      try {
+        const locTd = tds[4] && tds[4].firstElementChild
+        location = locTd && locTd.textContent && locTd.textContent.trim()
+      } catch (e) {
+        debug('error reading location cell: ' + e)
+        location = undefined
+      }
 
-  return new PlotterSchedule(sections, selected)
+      if (location === "No room listed.") {
+        location = undefined
+      } else if (location === "Remote Class" || location === "Online Only") {
+        debug("Remote Class detected don't acknowledge")
+        location = undefined
+      } else if (location) {
+        const locationObject = locations.find(loc => loc.location === location);
+        if (!locationObject) {
+          debug("could not find location " + location)
+          location = undefined
+        } else {
+          location = locationObject
+        }
+      }
+
+      const newSection = new PlotterSection(sectionNbr, location, currColor);
+      sections.push(newSection)
+    });
+
+    return new PlotterSchedule(sections, selected)
+  } catch (e) {
+    errorLog(e, 'getScheduleSections')
+    return new PlotterSchedule([], null)
+  }
 }
 
 //load map image as an img tag
@@ -391,13 +514,40 @@ function loadMapImage() {
 }
 
 // initialization; keep out of global scope
-{
-  new MutationObserver(onChange).observe(document, {
-    childList: true,
-    attributes: true,
-    subtree: true
-  });
+(function () {
+  try {
+    // Debounced MutationObserver: batch rapid DOM changes to avoid tight loops
+    let mutationTimer = null
+    let mutationQueue = []
+    const MUTATION_DEBOUNCE_MS = 1000
+
+    const observer = new MutationObserver((mutationsList) => {
+      // accumulate mutations and schedule a single onChange call
+      mutationQueue.push(...mutationsList)
+      if (mutationTimer) return
+      mutationTimer = setTimeout(() => {
+        const queued = mutationQueue.slice()
+        mutationQueue.length = 0
+        mutationTimer = null
+        try {
+          onChange(queued)
+        } catch (e) {
+          errorLog(e, 'onChange(debounced)')
+        }
+      }, MUTATION_DEBOUNCE_MS)
+    })
+
+    observer.observe(document, {
+      childList: true,
+      attributes: true,
+      subtree: true
+    })
+
+    debug('plotter debounced mutation observer installed')
+  } catch (e) {
+    errorLog(e, 'mutationObserver')
+  }
 
   //load only once
   loadMapImage()
-}
+})()
