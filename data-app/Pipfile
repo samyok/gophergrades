@@ -9,10 +9,8 @@ openpyxl = "*"
 sqlalchemy = "*"
 requests = "*"
 nameparser = "*"
-scipy = "*"
 alembic = "*"
 aiohttp = "*"
-ratemyprofessorapi = "*"
 gql = "*"
 
 [dev-packages]
