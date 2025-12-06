@@ -16,9 +16,9 @@
     "@chakra-ui/react": "^2.3.2",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
-    "@mdx-js/loader": "^3.0.0",
-    "@mdx-js/react": "^3.0.0",
-    "@next/mdx": "^14.0.4",
+    "@mdx-js/loader": "^3.1.1",
+    "@mdx-js/react": "^3.1.1",
+    "@next/mdx": "^16.0.7",
     "@types/sqlite3": "^3.1.8",
     "@vercel/og": "^0.0.20",
     "discord-webhook-node": "^1.1.8",
@@ -49,6 +49,6 @@
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "prettier": "^2.5.1",
-    "typescript": "4.8.3"
+    "typescript": "^5.9.3"
   }
 }
