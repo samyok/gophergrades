@@ -1,5 +1,5 @@
 import { extendTheme } from "@chakra-ui/react";
-import { IBM_Plex_Sans, Inter } from "@next/font/google";
+import { IBM_Plex_Sans, Inter } from "next/font/google";
 
 const inter = Inter({
   subsets: ["latin"],
