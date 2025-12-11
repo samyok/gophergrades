@@ -4,15 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pandas = "2.2.3"
+pandas = "2.3.3"
 openpyxl = "*"
 sqlalchemy = "*"
 requests = "*"
 nameparser = "*"
-scipy = "*"
 alembic = "*"
 aiohttp = "*"
-ratemyprofessorapi = "*"
 gql = "*"
 
 [dev-packages]
