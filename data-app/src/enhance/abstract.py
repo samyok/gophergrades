@@ -1,10 +1,9 @@
 from abc import ABC, abstractmethod
 from db.Models import DepartmentDistribution
-from multiprocessing import Pool
+import asyncio
 
 class EnhanceBase(ABC):
     """Base class for data enhancement operations."""
-
     def __init__(self):
         pass
 
@@ -13,7 +12,10 @@ class EnhanceBase(ABC):
         """Abstract method to be implemented by subclasses for enhancing data."""
         pass
 
-    def enhance(self, dept_dists: list[DepartmentDistribution]) -> None:
+    async def enhance(self, dept_dists: list[DepartmentDistribution]) -> None:
         """Enhance the data for a list of department distributions in a multiprocessing pool."""
-        with Pool() as pool:
-            pool.map(self.enhance_helper, dept_dists)
+
+        semaphore = asyncio.Semaphore(9)  # Limit concurrent tasks to something under 5 due to rate limiting
+        
+        tasks = [self.enhance_helper(dept, semaphore) for dept in dept_dists]
+        await asyncio.gather(*tasks)
