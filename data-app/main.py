@@ -33,7 +33,7 @@ if __name__ == "__main__":
     session = Session()
     prof_list = np.array([prof.name for prof in session.query(Professor).all()])
     session.close()
-    data_list = df["NAME"].unique()
+    data_list = df["NAME"].dropna().unique()
     diff_list = np.setdiff1d(data_list,prof_list)
     if diff_list.size > 0:
         print(f"[MAIN] Adding {len(diff_list)} new instructors: {diff_list}")
