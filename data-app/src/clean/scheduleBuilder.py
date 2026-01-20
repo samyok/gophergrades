@@ -35,9 +35,7 @@ class ScheduleBuilderCleaner(CourseInfoCleaner):
 
         data = course_resp.json()
 
-        sections = data.get("sections", [])
-
-        if len(sections) == 0:
+        if len(data["sections"]) == 0:
             # No data to work with, fall back to old method.
             # print(f"Failed to fetch overall data for {dept} {catalog_nbr}: {course_resp.url}")
             retVal =  x.groupby(["CLASS_SECTION"], group_keys=False).apply(
