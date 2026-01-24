@@ -54,6 +54,13 @@ class CourseInfoEnhance(EnhanceBase):
             session = Session()
             class_dist = session.query(ClassDistribution).filter(and_(ClassDistribution.dept_abbr == dept, ClassDistribution.course_num == course_nbr, ClassDistribution.campus == campus)).first()
             if class_dist:
+                
+                class_dist.cred_min = course["credits_minimum"]
+                class_dist.cred_max = course["credits_maximum"]
+                class_dist.onestop = f"https://{catalog_mapping.get(campus_str)}.catalog.prod.coursedog.com/courses/{course['course_id']}1"
+                class_dist.onestop_desc = course["description"]
+                class_dist.class_desc = course["title"]
+
                 class_dist.libeds.clear()
                 
                 for attribute in course.get("course_attributes", []):
