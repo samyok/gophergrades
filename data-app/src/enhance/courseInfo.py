@@ -5,7 +5,7 @@ from .abstract import EnhanceBase
 from db.Models import DepartmentDistribution, ClassDistribution, Libed, Session, and_
 import requests
 import datetime
-from mapping.mappings import libed_mapping
+from mapping.mappings import libed_mapping, catalog_mapping
 
 
 class CourseInfoEnhance(EnhanceBase):
@@ -54,7 +54,7 @@ class CourseInfoEnhance(EnhanceBase):
             session = Session()
             class_dist = session.query(ClassDistribution).filter(and_(ClassDistribution.dept_abbr == dept, ClassDistribution.course_num == course_nbr, ClassDistribution.campus == campus)).first()
             if class_dist:
-                
+
                 class_dist.cred_min = course["credits_minimum"]
                 class_dist.cred_max = course["credits_maximum"]
                 class_dist.onestop = f"https://{catalog_mapping.get(campus_str)}.catalog.prod.coursedog.com/courses/{course['course_id']}1"
