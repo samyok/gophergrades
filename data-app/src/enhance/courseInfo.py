@@ -45,8 +45,8 @@ class CourseInfoEnhance(EnhanceBase):
             try:
                 req = url.json()
                 courses = req.get("courses", [])
-            except ValueError:
-                print("Json malformed, icky!")
+            except ValueError as e:
+                print("[CI Enhance] JSON Error:", e)
                 return
             
         for course in courses:

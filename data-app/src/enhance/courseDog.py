@@ -15,8 +15,8 @@ class CourseDogEnhance(EnhanceBase):
         with requests.get(link) as url:
             try:
                 req=url.json()
-            except ValueError:
-                print("Json malformed, icky!")
+            except ValueError as e:
+                print("[CD Enhance] JSON Error:", e)
                 req={}
                 return
             
