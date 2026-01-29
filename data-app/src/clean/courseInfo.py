@@ -30,8 +30,8 @@ class CourseInfoCleaner(CleanBase):
                 try:
                     decodedContent = url.content.decode("latin-1")
                     CACHED_REQ = json.loads(decodedContent, strict=False)
-                except ValueError:
-                    # print("Json malformed, icky!")
+                except ValueError as e:
+                    print("[CI Clean] JSON Error:", e)
                     CACHED_REQ = {}
 
         # Go through lecutres and find professors

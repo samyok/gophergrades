@@ -24,7 +24,7 @@ class AbstractRMP(ABC):
             "Sec-Fetch-Mode": "cors",
         }
         self.transport = AIOHTTPTransport(url="https://www.ratemyprofessors.com/graphql", auth=BasicAuth("test", "test"), ssl=False, headers=RMPHeaders)
-        self.gqlClient = Client(transport=self.transport, fetch_schema_from_transport=True)
+        self.gqlClient = Client(transport=self.transport, fetch_schema_from_transport=False)
 
 
 
