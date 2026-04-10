@@ -59,6 +59,12 @@
         "calendar/utils/scraper.js",
         "calendar/calendar.js"
       ]
+    },
+    {
+      "matches": ["*://apas.umn.edu/*"],
+      "js": ["static/apas-parser.js"],
+      "run_at": "document_idle",
+      "all_frames": true
     }
   ],
   "host_permissions": [

@@ -60,6 +60,13 @@ const iframePortalTemplate = (iframeId, courseName) => `
 </div>
 `;
 
+const apasTriggerTemplate = `
+<div id="gg-apas-trigger" class="list-group-item" style="cursor: pointer; background: #fff8e1; border-left: 5px solid #ffcc33; font-weight: bold; margin-bottom: 10px; display: flex; justify-content: space-between;">
+    <span style="color: #7a0019;">〽️ Degree Requirements (APAS)</span>
+    <span style="color: #7a0019;">&rsaquo;</span>
+</div>
+`;
+
 const appendPortal = (iframeId, target, courseName) => {
   const alreadyExists = document.querySelector(`#${iframeId}`);
   if (alreadyExists) return alreadyExists;
@@ -155,7 +162,25 @@ const loadCourseSchedule = (courseSchedule) => {
   }
 };
 
+const injectApasTrigger = () => {
+    const sidebar = document.querySelector('.list-group.visible-lg.visible-md');
+    if (!sidebar || document.getElementById('gg-apas-trigger')) return;
+
+    const trigger = htmlToElement(apasTriggerTemplate);
+    
+    trigger.onclick = () => {
+        console.log("[GG] APAS Trigger Clicked");
+        if (typeof renderApasExplorer === "function") {
+            renderApasExplorer();
+        }
+    };
+
+    sidebar.prepend(trigger);
+};
+
 const onAppChange = async () => {
+  injectApasTrigger();
+  
   const courseList = document.querySelector(".course-list-results");
   const courseInfo = document.querySelector("#crse-info");
   const courseSchedule = document.querySelector("#schedule-courses");
