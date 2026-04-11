@@ -77,7 +77,8 @@
   "permissions": [
     "storage",
     "identity",
-    "identity.email"
+    "identity.email",
+    "activeTab"
   ],
   "options_page": "frontend/popup/popup.html",
   "action": {

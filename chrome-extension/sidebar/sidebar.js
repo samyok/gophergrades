@@ -1,47 +1,40 @@
 const BASE_URL = "https://umn.lol";
 
-const injectApasStyles = () => {
-    if (document.getElementById('gg-apas-styles')) return;
-    const style = document.createElement('style');
-    style.id = 'gg-apas-styles';
-    style.textContent = `
-        .gg-modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:20000; display:flex; justify-content:center; align-items:center; }
-        .gg-modal-window { background:white; width:85%; max-width:900px; max-height:85vh; border-radius:10px; display:flex; flex-direction:column; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: sans-serif; }
-        .gg-modal-header { padding:15px 20px; border-bottom:2px solid #7a0019; display:flex; justify-content:space-between; align-items:center; }
-        .gg-modal-body { padding:20px; overflow-y:auto; flex-grow:1; background:#f9f9f9; }
-        .gg-req-card { background:white; border:1px solid #ddd; border-top:5px solid #ffcc33; padding:15px; border-radius:6px; cursor:pointer; }
-        .gg-req-card:hover { background:#f0f0f0; }
-        .gg-course-card { background:white; border:1px solid #eee; border-left:8px solid #7a0019; padding:15px; border-radius:6px; margin-bottom:10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .gg-btn-view { display:block; text-align:center; background:#7a0019; color:white; text-decoration:none; padding:8px; border-radius:4px; font-weight:bold; font-size:12px; margin-top:10px; }
-        @keyframes gg-spin { to { transform: rotate(360deg); } }
-        .gg-loader { border:4px solid #f3f3f3; border-top:4px solid #7a0019; border-radius:50%; width:30px; height:30px; animation: gg-spin 1s linear infinite; margin:20px auto; }
-        .gg-status-met { border-top-color: #2e7d32 !important; color: #2e7d32; }
-        .gg-status-unmet { border-top-color: #d32f2f !important; color: #d32f2f; }
-        .gg-status-ip { border-top-color: #ed6c02 !important; color: #ed6c02; }
+// --- HELPERS ---
 
-        .gg-req-card { 
-            background: white; 
-            border: 1px solid #ddd; 
-            border-top: 5px solid #ffcc33; /* Default Yellow */
-            padding: 15px; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            transition: transform 0.1s ease;
-        }
-        .gg-req-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        #gg-do-sort:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        #gg-do-sort:hover:not(:disabled) {
-            filter: brightness(1.1);
-        }
-    `;
-    document.head.appendChild(style);
+const fixApasTextSpacing = (text) => {
+    if (!text) return "";
+    return text
+        // Fix smushed words: "MATH1471" -> "MATH 1471"
+        .replace(/([a-zA-Z])(\d)/g, '$1 $2') 
+        // Fix "coursefrom" or "requirementwill"
+        .replace(/([a-z])([A-Z])/g, '$1 $2') 
+        // Ensure we don't collapse our intentional newlines into single spaces
+        .split('\n')
+        .map(line => line.replace(/\s+/g, ' ').trim())
+        .join('\n') 
+        .trim();
 };
-injectApasStyles();
 
-console.log("sidebar grades is loaded :)");
+const nestApasData = (flatReqs) => {
+    const nested = {};
+    flatReqs.forEach(req => {
+        const cat = req.requirementTitle || "General Requirements";
+        if (!nested[cat]) {
+            nested[cat] = {
+                title: cat,
+                status: "MET", // Default to MET, will downgrade if any sub-req is UNMET
+                subReqs: []
+            };
+        }
+        nested[cat].subReqs.push(req);
+        
+        // Logical "Overall Status" calculation
+        if (req.status === 'UNMET') nested[cat].status = 'UNMET';
+        else if (req.status === 'IP' && nested[cat].status !== 'UNMET') nested[cat].status = 'IP';
+    });
+    return Object.values(nested);
+};
 
 // listen for messages from iframes
 window.addEventListener("message", (event) => {
@@ -98,13 +91,6 @@ const iframeTemplate = `
 const iframePortalTemplate = (iframeId, courseName) => `
 <div class="gopher-grades-portal" id="${iframeId}">
 <h3 class="portal-label">${courseName}</h3>
-</div>
-`;
-
-const apasTriggerTemplate = `
-<div id="gg-apas-trigger" class="list-group-item" style="cursor: pointer; background: #fff8e1; border-left: 5px solid #ffcc33; font-weight: bold; margin-bottom: 10px; display: flex; justify-content: space-between;">
-    <span style="color: #7a0019;">〽️ Degree Requirements (APAS)</span>
-    <span style="color: #7a0019;">&rsaquo;</span>
 </div>
 `;
 
@@ -219,112 +205,181 @@ const COURSE_SERVICE = {
     }
 };
 
-const renderApasExplorer = async () => {
-    const { gg_apas_unmet, gg_apas_completed } = await chrome.storage.local.get(["gg_apas_unmet", "gg_apas_completed"]);
-    if (!gg_apas_unmet) return alert("Please sync APAS first!");
+const openApasModal = async () => {
+    const { gg_apas_unmet } = await chrome.storage.local.get(["gg_apas_unmet"]);
+    if (!gg_apas_unmet) return alert("Sync APAS first!");
 
-    const overlay = document.createElement('div');
-    overlay.id = "gg-apas-overlay";
-    overlay.className = "gg-modal-overlay";
-    overlay.innerHTML = `
-        <div class="gg-modal-window">
-            <div class="gg-modal-header">
-                <h3 style="margin:0; color:#7a0019;">〽️ APAS Explorer</h3>
-                <button id="gg-close" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
-            </div>
-            <div id="gg-content" class="gg-modal-body"></div>
-        </div>
-    `;
-    document.body.appendChild(overlay);
-
-    const content = overlay.querySelector('#gg-content');
-
-    const showGrid = () => {
-        content.innerHTML = `
-            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap:15px;">
-                ${gg_apas_unmet.map((req, i) => {
-                    // Determine class based on status
-                    let statusClass = 'gg-status-unmet';
-                    if (req.status === 'MET') statusClass = 'gg-status-met';
-                    if (req.status === 'IP') statusClass = 'gg-status-ip';
-
-                    return `
-                        <div class="gg-req-card ${statusClass}" data-idx="${i}">
-                            <div style="font-size: 10px; color: #999; font-weight: bold; text-transform: uppercase;">
-                                ${req.requirementTitle || 'General'}
-                            </div>
-                            <div style="font-weight: bold; margin-top: 5px; color: #333;">${req.title}</div>
-                            <div style="margin-top: 10px; font-size: 11px; font-weight: bold;">
-                                ${req.status === 'MET' ? '✅ MET' : (req.status === 'IP' ? '⏳ IN-PROGRESS' : '❌ NOT MET')}
-                            </div>
-                        </div>
-                    `;
-                }).join('')}
-            </div>`;
+    // FILTER: Focus only on Major Requirements
+    const majorOnly = gg_apas_unmet.filter(req => {
+        const title = req.requirementTitle.toLowerCase();
+        const subTitle = req.title.toLowerCase();
         
-        content.querySelectorAll('.gg-req-card').forEach(c => {
-            c.onclick = () => showCourses(gg_apas_unmet[c.dataset.idx]);
-        });
-    };
+        // Exclude broad university/administrative bookkeeping
+        const isJunk = /credits|gpa|minimum|total|resident|withdrawn|degree-applicable|elective/i.test(subTitle) || 
+                       /degree|university/i.test(title);
+        
+        return !isJunk;
+    });
 
-    const showCourses = async (req) => {
-        content.innerHTML = `<div class="gg-loader"></div><p style="text-align:center;">Finding sections for ${req.title}...</p>`;
-        const results = await Promise.all(req.options.map(o => COURSE_SERVICE.fetchCourse(o.dept, o.num)));
-        
-        content.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:10px; border-bottom:1px solid #eee;">
-                <button id="gg-back" style="cursor:pointer; padding:5px 10px;">&larr; Back</button>
-                <h4 style="margin:0; color:#7a0019;">${req.title}</h4>
-            </div>
-            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:15px;">
-                ${req.options.map((o, i) => {
-                    const done = (gg_apas_completed || []).includes((o.dept+o.num).toUpperCase());
-                    const live = results[i];
-                    
-                    return `
-                        <div class="gg-course-card" style="border-left: 8px solid ${done ? '#2e7d32' : '#d32f2f'}">
-                            <div style="display:flex; justify-content:space-between; align-items: center;">
-                                <strong style="font-size: 15px;">${o.dept} ${o.num}</strong>
-                                <span style="font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; background: ${done ? '#e8f5e9' : '#ffebee'}; color: ${done ? '#2e7d32' : '#d32f2f'};">
-                                    ${done ? 'COMPLETED' : 'NEEDED'}
-                                </span>
-                            </div>
-                            <div style="font-size: 12px; color: #666; margin: 8px 0;">
-                                ${live ? `🟢 ${live.sections?.length} sections available` : '⚪ Not offered this term'}
-                            </div>
-                            <a href="https://schedulebuilder.umn.edu/explore/2026Spring/${o.dept}/${o.num}" class="gg-btn-view">
-                                View Schedule
-                            </a>
-                        </div>
-                    `;
-                }).join('')}
-            </div>`;
-        
-        content.querySelector('#gg-back').onclick = showGrid;
-        
-        content.querySelectorAll('.gg-btn-view').forEach(a => {
-            a.onclick = () => setTimeout(() => document.getElementById('gg-apas-overlay').remove(), 150);
-        });
-    };
-
-    overlay.querySelector('#gg-close').onclick = () => overlay.remove();
-    showGrid();
+    const nestedCategories = nestApasData(majorOnly);
+    renderCategoryGrid(nestedCategories);
 };
 
-const injectApasTrigger = () => {
-    const sidebar = document.querySelector('.list-group.visible-lg.visible-md');
-    if (!sidebar || document.getElementById('gg-apas-trigger')) return;
-
-    const trigger = htmlToElement(apasTriggerTemplate);
+const renderCategoryGrid = (categories) => {
+    let overlay = document.getElementById('apas-modal');
     
-    trigger.onclick = () => {
-        console.log("[GG] APAS Trigger Clicked");
-        if (typeof renderApasExplorer === "function") {
-            renderApasExplorer();
-        }
-    };
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = "apas-modal";
+        overlay.className = "gopher-grades-modal-overlay";
+        document.body.appendChild(overlay);
+    }
+    
+    // Tier 1 cards now use the vertical list style
+    const cards = categories.map((cat, i) => {
+        const isDone = cat.status === 'MET';
+        return `
+            <div class="gopher-grades-req-card status-${cat.status.toLowerCase()}" data-idx="${i}">
+                <h3 class="req-title">${fixApasTextSpacing(cat.title)}</h3>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 11px; font-weight: 800; color: ${isDone ? 'var(--status-met)' : 'var(--status-unmet)'}">
+                        ${cat.status}
+                    </span>
+                    <span style="color: #ccc; font-size: 18px;">&rsaquo;</span>
+                </div>
+            </div>
+        `;
+    }).join('');
 
-    sidebar.prepend(trigger);
+    // Updated structure: Close button is now INSIDE the header
+    overlay.innerHTML = `
+        <div class="gopher-grades-modal-window">
+            <div class="modal-header-main">
+                <span>〽️ MAJOR REQUIREMENTS</span>
+                <button id="close-apas" class="modal-close-btn" title="Close">✕</button>
+            </div>
+            <div class="modal-scroll-area">
+                <div class="apas-section-grid">
+                    ${cards}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Bind listeners
+    overlay.querySelector('#close-apas').onclick = () => overlay.remove();
+    
+    overlay.querySelectorAll('.gopher-grades-req-card').forEach(card => {
+        card.onclick = () => {
+            const categoryData = categories[card.dataset.idx];
+            // Ensure we pass the overlay reference forward
+            renderSubReqList(categoryData, overlay);
+        };
+    });
+};
+
+const renderSubReqList = (category, overlay) => {
+    const cards = category.subReqs.map((sub, i) => {
+        const isDone = sub.status === 'MET' || sub.status === 'IP';
+
+        return `
+            <div class="gopher-grades-sub-card status-${sub.status.toLowerCase()}" 
+                 data-idx="${i}" 
+                 style="display: flex; justify-content: space-between; align-items: center; padding: 15px; margin-bottom: 10px; background: white; border: 1px solid #ddd; border-left: 5px solid ${isDone ? '#2e7d32' : '#c62828'}; border-radius: 4px; cursor: pointer; transition: transform 0.1s;">
+                
+                <div style="display: flex; align-items: center; gap: 5px; flex: 1;">
+                    <h4 style="margin: 0; font-size: 14px; color: #333; font-weight: 600;">${sub.title}</h4>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 12px; margin-left: 15px;">
+                    <span style="font-size: 11px; font-weight: 800; color: ${isDone ? '#2e7d32' : '#c62828'}">${sub.status}</span>
+                    <span style="color: #ccc; font-size: 18px;">&rsaquo;</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    overlay.querySelector('.modal-scroll-area').innerHTML = `
+        <div class="nav-breadcrumb" style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+            <button id="back-to-cats" class="back-btn" style="background: #eee; border: 1px solid #ccc; padding: 5px 12px; border-radius: 4px; cursor: pointer;">← All Categories</button>
+            <span class="nav-label" style="font-weight: 800; color: #7a0019; text-transform: uppercase; font-size: 12px;">${category.title}</span>
+        </div>
+        <div class="apas-sub-list-container" style="display: flex; flex-direction: column;">
+            ${cards}
+        </div>
+    `;
+
+    // Listeners
+    overlay.querySelector('#back-to-cats').onclick = () => openApasModal();
+    
+    overlay.querySelectorAll('.gopher-grades-sub-card').forEach(card => {
+        card.onclick = () => renderCourseDetail(category.subReqs[card.dataset.idx], category, overlay);
+    });
+};
+
+const renderCourseDetail = (subReq, category, overlay) => {
+    const isDone = subReq.status === 'MET' || subReq.status === 'IP';
+    
+    const courses = subReq.options.map(opt => `
+          <div class="course-option-row" style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: white; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+              <div class="course-identity" style="display: flex; flex-direction: column; gap: 2px;">
+                  <span style="font-size: 10px; color: #888; font-weight: 800; text-transform: uppercase;">Course Code</span>
+                  <strong style="color: var(--umn-maroon); font-size: 16px;">${opt.dept} ${opt.num}</strong>
+              </div>
+              <button class="view-course-btn" 
+                  data-url="https://schedulebuilder.umn.edu/explore/2026Spring/${opt.dept}/${opt.num}/">
+                  ${isDone ? 'VIEW DETAILS' : 'EXPLORE COURSE'}
+              </button>
+          </div>
+      `).join('');
+
+    overlay.querySelector('.modal-scroll-area').innerHTML = `
+        <div class="nav-breadcrumb" style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+            <button id="back-to-subreqs" class="back-btn" style="background: #eee; border: 1px solid #ccc; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">← BACK</button>
+            <div class="header-titles">
+                <small style="color: #7a0019; font-weight: 800; text-transform: uppercase; font-size: 10px; display: block;">
+                    ${fixApasTextSpacing(category.title)}
+                </small>
+                <strong style="font-size: 16px; color: #333;">${subReq.title}</strong>
+            </div>
+        </div>
+        
+        <div class="apas-info-panel" style="background: #fffde7; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #fff59d;">
+            <div style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: ${subReq.description ? '10px' : '0'};">
+                <span style="font-weight: 800; font-size: 12px; color: ${isDone ? '#2e7d32' : '#c62828'}">${subReq.status}</span>
+            </div>
+            
+            ${subReq.description ? `
+                <div class="req-description-box" style="font-size: 12px; line-height: 1.5; color: #5d4037; white-space: pre-line;">
+                    ${fixApasTextSpacing(subReq.description)}
+                </div>
+            ` : ''}
+        </div>
+
+        <div class="course-section">
+            <div style="font-weight: 800; font-size: 10px; margin-bottom: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">
+                ${isDone ? 'Fulfilled By' : 'Available Options'}
+            </div>
+            <div class="course-list-container">${courses}</div>
+        </div>
+    `;
+
+    // Listeners
+    overlay.querySelector('#back-to-subreqs').onclick = () => renderSubReqList(category, overlay);
+    overlay.querySelectorAll('.view-course-btn').forEach(btn => {
+        btn.onclick = () => window.open(btn.dataset.url, '_blank');
+    });
+};
+
+const injectApasFab = () => {
+    if (document.getElementById('apas-fab')) return;
+    const fab = document.createElement('div');
+    fab.id = 'apas-fab';
+    fab.className = 'gopher-grades-fab'; // Ensure this class is in your CSS
+    fab.innerHTML = '〽️';
+    fab.title = "Open APAS Explorer";
+    fab.onclick = openApasModal; // Correct function name
+    document.body.appendChild(fab);
 };
 
 const performGPASort = async () => {
@@ -411,7 +466,7 @@ const injectSortTool = () => {
 };
 
 const onAppChange = async () => {
-  injectApasTrigger();
+  injectApasFab();
 
   const courseList = document.querySelector(".course-list-results");
   const courseInfo = document.querySelector("#crse-info");
