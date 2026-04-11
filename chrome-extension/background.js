@@ -51,11 +51,52 @@ const RuntimeMessages = {
       url: chrome.runtime.getURL("frontend/gcal/add.html"),
     });
   },
+  FETCH_GPA: async (request, sender, sendResponse) => {
+    try {
+      const response = await fetch(`https://umn.lol/api/class/${request.courseId}`);
+      const json = await response.json();
+      
+      if (!json.success || !json.data) {
+        throw new Error("No data found");
+      }
+
+      const grades = json.data.total_grades;
+      const weights = {
+        "A": 4.0, "A-": 3.67, "B+": 3.33, "B": 3.0, "B-": 2.67,
+        "C+": 2.33, "C": 2.0, "C-": 1.67, "D+": 1.33, "D": 1.0, "F": 0.0
+      };
+
+      let totalPoints = 0;
+      let totalStudents = 0;
+
+      for (const [grade, count] of Object.entries(grades)) {
+        if (weights[grade] !== undefined) {
+          totalPoints += weights[grade] * count;
+          totalStudents += count;
+        }
+      }
+
+      const avgGpa = totalStudents > 0 ? (totalPoints / totalStudents) : 0;
+      
+      // Send back the calculated GPA
+      sendResponse({ success: true, avg_gpa: avgGpa });
+    } catch (error) {
+      sendResponse({ success: false, error: error.message });
+    }
+  }
 };
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   const { type } = request;
-  RuntimeMessages[type](request);
+  
+  // Check if we have a handler for this message type
+  if (RuntimeMessages[type]) {
+    // If it's an async function (like FETCH_GPA), we call it and return true
+    RuntimeMessages[type](request, sender, sendResponse);
+    return true; 
+  } else {
+    console.warn(`[BG] Unknown message type: ${type}`);
+  }
 });
 
 chrome.runtime.onInstalled.addListener(async () => {

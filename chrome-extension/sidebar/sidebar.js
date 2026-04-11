@@ -29,6 +29,13 @@ const injectApasStyles = () => {
             transition: transform 0.1s ease;
         }
         .gg-req-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        #gg-do-sort:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        #gg-do-sort:hover:not(:disabled) {
+            filter: brightness(1.1);
+        }
     `;
     document.head.appendChild(style);
 };
@@ -320,6 +327,89 @@ const injectApasTrigger = () => {
     sidebar.prepend(trigger);
 };
 
+const performGPASort = async () => {
+  const resultsContainer = document.querySelector('.course-list-results > div');
+  const coursePanels = Array.from(resultsContainer.querySelectorAll('.panel-default'));
+  const sortBtn = document.getElementById('gg-do-sort');
+
+  if (coursePanels.length === 0) return;
+
+  sortBtn.innerText = "⏳ Fetching...";
+  sortBtn.disabled = true;
+
+  try {
+    const sortedData = await Promise.all(coursePanels.map(async (panel) => {
+        const header = panel.querySelector('.panel-heading h3')?.innerText || "";
+        const match = header.match(/([A-Z]{2,4})\s?(\d{4}[A-Z]?)/i);
+        
+        let gpa = 0;
+        if (match) {
+            const courseId = (match[1] + match[2]).toUpperCase();
+            
+            const response = await new Promise((resolve) => {
+                chrome.runtime.sendMessage({ type: "FETCH_GPA", courseId }, (res) => {
+                    // If there's an error in the background script, this might be undefined
+                    if (chrome.runtime.lastError) {
+                        console.error("Message Error:", chrome.runtime.lastError);
+                        resolve(null);
+                    } else {
+                        resolve(res);
+                    }
+                });
+            });
+
+            console.log(`[GG Debug] API Result for ${courseId}:`, response);
+
+            if (response && response.success) {
+                gpa = response.avg_gpa; // This is the value we just calculated in background.js
+                console.log(`[GG Sort] ${courseId} GPA: ${gpa.toFixed(2)}`);
+            }
+        }
+        return { panel, gpa };
+    }));
+
+    sortedData.sort((a, b) => b.gpa - a.gpa);
+    sortedData.forEach(item => resultsContainer.appendChild(item.panel));
+
+    sortBtn.innerText = "✅ Sorted";
+    sortBtn.style.background = "#2e7d32";
+  } catch (err) {
+    sortBtn.innerText = "❌ Error";
+  } finally {
+    sortBtn.disabled = false;
+  }
+};
+
+/**
+ * UI Injection
+ * Adds the sort bar to the top of the results list
+ */
+const injectSortTool = () => {
+  const resultsContainer = document.querySelector('.course-list-results > div');
+  if (!resultsContainer || document.getElementById('gg-sort-bar')) return;
+
+  const sortBar = document.createElement('div');
+  sortBar.id = 'gg-sort-bar';
+  sortBar.style = `
+    margin-bottom: 15px; padding: 12px; background: #fff8e1; 
+    border: 1px solid #ffcc33; border-radius: 8px; display: flex; 
+    justify-content: space-between; align-items: center;
+  `;
+
+  sortBar.innerHTML = `
+    <div style="font-family: sans-serif;">
+        <strong style="color: #7a0019; font-size: 13px;">📊 GPA Ranker</strong>
+        <span style="display:block; font-size: 10px; color: #666;">Sort results by historical difficulty</span>
+    </div>
+    <button id="gg-do-sort" style="background: #7a0019; color: #ffcc33; border: none; padding: 8px 16px; border-radius: 5px; font-weight: bold; cursor: pointer;">
+        Sort High to Low
+    </button>
+  `;
+
+  resultsContainer.prepend(sortBar);
+  document.getElementById('gg-do-sort').onclick = performGPASort;
+};
+
 const onAppChange = async () => {
   injectApasTrigger();
 
@@ -334,7 +424,10 @@ const onAppChange = async () => {
   if (!displayGraphsInline) return;
 
   // determine which page we're on and load the appropriate data.
-  if (courseList) loadCourses(courseList);
+  if (courseList) {
+      injectSortTool();
+      loadCourses(courseList);
+  }
   else if (courseInfo) loadCourseInfo(courseInfo);
   else if (courseSchedule) loadCourseSchedule(courseSchedule);
 };
