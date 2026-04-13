@@ -62,7 +62,8 @@
     },
     {
       "matches": ["*://apas.umn.edu/*"],
-      "js": ["static/apas-parser.js"],
+      "js": ["scripts/apas-parser.js"],
+      "css": ["apas/apas.css"],
       "run_at": "document_idle",
       "all_frames": true
     }

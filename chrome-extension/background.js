@@ -1,3 +1,20 @@
+const CACHE_EXPIRATION_MS = 1000 * 60 * 60 * 24;
+const GPA_WEIGHTS = {
+  "A": 4.0, "A-": 3.67, "B+": 3.33, "B": 3.0, "B-": 2.67,
+  "C+": 2.33, "C": 2.0, "C-": 1.67, "D+": 1.33, "D": 1.0, "F": 0.0
+};
+
+const calculateGPA = (grades) => {
+  let totalPoints = 0, totalStudents = 0;
+  for (const [grade, count] of Object.entries(grades)) {
+    if (GPA_WEIGHTS[grade] !== undefined) {
+      totalPoints += GPA_WEIGHTS[grade] * count;
+      totalStudents += count;
+    }
+  }
+  return totalStudents > 0 ? (totalPoints / totalStudents).toFixed(2) : "N/A";
+};
+
 // change should be made in popup.js as well.
 const defaultSettings = [
   {
@@ -51,35 +68,38 @@ const RuntimeMessages = {
       url: chrome.runtime.getURL("frontend/gcal/add.html"),
     });
   },
+  GET_COURSE_DATA: async (request, sender, sendResponse) => {
+    const { courseId } = request;
+    const cacheKey = `cache_${courseId}`;
+
+    try {
+      const cached = await chrome.storage.local.get(cacheKey);
+      const now = Date.now();
+
+      if (cached[cacheKey] && (now - cached[cacheKey].timestamp < CACHE_EXPIRATION_MS)) {
+        return sendResponse(cached[cacheKey].data);
+      }
+
+      const response = await fetch(`https://umn.lol/api/class/${courseId}`);
+      const json = await response.json();
+
+      if (json.success) {
+        await chrome.storage.local.set({
+          [cacheKey]: { data: json, timestamp: now }
+        });
+      }
+      sendResponse(json);
+    } catch (error) {
+      sendResponse({ success: false, error: error.message });
+    }
+  },
   FETCH_GPA: async (request, sender, sendResponse) => {
     try {
       const response = await fetch(`https://umn.lol/api/class/${request.courseId}`);
       const json = await response.json();
-      
-      if (!json.success || !json.data) {
-        throw new Error("No data found");
-      }
+      if (!json.success || !json.data) throw new Error("No data found");
 
-      const grades = json.data.total_grades;
-      const weights = {
-        "A": 4.0, "A-": 3.67, "B+": 3.33, "B": 3.0, "B-": 2.67,
-        "C+": 2.33, "C": 2.0, "C-": 1.67, "D+": 1.33, "D": 1.0, "F": 0.0
-      };
-
-      let totalPoints = 0;
-      let totalStudents = 0;
-
-      for (const [grade, count] of Object.entries(grades)) {
-        if (weights[grade] !== undefined) {
-          totalPoints += weights[grade] * count;
-          totalStudents += count;
-        }
-      }
-
-      const avgGpa = totalStudents > 0 ? (totalPoints / totalStudents) : 0;
-      
-      // Send back the calculated GPA
-      sendResponse({ success: true, avg_gpa: avgGpa });
+      sendResponse({ success: true, avg_gpa: calculateGPA(json.data.total_grades) });
     } catch (error) {
       sendResponse({ success: false, error: error.message });
     }
@@ -87,16 +107,13 @@ const RuntimeMessages = {
 };
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  const { type } = request;
+  const messageType = request.action || request.type;
   
-  // Check if we have a handler for this message type
-  if (RuntimeMessages[type]) {
-    // If it's an async function (like FETCH_GPA), we call it and return true
-    RuntimeMessages[type](request, sender, sendResponse);
+  if (RuntimeMessages[messageType]) {
+    RuntimeMessages[messageType](request, sender, sendResponse);
     return true; 
-  } else {
-    console.warn(`[BG] Unknown message type: ${type}`);
   }
+  return false;
 });
 
 chrome.runtime.onInstalled.addListener(async () => {

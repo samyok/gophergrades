@@ -320,22 +320,27 @@ const renderSubReqList = (category, overlay) => {
 const renderCourseDetail = (subReq, category, overlay) => {
     const isDone = subReq.status === 'MET' || subReq.status === 'IP';
     
-    const courses = subReq.options.map(opt => `
-          <div class="course-option-row" style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: white; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-              <div class="course-identity" style="display: flex; flex-direction: column; gap: 2px;">
-                  <span style="font-size: 10px; color: #888; font-weight: 800; text-transform: uppercase;">Course Code</span>
-                  <strong style="color: var(--umn-maroon); font-size: 16px;">${opt.dept} ${opt.num}</strong>
+    const courses = subReq.options.map(opt => {
+        const courseId = `${opt.dept}${opt.num}`;
+        return `
+          <div class="course-option-row" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: white; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+              <div class="course-identity" style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                      <strong style="color: var(--umn-maroon); font-size: 16px;">${opt.dept} ${opt.num}</strong>
+                      <span id="gpa-${courseId}" style="font-size: 11px; font-weight: 800; color: #888; background: #f0f0f0; padding: 1px 6px; border-radius: 4px;">...</span>
+                  </div>
+                  <span id="name-${courseId}" style="font-size: 12px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; font-style: italic;">Loading title...</span>
               </div>
               <button class="view-course-btn" 
                   data-url="https://schedulebuilder.umn.edu/explore/2026Spring/${opt.dept}/${opt.num}/">
-                  ${isDone ? 'VIEW DETAILS' : 'EXPLORE COURSE'}
+                  ${isDone ? 'VIEW' : 'EXPLORE'}
               </button>
           </div>
-      `).join('');
+      `}).join('');
 
     overlay.querySelector('.modal-scroll-area').innerHTML = `
         <div class="nav-breadcrumb" style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-            <button id="back-to-subreqs" class="back-btn" style="background: #eee; border: 1px solid #ccc; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">← BACK</button>
+            <button id="back-to-subreqs" class="back-btn">← BACK</button>
             <div class="header-titles">
                 <small style="color: #7a0019; font-weight: 800; text-transform: uppercase; font-size: 10px; display: block;">
                     ${fixApasTextSpacing(category.title)}
@@ -344,7 +349,7 @@ const renderCourseDetail = (subReq, category, overlay) => {
             </div>
         </div>
         
-        <div class="apas-info-panel" style="background: #fffde7; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #fff59d;">
+        <div class="apas-info-panel" style="background: #fffde7; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #fff59d; border-left: 4px solid var(--umn-gold);">
             <div style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: ${subReq.description ? '10px' : '0'};">
                 <span style="font-weight: 800; font-size: 12px; color: ${isDone ? '#2e7d32' : '#c62828'}">${subReq.status}</span>
             </div>
@@ -363,6 +368,43 @@ const renderCourseDetail = (subReq, category, overlay) => {
             <div class="course-list-container">${courses}</div>
         </div>
     `;
+
+    subReq.options.forEach((opt, index) => {
+        const courseId = `${opt.dept}${opt.num}`;
+        
+        // Staggered execution (0ms, 50ms, 100ms...)
+        setTimeout(() => {
+            chrome.runtime.sendMessage({ action: "GET_COURSE_DATA", courseId }, (json) => {
+                if (chrome.runtime.lastError || !json || !json.success) {
+                    const nameEl = document.getElementById(`name-${courseId}`);
+                    if (nameEl) nameEl.innerText = "Data unavailable";
+                    return;
+                }
+
+                // Update Name
+                const nameEl = document.getElementById(`name-${courseId}`);
+                if (nameEl) {
+                    nameEl.innerText = json.data.class_desc || "Title unavailable";
+                    nameEl.style.fontStyle = "normal";
+                }
+
+                // Calculate GPA
+                const grades = json.data.total_grades;
+                const weights = { "A": 4.0, "A-": 3.67, "B+": 3.33, "B": 3.0, "B-": 2.67, "C+": 2.33, "C": 2.0, "C-": 1.67, "D+": 1.33, "D": 1.0, "F": 0.0 };
+                let pts = 0, count = 0;
+                Object.entries(grades).forEach(([grade, n]) => {
+                    if (weights[grade] !== undefined) { pts += weights[grade] * n; count += n; }
+                });
+
+                const avg = count > 0 ? (pts / count).toFixed(2) : "N/A";
+                const gpaEl = document.getElementById(`gpa-${courseId}`);
+                if (gpaEl) {
+                    gpaEl.innerText = `${avg} GPA`;
+                    gpaEl.style.color = avg >= 3.3 ? "#2e7d32" : (avg < 2.8 ? "#c62828" : "#888");
+                }
+            });
+        }, index * 50); 
+    });
 
     // Listeners
     overlay.querySelector('#back-to-subreqs').onclick = () => renderSubReqList(category, overlay);
