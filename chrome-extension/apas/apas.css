@@ -1,212 +1,231 @@
-#gg-apas-sync {
-    position: fixed !important;
-    bottom: 30px !important;
-    right: 30px !important;
-    z-index: 2147483647 !important;
-    font-family: "IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-    font-weight: 700 !important;
-    font-size: 14px !important;
-    letter-spacing: -0.02em !important;
-    text-transform: uppercase;
-    background-color: #49080F !important;
-    color: #ffffff !important;
-    border: 1px solid #49080F;
-    border-radius: 5px !important; 
-    padding: 12px 24px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-    cursor: pointer;
-    transition: all 200ms ease;
-}
+/* ==========================================================================
+   GOPHER GRADES: APAS EXPLORER UNIFIED STYLES
+   ========================================================================== */
 
-#gg-apas-sync:hover {
-    transform: translateY(-2px);
-    background-color: rgb(91, 0, 19) !important; 
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important;
-}
-
-#gg-apas-sync:active {
-    transform: translateY(0);
-}
-
-#gg-apas-sync.success {
-    background-color: #2e7d32 !important;
-    border-color: #2e7d32 !important;
-}
-
-#gg-apas-sync.syncing {
-    background-color: #ffffff !important;
-    color: #49080F !important;
-    cursor: wait;
-}
-/* --- SHARED VARIABLES --- */
 :root {
     --umn-maroon: #7a0019;
+    --umn-maroon-dark: #49080F;
     --umn-gold: #ffcc33;
     --status-met: #2e7d32;
     --status-unmet: #c62828;
     --status-ip: #f9a825;
     --bg-light: #f8f9fa;
-    --shadow: 0 4px 12px rgba(0,0,0,0.15);
+    --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    --font-main: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
 }
-
-/* --- FLOATING ACTION BUTTON --- */
-.gopher-grades-fab {
-    position: fixed; bottom: 25px; right: 25px;
-    width: 54px; height: 54px;
-    background: var(--umn-maroon); color: var(--umn-gold);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 22px; cursor: pointer; z-index: 10000;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: transform 0.2s;
-}
-.gopher-grades-fab:hover { transform: scale(1.1); }
 
 /* --- MODAL STRUCTURE --- */
 .gopher-grades-modal-overlay {
     position: fixed; inset: 0; background: rgba(0,0,0,0.75);
     z-index: 10001; display: flex; justify-content: center; align-items: center;
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px); font-family: var(--font-main);
 }
 
 .gopher-grades-modal-window {
     background: #fff; width: 90%; max-width: 800px; height: 85vh;
     border-radius: 12px; display: flex; flex-direction: column;
-    position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.4);
 }
 
 .modal-header-main {
-    background: var(--umn-maroon);
-    color: var(--umn-gold);
-    padding: 16px 24px;
-    display: flex;
-    justify-content: space-between; /* Pushes title to left, X to right */
-    align-items: center;
-    border-bottom: 3px solid var(--umn-gold);
-    position: sticky; /* Keeps it at the top while scrolling */
-    top: 0;
-    z-index: 10005; 
+    background: var(--umn-maroon); color: var(--umn-gold);
+    padding: 16px 24px; display: flex; justify-content: space-between;
+    align-items: center; border-bottom: 3px solid var(--umn-gold);
 }
 
-.modal-scroll-area {
-    flex: 1; padding: 24px; overflow-y: auto; background: var(--bg-light);
-}
+.header-title-container { display: flex; align-items: center; gap: 10px; }
+.header-logo { width: 20px; height: 20px; }
+
+.modal-scroll-area { flex: 1; padding: 24px; overflow-y: auto; background: var(--bg-light); }
 
 .modal-close-btn {
-    /* Remove absolute positioning to keep it in the flex flow */
-    position: relative; 
-    background: rgba(255, 255, 255, 0.15); /* Subtle glass effect */
+    background: rgba(255, 255, 255, 0.15);
     color: var(--umn-gold);
     border: 1px solid var(--umn-gold);
-    width: 30px;
-    height: 30px;
-    border-radius: 6px; /* Squircle design */
-    cursor: pointer;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    padding: 0;
-    line-height: 1;
+    width: 30px; height: 30px; border-radius: 6px;
+    cursor: pointer; font-size: 18px; display: flex;
+    align-items: center; justify-content: center;
+    transition: all 0.2s ease; line-height: 1;
 }
 
 .modal-close-btn:hover {
-    background: var(--umn-gold);
-    color: var(--umn-maroon);
-    transform: rotate(90deg); /* Visual feedback */
+    background: var(--umn-gold); color: var(--umn-maroon);
+    transform: rotate(90deg);
 }
 
-/* --- SINGLE COLUMN LISTS --- */
-.apas-section-grid, 
-.apas-sub-grid, 
-.apas-sub-list-container {
-    display: flex !important; flex-direction: column !important; gap: 12px;
-}
-
-/* --- CARDS (TIER 1 & 2) --- */
-.gopher-grades-req-card, .gopher-grades-sub-card {
+/* --- THE UNIFIED CARD SYSTEM --- */
+.gopher-grades-req-card, 
+.gopher-grades-sub-card, 
+.course-option-card {
     background: white; border: 1px solid #ddd;
-    border-left: 6px solid var(--umn-maroon); /* Standard UMN Maroon */
-    padding: 18px; border-radius: 8px; cursor: pointer;
+    border-left: 6px solid var(--umn-maroon);
+    padding: 18px 24px; /* Increased padding to match course-card feel */
+    border-radius: 8px; cursor: pointer;
     display: flex; justify-content: space-between; align-items: center;
-    transition: all 0.15s ease-in-out;
+    transition: all 0.2s ease; margin-bottom: 14px;
 }
 
-.gopher-grades-req-card:hover, .gopher-grades-sub-card:hover {
-    border-color: #bbb; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+.gopher-grades-req-card:hover, 
+.gopher-grades-sub-card:hover, 
+.course-option-card:hover {
+    border-color: #bbb; box-shadow: 0 6px 16px rgba(0,0,0,0.1);
     transform: translateX(4px);
 }
 
-/* Status Overrides (Matches your JS classes) */
+/* Status Colors - Applied via JS classes */
 .status-met { border-left-color: var(--status-met) !important; }
 .status-unmet { border-left-color: var(--status-unmet) !important; }
 .status-ip { border-left-color: var(--status-ip) !important; }
 
-/* --- TYPOGRAPHY --- */
-.req-title, .sub-req-title {
-    font-size: 15px; font-weight: 700; color: #333; margin: 0;
+/* Status Tags (Pills) */
+.status-tag {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 5px 12px; border-radius: 12px; font-size: 10px;
+    font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase;
+    border: 1px solid transparent;
 }
 
+.status-tag.met { background: #e8f5e9 !important; color: #2e7d32 !important; border-color: #2e7d32 !important; }
+.status-tag.unmet { background: #ffebee !important; color: #c62828 !important; border-color: #c62828 !important; }
+.status-tag.ip { background: #fffde7 !important; color: #f57f17 !important; border-color: #fbc02d !important; }
+
+/* GPA Badge Variant */
+.gpa-badge { background: white; border: 1.5px solid var(--umn-maroon); color: var(--umn-maroon); font-size: 11px; }
+
+/* --- CARD CONTENT HELPERS --- */
+.req-title { 
+    margin: 0; 
+    font-size: 16px; /* Slightly larger for better hierarchy */
+    font-weight: 700; 
+    color: #222; 
+    line-height: 1.3;
+}
+.req-index { font-weight: 800; color: var(--umn-maroon); min-width: 32px; display: inline-block; }
+.req-right-side, .course-right-side { display: flex; align-items: center; gap: 14px; }
+.chevron-icon { color: #ccc; font-size: 24px; transition: color 0.2s; }
+
+.course-left-content { display: flex; flex-direction: column; gap: 6px; }
+.course-header-row { display: flex; align-items: center; gap: 10px; }
+.course-id-text { font-size: 18px; font-weight: 800; color: #222; letter-spacing: -0.3px; }
+.course-name-text { font-size: 14px; color: #555; font-weight: 600; line-height: 1.3; }
+.action-label { font-size: 11px; font-weight: 900; letter-spacing: 0.5px; color: var(--umn-maroon); }
+
+/* Taken State for Courses */
+.course-option-card.course-taken { border-left-color: var(--status-met); }
+.course-option-card.course-taken .action-label { color: var(--status-met); }
+
+/* --- NAVIGATION & INFO --- */
 .nav-breadcrumb { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+.nav-label { font-weight: 800; color: var(--umn-maroon); font-size: 15px; }
 
 .back-btn {
-    background: #f1f1f1;
-    border: 1px solid #ddd;
-    padding: 8px 18px;
-    border-radius: 20px; /* Pill shape */
-    font-weight: 800;
-    cursor: pointer;
-    font-size: 11px;
-    color: #555;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.2s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    background: #fff; border: 1px solid #ddd; padding: 8px 16px;
+    border-radius: 6px; font-weight: 800; font-size: 11px;
+    cursor: pointer; text-transform: uppercase; transition: all 0.2s;
 }
+.back-btn:hover { background: var(--umn-maroon); color: #fff; border-color: var(--umn-maroon); }
+.back-btn.primary { align-self: flex-start; margin-top: 10px; background: var(--umn-maroon); color: white; }
 
-.back-btn:hover {
-    background: #e8e8e8;
-    border-color: #ccc;
-    color: var(--umn-maroon);
-    transform: translateX(-2px); /* Subtle hint of movement */
-}
-
-.gopher-grades-req-card, 
-.gopher-grades-sub-card,
-.course-option-row {
-    border-radius: 8px !important; /* Forces consistent roundness across all tiers */
-}
-
-/* --- LOGIC TAGS --- */
-.logic-tag { 
-    padding: 3px 8px; border-radius: 4px; font-size: 10px; 
-    font-weight: 800; text-transform: uppercase;
-}
-.logic-tag.or { background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
-
-/* --- TIER 3: COURSE DETAIL --- */
 .apas-info-panel {
     background: #fffde7; padding: 18px; border-radius: 8px;
-    margin-bottom: 24px; border: 1px solid #fff59d;
+    margin: 15px 0; border: 1px solid #fff59d; border-left: 4px solid var(--umn-gold);
 }
 
-.req-description-box {
-    white-space: pre-line; font-size: 13px; line-height: 1.6;
-    color: #5d4037; margin-top: 10px;
+/* --- EMPTY STATE --- */
+.empty-state-card { display: flex; flex-direction: column; gap: 12px; }
+.empty-title { margin: 0; color: var(--umn-maroon); font-weight: 800; }
+.empty-desc { margin: 0; font-size: 14px; line-height: 1.5; color: var(--umn-maroon-dark); opacity: 0.9; }
+.sync-instructions { background: rgba(255, 255, 255, 0.6); padding: 12px; border-radius: 6px; border: 1px dashed var(--umn-gold); }
+.sync-steps-list { margin: 5px 0 0; padding-left: 20px; font-size: 13px; color: var(--umn-maroon-dark); }
+
+/* --- FLOATING PILLS (FAB & SYNC) --- */
+.gopher-grades-fab.apas-pill, #gg-apas-sync {
+    position: fixed !important; 
+    bottom: 30px !important; 
+    right: 30px !important;
+    z-index: 2147483647 !important; 
+    cursor: pointer; 
+    display: flex !important; 
+    align-items: center !important;
+    justify-content: center !important;
+    
+    /* Shape and Sizing */
+    width: auto !important;
+    min-width: 170px !important;
+    height: 48px !important;
+    padding: 0 24px !important; 
+    border-radius: 50px !important;
+    white-space: nowrap !important;
+
+    /* Branding */
+    background: var(--umn-maroon) !important; 
+    color: var(--umn-gold) !important;
+    border: 2px solid var(--umn-gold) !important; 
+    font-family: var(--font-main) !important;
+    font-weight: 900 !important; 
+    text-transform: uppercase; 
+    letter-spacing: 0.5px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important; 
+    transition: all 0.2s ease;
 }
 
-.course-option-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 14px 18px; background: white; border: 1px solid #eee;
-    border-radius: 8px; margin-bottom: 10px;
+.gopher-grades-fab.apas-pill { font-size: 12px; }
+#gg-apas-sync { font-size: 13px; gap: 10px; }
+
+.gopher-grades-fab.apas-pill:hover, #gg-apas-sync:hover {
+    transform: scale(1.05) translateY(-2px);
+    background-color: var(--umn-maroon-dark) !important;
 }
 
-.course-identity strong { color: var(--umn-maroon); font-size: 15px; }
+#gg-apas-sync.success { background-color: var(--status-met) !important; color: white !important; border-color: white !important; }
+#gg-apas-sync.syncing { background-color: white !important; color: var(--umn-maroon) !important; cursor: wait; }
 
-.view-course-btn {
-    background: var(--umn-maroon); color: white; border: none;
-    padding: 8px 16px; border-radius: 6px; cursor: pointer;
-    font-weight: bold; font-size: 12px; transition: opacity 0.2s;
+.gopher-grades-fab.apas-pill img, 
+#gg-apas-sync img {
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 10px !important;
+    object-fit: contain;
+    flex-shrink: 0;
 }
-.view-course-btn:hover { opacity: 0.9; }
+
+.modal-scroll-area::-webkit-scrollbar {
+    width: 8px;
+}
+.modal-scroll-area::-webkit-scrollbar-track {
+    background: var(--bg-light);
+}
+.modal-scroll-area::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+    border: 2px solid var(--bg-light);
+}
+.modal-scroll-area::-webkit-scrollbar-thumb:hover {
+    background: #bbb;
+}
+
+/* 2. Prevent text selection on buttons/cards (Feels more like an app) */
+.back-btn, .status-tag, .gopher-grades-req-card, .gopher-grades-fab {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* 3. Subtle "Press" Effect (Visual feedback when clicking a card) */
+.gopher-grades-req-card:active, 
+.gopher-grades-sub-card:active, 
+.course-option-card:active {
+    transform: scale(0.98) translateX(2px);
+    background-color: #f0f0f0;
+}
+
+/* 4. Fix for long course descriptions (Prevents the modal from getting messy) */
+.apas-info-panel p {
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Limit to 3 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.5;
+}
+.apas-info-panel:hover p {
+    -webkit-line-clamp: unset; /* Show full text on hover */
+}

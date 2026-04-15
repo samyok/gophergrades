@@ -68,31 +68,6 @@ const RuntimeMessages = {
       url: chrome.runtime.getURL("frontend/gcal/add.html"),
     });
   },
-  GET_COURSE_DATA: async (request, sender, sendResponse) => {
-    const { courseId } = request;
-    const cacheKey = `cache_${courseId}`;
-
-    try {
-      const cached = await chrome.storage.local.get(cacheKey);
-      const now = Date.now();
-
-      if (cached[cacheKey] && (now - cached[cacheKey].timestamp < CACHE_EXPIRATION_MS)) {
-        return sendResponse(cached[cacheKey].data);
-      }
-
-      const response = await fetch(`https://umn.lol/api/class/${courseId}`);
-      const json = await response.json();
-
-      if (json.success) {
-        await chrome.storage.local.set({
-          [cacheKey]: { data: json, timestamp: now }
-        });
-      }
-      sendResponse(json);
-    } catch (error) {
-      sendResponse({ success: false, error: error.message });
-    }
-  },
   FETCH_GPA: async (request, sender, sendResponse) => {
     try {
       const response = await fetch(`https://umn.lol/api/class/${request.courseId}`);
@@ -103,7 +78,38 @@ const RuntimeMessages = {
     } catch (error) {
       sendResponse({ success: false, error: error.message });
     }
-  }
+  },
+  GET_BATCH_COURSE_DATA: async (request, sender, sendResponse) => {
+    const { courseIds } = request;
+    const now = Date.now();
+    
+    const results = await Promise.all(courseIds.map(async (courseId) => {
+      const cacheKey = `cache_${courseId}`;
+      try {
+        // 1. Check Cache
+        const cached = await chrome.storage.local.get(cacheKey);
+        if (cached[cacheKey] && (now - cached[cacheKey].timestamp < CACHE_EXPIRATION_MS)) {
+          return { courseId, success: true, data: cached[cacheKey].data.data };
+        }
+
+        // 2. Fetch if not cached
+        const response = await fetch(`https://umn.lol/api/class/${courseId}`);
+        const json = await response.json();
+
+        if (json.success) {
+          await chrome.storage.local.set({
+            [cacheKey]: { data: json, timestamp: now }
+          });
+          return { courseId, success: true, data: json.data };
+        }
+        return { courseId, success: false };
+      } catch (error) {
+        return { courseId, success: false };
+      }
+    }));
+
+    sendResponse(results);
+  },
 };
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {

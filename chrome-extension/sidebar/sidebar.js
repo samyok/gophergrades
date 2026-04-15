@@ -1,41 +1,5 @@
 const BASE_URL = "https://umn.lol";
 
-// --- HELPERS ---
-
-const fixApasTextSpacing = (text) => {
-    if (!text) return "";
-    return text
-        // Fix smushed words: "MATH1471" -> "MATH 1471"
-        .replace(/([a-zA-Z])(\d)/g, '$1 $2') 
-        // Fix "coursefrom" or "requirementwill"
-        .replace(/([a-z])([A-Z])/g, '$1 $2') 
-        // Ensure we don't collapse our intentional newlines into single spaces
-        .split('\n')
-        .map(line => line.replace(/\s+/g, ' ').trim())
-        .join('\n') 
-        .trim();
-};
-
-const nestApasData = (flatReqs) => {
-    const nested = {};
-    flatReqs.forEach(req => {
-        const cat = req.requirementTitle || "General Requirements";
-        if (!nested[cat]) {
-            nested[cat] = {
-                title: cat,
-                status: "MET", // Default to MET, will downgrade if any sub-req is UNMET
-                subReqs: []
-            };
-        }
-        nested[cat].subReqs.push(req);
-        
-        // Logical "Overall Status" calculation
-        if (req.status === 'UNMET') nested[cat].status = 'UNMET';
-        else if (req.status === 'IP' && nested[cat].status !== 'UNMET') nested[cat].status = 'IP';
-    });
-    return Object.values(nested);
-};
-
 // listen for messages from iframes
 window.addEventListener("message", (event) => {
   console.log("[GG] received message from iframe", event);
@@ -189,45 +153,25 @@ const loadCourseSchedule = (courseSchedule) => {
   }
 };
 
-const COURSE_SERVICE = {
-    fetchCourse: async (dept, num) => {
-        const payload = new URLSearchParams({
-            type: 'param_search', institution: 'UMNTC', campus: 'UMNTC', term: '1263',
-            json: JSON.stringify([{ "param": "subject", "value": dept }, { "param": "number", "value": num }])
-        });
-        try {
-            const res = await fetch('https://schedulebuilder.umn.edu/api.php', {
-                method: 'POST', body: payload, headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            });
-            const data = await res.json();
-            return data && data.length > 0 ? data[0] : null;
-        } catch (e) { return null; }
-    }
-};
-
 const openApasModal = async () => {
     const { gg_apas_unmet } = await chrome.storage.local.get(["gg_apas_unmet"]);
-    if (!gg_apas_unmet) return alert("Sync APAS first!");
+    
+    if (!gg_apas_unmet || gg_apas_unmet.length === 0) {
+        // Pass null or empty array to trigger the empty state UI
+        return renderCategoryGrid(null);
+    }
 
-    // FILTER: Focus only on Major Requirements
     const majorOnly = gg_apas_unmet.filter(req => {
-        const title = req.requirementTitle.toLowerCase();
-        const subTitle = req.title.toLowerCase();
-        
-        // Exclude broad university/administrative bookkeeping
-        const isJunk = /credits|gpa|minimum|total|resident|withdrawn|degree-applicable|elective/i.test(subTitle) || 
-                       /degree|university/i.test(title);
-        
-        return !isJunk;
+        const title = (req.requirementTitle || "").toLowerCase();
+        const subTitle = (req.title || "").toLowerCase();
+        return !(/credits|gpa|minimum|total|resident|withdrawn|elective/i.test(subTitle) || /degree|university/i.test(title));
     });
 
-    const nestedCategories = nestApasData(majorOnly);
-    renderCategoryGrid(nestedCategories);
+    renderCategoryGrid(APAS_COMPONENTS.nestData(majorOnly));
 };
 
 const renderCategoryGrid = (categories) => {
     let overlay = document.getElementById('apas-modal');
-    
     if (!overlay) {
         overlay = document.createElement('div');
         overlay.id = "apas-modal";
@@ -235,83 +179,35 @@ const renderCategoryGrid = (categories) => {
         document.body.appendChild(overlay);
     }
     
-    // Tier 1 cards now use the vertical list style
-    const cards = categories.map((cat, i) => {
-        const isDone = cat.status === 'MET';
-        return `
-            <div class="gopher-grades-req-card status-${cat.status.toLowerCase()}" data-idx="${i}">
-                <h3 class="req-title">${fixApasTextSpacing(cat.title)}</h3>
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <span style="font-size: 11px; font-weight: 800; color: ${isDone ? 'var(--status-met)' : 'var(--status-unmet)'}">
-                        ${cat.status}
-                    </span>
-                    <span style="color: #ccc; font-size: 18px;">&rsaquo;</span>
-                </div>
-            </div>
-        `;
-    }).join('');
-
-    // Updated structure: Close button is now INSIDE the header
-    overlay.innerHTML = `
-        <div class="gopher-grades-modal-window">
-            <div class="modal-header-main">
-                <span>〽️ MAJOR REQUIREMENTS</span>
-                <button id="close-apas" class="modal-close-btn" title="Close">✕</button>
-            </div>
-            <div class="modal-scroll-area">
-                <div class="apas-section-grid">
-                    ${cards}
-                </div>
-            </div>
-        </div>
-    `;
-    
-    // Bind listeners
+    // 1. Use the component to build the shell
+    overlay.innerHTML = APAS_COMPONENTS.modalShell();
     overlay.querySelector('#close-apas').onclick = () => overlay.remove();
     
+    const scrollArea = overlay.querySelector('.modal-scroll-area');
+
+    // 2. Handle Empty State
+    if (!categories) {
+        return APAS_COMPONENTS.renderEmptyState(overlay);
+    }
+
+    // 3. Render the grid
+    scrollArea.innerHTML = `<div class="apas-section-grid">${APAS_COMPONENTS.categoryGrid(categories)}</div>`;
+    
+    // 4. Attach listeners
     overlay.querySelectorAll('.gopher-grades-req-card').forEach(card => {
-        card.onclick = () => {
-            const categoryData = categories[card.dataset.idx];
-            // Ensure we pass the overlay reference forward
-            renderSubReqList(categoryData, overlay);
-        };
+        card.onclick = () => renderSubReqList(categories[card.dataset.idx], overlay);
     });
 };
 
 const renderSubReqList = (category, overlay) => {
-    const cards = category.subReqs.map((sub, i) => {
-        const isDone = sub.status === 'MET' || sub.status === 'IP';
-
-        return `
-            <div class="gopher-grades-sub-card status-${sub.status.toLowerCase()}" 
-                 data-idx="${i}" 
-                 style="display: flex; justify-content: space-between; align-items: center; padding: 15px; margin-bottom: 10px; background: white; border: 1px solid #ddd; border-left: 5px solid ${isDone ? '#2e7d32' : '#c62828'}; border-radius: 4px; cursor: pointer; transition: transform 0.1s;">
-                
-                <div style="display: flex; align-items: center; gap: 5px; flex: 1;">
-                    <h4 style="margin: 0; font-size: 14px; color: #333; font-weight: 600;">${sub.title}</h4>
-                </div>
-
-                <div style="display: flex; align-items: center; gap: 12px; margin-left: 15px;">
-                    <span style="font-size: 11px; font-weight: 800; color: ${isDone ? '#2e7d32' : '#c62828'}">${sub.status}</span>
-                    <span style="color: #ccc; font-size: 18px;">&rsaquo;</span>
-                </div>
-            </div>
-        `;
-    }).join('');
-
     overlay.querySelector('.modal-scroll-area').innerHTML = `
-        <div class="nav-breadcrumb" style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-            <button id="back-to-cats" class="back-btn" style="background: #eee; border: 1px solid #ccc; padding: 5px 12px; border-radius: 4px; cursor: pointer;">← All Categories</button>
-            <span class="nav-label" style="font-weight: 800; color: #7a0019; text-transform: uppercase; font-size: 12px;">${category.title}</span>
+        <div class="nav-breadcrumb">
+            <button id="back-to-cats" class="back-btn">← All Categories</button>
+            <span class="nav-label">${category.title}</span>
         </div>
-        <div class="apas-sub-list-container" style="display: flex; flex-direction: column;">
-            ${cards}
-        </div>
-    `;
+        <div class="apas-sub-list-container">${APAS_COMPONENTS.subReqList(category)}</div>`;
 
-    // Listeners
     overlay.querySelector('#back-to-cats').onclick = () => openApasModal();
-    
     overlay.querySelectorAll('.gopher-grades-sub-card').forEach(card => {
         card.onclick = () => renderCourseDetail(category.subReqs[card.dataset.idx], category, overlay);
     });
@@ -319,192 +215,69 @@ const renderSubReqList = (category, overlay) => {
 
 const renderCourseDetail = (subReq, category, overlay) => {
     const isDone = subReq.status === 'MET' || subReq.status === 'IP';
-    
-    const courses = subReq.options.map(opt => {
-        const courseId = `${opt.dept}${opt.num}`;
-        return `
-          <div class="course-option-row" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: white; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-              <div class="course-identity" style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0;">
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                      <strong style="color: var(--umn-maroon); font-size: 16px;">${opt.dept} ${opt.num}</strong>
-                      <span id="gpa-${courseId}" style="font-size: 11px; font-weight: 800; color: #888; background: #f0f0f0; padding: 1px 6px; border-radius: 4px;">...</span>
-                  </div>
-                  <span id="name-${courseId}" style="font-size: 12px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; font-style: italic;">Loading title...</span>
-              </div>
-              <button class="view-course-btn" 
-                  data-url="https://schedulebuilder.umn.edu/explore/2026Spring/${opt.dept}/${opt.num}/">
-                  ${isDone ? 'VIEW' : 'EXPLORE'}
-              </button>
-          </div>
-      `}).join('');
+    const coursesHtml = APAS_COMPONENTS.courseRows(subReq.options, isDone);
 
+    // CLEANUP: Using CSS variables instead of hardcoded hex colors
     overlay.querySelector('.modal-scroll-area').innerHTML = `
-        <div class="nav-breadcrumb" style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-            <button id="back-to-subreqs" class="back-btn">← BACK</button>
-            <div class="header-titles">
-                <small style="color: #7a0019; font-weight: 800; text-transform: uppercase; font-size: 10px; display: block;">
-                    ${fixApasTextSpacing(category.title)}
-                </small>
-                <strong style="font-size: 16px; color: #333;">${subReq.title}</strong>
-            </div>
+        <button id="back-to-subreqs" class="back-btn">← BACK</button>
+        <div class="apas-info-panel">
+            <strong>${subReq.title}</strong>
+            <p style="font-size: 12px; color: var(--umn-maroon-dark); opacity: 0.85;">
+                ${APAS_COMPONENTS.fixSpacing(subReq.description || "")}
+            </p>
         </div>
-        
-        <div class="apas-info-panel" style="background: #fffde7; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #fff59d; border-left: 4px solid var(--umn-gold);">
-            <div style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: ${subReq.description ? '10px' : '0'};">
-                <span style="font-weight: 800; font-size: 12px; color: ${isDone ? '#2e7d32' : '#c62828'}">${subReq.status}</span>
-            </div>
+        <div class="course-list-container">${coursesHtml}</div>`;
+
+    overlay.querySelector('#back-to-subreqs').onclick = () => renderSubReqList(category, overlay);
+    
+    // PREP BATCH: Get all IDs from this sub-requirement
+    const courseIds = subReq.options.map(opt => `${opt.dept}${opt.num}`);
+
+    // SINGLE MESSAGE: Get everything at once
+    chrome.runtime.sendMessage({ action: "GET_BATCH_COURSE_DATA", courseIds }, (results) => {
+        if (!results || !Array.isArray(results)) return;
+
+        results.forEach(res => {
+            if (!res.success) return;
             
-            ${subReq.description ? `
-                <div class="req-description-box" style="font-size: 12px; line-height: 1.5; color: #5d4037; white-space: pre-line;">
-                    ${fixApasTextSpacing(subReq.description)}
-                </div>
-            ` : ''}
-        </div>
+            const nameEl = document.getElementById(`name-${res.courseId}`);
+            const gpaEl = document.getElementById(`gpa-${res.courseId}`);
 
-        <div class="course-section">
-            <div style="font-weight: 800; font-size: 10px; margin-bottom: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">
-                ${isDone ? 'Fulfilled By' : 'Available Options'}
-            </div>
-            <div class="course-list-container">${courses}</div>
-        </div>
-    `;
-
-    subReq.options.forEach((opt, index) => {
-        const courseId = `${opt.dept}${opt.num}`;
-        
-        // Staggered execution (0ms, 50ms, 100ms...)
-        setTimeout(() => {
-            chrome.runtime.sendMessage({ action: "GET_COURSE_DATA", courseId }, (json) => {
-                if (chrome.runtime.lastError || !json || !json.success) {
-                    const nameEl = document.getElementById(`name-${courseId}`);
-                    if (nameEl) nameEl.innerText = "Data unavailable";
-                    return;
-                }
-
-                // Update Name
-                const nameEl = document.getElementById(`name-${courseId}`);
-                if (nameEl) {
-                    nameEl.innerText = json.data.class_desc || "Title unavailable";
-                    nameEl.style.fontStyle = "normal";
-                }
-
-                // Calculate GPA
-                const grades = json.data.total_grades;
-                const weights = { "A": 4.0, "A-": 3.67, "B+": 3.33, "B": 3.0, "B-": 2.67, "C+": 2.33, "C": 2.0, "C-": 1.67, "D+": 1.33, "D": 1.0, "F": 0.0 };
-                let pts = 0, count = 0;
-                Object.entries(grades).forEach(([grade, n]) => {
-                    if (weights[grade] !== undefined) { pts += weights[grade] * n; count += n; }
-                });
-
-                const avg = count > 0 ? (pts / count).toFixed(2) : "N/A";
-                const gpaEl = document.getElementById(`gpa-${courseId}`);
-                if (gpaEl) {
-                    gpaEl.innerText = `${avg} GPA`;
-                    gpaEl.style.color = avg >= 3.3 ? "#2e7d32" : (avg < 2.8 ? "#c62828" : "#888");
-                }
-            });
-        }, index * 50); 
+            if (nameEl) nameEl.innerText = res.data.class_desc;
+            if (gpaEl) {
+                const avg = calculateAvgFromGrades(res.data.total_grades); 
+                gpaEl.innerText = `${avg} GPA`;
+            }
+        });
     });
 
-    // Listeners
-    overlay.querySelector('#back-to-subreqs').onclick = () => renderSubReqList(category, overlay);
-    overlay.querySelectorAll('.view-course-btn').forEach(btn => {
-        btn.onclick = () => window.open(btn.dataset.url, '_blank');
+    overlay.querySelectorAll('.course-option-card').forEach(card => {
+        card.onclick = () => window.open(card.dataset.url, '_blank');
     });
 };
 
+// Helper for the sidebar (duplicate of the one in background for UI speed)
+const calculateAvgFromGrades = (grades) => {
+    const weights = { "A": 4.0, "A-": 3.67, "B+": 3.33, "B": 3.0, "B-": 2.67, "C+": 2.33, "C": 2.0, "C-": 1.67, "D+": 1.33, "D": 1.0, "F": 0.0 };
+    let pts = 0, count = 0;
+    Object.entries(grades).forEach(([grade, n]) => {
+        if (weights[grade] !== undefined) { pts += weights[grade] * n; count += n; }
+    });
+    return count > 0 ? (pts / count).toFixed(2) : "N/A";
+};
+
+// --- FAB INJECTION ---
 const injectApasFab = () => {
     if (document.getElementById('apas-fab')) return;
     const fab = document.createElement('div');
     fab.id = 'apas-fab';
-    fab.className = 'gopher-grades-fab'; // Ensure this class is in your CSS
-    fab.innerHTML = '〽️';
-    fab.title = "Open APAS Explorer";
-    fab.onclick = openApasModal; // Correct function name
+    fab.className = 'gopher-grades-fab apas-pill'; // Added apas-pill
+    fab.innerHTML = `
+        <img src="https://www.umn.lol/images/icon.png">
+        <span>APAS EXPLORER</span>
+    `;
+    fab.onclick = openApasModal;
     document.body.appendChild(fab);
-};
-
-const performGPASort = async () => {
-  const resultsContainer = document.querySelector('.course-list-results > div');
-  const coursePanels = Array.from(resultsContainer.querySelectorAll('.panel-default'));
-  const sortBtn = document.getElementById('gg-do-sort');
-
-  if (coursePanels.length === 0) return;
-
-  sortBtn.innerText = "⏳ Fetching...";
-  sortBtn.disabled = true;
-
-  try {
-    const sortedData = await Promise.all(coursePanels.map(async (panel) => {
-        const header = panel.querySelector('.panel-heading h3')?.innerText || "";
-        const match = header.match(/([A-Z]{2,4})\s?(\d{4}[A-Z]?)/i);
-        
-        let gpa = 0;
-        if (match) {
-            const courseId = (match[1] + match[2]).toUpperCase();
-            
-            const response = await new Promise((resolve) => {
-                chrome.runtime.sendMessage({ type: "FETCH_GPA", courseId }, (res) => {
-                    // If there's an error in the background script, this might be undefined
-                    if (chrome.runtime.lastError) {
-                        console.error("Message Error:", chrome.runtime.lastError);
-                        resolve(null);
-                    } else {
-                        resolve(res);
-                    }
-                });
-            });
-
-            console.log(`[GG Debug] API Result for ${courseId}:`, response);
-
-            if (response && response.success) {
-                gpa = response.avg_gpa; // This is the value we just calculated in background.js
-                console.log(`[GG Sort] ${courseId} GPA: ${gpa.toFixed(2)}`);
-            }
-        }
-        return { panel, gpa };
-    }));
-
-    sortedData.sort((a, b) => b.gpa - a.gpa);
-    sortedData.forEach(item => resultsContainer.appendChild(item.panel));
-
-    sortBtn.innerText = "✅ Sorted";
-    sortBtn.style.background = "#2e7d32";
-  } catch (err) {
-    sortBtn.innerText = "❌ Error";
-  } finally {
-    sortBtn.disabled = false;
-  }
-};
-
-/**
- * UI Injection
- * Adds the sort bar to the top of the results list
- */
-const injectSortTool = () => {
-  const resultsContainer = document.querySelector('.course-list-results > div');
-  if (!resultsContainer || document.getElementById('gg-sort-bar')) return;
-
-  const sortBar = document.createElement('div');
-  sortBar.id = 'gg-sort-bar';
-  sortBar.style = `
-    margin-bottom: 15px; padding: 12px; background: #fff8e1; 
-    border: 1px solid #ffcc33; border-radius: 8px; display: flex; 
-    justify-content: space-between; align-items: center;
-  `;
-
-  sortBar.innerHTML = `
-    <div style="font-family: sans-serif;">
-        <strong style="color: #7a0019; font-size: 13px;">📊 GPA Ranker</strong>
-        <span style="display:block; font-size: 10px; color: #666;">Sort results by historical difficulty</span>
-    </div>
-    <button id="gg-do-sort" style="background: #7a0019; color: #ffcc33; border: none; padding: 8px 16px; border-radius: 5px; font-weight: bold; cursor: pointer;">
-        Sort High to Low
-    </button>
-  `;
-
-  resultsContainer.prepend(sortBar);
-  document.getElementById('gg-do-sort').onclick = performGPASort;
 };
 
 const onAppChange = async () => {

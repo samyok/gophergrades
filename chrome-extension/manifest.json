@@ -16,10 +16,12 @@
         "https://*.schedulebuilder.umn.edu/*"
       ],
       "css": [
-        "sidebar/sidebar.css"
+        "sidebar/sidebar.css",
+        "apas/apas.css"
       ],
       "js": [
-        "sidebar/sidebar.js"
+        "sidebar/sidebar.js",
+        "apas/apas-components.js"
       ]
     },
     {
