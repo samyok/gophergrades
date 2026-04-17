@@ -157,14 +157,22 @@ const openApasModal = async () => {
     const { gg_apas_unmet } = await chrome.storage.local.get(["gg_apas_unmet"]);
     
     if (!gg_apas_unmet || gg_apas_unmet.length === 0) {
-        // Pass null or empty array to trigger the empty state UI
         return renderCategoryGrid(null);
     }
 
     const majorOnly = gg_apas_unmet.filter(req => {
-        const title = (req.requirementTitle || "").toLowerCase();
-        const subTitle = (req.title || "").toLowerCase();
-        return !(/credits|gpa|minimum|total|resident|withdrawn|elective/i.test(subTitle) || /degree|university/i.test(title));
+        const title = String(req.requirementTitle || "").toLowerCase();
+        const subTitle = String(req.title || "").toLowerCase();
+        
+        if (title.includes("technical") || title.includes("writing") || title.includes("biological")) {
+            return true;
+        }
+
+        // Filter out actual fluff (University-wide requirements)
+        const isUniversityFluff = /degree|university|campus|residency/i.test(title);
+        const isCreditFluff = /minimum|total|non-applicable|withdrawn/i.test(subTitle);
+
+        return !isUniversityFluff && !isCreditFluff;
     });
 
     renderCategoryGrid(APAS_COMPONENTS.nestData(majorOnly));
@@ -179,21 +187,17 @@ const renderCategoryGrid = (categories) => {
         document.body.appendChild(overlay);
     }
     
-    // 1. Use the component to build the shell
     overlay.innerHTML = APAS_COMPONENTS.modalShell();
     overlay.querySelector('#close-apas').onclick = () => overlay.remove();
     
     const scrollArea = overlay.querySelector('.modal-scroll-area');
 
-    // 2. Handle Empty State
     if (!categories) {
         return APAS_COMPONENTS.renderEmptyState(overlay);
     }
 
-    // 3. Render the grid
     scrollArea.innerHTML = `<div class="apas-section-grid">${APAS_COMPONENTS.categoryGrid(categories)}</div>`;
     
-    // 4. Attach listeners
     overlay.querySelectorAll('.gopher-grades-req-card').forEach(card => {
         card.onclick = () => renderSubReqList(categories[card.dataset.idx], overlay);
     });
@@ -217,7 +221,6 @@ const renderCourseDetail = (subReq, category, overlay) => {
     const isDone = subReq.status === 'MET' || subReq.status === 'IP';
     const coursesHtml = APAS_COMPONENTS.courseRows(subReq.options, isDone);
 
-    // CLEANUP: Using CSS variables instead of hardcoded hex colors
     overlay.querySelector('.modal-scroll-area').innerHTML = `
         <button id="back-to-subreqs" class="back-btn">← BACK</button>
         <div class="apas-info-panel">
@@ -230,14 +233,13 @@ const renderCourseDetail = (subReq, category, overlay) => {
 
     overlay.querySelector('#back-to-subreqs').onclick = () => renderSubReqList(category, overlay);
     
-    // PREP BATCH: Get all IDs from this sub-requirement
     const courseIds = subReq.options.map(opt => `${opt.dept}${opt.num}`);
 
-    // SINGLE MESSAGE: Get everything at once
     chrome.runtime.sendMessage({ action: "GET_BATCH_COURSE_DATA", courseIds }, (results) => {
         if (!results || !Array.isArray(results)) return;
 
         results.forEach(res => {
+            if (!document.getElementById(`name-${res.courseId}`)) return;
             if (!res.success) return;
             
             const nameEl = document.getElementById(`name-${res.courseId}`);
@@ -256,7 +258,6 @@ const renderCourseDetail = (subReq, category, overlay) => {
     });
 };
 
-// Helper for the sidebar (duplicate of the one in background for UI speed)
 const calculateAvgFromGrades = (grades) => {
     const weights = { "A": 4.0, "A-": 3.67, "B+": 3.33, "B": 3.0, "B-": 2.67, "C+": 2.33, "C": 2.0, "C-": 1.67, "D+": 1.33, "D": 1.0, "F": 0.0 };
     let pts = 0, count = 0;
@@ -266,7 +267,6 @@ const calculateAvgFromGrades = (grades) => {
     return count > 0 ? (pts / count).toFixed(2) : "N/A";
 };
 
-// --- FAB INJECTION ---
 const injectApasFab = () => {
     if (document.getElementById('apas-fab')) return;
     const fab = document.createElement('div');

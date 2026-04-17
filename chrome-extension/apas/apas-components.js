@@ -13,13 +13,29 @@ const APAS_COMPONENTS = {
             if (!nested[cat]) {
                 nested[cat] = { 
                     title: cat, 
-                    status: req.categoryStatus, // Trust what the parser found in the header
+                    status: req.categoryStatus,
                     subReqs: [] 
                 };
             }
             nested[cat].subReqs.push(req);
         });
         return Object.values(nested);
+    },
+
+    getActiveTerm: () => {
+
+        const pathParts = window.location.pathname.split('/');
+        const termIndex = pathParts.indexOf('explore') + 1;
+        
+        if (termIndex > 0 && pathParts[termIndex]) {
+            return pathParts[termIndex];
+        }
+
+        const month = new Date().getMonth();
+        const year = new Date().getFullYear();
+        if (month <= 4) return `${year}Spring`;
+        if (month <= 7) return `${year}Summer`;
+        return `${year}Fall`;
     },
 
     modalShell: () => `
@@ -32,6 +48,12 @@ const APAS_COMPONENTS = {
                 <button id="close-apas" class="modal-close-btn">✕</button>
             </div>
             <div class="modal-scroll-area"></div>
+            <div class="apas-disclaimer-container">
+                <div class="apas-disclaimer-content">
+                    <span class="disclaimer-icon">ⓘ</span>
+                    <p>This is a processed estimate. <strong>Always verify</strong> requirements with your official APAS report and academic advisor.</p>
+                </div>
+            </div>
         </div>`,
 
     categoryGrid: (categories) => {
@@ -66,9 +88,11 @@ const APAS_COMPONENTS = {
     },
 
     courseRows: (options, isDone) => {
+        const term = APAS_COMPONENTS.getActiveTerm();
+
         return options.map(opt => {
             const id = `${opt.dept}${opt.num}`;
-            const url = `https://schedulebuilder.umn.edu/explore/2026Spring/${opt.dept}/${opt.num}/`;
+            const url = `https://schedulebuilder.umn.edu/explore/${term}/${opt.dept}/${opt.num}/`;
             const statusClass = isDone ? "course-taken" : "";
 
             return `

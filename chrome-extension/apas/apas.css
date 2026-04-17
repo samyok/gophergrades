@@ -229,3 +229,35 @@
 .apas-info-panel:hover p {
     -webkit-line-clamp: unset; /* Show full text on hover */
 }
+
+.apas-disclaimer-container {
+    padding: 12px 16px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.apas-disclaimer-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: #6c757d;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.disclaimer-icon {
+    font-size: 14px;
+    font-weight: bold;
+    color: #007bff; /* A subtle blue to indicate 'Information' */
+    margin-top: -1px;
+}
+
+.apas-disclaimer-content p {
+    margin: 0;
+}
+
+.apas-disclaimer-content strong {
+    color: #495057;
+}

@@ -86,13 +86,11 @@ const RuntimeMessages = {
     const results = await Promise.all(courseIds.map(async (courseId) => {
       const cacheKey = `cache_${courseId}`;
       try {
-        // 1. Check Cache
         const cached = await chrome.storage.local.get(cacheKey);
         if (cached[cacheKey] && (now - cached[cacheKey].timestamp < CACHE_EXPIRATION_MS)) {
           return { courseId, success: true, data: cached[cacheKey].data.data };
         }
 
-        // 2. Fetch if not cached
         const response = await fetch(`https://umn.lol/api/class/${courseId}`);
         const json = await response.json();
 

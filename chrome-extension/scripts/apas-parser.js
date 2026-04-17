@@ -12,14 +12,11 @@ const APAS_PARSER = {
 
         btn.onclick = async () => {
             btn.classList.add('syncing');
-            btn.innerHTML = `<span>⏳</span><span>SYNCING...</span>`;
-            
+            btn.innerHTML = `<img src="https://www.umn.lol/images/icon.png" style="width: 18px; height: 18px;"><span>SYNCING...</span>`;
             const data = await APAS_PARSER.run();
-            
             chrome.storage.local.set(data, () => {
                 btn.classList.replace('syncing', 'success');
-                btn.innerHTML = `<span>✅</span><span>SYNC SUCCESSFUL</span>`;
-                
+                btn.innerHTML = `<img src="https://www.umn.lol/images/icon.png" style="width: 18px; height: 18px;"><span>SYNC SUCCESSFUL</span>`;
                 setTimeout(() => {
                     btn.classList.remove('success');
                     btn.innerHTML = `
@@ -47,75 +44,76 @@ const APAS_PARSER = {
         const auditData = [];
 
         doc.querySelectorAll('.requirement').forEach(req => {
-            // 1. Skip filler/university requirements
-            if (req.classList.contains('category_University')) return;
+            const titleEl = req.querySelector('.reqTitle h4') || req.querySelector('.reqTitle');
+            const titleText = titleEl?.innerText.trim() || "";
+            const titleUpper = titleText.toUpperCase();
 
-            // 2. TRUST THE HEADER STATUS
-            // We look for any class containing "statusOK" or "statusNO" inside the header area
+            const isTarget = titleUpper.includes("TECHNICAL ELECTIVES");
+            const isMajor = req.classList.contains('category_Major');
+            const isWriting = titleUpper.includes("UPPER-DIVISION WRITING INTENSIVE");
+            const isFluff = titleUpper.includes("CREDITS") || titleUpper.includes("UNIVERSITY OF MINNESOTA");
+
+            if (!(isMajor || isWriting || isTarget) || isFluff) return;
+
             const headerStatusEl = req.querySelector('.reqStatusGroup .status, .reqHeaderTable .status');
             const headerClass = (headerStatusEl?.className || "").toLowerCase();
-            
-            let categoryStatus = "UNMET";
-            if (headerClass.includes('ok')) categoryStatus = "MET";
-            else if (headerClass.includes('ip')) categoryStatus = "IP";
-            // If it specifically has "no", it's unmet (already defaulted, but for clarity)
-            else if (headerClass.includes('no')) categoryStatus = "UNMET";
+            let categoryStatus = headerClass.includes('ok') ? "MET" : (headerClass.includes('ip') ? "IP" : "UNMET");
 
-            const overallTitle = req.querySelector('.reqTitle h4')?.innerText.trim() || "Requirement";
+            req.querySelectorAll('.subrequirement').forEach((sub) => {
+                const subTitleEl = sub.querySelector('.subreqTitle');
+                if (!subTitleEl) return;
 
-            req.querySelectorAll('.subrequirement').forEach(sub => {
-                const titleEl = sub.querySelector('.subreqTitle');
-                if (!titleEl) return;
+                const rawHtml = subTitleEl.innerHTML;
+                let displayTitle = "";
+                let description = "";
 
-                const parts = titleEl.innerHTML.split(/<br\s*\/?>/i);
-                const title = parts[0].replace(/<[^>]*>/g, '').trim();
-                const desc = parts.slice(1).join(' ').replace(/<[^>]*>/g, '').trim();
-                
-                // 3. TRUST THE SUB-REQUIREMENT STATUS
-                const subStatusEl = sub.querySelector('.status');
-                const subClass = (subStatusEl?.className || "").toLowerCase();
-                let subStatus = 'UNMET';
-                if (subClass.includes('ok')) subStatus = 'MET';
-                else if (subClass.includes('ip')) subStatus = 'IP';
+                if (isWriting) {
+                    displayTitle = "Major Writing Requirement";
+                    description = subTitleEl.innerText.trim();
+                } else if (rawHtml.toLowerCase().includes('<br>')) {
+                    const parts = rawHtml.split(/<br\s*\/?>/i);
+                    displayTitle = parts[0].replace(/<[^>]*>/g, '').trim();
+                    description = parts.slice(1).join(' ').replace(/<[^>]*>/g, '').trim();
+                } else {
+                    displayTitle = subTitleEl.innerText.split('\n')[0].trim();
+                }
 
-                const options = [];
-                let lastDept = "";
+               const options = [];
+                const courseCells = sub.querySelectorAll('.course, .completedCourses .course, .selectfromcourselist .course');
 
-                // Course scraping (keep this so the cards have data inside them)
-                const courseCells = sub.querySelectorAll('.course, .completedCourses .course');
                 courseCells.forEach(cell => {
                     const text = cell.innerText.trim().toUpperCase();
-                    const fullMatch = text.match(/([A-Z]{2,4})\s*(\d{4}[A-Z]?)/) || text.match(/(\d)?([A-Z]{2,4})(\d{4}[A-Z]?)/);
-                    const numOnlyMatch = text.match(/^(\d{4}[A-Z]?)$/);
+                    
+                    const match = text.match(/([A-Z]{2,4})\s*(\d{4}[A-Z]?)/) || 
+                                text.match(/(\d)?([A-Z]{2,4})(\d{4}[A-Z]?)/);
+                    
+                    if (match) {
 
-                    if (fullMatch) {
-                        const dept = fullMatch[1] || fullMatch[2];
-                        const num = (fullMatch[1] && !isNaN(fullMatch[1])) ? fullMatch[2] : (fullMatch[3] || fullMatch[2]);
+                        const dept = (match[2] && !isNaN(match[1])) ? match[2] : match[1];
+                        const num = (match[2] && !isNaN(match[1])) ? match[3] : match[2];
+                        
                         const cleaned = APAS_PARSER.normalizeCourse(dept, num);
                         if (cleaned) {
                             options.push(cleaned);
-                            lastDept = cleaned.dept;
                         }
-                    } else if (numOnlyMatch && lastDept) {
-                        const cleaned = APAS_PARSER.normalizeCourse(lastDept, numOnlyMatch[1]);
-                        if (cleaned) options.push(cleaned);
                     }
                 });
 
-                // Push the data
-                auditData.push({
-                    requirementTitle: overallTitle,
-                    categoryStatus: categoryStatus, // This is the 'Trust APAS' field
-                    title, 
-                    description: desc,
-                    status: subStatus, 
-                    options,
-                    logic: sub.querySelector('.subreqNumber')?.innerText.includes("OR") ? 'OR' : 'MANDATORY'
-                });
+                if (options.length > 0) {
+                    auditData.push({
+                        requirementTitle: String(titleText),
+                        categoryStatus: categoryStatus,
+                        title: displayTitle,
+                        description: description,
+                        status: (sub.querySelector('.status')?.className || "").toLowerCase().includes('ok') ? 'MET' : 'UNMET',
+                        options,
+                        logic: sub.querySelector('.subreqNumber')?.innerText.includes("OR") ? 'OR' : 'MANDATORY'
+                    });
+                }
             });
         });
 
-        return {
+        return { 
             "gg_apas_unmet": auditData,
             "gg_apas_completed": auditData
                 .filter(r => r.status === 'MET' || r.status === 'IP')
