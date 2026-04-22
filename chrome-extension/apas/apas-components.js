@@ -6,6 +6,7 @@ const APAS_COMPONENTS = {
                    .split('\n').map(line => line.replace(/\s+/g, ' ').trim()).join('\n').trim();
     },
 
+    //nest rquirement/subreqirements for rendering
     nestData: (flatReqs) => {
         const nested = {};
         flatReqs.forEach(req => {
@@ -13,7 +14,6 @@ const APAS_COMPONENTS = {
             if (!nested[cat]) {
                 nested[cat] = { 
                     title: cat, 
-                    status: req.categoryStatus,
                     subReqs: [] 
                 };
             }
@@ -22,6 +22,7 @@ const APAS_COMPONENTS = {
         return Object.values(nested);
     },
 
+    //helper, used to ensure course routing matches relevant term/semester
     getActiveTerm: () => {
 
         const pathParts = window.location.pathname.split('/');
@@ -38,6 +39,7 @@ const APAS_COMPONENTS = {
         return `${year}Fall`;
     },
 
+    //shell of modal, static
     modalShell: () => `
         <div class="gopher-grades-modal-window">
             <div class="modal-header-main">
@@ -56,47 +58,53 @@ const APAS_COMPONENTS = {
             </div>
         </div>`,
 
+    //grid of top level requirements
     categoryGrid: (categories) => {
-        return categories.map((cat, i) => `
-            <div class="gopher-grades-req-card status-${cat.status.toLowerCase()}" data-idx="${i}">
-                <h4 class="req-title">${APAS_COMPONENTS.fixSpacing(cat.title)}</h4>
-                <div class="req-right-side">
-                    <span class="status-tag ${cat.status.toLowerCase()}">${cat.status}</span>
-                    <span class="chevron-icon">&rsaquo;</span>
+        return Object.keys(categories).map(key => {
+            const category = categories[key];
+            const safeTitle = (category.title || "Unknown").toLowerCase();
+            
+            return `
+                <div class="gopher-grades-req-card" data-idx="${key}">
+                    <h4>${category.title || "Requirement"}</h4>
+                    <span>${category.subReqs.length} actionable items</span>
                 </div>
-            </div>`).join('');
+            `;
+        }).join('');
     },
 
+    //grid of subrequirements
     subReqList: (category) => {
         let currentNum = 0;
         return category.subReqs.map((sub, i) => {
+            //ensure displaying OR logic correctly
             const isOr = sub.logic === 'OR';
             if (!isOr) currentNum++;
 
             return `
-                <div class="gopher-grades-sub-card status-${sub.status.toLowerCase()}" data-idx="${i}">
+                <div class="gopher-grades-sub-card" data-idx="${i}">
                     <h4 class="req-title">
                         <span class="req-index">${isOr ? 'OR' : currentNum + ')'}</span>
                         ${APAS_COMPONENTS.fixSpacing(sub.title)}
                     </h4>
                     <div class="req-right-side">
-                        <span class="status-tag ${sub.status.toLowerCase()}">${sub.status}</span>
                         <span class="chevron-icon">&rsaquo;</span>
                     </div>
                 </div>`;
         }).join('');
     },
 
-    courseRows: (options, isDone) => {
+    //display of course options in unmet reqs
+    courseRows: (options) => {
         const term = APAS_COMPONENTS.getActiveTerm();
 
         return options.map(opt => {
             const id = `${opt.dept}${opt.num}`;
+            //clickable cards route to course pages in schedule builder
             const url = `https://schedulebuilder.umn.edu/explore/${term}/${opt.dept}/${opt.num}/`;
-            const statusClass = isDone ? "course-taken" : "";
 
             return `
-                <div class="course-option-card ${statusClass}" data-url="${url}">
+                <div class="course-option-card" data-url="${url}">
                     <div class="course-left-content">
                         <div class="course-header-row">
                             <span class="course-id-text">${opt.dept} ${opt.num}</span> 
@@ -105,13 +113,14 @@ const APAS_COMPONENTS = {
                         <span id="name-${id}" class="course-name-text">Loading course name...</span>
                     </div>
                     <div class="course-right-side">
-                        <span class="action-label">${isDone ? "VIEW RECORD" : "VIEW COURSE"}</span>
+                        <span class="action-label">VIEW COURSE</span>
                         <span class="chevron-icon">&rsaquo;</span>
                     </div>
                 </div>`;
         }).join('');
     },
 
+    //mdal layout if no APAS synced, instructions
     renderEmptyState: (overlay) => {
         overlay.querySelector('.modal-scroll-area').innerHTML = `
             <div class="apas-info-panel empty-state-container">

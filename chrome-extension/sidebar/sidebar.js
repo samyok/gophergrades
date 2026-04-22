@@ -153,31 +153,21 @@ const loadCourseSchedule = (courseSchedule) => {
   }
 };
 
+//start of APAS modal
 const openApasModal = async () => {
-    const { gg_apas_unmet } = await chrome.storage.local.get(["gg_apas_unmet"]);
-    
-    if (!gg_apas_unmet || gg_apas_unmet.length === 0) {
+    const data = await chrome.storage.local.get(["gg_apas_unmet"]);
+    const unmet = data.gg_apas_unmet || [];
+
+    if (unmet.length === 0) {
         return renderCategoryGrid(null);
     }
 
-    const majorOnly = gg_apas_unmet.filter(req => {
-        const title = String(req.requirementTitle || "").toLowerCase();
-        const subTitle = String(req.title || "").toLowerCase();
-        
-        if (title.includes("technical") || title.includes("writing") || title.includes("biological")) {
-            return true;
-        }
-
-        // Filter out actual fluff (University-wide requirements)
-        const isUniversityFluff = /degree|university|campus|residency/i.test(title);
-        const isCreditFluff = /minimum|total|non-applicable|withdrawn/i.test(subTitle);
-
-        return !isUniversityFluff && !isCreditFluff;
-    });
-
-    renderCategoryGrid(APAS_COMPONENTS.nestData(majorOnly));
+    const nested = APAS_COMPONENTS.nestData(unmet);
+    
+    renderCategoryGrid(nested);
 };
 
+//rendering of top level requirements
 const renderCategoryGrid = (categories) => {
     let overlay = document.getElementById('apas-modal');
     if (!overlay) {
@@ -203,6 +193,7 @@ const renderCategoryGrid = (categories) => {
     });
 };
 
+//rendering of subrequirements for top level requirements
 const renderSubReqList = (category, overlay) => {
     overlay.querySelector('.modal-scroll-area').innerHTML = `
         <div class="nav-breadcrumb">
@@ -217,9 +208,9 @@ const renderSubReqList = (category, overlay) => {
     });
 };
 
+//rendering of courses that fulfill subrequirements
 const renderCourseDetail = (subReq, category, overlay) => {
-    const isDone = subReq.status === 'MET' || subReq.status === 'IP';
-    const coursesHtml = APAS_COMPONENTS.courseRows(subReq.options, isDone);
+    const coursesHtml = APAS_COMPONENTS.courseRows(subReq.options);
 
     overlay.querySelector('.modal-scroll-area').innerHTML = `
         <button id="back-to-subreqs" class="back-btn">← BACK</button>
@@ -235,6 +226,7 @@ const renderCourseDetail = (subReq, category, overlay) => {
     
     const courseIds = subReq.options.map(opt => `${opt.dept}${opt.num}`);
 
+    //batch fetch of data for all courses in current subreq
     chrome.runtime.sendMessage({ action: "GET_BATCH_COURSE_DATA", courseIds }, (results) => {
         if (!results || !Array.isArray(results)) return;
 
@@ -258,6 +250,7 @@ const renderCourseDetail = (subReq, category, overlay) => {
     });
 };
 
+//helper on rendering side
 const calculateAvgFromGrades = (grades) => {
     const weights = { "A": 4.0, "A-": 3.67, "B+": 3.33, "B": 3.0, "B-": 2.67, "C+": 2.33, "C": 2.0, "C-": 1.67, "D+": 1.33, "D": 1.0, "F": 0.0 };
     let pts = 0, count = 0;
@@ -267,11 +260,12 @@ const calculateAvgFromGrades = (grades) => {
     return count > 0 ? (pts / count).toFixed(2) : "N/A";
 };
 
+//render apas fab button (bottom right of screen)
 const injectApasFab = () => {
     if (document.getElementById('apas-fab')) return;
     const fab = document.createElement('div');
     fab.id = 'apas-fab';
-    fab.className = 'gopher-grades-fab apas-pill'; // Added apas-pill
+    fab.className = 'gopher-grades-fab apas-pill';
     fab.innerHTML = `
         <img src="https://www.umn.lol/images/icon.png">
         <span>APAS EXPLORER</span>

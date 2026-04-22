@@ -4,6 +4,7 @@ const GPA_WEIGHTS = {
   "C+": 2.33, "C": 2.0, "C-": 1.67, "D+": 1.33, "D": 1.0, "F": 0.0
 };
 
+//moved as helper because of overlap with grabbing course details
 const calculateGPA = (grades) => {
   let totalPoints = 0, totalStudents = 0;
   for (const [grade, count] of Object.entries(grades)) {
@@ -79,6 +80,7 @@ const RuntimeMessages = {
       sendResponse({ success: false, error: error.message });
     }
   },
+  //NEW - use course codes to grab full course details
   GET_BATCH_COURSE_DATA: async (request, sender, sendResponse) => {
     const { courseIds } = request;
     const now = Date.now();
