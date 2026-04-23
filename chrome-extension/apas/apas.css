@@ -3,6 +3,7 @@
     --umn-maroon-dark: #49080F;
     --umn-gold: #ffcc33;
     --bg-light: #f8f9fa;
+    --status-met: #2e7d32;
     --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
     --font-main: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
 }
@@ -31,6 +32,7 @@
 
 .modal-scroll-area { flex: 1; padding: 24px; overflow-y: auto; background: var(--bg-light); }
 
+/* Modal Close Button - No Spin */
 .modal-close-btn {
     background: rgba(255, 255, 255, 0.15);
     color: var(--umn-gold);
@@ -38,12 +40,13 @@
     width: 30px; height: 30px; border-radius: 6px;
     cursor: pointer; font-size: 18px; display: flex;
     align-items: center; justify-content: center;
-    transition: all 0.2s ease; line-height: 1;
+    transition: background 0.2s ease, color 0.2s ease;
+    line-height: 1;
 }
 
 .modal-close-btn:hover {
-    background: var(--umn-gold); color: var(--umn-maroon);
-    transform: rotate(90deg);
+    background: var(--umn-gold); 
+    color: var(--umn-maroon);
 }
 
 /* --- THE UNIFIED CARD SYSTEM --- */
@@ -59,69 +62,54 @@
     display: flex; 
     justify-content: space-between; 
     align-items: center;
-    transition: all 0.2s ease; 
     margin-bottom: 14px;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                box-shadow 0.2s ease, 
+                border-color 0.2s ease;
 }
 
 .gopher-grades-req-card:hover, 
 .gopher-grades-sub-card:hover, 
 .course-option-card:hover {
-    border-color: #bbb; box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-    transform: translateX(4px);
+    border-color: var(--umn-gold); 
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    transform: translateY(-3px) scale(1.01);
 }
 
-/* Status Tags (Pills) */
+.gopher-grades-req-card:active, 
+.gopher-grades-sub-card:active, 
+.course-option-card:active {
+    transform: translateY(-1px) scale(0.99);
+}
+
+/* Status Tags & GPA Badge */
 .status-tag {
     display: inline-flex; align-items: center; justify-content: center;
     padding: 5px 12px; border-radius: 12px; font-size: 10px;
     font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase;
-    border: 1px solid transparent;
 }
-
-.status-tag.unmet { background: #ffebee !important; color: #c62828 !important; border-color: #c62828 !important; }
-
-/* GPA Badge Variant */
+.status-tag.unmet { background: #ffebee !important; color: #c62828 !important; border: 1px solid #c62828 !important; }
 .gpa-badge { background: white; border: 1.5px solid var(--umn-maroon); color: var(--umn-maroon); font-size: 11px; }
 
 /* --- CARD CONTENT HELPERS --- */
-.req-title { 
-    margin: 0; 
-    font-size: 16px;
-    font-weight: 700; 
-    color: #222; 
-    line-height: 1.3;
-}
+.req-title { margin: 0; font-size: 16px; font-weight: 700; color: #222; line-height: 1.3; }
 .req-index { font-weight: 800; color: var(--umn-maroon); min-width: 32px; display: inline-block; }
-.req-index:contains("OR") {
-    color: #007bff;
-    font-style: italic;
-}
+.req-index.logic-or { color: #007bff; font-style: italic; }
+
 .req-right-side, .course-right-side { display: flex; align-items: center; gap: 14px; }
-.chevron-icon { color: #ccc; font-size: 24px; transition: color 0.2s; }
+.chevron-icon { color: #ccc; font-size: 24px; transition: all 0.2s ease; }
+.gopher-grades-sub-card:hover .chevron-icon { transform: translateX(4px); color: var(--umn-maroon); }
 
 .course-left-content { display: flex; flex-direction: column; gap: 6px; }
 .course-header-row { display: flex; align-items: center; gap: 10px; }
-.course-id-text { 
-    font-size: 18px; 
-    font-weight: 800; 
-    color: var(--umn-maroon);
-    letter-spacing: -0.3px; 
-}
+.course-id-text { font-size: 18px; font-weight: 800; color: var(--umn-maroon); letter-spacing: -0.3px; }
 .course-name-text { font-size: 14px; color: #555; font-weight: 600; line-height: 1.3; }
 .action-label { font-size: 11px; font-weight: 900; letter-spacing: 0.5px; color: var(--umn-maroon); }
 
-/* Taken State for Courses */
-.course-option-card.course-taken { border-left-color: var(--status-met); }
-.course-option-card.course-taken .action-label { color: var(--status-met); }
-
 /* --- NAVIGATION & INFO --- */
 .nav-breadcrumb { 
-    display: flex; 
-    align-items: center; 
-    gap: 15px; 
-    margin-bottom: 32px; 
-    padding-bottom: 12px;
-    border-bottom: 1px solid #eee;
+    display: flex; align-items: center; gap: 15px; 
+    margin-bottom: 32px; padding-bottom: 12px; border-bottom: 1px solid #eee;
 }
 .nav-label { font-weight: 800; color: var(--umn-maroon); font-size: 15px; }
 
@@ -138,140 +126,64 @@
     margin: 15px 0; border: 1px solid #fff59d; border-left: 4px solid var(--umn-gold);
 }
 
-/* --- EMPTY STATE --- */
-.empty-state-card { display: flex; flex-direction: column; gap: 12px; }
-.empty-title { margin: 0; color: var(--umn-maroon); font-weight: 800; }
-.empty-desc { margin: 0; font-size: 14px; line-height: 1.5; color: var(--umn-maroon-dark); opacity: 0.9; }
-.sync-instructions { background: rgba(255, 255, 255, 0.6); padding: 12px; border-radius: 6px; border: 1px dashed var(--umn-gold); }
-.sync-steps-list { margin: 5px 0 0; padding-left: 20px; font-size: 13px; color: var(--umn-maroon-dark); }
-
 /* --- FLOATING PILLS (FAB & SYNC) --- */
 .gopher-grades-fab.apas-pill, #gg-apas-sync {
-    position: fixed !important; 
-    bottom: 30px !important; 
-    right: 30px !important;
-    z-index: 2147483647 !important; 
-    cursor: pointer; 
-    display: flex !important; 
-    align-items: center !important;
-    justify-content: center !important;
-    
-    width: auto !important;
-    min-width: 170px !important;
-    height: 48px !important;
-    padding: 0 24px !important; 
-    border-radius: 50px !important;
-    white-space: nowrap !important;
-
-    background: var(--umn-maroon) !important; 
-    color: var(--umn-gold) !important;
-    border: 2px solid var(--umn-gold) !important; 
-    font-family: var(--font-main) !important;
-    font-weight: 900 !important; 
-    text-transform: uppercase; 
-    letter-spacing: 0.5px;
+    position: fixed !important; bottom: 30px !important; right: 30px !important;
+    z-index: 2147483647 !important; cursor: pointer; 
+    display: flex !important; align-items: center !important; justify-content: center !important;
+    min-width: 210px !important; height: 48px !important; padding: 0 24px !important; 
+    border-radius: 50px !important; white-space: nowrap !important;
+    background: var(--umn-maroon) !important; color: var(--umn-gold) !important;
+    border: 2px solid var(--umn-gold) !important; font-family: var(--font-main) !important;
+    font-weight: 900 !important; text-transform: uppercase; letter-spacing: 0.5px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important; 
-    transition: all 0.2s ease;
+    
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                background-color 0.2s ease, 
+                box-shadow 0.3s ease !important;
 }
 
-.gopher-grades-fab.apas-pill { font-size: 12px; }
-#gg-apas-sync { font-size: 13px; gap: 10px; }
-
+/* Pill Hover Effects */
 .gopher-grades-fab.apas-pill:hover, #gg-apas-sync:hover {
-    transform: scale(1.05) translateY(-2px);
+    transform: translateY(-5px) scale(1.04) !important;
     background-color: var(--umn-maroon-dark) !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4) !important;
 }
 
-#gg-apas-sync.success { background-color: var(--status-met) !important; color: white !important; border-color: white !important; }
-#gg-apas-sync.syncing { background-color: white !important; color: var(--umn-maroon) !important; cursor: wait; }
-
-.gopher-grades-fab.apas-pill img, 
-#gg-apas-sync img {
-    width: 20px !important;
-    height: 20px !important;
-    margin-right: 10px !important;
-    object-fit: contain;
-    flex-shrink: 0;
+.gopher-grades-fab.apas-pill:active, #gg-apas-sync:active {
+    transform: translateY(-1px) scale(0.98) !important;
 }
 
-.modal-scroll-area::-webkit-scrollbar {
-    width: 8px;
-}
-.modal-scroll-area::-webkit-scrollbar-track {
-    background: var(--bg-light);
-}
-.modal-scroll-area::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 10px;
-    border: 2px solid var(--bg-light);
-}
-.modal-scroll-area::-webkit-scrollbar-thumb:hover {
-    background: #bbb;
+/* Sync States */
+#gg-apas-sync.syncing { 
+    background-color: #fff8e1 !important; color: var(--umn-maroon) !important; 
+    border-color: var(--umn-maroon) !important; cursor: wait;
 }
 
-.back-btn, .status-tag, .gopher-grades-req-card, .gopher-grades-fab {
-    user-select: none;
-    -webkit-user-select: none;
+#gg-apas-sync.success { 
+    background-color: #c8e6c9 !important; color: #1b5e20 !important; border-color: #2e7d32 !important; 
 }
 
-.gopher-grades-req-card:active, 
-.gopher-grades-sub-card:active, 
-.course-option-card:active {
-    transform: scale(0.98) translateX(2px);
-    background-color: #f0f0f0;
+/* Image & Animation */
+#gg-apas-sync img, .gopher-grades-fab.apas-pill img {
+    width: 20px !important; height: 20px !important;
+    margin-right: 10px !important; object-fit: contain; filter: none !important;
 }
 
-.apas-info-panel p {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    line-height: 1.5;
+@keyframes gg-logo-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
 }
-.apas-info-panel:hover p {
-    -webkit-line-clamp: unset;
-}
+#gg-apas-sync.syncing img { animation: gg-logo-pulse 1.2s ease-in-out infinite; }
 
-/* APAS disclaimer */
+/* --- UTILITIES --- */
+.modal-scroll-area::-webkit-scrollbar { width: 8px; }
+.modal-scroll-area::-webkit-scrollbar-track { background: var(--bg-light); }
+.modal-scroll-area::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; border: 2px solid var(--bg-light); }
+
 .apas-disclaimer-container {
-    padding: 12px 16px;
-    background-color: #f8f9fa;
-    border-top: 1px solid #e9ecef;
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
+    padding: 12px 16px; background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;
 }
-
-.apas-disclaimer-content {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    color: #6c757d;
-    font-size: 11px;
-    line-height: 1.4;
-}
-
-.disclaimer-icon {
-    font-size: 14px;
-    font-weight: bold;
-    color: #007bff;
-    margin-top: -1px;
-}
-
-.apas-disclaimer-content p {
-    margin: 0;
-}
-
-.apas-disclaimer-content strong {
-    color: #495057;
-}
-
-.apas-search-input {
-    width: 100%;
-    padding: 12px 16px;
-    border-radius: 25px;
-    border: 1px solid #ddd;
-    margin-bottom: 20px;
-    font-family: var(--font-main);
-    outline: none;
-}
-.apas-search-input:focus { border-color: var(--umn-gold); }
+.apas-disclaimer-content { display: flex; align-items: flex-start; gap: 10px; color: #6c757d; font-size: 11px; line-height: 1.4; }
+.disclaimer-icon { font-size: 14px; font-weight: bold; color: #007bff; }

@@ -6,24 +6,31 @@ const APAS_PARSER = {
 
         const btn = document.createElement('button');
         btn.id = "gg-apas-sync";
+        // Keep the structure static, only change textContent
         btn.innerHTML = `
-            <img src="https://www.umn.lol/images/icon.png" style="width: 18px; height: 18px;">
-            <span>SYNC APAS EXPLORER</span>
+            <img src="https://www.umn.lol/images/icon.png">
+            <span class="sync-text">SYNC APAS EXPLORER</span>
         `;
 
         btn.onclick = async () => {
+            const textEl = btn.querySelector('.sync-text');
+            
+            // SYNCING STATE
             btn.classList.add('syncing');
-            btn.innerHTML = `<img src="https://www.umn.lol/images/icon.png" style="width: 18px; height: 18px;"><span>SYNCING...</span>`;
+            textEl.innerText = "SYNCING...";
+            btn.disabled = true;
+
             const data = await APAS_PARSER.run();
+            
             chrome.storage.local.set(data, () => {
+                // SUCCESS STATE
                 btn.classList.replace('syncing', 'success');
-                btn.innerHTML = `<img src="https://www.umn.lol/images/icon.png" style="width: 18px; height: 18px;"><span>SYNC SUCCESSFUL</span>`;
+                textEl.innerText = "SYNC SUCCESSFUL";
+
                 setTimeout(() => {
                     btn.classList.remove('success');
-                    btn.innerHTML = `
-                        <img src="https://www.umn.lol/images/icon.png" style="width: 18px; height: 18px;">
-                        <span>SYNC APAS EXPLORER</span>
-                    `;
+                    btn.disabled = false;
+                    textEl.innerText = "SYNC APAS EXPLORER";
                 }, 3000);
             });
         };
