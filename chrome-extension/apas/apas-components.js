@@ -81,7 +81,7 @@ const APAS_COMPONENTS = {
         return category.subRequirements.map((sub, idx) => `
             <div class="gopher-grades-sub-card" data-idx="${idx}">
                 <h4 class="req-title">
-                    <span class="req-index">${sub.logicLabel || (idx + 1 + ')')}</span>
+                    <span class="req-index ${sub.logic === 'OR' ? 'logic-or' : ''}">${sub.logicLabel || (idx + 1 + ')')}</span>
                     ${APAS_COMPONENTS.fixSpacing(sub.title)}
                 </h4>
                 <div class="req-right-side">
@@ -94,7 +94,7 @@ const APAS_COMPONENTS = {
     courseRowsHtml: (options) => {
         const term = APAS_COMPONENTS.getActiveTerm();
         return options.map(opt => {
-            const courseId = `${opt.dept}${opt.num}`;
+            const courseId = `${opt.dept}${opt.num}`.replace(/\s+/g, '-');
             const url = `https://schedulebuilder.umn.edu/explore/${term}/${opt.dept}/${opt.num}/`;
 
             return `

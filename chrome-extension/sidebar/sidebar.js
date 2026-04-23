@@ -247,16 +247,6 @@ const renderCourseDetail = (subReq, category, overlay) => {
     });
 };
 
-//helper on rendering side
-const calculateAvgFromGrades = (grades) => {
-    const weights = { "A": 4.0, "A-": 3.67, "B+": 3.33, "B": 3.0, "B-": 2.67, "C+": 2.33, "C": 2.0, "C-": 1.67, "D+": 1.33, "D": 1.0, "F": 0.0 };
-    let pts = 0, count = 0;
-    Object.entries(grades).forEach(([grade, n]) => {
-        if (weights[grade] !== undefined) { pts += weights[grade] * n; count += n; }
-    });
-    return count > 0 ? (pts / count).toFixed(2) : "N/A";
-};
-
 //render apas fab button (bottom right of screen)
 const injectApasFab = () => {
     if (document.getElementById('apas-fab')) return;
