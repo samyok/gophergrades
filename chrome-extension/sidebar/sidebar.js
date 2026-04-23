@@ -153,21 +153,20 @@ const loadCourseSchedule = (courseSchedule) => {
   }
 };
 
-//start of APAS modal
+//entry to APAS feature
 const openApasModal = async () => {
-    const data = await chrome.storage.local.get(["gg_apas_unmet"]);
-    const unmet = data.gg_apas_unmet || [];
-
-    if (unmet.length === 0) {
+    const { gg_apas_unmet } = await chrome.storage.local.get(["gg_apas_unmet"]);
+    
+    // pass nothing if no data
+    if (!gg_apas_unmet || gg_apas_unmet.length === 0) {
         return renderCategoryGrid(null);
     }
 
-    const nested = APAS_COMPONENTS.nestData(unmet);
-    
-    renderCategoryGrid(nested);
+    const nestedData = APAS_COMPONENTS.nestData(gg_apas_unmet);
+    renderCategoryGrid(nestedData);
 };
 
-//rendering of top level requirements
+//rendering top level reqs
 const renderCategoryGrid = (categories) => {
     let overlay = document.getElementById('apas-modal');
     if (!overlay) {
@@ -177,69 +176,67 @@ const renderCategoryGrid = (categories) => {
         document.body.appendChild(overlay);
     }
     
-    overlay.innerHTML = APAS_COMPONENTS.modalShell();
+    overlay.innerHTML = APAS_COMPONENTS.modalShellHtml();
     overlay.querySelector('#close-apas').onclick = () => overlay.remove();
     
     const scrollArea = overlay.querySelector('.modal-scroll-area');
 
+    //empty state if no APAS synced
     if (!categories) {
-        return APAS_COMPONENTS.renderEmptyState(overlay);
+        scrollArea.innerHTML = APAS_COMPONENTS.emptyStateHtml();
+        overlay.querySelector('#open-apas-btn').onclick = () => window.open('https://www.myu.umn.edu/','_blank');
+        return;
     }
 
-    scrollArea.innerHTML = `<div class="apas-section-grid">${APAS_COMPONENTS.categoryGrid(categories)}</div>`;
+    scrollArea.innerHTML = `<div class="apas-section-grid">${APAS_COMPONENTS.categoryGridHtml(categories)}</div>`;
     
     overlay.querySelectorAll('.gopher-grades-req-card').forEach(card => {
         card.onclick = () => renderSubReqList(categories[card.dataset.idx], overlay);
     });
 };
 
-//rendering of subrequirements for top level requirements
+//rendering of subreqs for reqs
 const renderSubReqList = (category, overlay) => {
     overlay.querySelector('.modal-scroll-area').innerHTML = `
         <div class="nav-breadcrumb">
             <button id="back-to-cats" class="back-btn">← All Categories</button>
             <span class="nav-label">${category.title}</span>
         </div>
-        <div class="apas-sub-list-container">${APAS_COMPONENTS.subReqList(category)}</div>`;
+        <div class="apas-sub-list-container">${APAS_COMPONENTS.subReqListHtml(category)}</div>`;
 
-    overlay.querySelector('#back-to-cats').onclick = () => openApasModal();
+    overlay.querySelector('#back-to-cats').onclick = openApasModal;
+    
     overlay.querySelectorAll('.gopher-grades-sub-card').forEach(card => {
-        card.onclick = () => renderCourseDetail(category.subReqs[card.dataset.idx], category, overlay);
+        card.onclick = () => renderCourseDetail(category.subRequirements[card.dataset.idx], category, overlay);
     });
 };
 
-//rendering of courses that fulfill subrequirements
+//rendering of specific courses for subreqs and their info
 const renderCourseDetail = (subReq, category, overlay) => {
-    const coursesHtml = APAS_COMPONENTS.courseRows(subReq.options);
-
     overlay.querySelector('.modal-scroll-area').innerHTML = `
         <button id="back-to-subreqs" class="back-btn">← BACK</button>
         <div class="apas-info-panel">
             <strong>${subReq.title}</strong>
-            <p style="font-size: 12px; color: var(--umn-maroon-dark); opacity: 0.85;">
-                ${APAS_COMPONENTS.fixSpacing(subReq.description || "")}
+            <p style="font-size: 12px; color: var(--umn-maroon-dark); opacity: 0.85; margin-top: 8px;">
+                ${APAS_COMPONENTS.fixSpacing(subReq.description || "No specific instructions provided for this requirement.")}
             </p>
         </div>
-        <div class="course-list-container">${coursesHtml}</div>`;
+        <div class="course-list-container">${APAS_COMPONENTS.courseRowsHtml(subReq.options)}</div>`;
 
     overlay.querySelector('#back-to-subreqs').onclick = () => renderSubReqList(category, overlay);
     
+    // gpa + course info fetching + injectioin
     const courseIds = subReq.options.map(opt => `${opt.dept}${opt.num}`);
-
-    //batch fetch of data for all courses in current subreq
     chrome.runtime.sendMessage({ action: "GET_BATCH_COURSE_DATA", courseIds }, (results) => {
         if (!results || !Array.isArray(results)) return;
 
         results.forEach(res => {
-            if (!document.getElementById(`name-${res.courseId}`)) return;
-            if (!res.success) return;
-            
             const nameEl = document.getElementById(`name-${res.courseId}`);
             const gpaEl = document.getElementById(`gpa-${res.courseId}`);
 
-            if (nameEl) nameEl.innerText = res.data.class_desc;
-            if (gpaEl) {
-                const avg = calculateAvgFromGrades(res.data.total_grades); 
+            if (nameEl && res.success) {
+                nameEl.innerText = res.data.class_desc;
+                const avg = APAS_COMPONENTS.calculateAvgFromGrades(res.data.total_grades); 
                 gpaEl.innerText = `${avg} GPA`;
             }
         });

@@ -80,7 +80,7 @@ const RuntimeMessages = {
       sendResponse({ success: false, error: error.message });
     }
   },
-  //NEW - use course codes to grab full course details
+  //use course codes to grab full course details
   GET_BATCH_COURSE_DATA: async (request, sender, sendResponse) => {
     const { courseIds } = request;
     const now = Date.now();

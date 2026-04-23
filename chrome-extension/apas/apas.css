@@ -6,9 +6,6 @@
     --umn-maroon: #7a0019;
     --umn-maroon-dark: #49080F;
     --umn-gold: #ffcc33;
-    --status-met: #2e7d32;
-    --status-unmet: #c62828;
-    --status-ip: #f9a825;
     --bg-light: #f8f9fa;
     --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
     --font-main: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
@@ -57,12 +54,17 @@
 .gopher-grades-req-card, 
 .gopher-grades-sub-card, 
 .course-option-card {
-    background: white; border: 1px solid #ddd;
-    border-left: 6px solid var(--umn-maroon);
-    padding: 18px 24px; /* Increased padding to match course-card feel */
-    border-radius: 8px; cursor: pointer;
-    display: flex; justify-content: space-between; align-items: center;
-    transition: all 0.2s ease; margin-bottom: 14px;
+    background: white; 
+    border: 1px solid #ddd;
+    border-left: 6px solid var(--umn-gold); 
+    padding: 18px 24px;
+    border-radius: 8px; 
+    cursor: pointer;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    transition: all 0.2s ease; 
+    margin-bottom: 14px;
 }
 
 .gopher-grades-req-card:hover, 
@@ -72,11 +74,6 @@
     transform: translateX(4px);
 }
 
-/* Status Colors - Applied via JS classes */
-.status-met { border-left-color: var(--status-met) !important; }
-.status-unmet { border-left-color: var(--status-unmet) !important; }
-.status-ip { border-left-color: var(--status-ip) !important; }
-
 /* Status Tags (Pills) */
 .status-tag {
     display: inline-flex; align-items: center; justify-content: center;
@@ -85,9 +82,7 @@
     border: 1px solid transparent;
 }
 
-.status-tag.met { background: #e8f5e9 !important; color: #2e7d32 !important; border-color: #2e7d32 !important; }
 .status-tag.unmet { background: #ffebee !important; color: #c62828 !important; border-color: #c62828 !important; }
-.status-tag.ip { background: #fffde7 !important; color: #f57f17 !important; border-color: #fbc02d !important; }
 
 /* GPA Badge Variant */
 .gpa-badge { background: white; border: 1.5px solid var(--umn-maroon); color: var(--umn-maroon); font-size: 11px; }
@@ -95,18 +90,27 @@
 /* --- CARD CONTENT HELPERS --- */
 .req-title { 
     margin: 0; 
-    font-size: 16px; /* Slightly larger for better hierarchy */
+    font-size: 16px;
     font-weight: 700; 
     color: #222; 
     line-height: 1.3;
 }
 .req-index { font-weight: 800; color: var(--umn-maroon); min-width: 32px; display: inline-block; }
+.req-index:contains("OR") {
+    color: #007bff;
+    font-style: italic;
+}
 .req-right-side, .course-right-side { display: flex; align-items: center; gap: 14px; }
 .chevron-icon { color: #ccc; font-size: 24px; transition: color 0.2s; }
 
 .course-left-content { display: flex; flex-direction: column; gap: 6px; }
 .course-header-row { display: flex; align-items: center; gap: 10px; }
-.course-id-text { font-size: 18px; font-weight: 800; color: #222; letter-spacing: -0.3px; }
+.course-id-text { 
+    font-size: 18px; 
+    font-weight: 800; 
+    color: var(--umn-maroon);
+    letter-spacing: -0.3px; 
+}
 .course-name-text { font-size: 14px; color: #555; font-weight: 600; line-height: 1.3; }
 .action-label { font-size: 11px; font-weight: 900; letter-spacing: 0.5px; color: var(--umn-maroon); }
 
@@ -115,7 +119,14 @@
 .course-option-card.course-taken .action-label { color: var(--status-met); }
 
 /* --- NAVIGATION & INFO --- */
-.nav-breadcrumb { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+.nav-breadcrumb { 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+    margin-bottom: 32px; 
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+}
 .nav-label { font-weight: 800; color: var(--umn-maroon); font-size: 15px; }
 
 .back-btn {
@@ -149,7 +160,6 @@
     align-items: center !important;
     justify-content: center !important;
     
-    /* Shape and Sizing */
     width: auto !important;
     min-width: 170px !important;
     height: 48px !important;
@@ -157,7 +167,6 @@
     border-radius: 50px !important;
     white-space: nowrap !important;
 
-    /* Branding */
     background: var(--umn-maroon) !important; 
     color: var(--umn-gold) !important;
     border: 2px solid var(--umn-gold) !important; 
@@ -204,13 +213,11 @@
     background: #bbb;
 }
 
-/* 2. Prevent text selection on buttons/cards (Feels more like an app) */
 .back-btn, .status-tag, .gopher-grades-req-card, .gopher-grades-fab {
     user-select: none;
     -webkit-user-select: none;
 }
 
-/* 3. Subtle "Press" Effect (Visual feedback when clicking a card) */
 .gopher-grades-req-card:active, 
 .gopher-grades-sub-card:active, 
 .course-option-card:active {
@@ -218,18 +225,18 @@
     background-color: #f0f0f0;
 }
 
-/* 4. Fix for long course descriptions (Prevents the modal from getting messy) */
 .apas-info-panel p {
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* Limit to 3 lines */
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     line-height: 1.5;
 }
 .apas-info-panel:hover p {
-    -webkit-line-clamp: unset; /* Show full text on hover */
+    -webkit-line-clamp: unset;
 }
 
+/* APAS disclaimer */
 .apas-disclaimer-container {
     padding: 12px 16px;
     background-color: #f8f9fa;
@@ -250,7 +257,7 @@
 .disclaimer-icon {
     font-size: 14px;
     font-weight: bold;
-    color: #007bff; /* A subtle blue to indicate 'Information' */
+    color: #007bff;
     margin-top: -1px;
 }
 
@@ -261,3 +268,14 @@
 .apas-disclaimer-content strong {
     color: #495057;
 }
+
+.apas-search-input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    font-family: var(--font-main);
+    outline: none;
+}
+.apas-search-input:focus { border-color: var(--umn-gold); }
