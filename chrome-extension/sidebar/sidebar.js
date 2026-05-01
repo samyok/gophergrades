@@ -276,7 +276,6 @@ const onAppChange = async () => {
 
   // determine which page we're on and load the appropriate data.
   if (courseList) {
-      injectSortTool();
       loadCourses(courseList);
   }
   else if (courseInfo) loadCourseInfo(courseInfo);
