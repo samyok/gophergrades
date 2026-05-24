@@ -1,12 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 
 const SearchBar = ({
   onChange,
   placeholder = "Search by Class, Instructor, or Department",
+  autofocus = false,
 }) => {
   const [search, setSearch] = useState("");
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (autofocus) {
+      inputRef.current?.focus();
+    }
+  }, [autofocus]);
 
   const handleChange = (e) => {
     setSearch(e.target.value);
@@ -19,6 +27,7 @@ const SearchBar = ({
         <Search2Icon color={"black"} />
       </InputLeftElement>
       <Input
+        ref={inputRef}
         type={"text"}
         value={search}
         onChange={handleChange}
