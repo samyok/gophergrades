@@ -51,4 +51,4 @@ export const useSearchFocus = (inputRef, autofocus = false) => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [inputRef, toast]);
-}
+};
