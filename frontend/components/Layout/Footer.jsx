@@ -182,7 +182,7 @@ export const Footer = () => {
           >
             Social Coding
           </LinkButton>{" "}
-          with data from Summer 2017 to Fall 2025 provided by the University
+          with data from Summer 2017 to Spring 2026 provided by the University
           in response to a public records request
         </Text>
         <Text
