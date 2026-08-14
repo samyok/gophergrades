@@ -1,7 +1,5 @@
 const BASE_URL = "https://umn.lol";
 
-console.log("sidebar grades is loaded :)");
-
 // listen for messages from iframes
 window.addEventListener("message", (event) => {
   console.log("[GG] received message from iframe", event);
@@ -155,7 +153,117 @@ const loadCourseSchedule = (courseSchedule) => {
   }
 };
 
+//entry to APAS feature
+const openApasModal = async () => {
+    const { gg_apas_unmet } = await chrome.storage.local.get(["gg_apas_unmet"]);
+    
+    // pass nothing if no data
+    if (!gg_apas_unmet || gg_apas_unmet.length === 0) {
+        return renderCategoryGrid(null);
+    }
+
+    const nestedData = APAS_COMPONENTS.nestData(gg_apas_unmet);
+    renderCategoryGrid(nestedData);
+};
+
+//rendering top level reqs
+const renderCategoryGrid = (categories) => {
+    let overlay = document.getElementById('apas-modal');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = "apas-modal";
+        overlay.className = "gopher-grades-modal-overlay";
+        document.body.appendChild(overlay);
+    }
+    
+    overlay.innerHTML = APAS_COMPONENTS.modalShellHtml();
+    overlay.querySelector('#close-apas').onclick = () => overlay.remove();
+    
+    const scrollArea = overlay.querySelector('.modal-scroll-area');
+
+    //empty state if no APAS synced
+    if (!categories) {
+        scrollArea.innerHTML = APAS_COMPONENTS.emptyStateHtml();
+        overlay.querySelector('#open-apas-btn').onclick = () => window.open('https://www.myu.umn.edu/','_blank');
+        return;
+    }
+
+    scrollArea.innerHTML = `<div class="apas-section-grid">${APAS_COMPONENTS.categoryGridHtml(categories)}</div>`;
+    
+    overlay.querySelectorAll('.gopher-grades-req-card').forEach(card => {
+        card.onclick = () => renderSubReqList(categories[card.dataset.idx], overlay);
+    });
+};
+
+//rendering of subreqs for reqs
+const renderSubReqList = (category, overlay) => {
+    overlay.querySelector('.modal-scroll-area').innerHTML = `
+        <div class="nav-breadcrumb">
+            <button id="back-to-cats" class="back-btn">← All Categories</button>
+            <span class="nav-label">${category.title}</span>
+        </div>
+        <div class="apas-sub-list-container">${APAS_COMPONENTS.subReqListHtml(category)}</div>`;
+
+    overlay.querySelector('#back-to-cats').onclick = openApasModal;
+    
+    overlay.querySelectorAll('.gopher-grades-sub-card').forEach(card => {
+        card.onclick = () => renderCourseDetail(category.subRequirements[card.dataset.idx], category, overlay);
+    });
+};
+
+//rendering of specific courses for subreqs and their info
+const renderCourseDetail = (subReq, category, overlay) => {
+    overlay.querySelector('.modal-scroll-area').innerHTML = `
+        <button id="back-to-subreqs" class="back-btn">← BACK</button>
+        <div class="apas-info-panel">
+            <strong>${subReq.title}</strong>
+            <p style="font-size: 12px; color: var(--umn-maroon-dark); opacity: 0.85; margin-top: 8px;">
+                ${APAS_COMPONENTS.fixSpacing(subReq.description || "No specific instructions provided for this requirement.")}
+            </p>
+        </div>
+        <div class="course-list-container">${APAS_COMPONENTS.courseRowsHtml(subReq.options)}</div>`;
+
+    overlay.querySelector('#back-to-subreqs').onclick = () => renderSubReqList(category, overlay);
+    
+    // gpa + course info fetching + injectioin
+    const courseIds = subReq.options.map(opt => `${opt.dept}${opt.num}`);
+    chrome.runtime.sendMessage({ action: "GET_BATCH_COURSE_DATA", courseIds }, (results) => {
+        if (!results || !Array.isArray(results)) return;
+
+        results.forEach(res => {
+            const nameEl = document.getElementById(`name-${res.courseId}`);
+            const gpaEl = document.getElementById(`gpa-${res.courseId}`);
+
+            if (nameEl && res.success) {
+                nameEl.innerText = res.data.class_desc;
+                const avg = APAS_COMPONENTS.calculateAvgFromGrades(res.data.total_grades); 
+                gpaEl.innerText = `${avg} GPA`;
+            }
+        });
+    });
+
+    overlay.querySelectorAll('.course-option-card').forEach(card => {
+        card.onclick = () => window.open(card.dataset.url, '_blank');
+    });
+};
+
+//render apas fab button (bottom right of screen)
+const injectApasFab = () => {
+    if (document.getElementById('apas-fab')) return;
+    const fab = document.createElement('div');
+    fab.id = 'apas-fab';
+    fab.className = 'gopher-grades-fab apas-pill';
+    fab.innerHTML = `
+        <img src="https://www.umn.lol/images/icon.png">
+        <span>APAS EXPLORER</span>
+    `;
+    fab.onclick = openApasModal;
+    document.body.appendChild(fab);
+};
+
 const onAppChange = async () => {
+  injectApasFab();
+
   const courseList = document.querySelector(".course-list-results");
   const courseInfo = document.querySelector("#crse-info");
   const courseSchedule = document.querySelector("#schedule-courses");
@@ -167,7 +275,9 @@ const onAppChange = async () => {
   if (!displayGraphsInline) return;
 
   // determine which page we're on and load the appropriate data.
-  if (courseList) loadCourses(courseList);
+  if (courseList) {
+      loadCourses(courseList);
+  }
   else if (courseInfo) loadCourseInfo(courseInfo);
   else if (courseSchedule) loadCourseSchedule(courseSchedule);
 };
