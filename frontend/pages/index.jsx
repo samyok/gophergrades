@@ -83,6 +83,7 @@ const Home = () => {
             <SearchBar
               placeholder={search || undefined}
               onChange={handleChange}
+              autofocus
             />
           </Box>
           <Collapse in={showPage} animateOpacity>
