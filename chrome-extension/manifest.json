@@ -16,10 +16,12 @@
         "https://*.schedulebuilder.umn.edu/*"
       ],
       "css": [
-        "sidebar/sidebar.css"
+        "sidebar/sidebar.css",
+        "apas/apas.css"
       ],
       "js": [
-        "sidebar/sidebar.js"
+        "sidebar/sidebar.js",
+        "apas/apas-components.js"
       ]
     },
     {
@@ -59,18 +61,27 @@
         "calendar/utils/scraper.js",
         "calendar/calendar.js"
       ]
+    },
+    {
+      "matches": ["*://apas.umn.edu/*"],
+      "js": ["scripts/apas-parser.js"],
+      "css": ["apas/apas.css"],
+      "run_at": "document_idle",
+      "all_frames": true
     }
   ],
   "host_permissions": [
     "*://*.umn.lol/*",
     "*://umn.lol/*",
     "*://*.umn.edu/*",
-    "*://umn.edu/*"
+    "*://umn.edu/*",
+    "https://schedulebuilder.umn.edu/*"
   ],
   "permissions": [
     "storage",
     "identity",
-    "identity.email"
+    "identity.email",
+    "activeTab"
   ],
   "options_page": "frontend/popup/popup.html",
   "action": {
