@@ -1,8 +1,25 @@
+/**
+ * Sidebar content script for embedding inline gopher-grades pages.
+ *
+ * This file contains a small set of helpers that:
+ *  - inject an iframe into course pages and schedules
+ *  - send a single postMessage containing the current user's email
+ *  - debounce DOM-driven updates to avoid repeat work
+ *
+ */
+
+/* Base URL used when embedding the static class pages */
 const BASE_URL = "https://umn.lol";
 
+/* Small startup message helps quickly confirm the script loaded in DevTools */
 console.log("sidebar grades is loaded :)");
 
-// listen for messages from iframes
+/**
+ * Listen for messages from embedded iframes.
+ *
+ * Expected message shape (from the iframe): { url: <some-url> }
+ * When a message with a url is received, open it in a new browser tab.
+ */
 window.addEventListener("message", (event) => {
   console.log("[GG] received message from iframe", event);
   if (event.data?.url) {
@@ -11,7 +28,16 @@ window.addEventListener("message", (event) => {
   }
 });
 
-// a debounce function to prevent the findCourses function from being called too many times
+
+/**
+ * Generic debounce utility used to avoid calling expensive DOM work
+ * repeatedly during rapid mutation sequences.
+ *
+ * @param {Function} func - Function to debounce.
+ * @param {number} [wait=20] - Milliseconds to wait before invoking.
+ * @param {boolean} [immediate=true] - If true, call on leading edge.
+ * @returns {Function} - Debounced wrapper.
+ */
 const debounce = (func, wait = 20, immediate = true) => {
   let timeout;
   return function () {
@@ -28,9 +54,15 @@ const debounce = (func, wait = 20, immediate = true) => {
   };
 };
 
+
+/* Cached internet id (email) so we avoid repeatedly querying DOM */
 let internetId;
 
-// get email so we can follow up on bug reports
+/**
+ * Extract the user's internet id (email) from the page when available.
+ * This is used to send a small identifying message to embedded iframes
+ * so they can personalize content or surface follow-up contact details.
+ */
 const getInternetId = () => {
   if (internetId) return internetId;
   const matches = document
@@ -40,7 +72,14 @@ const getInternetId = () => {
   return internetId;
 };
 
-// code to turn template string into an actual html element
+
+/**
+ * Convert a HTML string into a DOM Element. Uses a template element so
+ * scripts are not executed and whitespace-only nodes are avoided.
+ *
+ * @param {string} html - HTML fragment
+ * @returns {Element}
+ */
 const htmlToElement = (html) => {
   const template = document.createElement("template");
   html = html.trim(); // Never return a text node of whitespace as the result
@@ -48,6 +87,8 @@ const htmlToElement = (html) => {
   return template.content.firstChild;
 };
 
+
+/* Templates used for iframe insertion */
 const iframeTemplate = `
 <div class="gopher-grades-container">
 <iframe class="gopher-grades-result-iframe" referrerpolicy="unsafe-url"></iframe>
@@ -60,6 +101,17 @@ const iframePortalTemplate = (iframeId, courseName) => `
 </div>
 `;
 
+
+/**
+ * Ensure a portal container exists for a given course. If the portal is
+ * already present in the DOM we return it, otherwise we create and append
+ * it to the provided target node.
+ *
+ * @param {string} iframeId - id string used for the portal container
+ * @param {Element} target - DOM node to append the portal to
+ * @param {string} courseName - friendly label for the portal
+ * @returns {Element} the portal element
+ */
 const appendPortal = (iframeId, target, courseName) => {
   const alreadyExists = document.querySelector(`#${iframeId}`);
   if (alreadyExists) return alreadyExists;
@@ -68,7 +120,15 @@ const appendPortal = (iframeId, target, courseName) => {
   return portal;
 };
 
-// code to add the iframe to the page
+
+/**
+ * Insert an iframe into the page and post a single message containing the
+ * user's email. We attempt to send the message once shortly after
+ * insertion and once again when the iframe emits its `load` event. This
+ * avoids tight intervals and reduces the risk of infinite spam loops.
+ *
+ * Note: uses `direction` to support `prepend` (default) or `append`.
+ */
 const prependFrame = (url, elem, direction = "prepend") => {
   if (elem.querySelector("iframe")) return;
   const frameContainer = htmlToElement(iframeTemplate);
@@ -76,20 +136,37 @@ const prependFrame = (url, elem, direction = "prepend") => {
   const frame = frameContainer.querySelector("iframe");
   frame.src = url.replace(/ /g, "");
   elem[direction](frameContainer);
-  let interval = setInterval(() => {
-    console.log("[GG] sending message to iframe");
-    if (!frame.contentWindow) {
-      clearInterval(interval);
-      return;
+
+  // send a single postMessage when the iframe is ready. Also try once
+  // shortly after insertion in case the iframe is already available.
+  const sendMessage = () => {
+    try {
+      if (frame.contentWindow) {
+        console.log("[GG] posting message to iframe");
+        frame.contentWindow.postMessage({ email: getInternetId() }, "*");
+        return true;
+      }
+    } catch (e) {
+      console.log("[GG] postMessage error", e);
     }
-    frame.contentWindow.postMessage({ email: getInternetId() }, "*");
-  }, 1000);
+    return false;
+  };
+
+  // try once immediately (after a small delay) and once on load event
+  setTimeout(sendMessage, 200);
+  frame.addEventListener('load', () => sendMessage());
 };
 
-// if we need to go the other way, we can use this function (append instead of prepend)
+
+/* Append variant for readability */
 const appendFrame = (url, elem) => prependFrame(url, elem, "append");
 
-// find courses in the course list
+
+/**
+ * Scan an instructor/course list and inject inline iframes for each course
+ * panel. This is debounced to avoid thrashing when the page mutates
+ * rapidly (search results updating, panel expansion, etc.).
+ */
 const debouncedFindCourses = debounce((courseList) => {
   // list all ".panel" elements in the course list
   const coursePanels = courseList.querySelectorAll(".panel");
@@ -105,13 +182,21 @@ const debouncedFindCourses = debounce((courseList) => {
   });
 }, 50);
 
-// if we're on the course list page (search), load the courses
+
+/**
+ * Entry point when on the search/course list page. We debounce twice to
+ * guard against timing issues where the DOM is still stabilizing.
+ */
 const loadCourses = (courseList) => {
   debouncedFindCourses(courseList);
   setTimeout(() => debouncedFindCourses(courseList), 200);
 };
 
-// if we're on the course info page, load the course with all the professors and sections
+
+/**
+ * When viewing a single course's info page, inject the main roadmap iframe
+ * and also inject per-instructor views for each professor panel.
+ */
 const loadCourseInfo = (courseInfo) => {
   const courseTitle = courseInfo.querySelector("h2");
   const courseId = courseTitle.innerText.split(":")[0];
@@ -121,7 +206,7 @@ const loadCourseInfo = (courseInfo) => {
   const url = `${BASE_URL}/class/${courseId}?static=all`;
   appendFrame(url, courseInfo);
 
-  // load all panels
+  // load all panels (one frame per professor panel)
   Array.from(document.querySelectorAll(".panel-body")).forEach((panel) => {
     const prof = panel
       ?.querySelector("table tbody tr td:nth-of-type(4)")
@@ -135,7 +220,13 @@ const loadCourseInfo = (courseInfo) => {
   });
 };
 
-// if we're on a built schedule, load the schedule
+
+/**
+ * If a built schedule is visible, find the courses listed there and inject
+ * portal iframes for each one. This method uses a lightweight debounce
+ * keyed on the current course list so we skip repeated processing when the
+ * same list is encountered repeatedly.
+ */
 const loadCourseSchedule = (courseSchedule) => {
   const courses = Array.from(
     document.querySelectorAll("#schedule-courses tr:has(h4)")
@@ -145,7 +236,28 @@ const loadCourseSchedule = (courseSchedule) => {
     tr,
   }));
 
-  console.log("[GG] scheduled courses", courses);
+  // lightweight debounce: if same course list was processed recently, skip
+  try {
+    const key = courses.map(c => c.courseId).join(",")
+    const now = Date.now()
+    if (key === _lastScheduledCoursesKey && (now - _lastScheduledCoursesTs) < _SCHEDULE_DEBOUNCE_MS) {
+      // use a minimal debug to indicate suppressed repeated update
+      if (window.GGPlotter && window.GGPlotter.debug) window.GGPlotter.debug('[GG] scheduled courses suppressed')
+      return
+    }
+    _lastScheduledCoursesKey = key
+    _lastScheduledCoursesTs = now
+  } catch (e) {
+    // fall back to always proceeding on error
+  }
+
+  // log scheduled courses (compact) and inject iframes
+  try {
+    const dbg = (window.GGPlotter && window.GGPlotter.debug) ? window.GGPlotter.debug : console.log
+    dbg('[GG] scheduled courses (' + courses.length + ') ' + JSON.stringify(courses.map(c => c.courseId)))
+  } catch (e) {
+    console.log('[GG] scheduled courses', courses)
+  }
   for (let i = 0; i < courses.length; i++) {
     const { courseId, courseName } = courses[i];
     const iframeTarget = document.querySelector("#app-main .col-xs-12");
@@ -155,6 +267,12 @@ const loadCourseSchedule = (courseSchedule) => {
   }
 };
 
+
+/**
+ * Called on app-level changes (mutation observer). Detects which page we
+ * are on and delegates to the appropriate loader above. Honor the
+ * `sb:displayGraphsInline` setting so users can opt out of inline frames.
+ */
 const onAppChange = async () => {
   const courseList = document.querySelector(".course-list-results");
   const courseInfo = document.querySelector("#crse-info");
@@ -172,7 +290,15 @@ const onAppChange = async () => {
   else if (courseSchedule) loadCourseSchedule(courseSchedule);
 };
 
+
+/* Initialization: observe the app container and call `onAppChange` when
+ * child nodes change. The lightweight MutationObserver avoids polling.
+ */
 let loaded = false;
+// track last scheduled courses to avoid repeated processing / logging
+let _lastScheduledCoursesKey = null
+let _lastScheduledCoursesTs = 0
+const _SCHEDULE_DEBOUNCE_MS = 2000
 const onLoad = () => {
   if (loaded) return;
   loaded = true;
