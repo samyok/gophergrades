@@ -16,21 +16,11 @@
         "https://*.schedulebuilder.umn.edu/*"
       ],
       "css": [
-        "sidebar/sidebar.css"
-      ],
-      "js": [
-        "sidebar/sidebar.js"
-      ]
-    },
-    {
-      "matches": [
-        "https://schedulebuilder.umn.edu/*",
-        "https://*.schedulebuilder.umn.edu/*"
-      ],
-      "css": [
+        "sidebar/sidebar.css",
         "plotter/plotter.css"
       ],
       "js": [
+        "sidebar/sidebar.js",
         "plotter/apiapi.js",
         "plotter/util.js",
         "plotter/main.js"
