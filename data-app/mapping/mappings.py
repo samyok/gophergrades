@@ -406,6 +406,7 @@ dept_mapping = {
         "IBS": "Integrated Biosciences",
         "IE": "Industrial Engineering",
         "IS": "Interdisciplinary Studies",
+        "ILSA": "Instructor-Led Study Abroad",
         "IESE": "Integrated Elementary Special Education",
         "INTB": "International Business",
         "INTS": "International Studies",
