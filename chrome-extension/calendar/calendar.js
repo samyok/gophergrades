@@ -5,6 +5,7 @@ const buttonTemplate = `
   <button id="gg_gcal_button">
     <div id="gg_icon"></div>
     Add Classes to Google Calendar
+    <span class="gg_gcal_tooltip">You can also export to an .ics file and then import into calendar of your choice<br>Powered by Gopher Grades!</span>
   </button>
 </div>
 `;

@@ -31,10 +31,36 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative; /* Needed for tooltip positioning */
 }
 
 #gg_gcal_button:hover {
   opacity: 90%;
+}
+
+.gg_gcal_tooltip {
+  visibility: hidden;
+  opacity: 0.7;
+  background-color: #5B0013;
+  box-shadow: #5B0013 0 0 14px;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  padding: 4px 8px;
+  position: absolute;
+  left: 50%;
+  top: 40px;
+  transform: translateX(-50%);
+  z-index: 10000;
+  font-size: 13px;
+  transition: opacity 0.2s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+#gg_gcal_button:hover .gg_gcal_tooltip {
+  visibility: visible;
+  opacity: 1;
 }
 
 #cover-spin {
