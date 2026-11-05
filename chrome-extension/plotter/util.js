@@ -1,20 +1,200 @@
+// Update Mapping Locations Every 2 Years
+
 /**
- * imagine print() being a function to print to a printer
+ * Lightweight logger for informational messages.
+ * Routes through a rate-limited logger to avoid console spam when the
+ * extension encounters repetitive errors or rapid state changes.
  *
- * @param message what to print to the console
+ * @param {string} message - Message to print to the console.
  */
 function log(message) {
-  console.log("[GG/plotter] " + message)
+  rateLimitedLog("[GG/plotter] " + message, 'log')
 }
 
 /**
- * most complicated javascript debugging tool
+ * Verbose debug logger. Includes an ISO timestamp and prints Error
+ * objects with their stack trace once (the stack is printed directly
+ * to the console so developers can inspect it in DevTools).
  *
- * @param message what to print to the console
+ * This is intentionally conservative: it uses the same rate-limited
+ * backend as `log` so high-volume messages are compacted.
+ *
+ * @param {string|Error} message - Debug message or Error object.
  */
 function debug(message) {
-  //uncomment for debugging lol
-  console.debug("[GG/plotter] " + message)
+  try {
+    const ts = new Date().toISOString()
+    if (message instanceof Error) {
+      // show a short debug line and print the full stack once
+      rateLimitedLog("[GG/plotter] [DEBUG] " + ts + " - Error: " + (message && message.message), 'error')
+      console.error(message)
+    } else {
+      rateLimitedLog("[GG/plotter] [DEBUG] " + ts + " - " + message, 'debug')
+    }
+  } catch (e) {
+    // if anything in debug() throws, fall back to a best-effort log
+    try { rateLimitedLog("[GG/plotter] " + String(message), 'debug') } catch (ee) { }
+  }
+}
+
+// Simple rate-limited logger to collapse repeated identical messages.
+// This prevents runaway console output by tracking the last message and
+// suppressing subsequent identical messages inside a short window.
+const _rl = {
+  last: null,    // last message string
+  lastTs: 0,     // timestamp of last message
+  count: 0,      // repetition count within window
+  windowMs: 2000 // time window to collapse repeats
+}
+
+/**
+ * Rate-limited logging implementation.
+ * Behavior:
+ *  - If the exact same message appears repeatedly within windowMs, we
+ *    print the first 3 repeats and then a compact suppressed line.
+ *  - When a different message arrives after a burst, we print a
+ *    summary of how many times the previous message repeated.
+ *
+ * @param {string} msg - Message to log.
+ * @param {'log'|'debug'|'error'} level - Desired console method.
+ */
+function rateLimitedLog(msg, level) {
+  try {
+    const now = Date.now()
+    if (msg === _rl.last && (now - _rl.lastTs) < _rl.windowMs) {
+      _rl.count += 1
+      // print first 3 repeats, then a compact suppressed message once
+      if (_rl.count <= 3) {
+        if (level === 'error') console.error(msg)
+        else if (level === 'debug') console.debug(msg)
+        else console.log(msg)
+      } else if (_rl.count === 4) {
+        console.log(`${msg} (repeated)`)
+      } else {
+        // suppressed - intentionally do nothing to avoid spam
+      }
+      _rl.lastTs = now
+      return
+    }
+
+    // different message or outside of rate window
+    if (_rl.count > 3) {
+      // summarize previous burst so debugging still shows context
+      console.log(`[GG/plotter] previous message repeated ${_rl.count}x`)
+    }
+    _rl.last = msg
+    _rl.lastTs = now
+    _rl.count = 1
+
+    if (level === 'error') console.error(msg)
+    else if (level === 'debug') console.debug(msg)
+    else console.log(msg)
+  } catch (e) {
+    // best-effort fallback: don't throw from the logger
+    try { console.log(msg) } catch (ee) { }
+  }
+}
+
+/**
+ * log an Error object and surface a small message in the plotter UI if present
+ * @param err {Error|any}
+ * @param context {string}
+ */
+/**
+ * Log an Error object and surface a short message in the plotter UI (if
+ * present). This function is used for non-fatal diagnostics and is
+ * intentionally resilient: it will swallow any exceptions while trying to
+ * report the original error.
+ *
+ * @param {Error|any} err - The error value being logged.
+ * @param {string} [context] - Short context string to help identify where
+ *                             the error happened.
+ */
+function errorLog(err, context) {
+  try {
+    const ts = new Date().toISOString()
+    console.error("[GG/plotter] [ERROR] " + ts + " " + (context || ""), err)
+    // Show a short message to the user inside the plotter UI when
+    // available. This helps non-technical users surface the basic
+    // problem without opening DevTools.
+    const reportNode = document.querySelector && document.querySelector("#gg-plotter-report")
+    if (reportNode) {
+      const msg = (err && err.message) ? err.message : String(err)
+      reportNode.textContent = `Error${context ? ' (' + context + ')' : ''}: ${msg}`
+    }
+  } catch (e) {
+    // ensure logging never throws - best-effort fallback
+    try { console.error("[GG/plotter] errorLog failed", e) } catch (ee) { }
+  }
+}
+
+// expose for other modules (global namespace used by extension)
+try {
+  window.GGPlotter = window.GGPlotter || {}
+  window.GGPlotter.log = log
+  window.GGPlotter.debug = debug
+  window.GGPlotter.errorLog = errorLog
+} catch (e) {
+  // ignore in case `window` is not writable
+}
+
+// Lightweight failure suppression to avoid log storms when a persistent
+// error condition exists (for example: missing term resulting in many
+// repeated API 400 responses). We expose a small API on the global
+// `window.GGPlotter` object so other modules can check whether work
+// should proceed, and report failures so backoff is applied centrally.
+try {
+  const gp = window.GGPlotter || {}
+  gp._failureCount = gp._failureCount || 0
+  gp._suppressUntil = gp._suppressUntil || 0
+  gp._updating = gp._updating || false
+  gp._failureCooldownBaseMs = gp._failureCooldownBaseMs || 2000 // 2s
+
+  /**
+   * Return true when the plotter may proceed with work. This respects an
+   * in-progress guard (`_updating`) and a suppression window used to
+   * implement exponential backoff after repeated failures.
+   * @returns {boolean}
+   */
+  gp.shouldRun = function () {
+    const now = Date.now()
+    if (gp._updating) return false
+    if (now < gp._suppressUntil) return false
+    return true
+  }
+
+  /**
+   * Record a failure, increment the failure counter, schedule an
+   * exponential backoff, and emit a compact log entry. We print the full
+   * stack for the first few failures and then switch to compact messages
+   * to avoid spamming DevTools.
+   *
+   * @param {Error|any} err
+   * @param {string} [context]
+   */
+  gp.recordFailure = function (err, context) {
+    try {
+      gp._failureCount = (gp._failureCount || 0) + 1
+      const backoff = Math.min(60000, gp._failureCooldownBaseMs * Math.pow(2, gp._failureCount - 1))
+      gp._suppressUntil = Date.now() + backoff
+      if (gp._failureCount <= 3) {
+        errorLog(err, context)
+      } else {
+        debug(`suppressed repeated error (${gp._failureCount}) - last: ${context}`)
+      }
+    } catch (e) {
+      console.error('[GG/plotter] recordFailure failed', e)
+    }
+  }
+
+  gp.resetFailures = function () {
+    gp._failureCount = 0
+    gp._suppressUntil = 0
+  }
+
+  window.GGPlotter = gp
+} catch (e) {
+  // intentionally swallow errors installing the helper
 }
 
 log("loaded plotter/util.js")
@@ -98,7 +278,7 @@ class Mapper {
   }
 
   doCircle(section) {
-    const {location, color} = section
+    const { location, color } = section
     this.ctx.beginPath()
     this.ctx.moveTo(location.x, location.y);
     this.ctx.arc(location.x, location.y, 16, 0, 2 * Math.PI);
@@ -135,10 +315,10 @@ class Mapper {
       const { location } = sections[0]
       this.ctx.font = "60px Arial";
       this.ctx.strokeStyle = "rgba(40, 40, 40, 0.7)";
-      this.ctx.strokeText("Start", location.x-65, location.y+70);
+      this.ctx.strokeText("Start", location.x - 65, location.y + 70);
       this.ctx.strokeStyle = "black";
       this.ctx.fillStyle = "rgb(128, 222, 160)";
-      this.ctx.fillText("Start", location.x-65, location.y+70);
+      this.ctx.fillText("Start", location.x - 65, location.y + 70);
     } else if (sections.length === 0) {
       this.ctx.font = "360px Arial";
       this.ctx.fillStyle = "rgba(40, 40, 40, 0.25)";
@@ -153,7 +333,7 @@ class Mapper {
           //a section associated with the highlighted
           // section will still have color
           section.color = "rgb(221, 221, 221)"
-          this.doCircle(section);
+        this.doCircle(section);
       });
       const highlightedSection = sections.find(section => section.id === highlight)
       if (highlightedSection) {
@@ -203,21 +383,21 @@ function pixelsToLatLong(sections) {
   }
   //degrees per pixel
   const scale = {
-    x: (a2.dg.x-anchor.dg.x)/(a2.px.x-anchor.px.x),
-    y: (a2.dg.y-anchor.dg.y)/(a2.px.y-anchor.px.y)
+    x: (a2.dg.x - anchor.dg.x) / (a2.px.x - anchor.px.x),
+    y: (a2.dg.y - anchor.dg.y) / (a2.px.y - anchor.px.y)
   }
-  
+
   return sections.map(section => {
     //god why
-    let {x: y, y: x} = section.location
+    let { x: y, y: x } = section.location
     //offset st. paul campus
     if (y > 1500) {
       //yea
-      x = x*0.83-900
-      y = y*0.83+3140
+      x = x * 0.83 - 900
+      y = y * 0.83 + 3140
     }
-    const lat = anchor.dg.x + (x - anchor.px.x)*scale.x
-    const long = anchor.dg.y + (y - anchor.px.y)*scale.y
+    const lat = anchor.dg.x + (x - anchor.px.x) * scale.x
+    const long = anchor.dg.y + (y - anchor.px.y) * scale.y
     return [lat, long];
   })
 }
@@ -227,124 +407,162 @@ function pixelsToLatLong(sections) {
  *
  * @returns {?string}
  */
+/**
+ * Attempt to read the currently-displayed term from the page and convert
+ * it to a Schedule Builder `strm` string. The page breadcrumb typically
+ * contains readable strings such as "Fall 2025". If found, this function
+ * returns a string like "1259" (where year-1900 + semester code are
+ * concatenated). If no breadcrumb is available, fall back to computing
+ * the current term from the system date.
+ *
+ * @returns {?string} strm string (e.g. "1259") or null-ish value
+ */
 function getTermStrm() {
-  //getting term from breadcrumbs (or so they're called)
-  let term = document.querySelector(
-      "#app-header > div > div.row.app-crumbs.hidden-print > div > ol > li:nth-child(2) > a")
-  if (term) {
-    term = term.textContent
-    term = strms[term]
-  } else {
-    term = null
+  // try to get term from breadcrumbs first
+  let termNode = document.querySelector(
+    "#app-header > div > div.row.app-crumbs.hidden-print > div > ol > li:nth-child(2) > a"
+  )
+  if (termNode) {
+    const termText = termNode.textContent && termNode.textContent.trim()
+    // page breadcrumbs typically match keys in the `strms` map
+    const mapped = strms[termText]
+    if (mapped) return mapped
   }
 
-  return term
-}
+  // fallback: compute current term like the provided Python logic
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = now.getMonth() + 1
 
-const strms = function () {
-  let terms = {}
-  //future-proofing
+  let semester_code
+  if (1 <= month && month <= 5) {
+    semester_code = '3' // Spring
+  } else if (6 <= month && month <= 8) {
+    semester_code = '5' // Summer
+  } else {
+    semester_code = '9' // Fall
+  }
+
+  const sterm = String(year - 1900) + semester_code
+  return sterm
+}
+/**
+ * Mapping of human-readable breadcrumb strings (e.g. "Fall 2025") to
+ * Schedule Builder `strm` numeric codes. Historically this mapping was
+ * generated ahead-of-time for a wide year range; keep a generated map so
+ * lookups are O(1) and brittle string parsing is avoided at runtime.
+ *
+ * If we ever need to shrink this code, `getTermStrm()` can be updated to
+ * parse breadcrumb text directly instead of consulting this table.
+ */
+const strms = (function () {
+  const terms = {}
+  // Generate entries for years 2020..2049 (matches legacy behaviour)
   for (let i = 20; i < 50; i++) {
     const year = 2000 + i
-    const strm = 1000 + 10 * i
-    terms["Spring " + year] = strm + 3
-    terms["Summer " + year] = strm + 5
-    terms["Fall " + year] = strm + 9
+    const strmBase = 1000 + 10 * i
+    terms["Spring " + year] = strmBase + 3
+    terms["Summer " + year] = strmBase + 5
+    terms["Fall " + year] = strmBase + 9
   }
   return terms
-}()
+})()
 
-//todo succeed this garbage
+// Locations list: authoritative mapping of building names to pixel
+// coordinates on the embedded campus map. Keep this as data only; the
+// mapping generation happens below.
+// Mappings should be updated every 2 years
 const locations = function () {
   const locs = [
-    {location: "Morrill Hall", x: 913, y: 614},
-    {location: "Johnston Hall", x: 778, y: 613},
-    {location: "John T. Tate Hall", x: 908, y: 672},
-    {location: "Smith Hall", x: 778, y: 749},
-    {location: "Vincent Hall", x: 891, y: 752},
-    {location: "Murphy Hall", x: 926, y: 751},
-    {location: "Ford Hall", x: 912, y: 811},
-    {location: "Kolthoff Hall", x: 782, y: 812},
-    {location: "Coffman Memorial Union", x: 847, y: 927},
-    {location: "Amundson Hall", x: 1013, y: 815},
-    {location: "Lind Hall", x: 980, y: 752},
-    {location: "Mechanical Engineering", x: 1006, y: 670},
-    {location: "Akerman Hall", x: 1072, y: 671},
-    {location: "Kenneth H Keller Hall", x: 1048, y: 748},
-    {location: "Physics & Nanotechnology Bldg", x: 1126, y: 661},
-    {location: "Shepherd Labs", x: 1068, y: 612},
-    {location: "Rapson Hall", x: 1006, y: 583},
-    {location: "Pillsbury Hall", x: 916, y: 505},
-    {location: "Nicholson Hall", x: 824, y: 477},
-    {location: "Williamson Hall", x: 887, y: 423},
-    {location: "Jones Hall", x: 850, y: 400},
-    {location: "Folwell Hall", x: 913, y: 365},
-    {location: "Molecular Cellular Biology", x: 1047, y: 886},
-    {location: "Jackson Hall", x: 981, y: 889},
-    {location: "Hasselmo Hall", x: 929, y: 923},
-    {location: "Bruininks Hall", x: 701, y: 797},
-    {location: "Appleby Hall", x: 702, y: 715},
-    {location: "Fraser Hall", x: 700, y: 642},
-    {location: "Peik Hall", x: 720, y: 300},
-    {location: "Cooke Hall", x: 1216, y: 597},
-    {location: "Diehl Hall", x: 1143, y: 1035},
-    {location: "Weaver-Densford Hall", x: 1176, y: 866},
-    {location: "Scott Hall", x: 724, y: 516},
-    {location: "Kaufert Laboratory", x: 1736, y: 319},
-    {location: "Green Hall", x: 1741, y: 419},
-    {location: "Skok Hall", x: 1727, y: 369},
-    {location: "Hodson Hall", x: 1864, y: 320},
-    {location: "Alderman Hall", x: 1879, y: 385},
-    {location: "Borlaug Hall", x: 1913, y: 480},
-    {location: "Gortner Lab", x: 1975, y: 585},
-    {location: "McNeal Hall", x: 1893, y: 664},
-    {location: "Biological Sciences Center", x: 1974, y: 718},
-    {location: "Coffey Hall", x: 1729, y: 834},
-    {location: "Ruttan Hall", x: 1798, y: 877},
-    {location: "Magrath Library", x: 1867, y: 812},
-    {location: "Biosystems/Agricultural Eng", x: 1727, y: 956},
-    {location: "Haecker Hall", x: 1739, y: 1045},
-    {location: "Andrew Boss Laboratory", x: 1772, y: 1104},
-    {location: "Food Science/Nutrition", x: 1766, y: 1168},
-    {location: "Stakman Hall", x: 1944, y: 470},
-    {location: "Hayes Hall", x: 1959, y: 521},
-    {location: "Christensen Lab", x: 1993, y: 483},
-    {location: "Walter Library", x: 774, y: 673},
-    {location: "Mondale Hall", x: 178, y: 887},
-    {location: "Willey Hall", x: 232, y: 914},
-    {location: "Andersen Library", x: 284, y: 886},
-    {location: "Anderson Hall", x: 336, y: 1010},
-    {location: "Social Sciences", x: 285, y: 1056},
-    {location: "Heller Hall", x: 223, y: 1045},
-    {location: "Blegen Hall", x: 257, y: 1045},
-    {location: "Wilson Library", x: 234, y: 1118},
-    {location: "Rarig Center", x: 314, y: 1171},
-    {location: "Ferguson Hall", x: 364, y: 1109},
-    {location: "Ted Mann Concert Hall", x: 400, y: 1152},
-    {location: "Carlson School of Management", x: 146, y: 1174},
-    {location: "Hanson Hall", x: 157, y: 1249},
-    {location: "Hubert H Humphrey School", x: 160, y: 1064},
-    {location: "Pattee Hall", x: 631, y: 318},
-    {location: "Wilkins Hall", x: 601, y: 186},
-    {location: "Learning & Environmental Sci.", x: 1990, y: 814},
-    {location: "St. Paul Student Center", x: 1721, y: 706},
-    {location: "Eng. & Fisheries Lab", x: 1775, y: 961},
-    {location: "Animal Science/Veterinary Med", x: 1826, y: 1032},
-    {location: "Veterinary Science", x: 1889, y: 1182},
-    {location: "Peters Hall", x: 2103, y: 890},
-    {location: "Continuing Education & Conference Center", x: 2152, y: 846},
-    {location: "Chiller Bldg", x: 2202, y: 902},
-    {location: "Armory Building", x: 1078, y: 478},
-    {location: "Northrop", x: 850, y: 556},
-    {location: "Wulling Hall", x: 695, y: 574},
-    {location: "Elliott Hall", x: 666, y: 509},
-    {location: "Burton Hall", x: 682, y: 422},
-    {location: "Shelvin Hall", x: 651, y: 369},
-    {location: "Eddy Hall", x: 754, y: 430},
-    {location: "10 Church Street SE", x: 1000, y: 420},
-    {location: "Health Sciences Education Cent", x: 1190, y: 1010},
-    {location: "Civil Engineering Building", x: 1130, y: 582},
-    {location: "Phillips-Wangensteen Building", x: 1138, y: 976},
+    { location: "Morrill Hall", x: 913, y: 614 },
+    { location: "Johnston Hall", x: 778, y: 613 },
+    { location: "John T. Tate Hall", x: 908, y: 672 },
+    { location: "Smith Hall", x: 778, y: 749 },
+    { location: "Vincent Hall", x: 891, y: 752 },
+    { location: "Murphy Hall", x: 926, y: 751 },
+    { location: "Ford Hall", x: 912, y: 811 },
+    { location: "Kolthoff Hall", x: 782, y: 812 },
+    { location: "Coffman Memorial Union", x: 847, y: 927 },
+    { location: "Amundson Hall", x: 1013, y: 815 },
+    { location: "Lind Hall", x: 980, y: 752 },
+    { location: "Mechanical Engineering", x: 1006, y: 670 },
+    { location: "Akerman Hall", x: 1072, y: 671 },
+    { location: "Kenneth H Keller Hall", x: 1048, y: 748 },
+    { location: "Physics & Nanotechnology Bldg", x: 1126, y: 661 },
+    { location: "Shepherd Labs", x: 1068, y: 612 },
+    { location: "Rapson Hall", x: 1006, y: 583 },
+    { location: "Pillsbury Hall", x: 916, y: 505 },
+    { location: "216 Pillsbury Drive", x: 850, y: 482 }, // mental math for location unsure if it is 100% correct
+    { location: "Nicholson Hall", x: 824, y: 477 },
+    { location: "Williamson Hall", x: 887, y: 423 },
+    { location: "Jones Hall", x: 850, y: 400 },
+    { location: "Folwell Hall", x: 913, y: 365 },
+    { location: "Molecular Cellular Biology", x: 1047, y: 886 },
+    { location: "Jackson Hall", x: 981, y: 889 },
+    { location: "Hasselmo Hall", x: 929, y: 923 },
+    { location: "Bruininks Hall", x: 701, y: 797 },
+    { location: "Appleby Hall", x: 702, y: 715 },
+    { location: "Fraser Hall", x: 700, y: 642 },
+    { location: "Peik Hall", x: 720, y: 300 },
+    { location: "Cooke Hall", x: 1216, y: 597 },
+    { location: "Diehl Hall", x: 1143, y: 1035 },
+    { location: "Weaver-Densford Hall", x: 1176, y: 866 },
+    { location: "Scott Hall", x: 724, y: 516 },
+    { location: "Kaufert Laboratory", x: 1736, y: 319 },
+    { location: "Green Hall", x: 1741, y: 419 },
+    { location: "Skok Hall", x: 1727, y: 369 },
+    { location: "Hodson Hall", x: 1864, y: 320 },
+    { location: "Alderman Hall", x: 1879, y: 385 },
+    { location: "Borlaug Hall", x: 1913, y: 480 },
+    { location: "Gortner Lab", x: 1975, y: 585 },
+    { location: "McNeal Hall", x: 1893, y: 664 },
+    { location: "Biological Sciences Center", x: 1974, y: 718 },
+    { location: "Coffey Hall", x: 1729, y: 834 },
+    { location: "Ruttan Hall", x: 1798, y: 877 },
+    { location: "Magrath Library", x: 1867, y: 812 },
+    { location: "Biosystems/Agricultural Eng", x: 1727, y: 956 },
+    { location: "Haecker Hall", x: 1739, y: 1045 },
+    { location: "Andrew Boss Laboratory", x: 1772, y: 1104 },
+    { location: "Food Science/Nutrition", x: 1766, y: 1168 },
+    { location: "Stakman Hall", x: 1944, y: 470 },
+    { location: "Hayes Hall", x: 1959, y: 521 },
+    { location: "Christensen Lab", x: 1993, y: 483 },
+    { location: "Walter Library", x: 774, y: 673 },
+    { location: "Mondale Hall", x: 178, y: 887 },
+    { location: "Willey Hall", x: 232, y: 914 },
+    { location: "Andersen Library", x: 284, y: 886 },
+    { location: "Anderson Hall", x: 336, y: 1010 },
+    { location: "Social Sciences", x: 285, y: 1056 },
+    { location: "Heller Hall", x: 223, y: 1045 },
+    { location: "Blegen Hall", x: 257, y: 1045 },
+    { location: "Wilson Library", x: 234, y: 1118 },
+    { location: "Rarig Center", x: 314, y: 1171 },
+    { location: "Ferguson Hall", x: 364, y: 1109 },
+    { location: "Ted Mann Concert Hall", x: 400, y: 1152 },
+    { location: "Carlson School of Management", x: 146, y: 1174 },
+    { location: "Hanson Hall", x: 157, y: 1249 },
+    { location: "Hubert H Humphrey School", x: 160, y: 1064 },
+    { location: "Pattee Hall", x: 631, y: 318 },
+    { location: "Wilkins Hall", x: 601, y: 186 },
+    { location: "Learning & Environmental Sci.", x: 1990, y: 814 },
+    { location: "St. Paul Student Center", x: 1721, y: 706 },
+    { location: "Eng. & Fisheries Lab", x: 1775, y: 961 },
+    { location: "Animal Science/Veterinary Med", x: 1826, y: 1032 },
+    { location: "Veterinary Science", x: 1889, y: 1182 },
+    { location: "Peters Hall", x: 2103, y: 890 },
+    { location: "Continuing Education & Conference Center", x: 2152, y: 846 },
+    { location: "Chiller Bldg", x: 2202, y: 902 },
+    { location: "Armory Building", x: 1078, y: 478 },
+    { location: "Northrop", x: 850, y: 556 },
+    { location: "Wulling Hall", x: 695, y: 574 },
+    { location: "Elliott Hall", x: 666, y: 509 },
+    { location: "Burton Hall", x: 682, y: 422 },
+    { location: "Shelvin Hall", x: 651, y: 369 },
+    { location: "Eddy Hall", x: 754, y: 430 },
+    { location: "10 Church Street SE", x: 1000, y: 420 },
+    { location: "Health Sciences Education Cent", x: 1190, y: 1010 },
+    { location: "Civil Engineering Building", x: 1130, y: 582 },
+    { location: "Phillips-Wangensteen Building", x: 1138, y: 976 },
     //leave out for testing purposes (gracefully handle missing locations)
     // {location: "University Field House", x: 1166, y: 516}
   ];
