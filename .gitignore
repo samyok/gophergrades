@@ -8,3 +8,17 @@ No-Instructor-data.txt
 firefox-extension
 
 .idea/discord.xml 
+
+# NPM lockfiles
+package-lock.json
+
+# Local dependencies
+node_modules/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Build artifacts (if any)
+dist/
+*.log
