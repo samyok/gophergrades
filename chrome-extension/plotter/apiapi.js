@@ -1,49 +1,101 @@
 /**
- * abstraction built around the Schedule Builder API to help form requests and
- * form concise objects to represent data for use in the extension's UI
- */
-
-/**
- * object to interface with the API and cache results
+ * Abstraction layer over the Schedule Builder API (schedulebuilder.umn.edu).
+ *
+ * Responsibilities:
+ *  - form well-shaped requests for section information
+ *  - cache results locally to avoid repeated network requests
+ *  - provide small, well-typed SBSection objects to the plotter UI
+ *
+ * Important notes:
+ *  - This module intentionally validates HTTP responses and JSON shape
+ *    before assuming an array of sections is returned.
+ *  - Errors are surfaced via `errorLog` and re-thrown so callers may
+ *    apply backoff/guarding behavior.
  */
 class SBAPI {
   /**
-   * private cache to store requested data so it can quickly be retrieved when
-   * needed (e.g. user flips through built schedules)
-   *
-   * @type {Map<int, SBSection>}
+   * Private in-memory cache for fetched SBSection objects. Keys are
+   * numeric section IDs.
+   * @type {Map<number, SBSection>}
    */
   static #cache = new Map()
 
   /**
-   * @param sections{int[]} section numbers
-   * @param semesterStrm{int} strm number for user's current semester
-   * @returns {SBSection[]} SBSchedule object with information from all sections
+   * Fetch section details from the Schedule Builder API for the provided
+   * `sections` list and `semesterStrm` term.
+   *
+   * Behavior:
+   *  - Uses an internal cache to avoid re-fetching previously requested
+   *    sections.
+   *  - Validates HTTP response status and JSON shape; if the response is
+   *    not OK or not an array the function logs debug information and
+   *    throws an error.
+   *  - When new data is received, it is converted to `SBSection` objects
+   *    and stored in the cache.
+   *
+   * @param {number[]} sections - list of class_nbrs to fetch
+   * @param {number|string} semesterStrm - Schedule Builder term code
+   * @returns {Promise<SBSection[]>} array of SBSection objects in the same order as `sections`
    */
   static async fetchSectionInformation(sections, semesterStrm) {
-    // const cacheSections = sections.filter(s => SBAPI.#cache.has(s))
+    // determine which sections still need to be fetched
     const fetchSections = sections.filter(s => !SBAPI.#cache.has(s))
 
-    if (fetchSections.length !== 0) {
-      let requestNbrs = fetchSections.join("%2C")
-      //todo there's a proper way to form api requests using js objects
-      const data = await fetch("https://schedulebuilder.umn.edu/api.php" +
-          "?type=sections" +
-          "&institution=UMNTC" +
-          "&campus=UMNTC" +
-          // todo use the right term/semester
-          "&term=" + semesterStrm +
-          "&class_nbrs=" + requestNbrs)
-          .then((response) => response.json())
+    try {
+      debug(`SBAPI.fetchSectionInformation: requested ${sections.length} sections; need fetch ${fetchSections.length}`)
 
-      //add fetchSections to cache
-      data.forEach(s => {
-        const section_data = this.#constructSectionFromData(s)
-        SBAPI.#cache.set(s.id, section_data)
-      })
+      if (fetchSections.length !== 0) {
+        // class_nbrs are comma-encoded in the API; join with %2C to be safe
+        let requestNbrs = fetchSections.join("%2C")
+        // Construct URL; historically the API is a simple GET interface
+        const url = "https://schedulebuilder.umn.edu/api.php" +
+            "?type=sections" +
+            "&institution=UMNTC" +
+            "&campus=UMNTC" +
+            "&term=" + semesterStrm +
+            "&class_nbrs=" + requestNbrs
+
+        debug(`SBAPI fetching url: ${url}`)
+        const response = await fetch(url)
+
+        // If HTTP status is not OK, capture the response body for debugging
+        if (!response.ok) {
+          let text = "<no body>"
+          try { text = await response.text() } catch (e) { /* ignore read errors */ }
+          debug(`SBAPI fetch failed: ${response.status} ${response.statusText} - ${text}`)
+          throw new Error(`SBAPI fetch failed: ${response.status} ${response.statusText}`)
+        }
+
+        // Parse JSON safely and validate expected structure (array)
+        let data
+        try {
+          data = await response.json()
+        } catch (e) {
+          errorLog(e, 'SBAPI.parseJSON')
+          throw e
+        }
+
+        if (!Array.isArray(data)) {
+          // API returned an unexpected shape (often an error object).
+          debug('SBAPI returned non-array response: ' + JSON.stringify(data).slice(0, 500))
+          throw new TypeError('SBAPI returned non-array response')
+        }
+
+        // Convert received raw objects into SBSection instances and cache
+        for (const s of data) {
+          const section_data = this.#constructSectionFromData(s)
+          SBAPI.#cache.set(s.id, section_data)
+        }
+      }
+
+      // Return an array of SBSection objects in the original order
+      return sections.map(s => SBAPI.#cache.get(s))
+    } catch (e) {
+      // Surface helpful debugging info then rethrow so callers can apply
+      // their own backoff/guard logic.
+      try { errorLog(e, 'SBAPI.fetchSectionInformation') } catch (ee) { console.error('[GG/plotter] error logging failed', ee) }
+      throw e
     }
-
-    return sections.map(s => SBAPI.#cache.get(s))
   }
 
   /**
@@ -54,6 +106,10 @@ class SBAPI {
    * @returns {SBSection}
    */
   static #constructSectionFromData(data) {
+    // Extract only the fields we care about for plotting. The API's
+    // `meetings` array may contain multiple meeting times; for the
+    // purposes of the map we take the first meeting entry (most common
+    // case: lecture meeting).
     const {
         id,
         campus,
@@ -62,14 +118,16 @@ class SBAPI {
         meetings,
     } = data;
 
-    //todo replace with foreach for multiple meetings per section
+    // TODO: If sections with multiple meetings become important for the
+    // map, iterate `meetings` and return multiple SBSection-like entries.
     const {
         start_time,
         end_time,
-        // bools representing whether a class takes place on a given weekday
+        // booleans representing whether a class takes place on a given weekday
         monday, tuesday, wednesday, thursday, friday, saturday, sunday,
     } = meetings[0];
-    //gather meeting info from meetings object
+
+    // Normalize weekday booleans into an array indexed Monday..Sunday
     const days = [monday, tuesday, wednesday, thursday, friday, saturday, sunday]
 
     return new SBSection(id, days, start_time, end_time)
@@ -88,10 +146,12 @@ class SBSection {
    * @param endTime{int} end time in seconds since midnight
    */
   constructor(id, days, startTime, endTime) {
+    /** numeric section id (class_nbr) */
     this.id = id
+    /** boolean[] Monday..Sunday indicating meeting days */
     this.days = days
-    //only works for sections with a meeting time/location
-    // (the overwhelming majority of classes, but not all unfortunately)
+    // only works for sections with a meeting time/location
+    // (the overwhelming majority of classes, but not all)
     this.startTime = startTime
     this.endTime = endTime
   }
