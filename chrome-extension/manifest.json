@@ -100,8 +100,8 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["plotter/walking.png", "static/icons/icon-128.png"],
-      "matches": ["https://schedulebuilder.umn.edu/*"]
+      "resources": ["plotter/walking.png", "static/icons/icon-128.png", "sidebar/sidebar.css"],
+      "matches": ["https://*.schedulebuilder.umn.edu/*"]
     }
   ]
 }
