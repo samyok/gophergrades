@@ -50,6 +50,7 @@ const htmlToElement = (html) => {
 
 const iframeTemplate = `
 <div class="gopher-grades-container">
+<link rel="stylesheet" href="${chrome.runtime.getURL("sidebar/sidebar.css")}">
 <iframe class="gopher-grades-result-iframe" referrerpolicy="unsafe-url"></iframe>
 </div>
 `;
@@ -70,10 +71,11 @@ const appendPortal = (iframeId, target, courseName) => {
 
 // code to add the iframe to the page
 const prependFrame = (url, elem, direction = "prepend") => {
-  if (elem.querySelector("iframe")) return;
+  if (elem.querySelector(".gopher-grades-container")) return;
   const frameContainer = htmlToElement(iframeTemplate);
   console.log("[GG] frameContainer", frameContainer);
   const frame = frameContainer.querySelector("iframe");
+  frameContainer.attachShadow({ mode: "open" }).append(...frameContainer.childNodes);
   frame.src = url.replace(/ /g, "");
   elem[direction](frameContainer);
   let interval = setInterval(() => {
